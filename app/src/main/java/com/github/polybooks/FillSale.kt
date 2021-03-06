@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.core.Book
 import java.util.concurrent.CompletableFuture
 
 /*
@@ -21,9 +22,11 @@ class FillSale : AppCompatActivity() {
         val stringISBN = intent.getStringExtra(ISBN)
 
         // Check if ISBN in our database: (could check ISBN validity before)
-        // TODO
+        // TODO Commenting out the whole chunk as it depends on the API which is not ready yet.
+        /*
         val book: CompletableFuture<Book> = CompletableFuture().supplyAsync {
-            getBook(stringISBN)
+
+            bookDatabase.getBook(stringISBN)
         }.handle { (book, err) ->
             {
                 if (err == null) {
@@ -43,14 +46,16 @@ class FillSale : AppCompatActivity() {
             }
         }
 
+         */
+
 
     }
 
 
     fun confirmSale(view: View) {
-        // TODO determine to which activity we land
+        // TODO determine to which activity we land, but probably not MainActivity but rather a confirmation page
         // store Sale in our database
-        val intent = Intent(this, ???::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 }

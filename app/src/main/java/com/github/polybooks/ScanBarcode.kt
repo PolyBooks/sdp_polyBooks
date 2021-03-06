@@ -10,11 +10,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 
+
 /*
 This activity open the camera (ask permission for it if not already given) and try to detect a barcode,
 when it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
  */
 class ScanBarcode : AppCompatActivity() {
+
+    private val myCameraPermission = 1111
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_barcode)
@@ -23,14 +27,14 @@ class ScanBarcode : AppCompatActivity() {
 
     fun checkPermission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA))
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), myCameraPermission)
         } else {
 
         }
     }
 
     fun passISBN(view: View) {
-        val stringISBN = // TODO
+        val stringISBN = "9876543210123"// TODO
         val intent = Intent(this, FillSale::class.java).apply {
             putExtra(ISBN, stringISBN)
         }
