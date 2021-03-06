@@ -15,8 +15,8 @@ check_android_task:
   start_emulator_background_script:
     $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim -camera-back none
   build_script: |
-    chmod +x PolyBooks/gradlew
-    ./Polybooks/gradlew assembleDebugAndroidTest
+    chmod +x gradlew
+    ./gradlew assembleDebugAndroidTest
   wait_for_emulator_script: |
     adb wait-for-device
     adb shell input keyevent 82
@@ -29,16 +29,16 @@ check_android_task:
     chmod +x ./cc-test-reporter
     ./cc-test-reporter before-build
   check_script:
-    ./Polybooks/gradlew check connectedCheck
+    ./gradlew check connectedCheck
   report_codeclimate_script: |
     export JACOCO_SOURCE_PATH=app/src/main/java/
-    ./cc-test-reporter format-coverage ./Polybooks/app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
+    ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
     ./cc-test-reporter upload-coverage
   lint_script:
-    ./Polybooks/gradlew lintDebug
+    ./gradlew lintDebug
   always:
     android-lint_artifacts:
-      path: ./PolyBooks/app/build/reports/lint-results-debug.xml
+      path: ./app/build/reports/lint-results-debug.xml
       type: text/xml
       format: android-lint
       
