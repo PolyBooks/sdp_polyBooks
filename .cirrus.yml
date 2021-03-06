@@ -15,7 +15,7 @@ check_android_task:
   start_emulator_background_script:
     $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim -camera-back none
   build_script: |
-    chmod +x gradlew
+    chmod +x PolyBooks/gradlew
     ./Polybooks/gradlew assembleDebugAndroidTest
   wait_for_emulator_script: |
     adb wait-for-device
