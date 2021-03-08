@@ -19,17 +19,21 @@ interface Database {
      * */
     fun querySales() : SaleQuery
 
-    //TODO we could or could not include those functions (and more) in the interface. Should we?
+    /**
+     * Get all the books in the database
+     * */
+    fun listAllBooks() : CompletableFuture<List<Book>> = queryBooks().getAll()
 
-    fun listAllBooks() : CompletableFuture<List<Book>> = TODO("It can be implemented from the previous functions")
-
-    fun listAllSales() : CompletableFuture<List<Sale>> = TODO("It can be implemented from the previous functions")
+    /**
+     * Get all the sales in the database
+     * */
+    fun listAllSales() : CompletableFuture<List<Sale>> = querySales().getAll()
 
     /**
      * Get data about a Book from the database given it's ISBN13
      * */ //TODO define how to handle an invalid isbn13
-    fun getBook(isbn13 : Long) : CompletableFuture<Book> = TODO("It can be implemented from the previous functions")
-
+    fun getBook(isbn13 : Long) : CompletableFuture<Book>
+        = TODO("It can be implemented from the previous functions")
 
     /**
      * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
@@ -38,9 +42,40 @@ interface Database {
      * @param ordering The ordering for the pages and books within the pages (see {@link BookOrdering})
      * */
     fun getNBooks(numberOfBooks : Int, page : Int, ordering : BookOrdering) : CompletableFuture<List<Book>>
-        = TODO("It can be implemented from the previous functions")
+        = queryBooks().withOrdering(ordering).getN(numberOfBooks, page)
+
+    /**
+     * A method for getting sales by batches of at most N sales. The batches are indexed by ordered pages.
+     * @param numberOfSales The maximum number of sales per page
+     * @param page The index of the page
+     * @param ordering The ordering for the pages and sales within the pages (see {@link SaleOrdering})
+     * */
+    fun getNSales(numberOfSales : Int, page : Int, ordering : SaleOrdering) : CompletableFuture<List<Sale>>
+            = querySales().withOrdering(ordering).getN(numberOfSales, page)
 
     //TODO need to add methods to modify the database, create entries.
+
+}
+
+/**
+ * Queries are Object that allow to make queries to a database.
+ * */
+interface Query<T> {
+
+    /**
+     * Execute the query and return all the results in a Future.
+     * */
+    fun getAll() : CompletableFuture<List<T>>
+
+    /**
+     * Get the results in batches of at most n books.
+     * */
+    fun getN(n : Int, page : Int) : CompletableFuture<List<T>>
+
+    /**
+     * Get how many entries match this query
+     * */
+    fun getCount() : CompletableFuture<Int>
 
 }
 
@@ -48,35 +83,16 @@ interface Database {
  * A BookQuery is a builder for a query to the database that will yield Books.
  * Most methods return themselves for function chaining
  * */
-interface BookQuery {
+interface BookQuery : Query<Book> {
 
     /**
-     * Execute the query and return all the results in a Future.
+     * Set this query to only include books that satisfy the given interests.
      * */
-    fun getAll() : CompletableFuture<List<Book>>
-
-    /**
-     * Get the results in batches of at most n books.
-     * */
-    fun getN(n : Int, page : Int) : CompletableFuture<List<Book>>
-
-    /**
-     * Get how many Books match this query
-     * */
-    fun getCount() : CompletableFuture<Int>
-
-    /**
-     * Set this query to not include books that satisfy the given interests.
-     * */
-    fun dontIncludeInterests(interests : Collection<Interest>) : BookQuery
-
-    /**
-     * Set this query to also include books that satisfy the given interests.
-     * */
-    fun includeInterests(interests: Collection<Interest>) : BookQuery
+    fun onlyIncludeInterests(interests: Collection<Interest>) : BookQuery
 
     /**
      * Set this query to only search for books with title that are like the given one.
+     * (ignoring other filters)
      * */
     fun searchByTitle(title : String) : BookQuery
 
@@ -98,35 +114,16 @@ interface BookQuery {
  * A SaleQuery is a builder for a query to the database that will yield Sales.
  * Most methods return themselves for function chaining.
  * */
-interface SaleQuery {
+interface SaleQuery : Query<Sale> {
 
     /**
-     * Execute the query and return all the results in a Future.
+     * Set this query to only include sales that satisfy the given interests.
      * */
-    fun getAll() : CompletableFuture<List<Sale>>
-
-    /**
-     * Get the results in batches of at most n sales.
-     * */
-    fun getN(n : Int, page : Int) : CompletableFuture<List<Sale>>
-
-    /**
-     * Get how many Sales match this query
-     * */
-    fun getCount() : CompletableFuture<Int>
-
-    /**
-     * Set this query to not include sales that satisfy the given interests.
-     * */
-    fun dontIncludeInterests(interests : Collection<Interest>) : SaleQuery
-
-    /**
-     * Set this query to also include sales that satisfy the given interests.
-     * */
-    fun includeInterests(interests: Collection<Interest>) : SaleQuery
+    fun onlyIncludeInterests(interests: Collection<Interest>) : SaleQuery
 
     /**
      * Set this query to only search for sales with book's title that are like the given one.
+     * (ignoring other filters)
      * */
     fun searchByTitle(title : String) : SaleQuery
 
@@ -143,7 +140,7 @@ interface SaleQuery {
     fun searchByCondition(condition : Collection<BookCondition>) : SaleQuery
 
     /**
-     * Set this query to search for sales within the given price range.
+     * Set this query to only search for sales within the given price range.
      * */
     fun searchByPrice(min : Float, max : Float) : SaleQuery
 
