@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyBooks">
+        <activity android:name=".ScanBarcode"></activity>
+        <activity android:name=".FillSale" />
+        <activity android:name=".AddSale" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
