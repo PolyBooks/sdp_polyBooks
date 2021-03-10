@@ -1,8 +1,10 @@
 package com.github.polybooks
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,5 +27,13 @@ class ScanBarcode : AppCompatActivity() {
         } else {
 
         }
+    }
+
+    fun passISBN(view: View) {
+        val stringISBN = // TODO
+        val intent = Intent(this, FillSale::class.java).apply {
+            putExtra(ISBN, stringISBN)
+        }
+        startActivity(intent)
     }
 }
