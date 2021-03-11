@@ -26,3 +26,4 @@ data class Book(
         val publisher : String?,
         val publishDate : Date?,
         val format : String?)
+
