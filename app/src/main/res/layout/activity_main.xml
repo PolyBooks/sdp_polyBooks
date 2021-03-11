@@ -91,7 +91,7 @@
         app:layout_constraintTop_toBottomOf="@+id/search_bar" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/all_books_button"
+        android:id="@+id/button_open_db_tests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="138dp"
@@ -126,6 +126,6 @@
         app:layout_constraintBottom_toTopOf="@+id/copyrights"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/all_books_button" />
+        app:layout_constraintTop_toBottomOf="@+id/button_open_db_tests" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
