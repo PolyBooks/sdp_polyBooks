@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "735038661915",
+    "firebase_url": "https://polybooks-ac2f5-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "polybooks-ac2f5",
+    "storage_bucket": "polybooks-ac2f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735038661915:android:5ad9e7404d514a8cb11fbe",
+        "android_client_info": {
+          "package_name": "ch.epfl.sweng.todoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCefEY7UiFQF828bM3urW2LmokRkwE0lb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735038661915:android:b6f0fd631919e2d8b11fbe",
+        "android_client_info": {
+          "package_name": "com.github.polybooks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCefEY7UiFQF828bM3urW2LmokRkwE0lb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
