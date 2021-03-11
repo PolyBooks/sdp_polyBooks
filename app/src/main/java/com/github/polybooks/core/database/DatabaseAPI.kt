@@ -31,8 +31,8 @@ interface Database {
 
     /**
      * Get data about a Book from the database given it's ISBN13
-     * */ //TODO define how to handle an invalid isbn13
-    fun getBook(isbn13 : Long) : CompletableFuture<Book>
+     * */
+    fun getBook(isbn13 : String) : CompletableFuture<Book>
         = TODO("It can be implemented from the previous functions")
 
     /**
@@ -100,7 +100,7 @@ interface BookQuery : Query<Book> {
      * Set this query to get the book associated with the given isbn13, if it exists.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: Long) : BookQuery
+    fun searchByISBN13(isbn13: String) : BookQuery
 
     /**
      * Set this query to order books with the given ordering.
@@ -154,7 +154,7 @@ interface SaleQuery : Query<Sale> {
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: Long) : SaleQuery
+    fun searchByISBN13(isbn13: String) : SaleQuery
 
 }
 

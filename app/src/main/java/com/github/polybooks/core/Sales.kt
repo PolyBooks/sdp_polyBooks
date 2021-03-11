@@ -5,16 +5,14 @@ import java.util.*
 /**
  * The Sale class contains all the information about a book on sale.
  * @property book The isbn13 of the book that is being sold
- *                  //TODO could also store the Book directly, but it has implications for the implementation of queries to the database
  * @property seller The ID of the seller
- *                  //TODO could also store the User directly, but it has implications for the implementation of queries to the database
  * @property price The price in CHF at which the book is being sold
  * @property condition The condition of the book (see {@link BookCondition})
  * @property publicationDate The date on which the Sale has been issued/published
  * @property state The state of the Sale (see {@link SaleState})
  * */
 data class Sale(
-    val book : Long,
+    val book : String,
     val seller : Int,
     val price : Float,
     val condition : BookCondition,

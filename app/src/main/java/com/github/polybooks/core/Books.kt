@@ -18,7 +18,7 @@ import java.util.*
  * @property format The format of the book (Hard cover, pocket book, magazine, ...)
  * */
 data class Book(
-        val isbn13 : Long,
+        val isbn13 : String,
         val authors : List<String>?,
         val title : String,
         val edition : String?,
