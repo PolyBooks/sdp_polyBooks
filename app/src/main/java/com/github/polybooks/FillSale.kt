@@ -20,7 +20,7 @@ class FillSale : AppCompatActivity() {
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
 
-        // Check if ISBN in our database:
+        // Check if ISBN in our database: (could check ISBN validity before)
         // TODO
         val book: CompletableFuture<Book> = CompletableFuture().supplyAsync {
             getBook(stringISBN)
@@ -28,13 +28,13 @@ class FillSale : AppCompatActivity() {
             {
                 if (err == null) {
         // Yes: Retrieve from our database data about the book
-                    findViewById<TextView>(R.id.filled_authors)         .apply { text = decodedJSON }
-                    findViewById<TextView>(R.id.filled_title)           .apply { text = decodedJSON }
-                    findViewById<TextView>(R.id.filled_edition)         .apply { text = decodedJSON }
-                    findViewById<TextView>(R.id.filled_language)        .apply { text = decodedJSON }
-                    findViewById<TextView>(R.id.filled_publisher)       .apply { text = decodedJSON }
-                    findViewById<TextView>(R.id.filled_publish_date)    .apply { text = decodedJSON }
-                    findViewById<TextView>(R.id.filled_format)          .apply { text = decodedJSON }
+                    findViewById<TextView>(R.id.filled_authors)         .apply { text = book.authors }
+                    findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
+                    findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
+                    findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
+                    findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
+                    findViewById<TextView>(R.id.filled_publish_date)    .apply { text = book.publishDate }
+                    findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
                 } else {
         // No: Use Google Books to convert stringISBN to JSON with relevant data, and also add to our database
                     // If Google Books fails to find the ISBN, pop-out an error message about invalid ISBN and go back to AddSale page
