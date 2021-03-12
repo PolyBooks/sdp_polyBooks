@@ -1,8 +1,10 @@
+
 package com.github.polybooks
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
@@ -10,7 +12,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button : Button = findViewById(R.id.dummy_button)
-        button.setOnClickListener { startActivity( Intent(this, DummyDatabaseActivity :: class.java )) }
+        val button: Button = findViewById(R.id.button_open_db_tests)
+        button.setOnClickListener {
+            startActivity(Intent(this, DummyDatabaseActivity::class.java))
+        }
     }
+
+    fun login_fun(view: View) {
+        setContentView(R.layout.login)
+    }
+
+    fun signup_fun(view: View) {
+        setContentView(R.layout.signup)
+    }
+
+    fun backhome_fun(view: View) {
+        setContentView(R.layout.activity_main)
+    }
+
 }
