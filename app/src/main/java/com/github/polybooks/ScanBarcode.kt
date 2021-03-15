@@ -13,13 +13,51 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 
-
 /*
 This activity open the camera (ask permission for it if not already given) and try to detect a barcode,
 when it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
  */
 class ScanBarcode : AppCompatActivity() {
 
+    private val myCameraPermission = 1111
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_scan_barcode)
+    }
+
+
+    fun checkPermission(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), myCameraPermission)
+        } else {
+
+        }
+    }
+
+    fun passISBN(view: View) {
+        val stringISBN = "9876543210123"// TODO
+        val intent = Intent(this, FillSale::class.java).apply {
+            putExtra(ISBN, stringISBN)
+        }
+        startActivity(intent)
+    }
+
+    private class YourImageAnalyzer : ImageAnalysis.Analyzer {
+
+        override fun analyze(imageProxy: ImageProxy) {
+            val mediaImage = imageProxy.image
+            if (mediaImage != null) {
+                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+                // Pass image to an ML Kit Vision API
+                // ...
+            }
+        }
+    }
+
+    val image = InputImage.fromMediaImage(mediaImage, rotation)
+
+    // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
     private fun scanBarcodes(image: InputImage) {
         // [START set_detector_options]
         // ISBNs are represented on EAN-13 barcodes only.
@@ -63,27 +101,5 @@ class ScanBarcode : AppCompatActivity() {
         // [END run_detector]
     }
 
-    private val myCameraPermission = 1111
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_scan_barcode)
-    }
-
-
-    fun checkPermission(){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), myCameraPermission)
-        } else {
-
-        }
-    }
-
-    fun passISBN(view: View) {
-        val stringISBN = "9876543210123"// TODO
-        val intent = Intent(this, FillSale::class.java).apply {
-            putExtra(ISBN, stringISBN)
-        }
-        startActivity(intent)
-    }
 }
