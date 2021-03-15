@@ -1,10 +1,12 @@
-package com.github.polybooks
+package com.github.polybooks.core.database
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.polybooks.R
+import com.github.polybooks.core.DummyBook
 
 class DummyBookAdapter(val listBooks : List<DummyBook>) : RecyclerView.Adapter<DummyBookAdapter.DummyViewHolder>() {
     class DummyViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {

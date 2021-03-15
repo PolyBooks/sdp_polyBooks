@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PolyBooks</string>
+    <string name="dummy_book_name">Dummy Book</string>
+    <string name="dummy_price">0.000</string>
 </resources>
