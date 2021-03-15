@@ -1,3 +1,4 @@
+
 package com.github.polybooks
 
 import android.content.Intent
@@ -11,8 +12,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button: Button = findViewById(R.id.button_open_db_tests)
-        button.setOnClickListener {
+        val dbButton: Button = findViewById(R.id.button_open_db_tests)
+        dbButton.setOnClickListener {
+            startActivity(Intent(this, DummyDatabaseActivity::class.java))
+        }
+
+        val sellButton: Button = findViewById(R.id.sell_button)
+        sellButton.setOnClickListener {
             startActivity(Intent(this, FirebaseActivity::class.java))
         }
     }
@@ -28,4 +34,5 @@ class MainActivity : AppCompatActivity() {
     fun backhome_fun(view: View) {
         setContentView(R.layout.activity_main)
     }
+
 }
