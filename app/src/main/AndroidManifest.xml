@@ -18,7 +18,10 @@
             android:parentActivityName=".AddSale"/>
         <activity android:name=".AddSale"
             android:parentActivityName=".MainActivity"/>
+
+        <activity android:name=".DummyDatabaseActivity"></activity>
         <activity android:name=".FirebaseActivity"></activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
