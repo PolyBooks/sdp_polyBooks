@@ -25,7 +25,6 @@ import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
-typealias LumaListener = (luma: Double) -> Unit
 
 /*
 This activity open the camera (ask permission for it if not already given) and try to detect a barcode,
@@ -89,9 +88,7 @@ class ScanBarcode : AppCompatActivity() {
             val imageAnalyzer = ImageAnalysis.Builder()
                 .build()
                 .also {
-                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer { dummy ->
-                        Log.d(TAG, "Average luminosity: $luma")
-                    })
+                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer())
                 }
 
             // Select back camera as a default
@@ -136,40 +133,37 @@ class ScanBarcode : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private class LuminosityAnalyzer(private val listener: LumaListener) : ImageAnalysis.Analyzer {
 
-        private fun ByteBuffer.toByteArray(): ByteArray {
-            rewind()    // Rewind the buffer to zero
-            val data = ByteArray(remaining())
-            get(data)   // Copy the buffer into a byte array
-            return data // Return the byte array
-        }
-
-        override fun analyze(image: ImageProxy) {
-            val buffer = image.planes[0].buffer
-            val data = buffer.toByteArray()
-            val pixels = data.map { it.toInt() and 0xFF }
-            val luma = pixels.average()
-
-            listener(luma)
-
-            image.close()
-        }
-    }
-
-    private class BarcodeAnalyzer(private val listener: LumaListener) : ImageAnalysis.Analyzer {
+    private class BarcodeAnalyzer : ImageAnalysis.Analyzer {
 
         override fun analyze(imageProxy: ImageProxy) {
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
                 // Pass image to an ML Kit Vision API
-                // ...
+                //TODO  I think image is the argument to scanBarcodes!!!
+
+                /* Examples from other app
+                listener(luma)
+                imageProxy.close
+                //
+                objectDetector
+                        .process(inputImage)
+                        .addOnFailureListener {
+                            imageProxy.close()
+                        }.addOnSuccessListener { objects ->
+                                    for( it in objects) {
+                                        if(binding.layout.childCount > 1)  binding.layout.removeViewAt(1)
+                                        val element = Draw(this, it.boundingBox, it.labels.firstOrNull()?.text ?: "Undefined")
+                                        binding.layout.addView(element,1)
+                                    }
+                            imageProxy.close()
+                        }
+                 */
             }
         }
     }
 
-    val image = InputImage.fromMediaImage(mediaImage, rotation)
 
     // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
     private fun scanBarcodes(image: InputImage) {
