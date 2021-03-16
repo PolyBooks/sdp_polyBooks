@@ -4,4 +4,16 @@
     <string name="scan_book">Scan Book Barcode</string>
     <string name="isbn">ISBN</string>
     <string name="or">Or</string>
+    <string name="authors">Authors:</string>
+    <string name="title">Title:</string>
+    <string name="edition">Edition:</string>
+    <string name="language">Language</string>
+    <string name="publisher">Publisher</string>
+    <string name="date_published">Date Published</string>
+    <string name="format">Format</string>
+    <string name="condition">Condition</string>
+    <string name="price">Price</string>
+    <string name="chf">CHF</string>
+    <string name="add_picture">Add Picture</string>
+    <string name="confirm_sale">Confirm Sale</string>
 </resources>

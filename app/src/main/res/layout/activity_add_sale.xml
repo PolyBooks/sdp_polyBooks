@@ -7,7 +7,7 @@
     tools:context=".AddSale">
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/navBarPlaceHolder"
         android:layout_width="376dp"
         android:layout_height="34dp"
         android:ems="10"
