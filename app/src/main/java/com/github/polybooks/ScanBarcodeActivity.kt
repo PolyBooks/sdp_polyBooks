@@ -1,6 +1,7 @@
 package com.github.polybooks
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -17,9 +18,10 @@ import android.util.Log
 import android.widget.Toast
 import java.util.concurrent.Executors
 import androidx.camera.core.*
+//import androidx.camera.core.CameraX.getContext
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import kotlinx.android.synthetic.main.activity_scan_barcode.*
-import java.io.File
 import java.util.concurrent.ExecutorService
 
 /*
@@ -28,35 +30,45 @@ when it does it scans it, retrieve the ISBN and automatically moves to the FillS
  */
 class ScanBarcode : AppCompatActivity() {
 
-    private var imageCapture: ImageCapture? = null
+    /* TODO it compiles, but app crashes. maybe due to the emulator not having a camera?
+     * next steps would be write tests and debug.
+     * Then implement the automatic passing of ISBN to the next activity, retest and debug
+     * Then clean up code, remove useless parts, and comment it
+     */
 
-    private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
+    // TODO what about textureView? probably get rid of
+    private lateinit var textureView: PreviewView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_barcode)
 
+        // textureView = findViewById(R.id.texture_view)
+
         // Request camera permissions
         if (allPermissionsGranted()) {
-            startCamera()
+            //startCamera()
+            textureView.post { startCamera() }
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        // Set up the listener for passISBN button (might remove and do it automatically in the future)
-        temporary_button.setOnClickListener { passISBN() }
+        // passISBN button works onClick (might remove and do it automatically in the future)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray) {
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                startCamera()
+                //startCamera()
+                textureView.post { startCamera() }
             } else {
                 Toast.makeText(this,
                     "Permissions not granted by the user.",
@@ -70,7 +82,7 @@ class ScanBarcode : AppCompatActivity() {
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
-        cameraProviderFuture.addListener(Runnable {
+        cameraProviderFuture.addListener( {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
@@ -79,6 +91,8 @@ class ScanBarcode : AppCompatActivity() {
                 .build()
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
+                    //preview.setSurfaceProvider(textureView.createSurfaceProvider())
+                    // TODO textureview instead of viewFinder??
                 }
 
             val imageAnalyzer = ImageAnalysis.Builder()
@@ -89,6 +103,8 @@ class ScanBarcode : AppCompatActivity() {
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            // TODO Other option:
+            //       = CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
 
             try {
                 // Unbind use cases before rebinding
@@ -157,10 +173,13 @@ class ScanBarcode : AppCompatActivity() {
                             val corners = barcode.cornerPoints
 
                             val rawValue = barcode.rawValue
+                            //Toast.makeText(getContext(), rawValue, Toast.LENGTH_SHORT).show()
+                            Log.d("MainActivity", "barcode detected: ${rawValue}.")
 
                             when (barcode.valueType) {
                                 Barcode.TYPE_ISBN -> {
                                     val displayValue = barcode.displayValue
+                                    Log.d("MainActivity", "barcode detected: ${displayValue}.")
                                 }
                             }
                         }
@@ -174,6 +193,7 @@ class ScanBarcode : AppCompatActivity() {
             // [END run_detector]
         }
 
+        @SuppressLint("UnsafeExperimentalUsageError")
         override fun analyze(imageProxy: ImageProxy) {
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
@@ -203,9 +223,6 @@ class ScanBarcode : AppCompatActivity() {
             }
         }
     }
-
-
-
 
 
 }
