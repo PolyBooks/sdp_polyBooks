@@ -13,7 +13,6 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import java.util.concurrent.Executors
@@ -21,13 +20,10 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import kotlinx.android.synthetic.main.activity_scan_barcode.*
 import java.io.File
-import java.nio.ByteBuffer
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.ExecutorService
 
 /*
-This activity open the camera (ask permission for it if not already given) and try to detect a barcode,
+This activity opens the camera (ask permission for it if not already given) and try to detect a barcode,
 when it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
  */
 class ScanBarcode : AppCompatActivity() {
@@ -50,7 +46,7 @@ class ScanBarcode : AppCompatActivity() {
         }
 
         // Set up the listener for passISBN button (might remove and do it automatically in the future)
-        camera_capture_button.setOnClickListener { passISBN() }
+        temporary_button.setOnClickListener { passISBN() }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
@@ -136,16 +132,60 @@ class ScanBarcode : AppCompatActivity() {
 
     private class BarcodeAnalyzer : ImageAnalysis.Analyzer {
 
+        // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
+        private fun scanBarcodes(image: InputImage) {
+            // [START set_detector_options]
+            // ISBNs are represented on EAN-13 barcodes only.
+            val options = BarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(Barcode.FORMAT_EAN_13)
+                    .build()
+            // [END set_detector_options]
+
+            // [START get_detector]
+            // Specifying the formats to recognize:
+            val scanner = BarcodeScanning.getClient(options)
+            // [END get_detector]
+
+            // [START run_detector]
+            val result = scanner.process(image)
+                    .addOnSuccessListener { barcodes ->
+                        // Task completed successfully
+                        // [START_EXCLUDE]
+                        // [START get_barcodes]
+                        for (barcode in barcodes) {
+                            val bounds = barcode.boundingBox
+                            val corners = barcode.cornerPoints
+
+                            val rawValue = barcode.rawValue
+
+                            when (barcode.valueType) {
+                                Barcode.TYPE_ISBN -> {
+                                    val displayValue = barcode.displayValue
+                                }
+                            }
+                        }
+                        // [END get_barcodes]
+                        // [END_EXCLUDE]
+                    }
+                    .addOnFailureListener {
+                        // Task failed with an exception
+                        it.printStackTrace()
+                    }
+            // [END run_detector]
+        }
+
         override fun analyze(imageProxy: ImageProxy) {
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
                 // Pass image to an ML Kit Vision API
-                //TODO  I think image is the argument to scanBarcodes!!!
-
+                scanBarcodes(image)
+                // TODO Does mediaImage needs to be closed? To test
+                mediaImage?.close()
+                imageProxy.close()
                 /* Examples from other app
                 listener(luma)
-                imageProxy.close
+                imageProxy.close()
                 //
                 objectDetector
                         .process(inputImage)
@@ -165,49 +205,7 @@ class ScanBarcode : AppCompatActivity() {
     }
 
 
-    // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
-    private fun scanBarcodes(image: InputImage) {
-        // [START set_detector_options]
-        // ISBNs are represented on EAN-13 barcodes only.
-        val options = BarcodeScannerOptions.Builder()
-                .setBarcodeFormats(Barcode.FORMAT_EAN_13)
-                .build()
-        // [END set_detector_options]
 
-        // [START get_detector]
-        // Specifying the formats to recognize:
-        val scanner = BarcodeScanning.getClient(options)
-        // [END get_detector]
-
-        // [START run_detector]
-        val result = scanner.process(image)
-                .addOnSuccessListener { barcodes ->
-                    // Task completed successfully
-                    // [START_EXCLUDE]
-                    // [START get_barcodes]
-                    for (barcode in barcodes) {
-                        val bounds = barcode.boundingBox
-                        val corners = barcode.cornerPoints
-
-                        val rawValue = barcode.rawValue
-
-                        val valueType = barcode.valueType
-                        // See API reference for complete list of supported types
-                        when (valueType) {
-                            Barcode.TYPE_ISBN -> {
-                                val displayValue = barcode.displayValue
-                            }
-                        }
-                    }
-                    // [END get_barcodes]
-                    // [END_EXCLUDE]
-                }
-                .addOnFailureListener {
-                    // Task failed with an exception
-                    // ...
-                }
-        // [END run_detector]
-    }
 
 
 }
