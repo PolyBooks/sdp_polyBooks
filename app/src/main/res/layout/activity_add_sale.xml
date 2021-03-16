@@ -7,7 +7,7 @@
     tools:context=".AddSale">
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/navBarPlaceholder"
         android:layout_width="376dp"
         android:layout_height="34dp"
         android:ems="10"
@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/navBarPlaceholder" />
 
     <Button
         android:id="@+id/pass_isbn_button"

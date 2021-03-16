@@ -1,3 +1,4 @@
+
 package com.github.polybooks
 
 import android.content.Intent
@@ -11,10 +12,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button: Button = findViewById(R.id.button_open_db_tests)
-        button.setOnClickListener {
-            startActivity(Intent(this, FirebaseActivity::class.java))
+        val dbButton: Button = findViewById(R.id.button_open_db_tests)
+        dbButton.setOnClickListener {
+            startActivity(Intent(this, DummyDatabaseActivity::class.java))
         }
+
     }
 
     fun login(view: View) {
@@ -33,4 +35,5 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, AddSale::class.java)
         startActivity(intent)
     }
+
 }
