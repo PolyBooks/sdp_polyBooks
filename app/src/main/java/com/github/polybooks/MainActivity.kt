@@ -17,22 +17,23 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, DummyDatabaseActivity::class.java))
         }
 
-        val sellButton: Button = findViewById(R.id.sell_button)
-        sellButton.setOnClickListener {
-            startActivity(Intent(this, FirebaseActivity::class.java))
-        }
     }
 
-    fun login_fun(view: View) {
+    fun login(view: View) {
         setContentView(R.layout.login)
     }
 
-    fun signup_fun(view: View) {
+    fun signup(view: View) {
         setContentView(R.layout.signup)
     }
 
-    fun backhome_fun(view: View) {
+    fun backhome(view: View) {
         setContentView(R.layout.activity_main)
+    }
+
+    fun sellBook(view: View) {
+        val intent = Intent(this, AddSale::class.java)
+        startActivity(intent)
     }
 
 }
