@@ -44,7 +44,7 @@ class ScanBarcode : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_barcode)
 
-        // textureView = findViewById(R.id.texture_view)
+        textureView = findViewById(R.id.viewFinder)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -90,8 +90,9 @@ class ScanBarcode : AppCompatActivity() {
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    it.setSurfaceProvider(viewFinder.surfaceProvider)
-                    //preview.setSurfaceProvider(textureView.createSurfaceProvider())
+                    //it.setSurfaceProvider(viewFinder.surfaceProvider)
+                    it.setSurfaceProvider(textureView.surfaceProvider)
+                    // preview.setSurfaceProvider(textureView.createSurfaceProvider())
                     // TODO textureview instead of viewFinder??
                 }
 
