@@ -9,11 +9,15 @@ import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 
 //Adapter for the sales
-class SalesAdapter(val salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter.SalesViewHolder>() {
+class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter.SalesViewHolder>() {
     class SalesViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val mName: TextView = itemView.findViewById(R.id.BookName)
         val mPrice : TextView = itemView.findViewById(R.id.SalePrice)
 
+    }
+
+    fun update(newSalesList: List<Sale>){
+        salesList = newSalesList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SalesViewHolder {
