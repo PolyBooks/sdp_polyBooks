@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -128,8 +127,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
-    fun passISBN(view: View) {
-        val stringISBN = "9876543210123"// TODO
+    fun passISBN(stringISBN: String) {
         val intent = Intent(this, FillSaleActivity::class.java).apply {
             putExtra(ISBN, stringISBN)
         }
@@ -137,7 +135,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
 
-    private class BarcodeAnalyzer : ImageAnalysis.Analyzer {
+    private inner class BarcodeAnalyzer : ImageAnalysis.Analyzer {
 
         // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
         @SuppressLint("UnsafeExperimentalUsageError")
@@ -167,17 +165,18 @@ class ScanBarcodeActivity : AppCompatActivity() {
                             // [START_EXCLUDE]
                             // [START get_barcodes]
                             for (barcode in barcodes) {
-                                val bounds = barcode.boundingBox
+                                /*val bounds = barcode.boundingBox
                                 val corners = barcode.cornerPoints
-
-                                val rawValue = barcode.rawValue
+                                val rawValue = barcode.rawValue*/
                                 // In the case of ISBN, both rawValue and displayValue are identical and simply contain the ISBN with no extra text.
-                                Log.d("MainActivity", "barcode detected: ${rawValue}.")
 
                                 when (barcode.valueType) {
                                     Barcode.TYPE_ISBN -> {
                                         val displayValue = barcode.displayValue
-                                        Log.d("MainActivity", "barcode detected: ${displayValue}.")
+                                        if (displayValue != null) {
+                                            Log.d("ScanBarcodeActivity", "barcode detected: ${displayValue}.")
+                                            passISBN(displayValue)
+                                        }
                                     }
                                 }
                             }
