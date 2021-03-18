@@ -30,26 +30,20 @@ when it does it scans it, retrieve the ISBN and automatically moves to the FillS
  */
 class ScanBarcode : AppCompatActivity() {
 
-    /* TODO it compiles, but app crashes. maybe due to the emulator not having a camera?
-     * next steps would be write tests and debug.
+    /* TODO next steps would be write tests and debug.
      * Then implement the automatic passing of ISBN to the next activity, retest and debug
-     * Then clean up code, remove useless parts, and comment it
+     * Then clean up code, remove useless parts, and comment it, and refactor
      */
 
     private lateinit var cameraExecutor: ExecutorService
-    // TODO what about textureView? probably get rid of
-    private lateinit var textureView: PreviewView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_barcode)
 
-        textureView = findViewById(R.id.viewFinder)
-
         // Request camera permissions
         if (allPermissionsGranted()) {
-            //startCamera()
-            textureView.post { startCamera() }
+            startCamera()
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
@@ -67,8 +61,7 @@ class ScanBarcode : AppCompatActivity() {
     ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                //startCamera()
-                textureView.post { startCamera() }
+                startCamera()
             } else {
                 Toast.makeText(this,
                     "Permissions not granted by the user.",
@@ -90,10 +83,7 @@ class ScanBarcode : AppCompatActivity() {
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    //it.setSurfaceProvider(viewFinder.surfaceProvider)
-                    it.setSurfaceProvider(textureView.surfaceProvider)
-                    // preview.setSurfaceProvider(textureView.createSurfaceProvider())
-                    // TODO textureview instead of viewFinder??
+                    it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
             val imageAnalyzer = ImageAnalysis.Builder()
