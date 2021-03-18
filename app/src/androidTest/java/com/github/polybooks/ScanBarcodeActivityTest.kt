@@ -29,12 +29,4 @@ class ScanBarcodeActivityTest {
     fun after() {
         Intents.release()
     }
-
-
-    @Test
-    fun passISBNButtonRedirects() {
-        Espresso.onView(ViewMatchers.withId(R.id.temporary_button)).perform(ViewActions.click())
-        // TODO could check that the ISBN is correctly passed too, but most importantly for the UX, get rid of the button, automatically redirects and test that rather
-        Intents.intended(IntentMatchers.hasComponent(FillSaleActivity::class.java.name))
-    }
 }

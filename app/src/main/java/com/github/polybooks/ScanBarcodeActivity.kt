@@ -48,8 +48,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        // TODO passISBN button works onClick (might remove and do it automatically in the future)
-
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -175,6 +173,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
                                         val displayValue = barcode.displayValue
                                         if (displayValue != null) {
                                             Log.d("ScanBarcodeActivity", "barcode detected: ${displayValue}.")
+                                            // TODO there's a sync issue, the next activity will be started several times as it is still scanning the barcode while the next activity is starting
                                             passISBN(displayValue)
                                         }
                                     }
