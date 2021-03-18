@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sellBook(view: View) {
-        val intent = Intent(this, AddSale::class.java)
+        val intent = Intent(this, AddSaleActivity::class.java)
         startActivity(intent)
     }
 
