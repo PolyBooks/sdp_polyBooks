@@ -72,13 +72,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
 
-    fun toastMe(text: String) {
-        Toast.makeText(this,
-                text,
-                Toast.LENGTH_SHORT).show()
-    }
-
-
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -144,7 +137,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
 
-    private inner class BarcodeAnalyzer : ImageAnalysis.Analyzer {
+    private class BarcodeAnalyzer : ImageAnalysis.Analyzer {
 
         // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
         @SuppressLint("UnsafeExperimentalUsageError")
@@ -178,14 +171,12 @@ class ScanBarcodeActivity : AppCompatActivity() {
                                 val corners = barcode.cornerPoints
 
                                 val rawValue = barcode.rawValue
-                                // TODO Could remove the "inner" class once I don't want to toast here anymore
-                                toastMe(rawValue)
+                                // In the case of ISBN, both rawValue and displayValue are identical and simply contain the ISBN with no extra text.
                                 Log.d("MainActivity", "barcode detected: ${rawValue}.")
 
                                 when (barcode.valueType) {
                                     Barcode.TYPE_ISBN -> {
                                         val displayValue = barcode.displayValue
-                                        toastMe(rawValue)
                                         Log.d("MainActivity", "barcode detected: ${displayValue}.")
                                     }
                                 }
