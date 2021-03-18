@@ -5,24 +5,24 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-
-import android.util.Log
-import android.widget.Toast
-import java.util.concurrent.Executors
-import androidx.camera.core.*
-//import androidx.camera.core.CameraX.getContext
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import kotlinx.android.synthetic.main.activity_scan_barcode.*
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /*
 This activity opens the camera (ask permission for it if not already given) and try to detect a barcode,
@@ -30,9 +30,9 @@ when it does it scans it, retrieve the ISBN and automatically moves to the FillS
  */
 class ScanBarcode : AppCompatActivity() {
 
-    /* TODO next steps would be write tests and debug.
+    /* TODO next steps would be to refactor and write tests
      * Then implement the automatic passing of ISBN to the next activity, retest and debug
-     * Then clean up code, remove useless parts, and comment it, and refactor
+     * Then clean up code and comment it
      */
 
     private lateinit var cameraExecutor: ExecutorService
@@ -49,7 +49,7 @@ class ScanBarcode : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        // passISBN button works onClick (might remove and do it automatically in the future)
+        // TODO passISBN button works onClick (might remove and do it automatically in the future)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
@@ -191,26 +191,7 @@ class ScanBarcode : AppCompatActivity() {
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
                 // Pass image to an ML Kit Vision API
                 scanBarcodes(image)
-                // TODO Does mediaImage needs to be closed? To test
-                mediaImage?.close()
                 imageProxy.close()
-                /* Examples from other app
-                listener(luma)
-                imageProxy.close()
-                //
-                objectDetector
-                        .process(inputImage)
-                        .addOnFailureListener {
-                            imageProxy.close()
-                        }.addOnSuccessListener { objects ->
-                                    for( it in objects) {
-                                        if(binding.layout.childCount > 1)  binding.layout.removeViewAt(1)
-                                        val element = Draw(this, it.boundingBox, it.labels.firstOrNull()?.text ?: "Undefined")
-                                        binding.layout.addView(element,1)
-                                    }
-                            imageProxy.close()
-                        }
-                 */
             }
         }
     }
