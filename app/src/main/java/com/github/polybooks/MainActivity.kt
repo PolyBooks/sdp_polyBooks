@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import com.github.polybooks.core.DummySalesQuery
-
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,22 +23,23 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
 
-        val sellButton: Button = findViewById(R.id.sell_button)
-        sellButton.setOnClickListener {
-            startActivity(Intent(this, FirebaseActivity::class.java))
-        }
     }
 
-    fun login_fun(view: View) {
+    fun login(view: View) {
         setContentView(R.layout.login)
     }
 
-    fun signup_fun(view: View) {
+    fun signup(view: View) {
         setContentView(R.layout.signup)
     }
 
-    fun backhome_fun(view: View) {
+    fun backhome(view: View) {
         setContentView(R.layout.activity_main)
+    }
+
+    fun sellBook(view: View) {
+        val intent = Intent(this, AddSale::class.java)
+        startActivity(intent)
     }
 
 }

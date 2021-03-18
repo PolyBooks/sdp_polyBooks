@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.polybooks">
-
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -13,6 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyBooks">
+        <activity android:name=".ScanBarcode"
+            android:parentActivityName=".AddSale"></activity>
+        <activity android:name=".FillSale"
+            android:parentActivityName=".AddSale"/>
+        <activity android:name=".AddSale"
+            android:parentActivityName=".MainActivity"/>
 
         <activity android:name=".DummyDatabaseActivity"></activity>
         <activity android:name=".FirebaseActivity"></activity>
