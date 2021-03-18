@@ -2,7 +2,6 @@ package com.github.polybooks
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -17,10 +16,10 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 
-class AddSaleTest {
+class AddSaleActivityTest {
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(AddSale::class.java)
+    val activityRule = ActivityScenarioRule(AddSaleActivity::class.java)
 
     @Before
     fun before() {
@@ -35,13 +34,13 @@ class AddSaleTest {
     @Test
     fun scanButtonRedirects() {
         onView(withId(R.id.scan_button)).perform(click())
-        intended(hasComponent(ScanBarcode::class.java.name))
+        intended(hasComponent(ScanBarcodeActivity::class.java.name))
     }
 
     @Test
     fun passISBNButtonRedirects() {
         onView(withId(R.id.pass_isbn_button)).perform(click())
         // TODO could check that the ISBN is correctly passed too
-        intended(hasComponent(FillSale::class.java.name))
+        intended(hasComponent(FillSaleActivity::class.java.name))
     }
 }

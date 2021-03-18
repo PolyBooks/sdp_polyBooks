@@ -28,7 +28,7 @@ import java.util.concurrent.Executors
 This activity opens the camera (ask permission for it if not already given) and try to detect a barcode,
 when it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
  */
-class ScanBarcode : AppCompatActivity() {
+class ScanBarcodeActivity : AppCompatActivity() {
 
     /* TODO next steps would be to refactor and write tests
      * Then implement the automatic passing of ISBN to the next activity, retest and debug
@@ -130,7 +130,7 @@ class ScanBarcode : AppCompatActivity() {
 
     fun passISBN(view: View) {
         val stringISBN = "9876543210123"// TODO
-        val intent = Intent(this, FillSale::class.java).apply {
+        val intent = Intent(this, FillSaleActivity::class.java).apply {
             putExtra(ISBN, stringISBN)
         }
         startActivity(intent)
