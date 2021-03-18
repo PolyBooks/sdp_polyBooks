@@ -72,6 +72,13 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
 
+    fun toastMe(text: String) {
+        Toast.makeText(this,
+                text,
+                Toast.LENGTH_SHORT).show()
+    }
+
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -137,63 +144,71 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
 
-    private class BarcodeAnalyzer : ImageAnalysis.Analyzer {
+    private inner class BarcodeAnalyzer : ImageAnalysis.Analyzer {
 
         // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
-        private fun scanBarcodes(image: InputImage) {
-            // [START set_detector_options]
-            // ISBNs are represented on EAN-13 barcodes only.
-            val options = BarcodeScannerOptions.Builder()
-                    .setBarcodeFormats(Barcode.FORMAT_EAN_13)
-                    .build()
-            // [END set_detector_options]
-
-            // [START get_detector]
-            // Specifying the formats to recognize:
-            val scanner = BarcodeScanning.getClient(options)
-            // [END get_detector]
-
-            // [START run_detector]
-            val result = scanner.process(image)
-                    .addOnSuccessListener { barcodes ->
-                        // Task completed successfully
-                        // [START_EXCLUDE]
-                        // [START get_barcodes]
-                        for (barcode in barcodes) {
-                            val bounds = barcode.boundingBox
-                            val corners = barcode.cornerPoints
-
-                            val rawValue = barcode.rawValue
-                            //Toast.makeText(getContext(), rawValue, Toast.LENGTH_SHORT).show()
-                            Log.d("MainActivity", "barcode detected: ${rawValue}.")
-
-                            when (barcode.valueType) {
-                                Barcode.TYPE_ISBN -> {
-                                    val displayValue = barcode.displayValue
-                                    Log.d("MainActivity", "barcode detected: ${displayValue}.")
-                                }
-                            }
-                        }
-                        // [END get_barcodes]
-                        // [END_EXCLUDE]
-                    }
-                    .addOnFailureListener {
-                        // Task failed with an exception
-                        it.printStackTrace()
-                    }
-            // [END run_detector]
-        }
-
         @SuppressLint("UnsafeExperimentalUsageError")
-        override fun analyze(imageProxy: ImageProxy) {
+        private fun scanBarcodes(imageProxy: ImageProxy) {
+
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-                // Pass image to an ML Kit Vision API
-                scanBarcodes(image)
-                imageProxy.close()
+
+
+                // [START set_detector_options]
+                // ISBNs are represented on EAN-13 barcodes only.
+                val options = BarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(Barcode.FORMAT_EAN_13)
+                        .build()
+                // [END set_detector_options]
+
+                // [START get_detector]
+                // Specifying the formats to recognize:
+                val scanner = BarcodeScanning.getClient(options)
+                // [END get_detector]
+
+                // [START run_detector]
+                val result = scanner.process(image)
+                        .addOnSuccessListener { barcodes ->
+                            // Task completed successfully
+                            // [START_EXCLUDE]
+                            // [START get_barcodes]
+                            for (barcode in barcodes) {
+                                val bounds = barcode.boundingBox
+                                val corners = barcode.cornerPoints
+
+                                val rawValue = barcode.rawValue
+                                // TODO Could remove the "inner" class once I don't want to toast here anymore
+                                toastMe(rawValue)
+                                Log.d("MainActivity", "barcode detected: ${rawValue}.")
+
+                                when (barcode.valueType) {
+                                    Barcode.TYPE_ISBN -> {
+                                        val displayValue = barcode.displayValue
+                                        toastMe(rawValue)
+                                        Log.d("MainActivity", "barcode detected: ${displayValue}.")
+                                    }
+                                }
+                            }
+                            // [END get_barcodes]
+                            // [END_EXCLUDE]
+                            imageProxy.close()
+                        }
+                        .addOnFailureListener {
+                            // Task failed with an exception
+                            it.printStackTrace()
+                            imageProxy.close()
+                        }
+                // [END run_detector]
             }
         }
+
+
+        override fun analyze(imageProxy: ImageProxy) {
+            // Pass image to an ML Kit Vision API
+            scanBarcodes(imageProxy)
+        }
+
     }
 
 
