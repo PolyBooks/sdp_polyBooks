@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.DummyBook
 
+// TODO: delete
 class DummyBookAdapter(val listBooks : List<DummyBook>) : RecyclerView.Adapter<DummyBookAdapter.DummyViewHolder>() {
     class DummyViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         val mId : TextView = itemView.findViewById(R.id.dummy_id)

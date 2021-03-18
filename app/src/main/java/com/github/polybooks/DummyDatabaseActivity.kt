@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.core.DummyBook
 import com.github.polybooks.core.database.DummyBookAdapter
 
+// TODO: delete
 class DummyDatabaseActivity : AppCompatActivity() {
     private lateinit var mRecycler : RecyclerView
     private lateinit var mAdapter : RecyclerView.Adapter<DummyBookAdapter.DummyViewHolder>

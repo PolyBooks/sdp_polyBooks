@@ -8,16 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 
-//Adapter for the sales
+/**
+ * Adapter for listing Sale via RecyclerView
+ * @property salesList List of sales
+ */
 class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter.SalesViewHolder>() {
     class SalesViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val mName: TextView = itemView.findViewById(R.id.BookName)
         val mPrice : TextView = itemView.findViewById(R.id.SalePrice)
-
-    }
-
-    fun update(newSalesList: List<Sale>){
-        salesList = newSalesList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SalesViewHolder {
@@ -29,7 +27,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         val currentSale : Sale = salesList[position]
 
         holder.mName.setText(currentSale.book)
-        holder.mPrice.setText(currentSale.price.toString())
+        holder.mPrice.setText( String.format("%.2f",currentSale.price))
     }
 
     override fun getItemCount(): Int {
