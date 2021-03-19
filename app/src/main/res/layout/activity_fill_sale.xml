@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FillSaleActivity">
+
+    <TextView
+        android:id="@+id/filled_authors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_authors"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_authors"
+        app:layout_constraintTop_toTopOf="@+id/fill_sale_authors" />
+
+    <TextView
+        android:id="@+id/fill_sale_authors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/authors"
+        app:layout_constraintEnd_toStartOf="@+id/filled_authors"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/filled_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_title"
+        app:layout_constraintTop_toTopOf="@+id/fill_sale_title" />
+
+    <TextView
+        android:id="@+id/fill_sale_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/title"
+        app:layout_constraintEnd_toStartOf="@+id/filled_title"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fill_sale_authors" />
+
+    <TextView
+        android:id="@+id/filled_edition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_edition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_edition"
+        app:layout_constraintTop_toTopOf="@+id/fill_sale_edition" />
+
+    <TextView
+        android:id="@+id/fill_sale_edition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/edition"
+        app:layout_constraintEnd_toStartOf="@+id/filled_edition"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fill_sale_title" />
+
+    <TextView
+        android:id="@+id/filled_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_language"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_language"
+        app:layout_constraintTop_toTopOf="@+id/fill_sale_language" />
+
+    <TextView
+        android:id="@+id/fill_sale_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/language"
+        app:layout_constraintEnd_toStartOf="@+id/filled_language"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fill_sale_edition" />
+
+    <TextView
+        android:id="@+id/filled_publisher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_publisher"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_publisher"
+        app:layout_constraintTop_toTopOf="@+id/fill_sale_publisher" />
+
+    <TextView
+        android:id="@+id/fill_sale_publisher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/publisher"
+        app:layout_constraintEnd_toStartOf="@+id/filled_publisher"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fill_sale_language" />
+
+    <TextView
+        android:id="@+id/filled_publish_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_publish_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_publish_date"
+        app:layout_constraintTop_toTopOf="@+id/fill_sale_publish_date" />
+
+    <TextView
+        android:id="@+id/fill_sale_publish_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/date_published"
+        app:layout_constraintEnd_toStartOf="@+id/filled_publish_date"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fill_sale_publisher" />
+
+    <TextView
+        android:id="@+id/filled_format"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_format"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_format"
+        app:layout_constraintTop_toTopOf="@+id/fill_sale_format" />
+
+    <TextView
+        android:id="@+id/fill_sale_format"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/format"
+        app:layout_constraintEnd_toStartOf="@+id/filled_format"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fill_sale_publish_date" />
+
+    <TextView
+        android:id="@+id/fill_sale_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/condition"
+        app:layout_constraintBottom_toBottomOf="@+id/filled_condition"
+        app:layout_constraintEnd_toStartOf="@+id/filled_condition"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/filled_condition" />
+
+    <Spinner
+        android:id="@+id/filled_condition"
+        android:layout_width="203dp"
+        android:layout_height="22dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/fill_chf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_condition" />
+
+    <TextView
+        android:id="@+id/fill_sale_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="@string/price"
+        app:layout_constraintBottom_toBottomOf="@+id/filled_price"
+        app:layout_constraintEnd_toStartOf="@+id/filled_price"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/filled_price" />
+
+    <EditText
+        android:id="@+id/filled_price"
+        android:layout_width="108dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="148dp"
+        android:ems="10"
+        android:hint="0.00"
+        android:inputType="numberDecimal"
+        app:layout_constraintBottom_toBottomOf="@+id/fill_chf"
+        app:layout_constraintStart_toEndOf="@+id/fill_sale_price"
+        app:layout_constraintTop_toTopOf="@+id/fill_chf" />
+
+    <TextView
+        android:id="@+id/fill_chf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/chf"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_sale"
+        app:layout_constraintStart_toEndOf="@+id/filled_price" />
+
+    <Button
+        android:id="@+id/add_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="@string/add_picture"
+        app:layout_constraintBottom_toBottomOf="@+id/confirm_sale"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/confirm_sale" />
+
+    <Button
+        android:id="@+id/confirm_sale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:onClick="confirmSale"
+        android:text="@string/confirm_sale"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

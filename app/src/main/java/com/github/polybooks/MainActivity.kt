@@ -1,3 +1,4 @@
+
 package com.github.polybooks
 
 import android.content.Intent
@@ -26,13 +27,25 @@ class MainActivity : AppCompatActivity() {
         button2.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
+
+        val dbButton: Button = findViewById(R.id.button_open_db_tests)
+        dbButton.setOnClickListener {
+            startActivity(Intent(this, DummyDatabaseActivity::class.java))
+        }
+
     }
 
-    fun signup_fun(view: View) {
+    fun signup(view: View) {
         setContentView(R.layout.signup)
     }
 
-    fun backhome_fun(view: View) {
+    fun backhome(view: View) {
         setContentView(R.layout.activity_main)
     }
+
+    fun sellBook(view: View) {
+        val intent = Intent(this, AddSaleActivity::class.java)
+        startActivity(intent)
+    }
+
 }
