@@ -13,16 +13,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val dbButton: Button = findViewById(R.id.button_open_db_tests)
-        /*
-        dbButton.setOnClickListener {
-            startActivity(Intent(this, DummyDatabaseActivity::class.java))
-        }
-        */
         dbButton.setOnClickListener {
             val i : Intent = Intent(this, ListSalesActivity::class.java)
             startActivity(i)
         }
-
     }
 
     fun login(view: View) {
@@ -38,8 +32,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sellBook(view: View) {
-        val intent = Intent(this, AddSale::class.java)
+        val intent = Intent(this, AddSaleActivity::class.java)
         startActivity(intent)
     }
 
 }
+
