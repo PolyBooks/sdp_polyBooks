@@ -17,6 +17,10 @@ Next time I'll try to better judge the time tasks take
 
 ## Nicolas
 
+Last sprint meeting, I claimed two different tasks but was able to make progress only on one of them due to unexpected complications (new language, java `CompletableFuture` diffcult to understand, and unit tests not possible due to firebase not being accessible from unit tests). A solution for the last issue could be "testing" the API using UI tests. I feel it is however not the cleanest solution.
+
+Next time I will make these tests work either using UI tests or using a simulator firebase provides for unit tests (no documentation + still in beta)
+
 ## Raoul
 
 I worked the full 8 hours on getting an ISBN from the camera. Time was about right, 
