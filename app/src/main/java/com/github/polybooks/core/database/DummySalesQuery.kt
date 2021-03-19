@@ -67,7 +67,7 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
 
     override fun getAll(): CompletableFuture<List<Sale>> {
         return CompletableFuture.supplyAsync {
-            SystemClock.sleep(1000)
+            SystemClock.sleep(2000)
             sale
         }
     }

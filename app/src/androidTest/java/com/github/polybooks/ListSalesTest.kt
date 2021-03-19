@@ -13,17 +13,19 @@ class ListSalesTest {
 
     @Test
     fun countIsCorrect() {
+        Thread.sleep(100)
         assertRecyclerViewItemCount(R.id.recyclerView, 1)
-        Thread.sleep(1500)
+        Thread.sleep(4000)
         assertRecyclerViewItemCount(R.id.recyclerView, 7)
     }
 
     @Test
     fun ItemsAreCorrect() {
+        Thread.sleep(100)
         assertDisplayed("Book1")
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName,"Book1");
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice,"23.00");
-        Thread.sleep(1500)
+        Thread.sleep(4000)
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName,"Book1");
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice,"23.00");
         assertDisplayedAtPosition(R.id.recyclerView, 4, R.id.BookName,"Book6");
