@@ -13,7 +13,24 @@ class HTTP2JSONTests {
             .handle { json, exception ->
                 assertNotNull(json)
             }
+    }
 
+    @Test
+    fun url2jsonDontCrash2() {
+        val json = url2json("this isn't even an url")
+                .handle { json, exception ->
+                    assertNull(json)
+                    assertNotNull(exception)
+                }
+    }
+
+    @Test
+    fun url2jsonDontCrash3() {
+        val json = url2json("https://fsf.org") //have you heard the good news?
+                .handle { json, exception ->
+                    assertNull(json)
+                    assertNotNull(exception) // should throw an exception because it's not json
+                }
     }
 
 }
