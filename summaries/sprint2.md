@@ -45,7 +45,7 @@ Next time, I will continue working on this feature
 
 ## Zied
 
-I implemented the google authentification in our application. Now the user can sign in/sign up using their google account and we get all the necessary informations about the user in our Firebase database. The task was not very hard because of all the documentations available online. I thought I could also do the tequila authentification but I didn't have enough time because of the tests that I had to write for the google authentification. Next time I will take more in consideration the time to do tests in the computation of the expected time for doing a task.
+I implemented the google authentification in our application. Now the user can sign in/sign up using their google account and we get all the necessary informations about the user in our Firebase database. The task was not very hard because of all the documentations available online. I thought I could also do the tequila authentification but I didn't have enough time because of the tests that I tried to write for the google authentification. I did not succeed at writing the tests because when we want to connect using Google, we leave the application so I still didn't figured out how to tests this. Next time I will take more in consideration the time to do tests in the computation of the expected time for doing a task and learn more precisely how to do every sort of tests.
 
 ## Overall team
 
