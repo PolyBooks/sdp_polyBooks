@@ -22,6 +22,10 @@ out/
 build/
 app/build/
 
+# Archives
+archive/*
+
+
 # Local configuration file (sdk path, etc)
 local.properties
 

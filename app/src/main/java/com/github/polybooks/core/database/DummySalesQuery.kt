@@ -30,6 +30,10 @@ val default_sale: List<Sale> = listOf(
         Sale("Book9", 9, 25.00f, BookCondition.GOOD, format.parse("2016-05-05")!!, SaleState.RETRACTED),
 )
 
+/**
+ * Default sales query used for tests
+ * @property sale the list of sales you query
+ */
 class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
 
 

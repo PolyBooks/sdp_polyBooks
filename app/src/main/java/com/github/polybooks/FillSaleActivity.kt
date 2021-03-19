@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.core.Book
 import java.util.concurrent.CompletableFuture
 
-/*
+/**
 This activity receives the ISBN, either manually inputted from AddSale or deduced from the scanned barcode,
 shows the retrieved data, but do not allow modification of it, only confirmation,
 and offers some additional manual fields such as price, condition, etc.
- */
+ **/
 class FillSaleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
