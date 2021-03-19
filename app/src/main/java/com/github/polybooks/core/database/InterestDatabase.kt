@@ -26,7 +26,7 @@ interface InterestDatabase {
     /**
      * List all the Courses in the database.
      * */
-    fun listAllCourses() : CompletableFuture<List<Field>>
+    fun listAllCourses() : CompletableFuture<List<Course>>
 
     /**
      * List all the interests in the database.
