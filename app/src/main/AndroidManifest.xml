@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.polybooks">
     <!--Should we only allow for back-cameras? If yes, keep this line commented out
     <uses-feature android:name="android.hardware.camera.any" />-->
@@ -25,7 +26,10 @@
 
         <activity android:name=".DummyDatabaseActivity"></activity>
         <activity android:name=".FirebaseActivity"></activity>
+
+        <activity android:name=".ListSalesActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

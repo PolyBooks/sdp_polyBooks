@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">PolyBooks</string>
+    <string name="dummy_book_name">Dummy Book</string>
+    <string name="dummy_price">0.000</string>
     <string name="input_isbn">Input Book ISBN</string>
     <string name="scan_book">Scan Book Barcode</string>
     <string name="isbn">ISBN</string>

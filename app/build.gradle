@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.polybooks"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -56,6 +56,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test:rules:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
+    androidTestImplementation('com.schibsted.spain:barista:3.9.0') {
+        exclude group: 'org.jetbrains.kotlin' // Only if you already use Kotlin in your project
+    }
 
     // CameraX core library using the camera2 implementation
     def camerax_version = "1.0.0-rc03"

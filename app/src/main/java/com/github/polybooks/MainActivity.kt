@@ -1,4 +1,3 @@
-
 package com.github.polybooks
 
 import android.content.Intent
@@ -18,11 +17,6 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        val button: Button = findViewById(R.id.button_open_db_tests)
-        button.setOnClickListener {
-            startActivity(Intent(this, FirebaseActivity::class.java))
-        }
-
         val button2: Button = findViewById(R.id.log_button)
         button2.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -30,7 +24,8 @@ class MainActivity : AppCompatActivity() {
 
         val dbButton: Button = findViewById(R.id.button_open_db_tests)
         dbButton.setOnClickListener {
-            startActivity(Intent(this, DummyDatabaseActivity::class.java))
+            val i : Intent = Intent(this, ListSalesActivity::class.java)
+            startActivity(i)
         }
 
     }
