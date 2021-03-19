@@ -24,7 +24,6 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
     private val mLayout : RecyclerView.LayoutManager = LinearLayoutManager(this)
     private val initalBooks : List<Sale> = listOf(Sale("Book1", 1, 23.00f, BookCondition.GOOD, format.parse("2016-05-05")!!, SaleState.ACTIVE))
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //TODO: rename / change this
