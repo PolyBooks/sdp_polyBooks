@@ -23,10 +23,10 @@ import kotlinx.android.synthetic.main.activity_scan_barcode.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-/*
+/**
 This activity opens the camera (ask permission for it if not already given) and try to detect a barcode,
 when it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
- */
+ **/
 class ScanBarcodeActivity : AppCompatActivity() {
 
     /* TODO next steps would be to refactor and write tests

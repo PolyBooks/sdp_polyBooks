@@ -24,9 +24,6 @@
         <activity android:name=".AddSaleActivity"
             android:parentActivityName=".MainActivity"/>
 
-        <activity android:name=".DummyDatabaseActivity"></activity>
-        <activity android:name=".FirebaseActivity"></activity>
-
         <activity android:name=".ListSalesActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
 
