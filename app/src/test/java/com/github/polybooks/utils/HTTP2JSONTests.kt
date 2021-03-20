@@ -1,6 +1,5 @@
 package com.github.polybooks.utils
 
-import com.github.polybooks.utils.url2json
 import org.junit.Test
 
 import org.junit.Assert.*

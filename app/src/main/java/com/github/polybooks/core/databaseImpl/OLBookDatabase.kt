@@ -21,7 +21,7 @@ private const val ISBN13_FIELD_NAME = "isbn_13"
 private const val PUBLISHER_FIELD_NAME = "publishers"
 private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
 
-private const val DATE_FORMAT = "MMM DD, YYYY"
+private const val DATE_FORMAT = "MMM dd, yyyy"
 
 /**
  * An implementation of a book database based on the Open Library online database
@@ -114,12 +114,21 @@ fun parseBook(jsonBook : JsonElement) : Book {
 
 private fun parseTitle(jsonTitle : JsonElement) : String = asString(jsonTitle)
 
-private fun parseISBN13(jsonISBN13 : JsonElement) : String = asString(jsonISBN13)
+private fun parseISBN13(jsonISBN13 : JsonElement) : String {
+    val first : JsonElement? = asJsonArray(jsonISBN13).firstOrNull()
+    if (first == null) throw cantParseException("$ISBN13_FIELD_NAME[0]")()
+    else return asString(first)
+}
 
+@SuppressLint("NewApi")
 private fun parseAuthors(jsonAuthors : JsonElement) : List<String> {
     return asJsonArray(jsonAuthors)
         .iterator().asSequence()
-        .map {asString(it)} //TODO to get the actual names of the authors: need to execute more requests
+        .map {
+            val authorOption = getJsonField(asJsonObject(it), "key")
+            val authorJson = authorOption.orElseThrow(cantParseException("$AUTHORS_FIELD_NAME[n].key"))
+            asString(authorJson)
+        } //TODO to get the actual names of the authors: need to execute more requests
         .toList()
 }
 
@@ -128,7 +137,7 @@ private fun parseFormat(jsonFormat : JsonElement) : String = asString(jsonFormat
 private fun parsePublisher(jsonPublisher : JsonElement) : String {
     val first : JsonElement? = asJsonArray(jsonPublisher).firstOrNull()
     return if (first == null) ""
-    else return asString(first)
+    else asString(first)
 }
 
 @SuppressLint("SimpleDateFormat")
@@ -159,7 +168,7 @@ private fun asString(jsonElement: JsonElement) : String {
     }
     val primitive = jsonElement.asJsonPrimitive!!
     if (!primitive.isString) {
-        throw Exception(errorMessage + "Json is not a JsonPrimitive")
+        throw Exception(errorMessage + "Json is not a String")
     }
     return primitive.asString!!
 }
@@ -167,9 +176,7 @@ private fun asString(jsonElement: JsonElement) : String {
 //try to access a field of a json object and return an optional instead of a nullable
 @SuppressLint("NewApi")
 private fun getJsonField(jsonObject: JsonObject, fieldName : String) : Optional<JsonElement> {
-    val element = jsonObject.get(fieldName)
-    return if (element != null) Optional.of(element)
-    else Optional.empty()
+    return Optional.ofNullable(jsonObject.get(fieldName))
 }
 
 private fun cantParseException(fieldName : String) : () -> Exception {
