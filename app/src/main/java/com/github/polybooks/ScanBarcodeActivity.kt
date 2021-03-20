@@ -117,7 +117,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
     }
 
     companion object {
@@ -173,6 +172,8 @@ class ScanBarcodeActivity : AppCompatActivity() {
                                     Barcode.TYPE_ISBN -> {
                                         val displayValue = barcode.displayValue
                                         if (displayValue != null) {
+                                            cameraExecutor.shutdown()
+                                            scanner.close()
                                             Log.d("ScanBarcodeActivity", "barcode detected: ${displayValue}.")
                                             // TODO there's a sync issue, the next activity will be started several times as it is still scanning the barcode while the next activity is starting
                                             passISBN(displayValue)
