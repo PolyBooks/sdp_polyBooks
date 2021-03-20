@@ -24,6 +24,7 @@ class FillSaleActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.filled_authors)         .apply { text = stringISBN }
 
         // Check if ISBN in our database: (could check ISBN validity before)
+        
         // TODO Commenting out the whole chunk as it depends on the API which is not ready yet.
         /*
         val book: CompletableFuture<Book> = CompletableFuture().supplyAsync {
