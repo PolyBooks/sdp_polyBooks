@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.implementation
 
 import android.os.Build
 import android.os.SystemClock
@@ -7,8 +7,8 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.core.database.SaleOrdering
-import com.github.polybooks.core.database.SaleQuery
+import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.core.database.interfaces.SaleQuery
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -75,8 +75,6 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
             sale
         }
     }
-
-
 
     override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
         TODO("Not yet implemented")

@@ -1,13 +1,17 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.implementation
 
 import com.github.polybooks.core.*
+import com.github.polybooks.core.database.DatabaseException
+import com.github.polybooks.core.database.interfaces.SaleDatabase
+import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-class SalesDatabase : SaleDatabase {
+class SaleDatabase : SaleDatabase {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val saleRef: CollectionReference = db.collection(getCollectionName())

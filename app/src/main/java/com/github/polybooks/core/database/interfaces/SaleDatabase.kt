@@ -1,11 +1,10 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
+import com.github.polybooks.core.database.interfaces.Query
 import java.util.concurrent.CompletableFuture
 
 /**

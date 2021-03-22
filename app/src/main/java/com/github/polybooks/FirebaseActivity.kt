@@ -8,13 +8,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.core.Sale
-import com.github.polybooks.core.database.SalesDatabase
+import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
-import java.util.function.Supplier
 
 
 class FirebaseActivity : AppCompatActivity() {
@@ -79,7 +77,7 @@ class FirebaseActivity : AppCompatActivity() {
     }
 
     fun testSalesDatabase(view: View) {
-        val database : SalesDatabase = SalesDatabase()
+        val database : SaleDatabase = SaleDatabase()
 
         val future: CompletableFuture<List<Sale>> = database.querySales().getAll()
         future.thenApply { results ->
