@@ -7,9 +7,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.core.Sale
+import com.github.polybooks.core.database.SalesDatabase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+import java.util.function.Supplier
 
 
 class FirebaseActivity : AppCompatActivity() {
@@ -71,5 +76,16 @@ class FirebaseActivity : AppCompatActivity() {
             .addOnFailureListener { e: Exception ->
                 Log.d(TAG, "[GET] failure. getPayload: $e")
             }
+    }
+
+    fun testSalesDatabase(view: View) {
+        val database : SalesDatabase = SalesDatabase()
+
+        val future: CompletableFuture<List<Sale>> = database.querySales().getAll()
+        future.thenApply { results ->
+            println("-------------- SALES (${results.size}) --------------")
+            results.forEach { s -> println("SALE : ${s.book}") }
+            println("---------------------------------------")
+        }
     }
 }

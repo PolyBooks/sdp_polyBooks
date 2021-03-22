@@ -49,6 +49,14 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
         TODO("Not yet implemented")
     }
 
+    override fun searchByMinPrice(min: Float): SaleQuery {
+        TODO("Not yet implemented")
+    }
+
+    override fun searchByMaxPrice(max: Float): SaleQuery {
+        TODO("Not yet implemented")
+    }
+
     override fun searchByPrice(min: Float, max: Float): SaleQuery {
         TODO("Not yet implemented")
     }

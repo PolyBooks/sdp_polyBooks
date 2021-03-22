@@ -4,12 +4,16 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.CompletableFuture
 
 /**
  * Provides the API for accessing sales in a Database.
  * */
 interface SaleDatabase {
+
+    fun getCollectionName(): String = "sale"
 
     /**
      * Create a new query for Sales. It originally matches all sales.
@@ -60,7 +64,17 @@ interface SaleQuery : Query<Sale> {
      * Set this query to only search for sales of books in the given condition.
      * (see {@link BookCondition})
      * */
-    fun searchByCondition(condition : Collection<BookCondition>) : SaleQuery
+    fun searchByCondition(conditions : Collection<BookCondition>) : SaleQuery
+
+    /**
+     * Set this query to only search for sales above a certain price.
+     * */
+    fun searchByMinPrice(min : Float) : SaleQuery
+
+    /**
+     * Set this query to only search for sales below a certain price.
+     * */
+    fun searchByMaxPrice(max : Float) : SaleQuery
 
     /**
      * Set this query to only search for sales within the given price range.
