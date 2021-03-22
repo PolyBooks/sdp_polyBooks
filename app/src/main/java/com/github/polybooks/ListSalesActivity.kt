@@ -9,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.DummySalesQuery
-import com.github.polybooks.core.database.SaleQuery
 import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.format
+import com.github.polybooks.core.database.implementation.DummySalesQuery
+import com.github.polybooks.core.database.implementation.format
+import com.github.polybooks.core.database.interfaces.SaleQuery
 
 /**
  * Activity to list all active sales

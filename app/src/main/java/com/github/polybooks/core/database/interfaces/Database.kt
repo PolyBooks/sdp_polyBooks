@@ -1,10 +1,8 @@
 package com.github.polybooks.core.database.interfaces
 
-import com.github.polybooks.core.database.SaleDatabase
-
 /**
  * A Database aggregates the functionality of Book/Sale Databases in one place
- * */
+ **/
 interface Database {
 
     /**

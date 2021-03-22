@@ -45,7 +45,7 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
         return DummySalesQuery(sale.filter { sale -> sale.state in state })
     }
 
-    override fun searchByCondition(condition: Collection<BookCondition>): SaleQuery {
+    override fun searchByCondition(conditions: Collection<BookCondition>): SaleQuery {
         TODO("Not yet implemented")
     }
 

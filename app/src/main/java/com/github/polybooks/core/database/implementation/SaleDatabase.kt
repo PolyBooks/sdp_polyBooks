@@ -7,6 +7,7 @@ import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -17,6 +18,7 @@ class SaleDatabase : SaleDatabase {
     private val saleRef: CollectionReference = db.collection(getCollectionName())
 
     inner class SalesQuery : SaleQuery {
+        /*
         private var isbn13: Optional<String> = Optional.empty()
         private var title: Optional<String> = Optional.empty()
 
@@ -26,25 +28,34 @@ class SaleDatabase : SaleDatabase {
 
         private var minPrice: Float = 0f
         private var maxPrice: Optional<Float> = Optional.empty()
+        */
+        private var isbn13: String? = null
+        private var title: String? = null
 
+        private var interests: Set<Interest>? = null
+        private var states: Set<SaleState>?  = null
+        private var conditions: Set<BookCondition>? = null
+
+        private var minPrice: Float? = null
+        private var maxPrice: Float? = null
 
         override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
-            if (!interests.isEmpty()) this.interests = Optional.of(interests.toSet())
+            if (!interests.isEmpty()) this.interests = interests.toSet()
             return this
         }
 
         override fun searchByTitle(title: String): SaleQuery {
-            this.title = Optional.of(title)
+            this.title = title
             return this
         }
 
         override fun searchByState(state: Collection<SaleState>): SaleQuery {
-            if (!state.isEmpty()) this.states = Optional.of(state.toSet())
+            if (!state.isEmpty()) this.states = state.toSet()
             return this
         }
 
         override fun searchByCondition(conditions: Collection<BookCondition>): SaleQuery {
-            if (!conditions.isEmpty()) this.conditions = Optional.of(conditions.toSet())
+            if (!conditions.isEmpty()) this.conditions = conditions.toSet()
             return this
         }
 
@@ -54,7 +65,7 @@ class SaleDatabase : SaleDatabase {
         }
 
         override fun searchByMaxPrice(max: Float): SaleQuery {
-            this.maxPrice = Optional.of(max)
+            this.maxPrice = max
             return this
         }
 
@@ -68,13 +79,26 @@ class SaleDatabase : SaleDatabase {
         }
 
         override fun searchByISBN13(isbn13: String): SaleQuery {
-            this.isbn13 = Optional.of(isbn13)
+            this.isbn13 = isbn13
             return this
         }
 
-        override fun getAll(): CompletableFuture<List<Sale>> {
-            fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
-                return Sale(
+        private fun getQuery() : Query {
+            var query :Query = saleRef
+
+            isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
+            title?.let { query = query.whereEqualTo("book", title) }
+            interests?.let { query = query.whereIn("interests", interests!!.toList()) }
+            states?.let { query = query.whereIn("interests", states!!.toList()) }
+            conditions?.let { query = query.whereIn("interests", conditions!!.toList()) }
+            minPrice?.let { query.whereGreaterThanOrEqualTo("price", minPrice!!) }
+            maxPrice?.let { query.whereLessThanOrEqualTo("price", maxPrice!!) }
+
+            return query
+        }
+
+        private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
+            return Sale(
                     snapshot.getString("book")!!,
                     snapshot.getLong("seller")!!.toInt(),
                     snapshot.getLong("price")!!.toFloat(),
@@ -82,19 +106,14 @@ class SaleDatabase : SaleDatabase {
                     // FIXME Maybe rather store timestamps?
                     Date(snapshot.getString("publicationDate")!!),
                     SaleState.valueOf(snapshot.getString("state")!!)
-                )
-            }
+            )
+        }
 
-
-            if (isbn13.isPresent) {
-
-            } else if (title.isPresent) {
-
-            }
+        override fun getAll(): CompletableFuture<List<Sale>> {
 
             val future: CompletableFuture<List<Sale>> = CompletableFuture()
-            saleRef
-                .whereEqualTo("book", "Physics for dummies")
+
+            getQuery()
                 .get()
                 .addOnSuccessListener { documents ->
                     future.complete(documents.map { document ->
@@ -103,7 +122,7 @@ class SaleDatabase : SaleDatabase {
                 }
                 .addOnFailureListener {
                     future.completeExceptionally(
-                        DatabaseException("Couldn't reach database for query 'title' = 'TODO fill in SD.kt'")
+                        DatabaseException("Query could not be completed")
                     )
                 }
 
