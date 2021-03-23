@@ -18,4 +18,7 @@
     <string name="chf">CHF</string>
     <string name="add_picture">Add Picture</string>
     <string name="confirm_sale">Confirm Sale</string>
+    <string name="should_appear_automatically">Should appear automatically</string>
+    <string name="default_price_hint">0.00</string>
+    <string name="maybe_navbar_here_if_yes_design_once_for_all_activities">Maybe navBar here ? If yes, design once for all activities</string>
 </resources>
