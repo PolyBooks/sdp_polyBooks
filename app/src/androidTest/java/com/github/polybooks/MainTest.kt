@@ -37,7 +37,7 @@ class MainTest {
         assertDisplayed(R.id.button_open_db_tests)
         assertClickable(R.id.button_open_db_tests)
     }
-
+ 
     @Test
     fun loginButton() {
         clickOn(R.id.log_button)
