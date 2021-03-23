@@ -1,0 +1,21 @@
+<resources>
+
+    <string name="popularity">Popularity</string>
+    <string name="title_inc">Title (inc)</string>
+    <string name="title_dec">Title (dec)</string>
+
+    <string name="cs">Computer Science</string>
+    <string name="bio">Biology</string>
+    <string name="archi">Architecture</string>
+
+    <string name="ba1">BA1</string>
+    <string name="ba2">BA2</string>
+    <string name="ba3">BA3</string>
+    <string name="ba4">BA4</string>
+    <string name="ba5">BA5</string>
+    <string name="ba6">BA6</string>
+
+    <string name="cs306">CS-306</string>
+    <string name="com480">COM-480</string>
+
+</resources>
