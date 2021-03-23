@@ -3,6 +3,7 @@ package com.github.polybooks.core.database.implementation
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.interfaces.SaleDatabase
+import com.github.polybooks.core.database.interfaces.SaleFields
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.google.firebase.firestore.CollectionReference
@@ -18,22 +19,12 @@ class SaleDatabase : SaleDatabase {
     private val saleRef: CollectionReference = db.collection(getCollectionName())
 
     inner class SalesQuery : SaleQuery {
-        /*
-        private var isbn13: Optional<String> = Optional.empty()
-        private var title: Optional<String> = Optional.empty()
 
-        private var interests: Optional<Set<Interest>> = Optional.empty()
-        private var states: Optional<Set<SaleState>> = Optional.empty()
-        private var conditions: Optional<Set<BookCondition>> = Optional.empty()
-
-        private var minPrice: Float = 0f
-        private var maxPrice: Optional<Float> = Optional.empty()
-        */
         private var isbn13: String? = null
         private var title: String? = null
 
         private var interests: Set<Interest>? = null
-        private var states: Set<SaleState>?  = null
+        private var states: Set<SaleState>? = null
         private var conditions: Set<BookCondition>? = null
 
         private var minPrice: Float? = null
@@ -70,8 +61,7 @@ class SaleDatabase : SaleDatabase {
         }
 
         override fun searchByPrice(min: Float, max: Float): SaleQuery {
-            this.searchByMinPrice(min)
-            return this.searchByMaxPrice(max)
+            return this.searchByMinPrice(min).searchByMaxPrice(max)
         }
 
         override fun withOrdering(ordering: SaleOrdering): SaleQuery {
@@ -86,26 +76,26 @@ class SaleDatabase : SaleDatabase {
         private fun getQuery() : Query {
             var query :Query = saleRef
 
-            isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
-            title?.let { query = query.whereEqualTo("book", title) }
-            interests?.let { query = query.whereIn("interests", interests!!.toList()) }
-            states?.let { query = query.whereIn("interests", states!!.toList()) }
-            conditions?.let { query = query.whereIn("interests", conditions!!.toList()) }
-            minPrice?.let { query.whereGreaterThanOrEqualTo("price", minPrice!!) }
-            maxPrice?.let { query.whereLessThanOrEqualTo("price", maxPrice!!) }
+            // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
+            title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
+            // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
+            states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
+            conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
+            minPrice?.let { query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!) }
+            maxPrice?.let { query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!) }
 
             return query
         }
 
         private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
             return Sale(
-                    snapshot.getString("book")!!,
-                    snapshot.getLong("seller")!!.toInt(),
-                    snapshot.getLong("price")!!.toFloat(),
-                    BookCondition.valueOf(snapshot.getString("condition")!!),
-                    // FIXME Maybe rather store timestamps?
-                    Date(snapshot.getString("publicationDate")!!),
-                    SaleState.valueOf(snapshot.getString("state")!!)
+                snapshot.getString(SaleFields.TITLE.fieldName)!!,
+                snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
+                snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
+                BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
+                // FIXME Maybe rather store timestamps?
+                Date(snapshot.getString(SaleFields.PUBLICATION_DATE.fieldName)!!),
+                SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
             )
         }
 
@@ -128,8 +118,6 @@ class SaleDatabase : SaleDatabase {
 
             return future
         }
-
-        // worked 3h40 for now
 
         override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
             TODO("Not yet implemented")
