@@ -19,6 +19,7 @@ class ListSalesTest {
 
     @Before
     fun before() {
+        sleep(1, TimeUnit.SECONDS)
         Intents.init()
     }
 

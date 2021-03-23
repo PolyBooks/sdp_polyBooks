@@ -6,10 +6,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.schibsted.spain.barista.assertion.BaristaClickableAssertions.assertClickable
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
+import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 
 class MainTest {
@@ -18,6 +20,7 @@ class MainTest {
 
     @Before
     fun before() {
+        BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
         Intents.init()
     }
 
@@ -37,7 +40,7 @@ class MainTest {
         assertDisplayed(R.id.button_open_db_tests)
         assertClickable(R.id.button_open_db_tests)
     }
- 
+
     @Test
     fun loginButton() {
         clickOn(R.id.log_button)
