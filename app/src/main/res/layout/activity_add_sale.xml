@@ -20,6 +20,7 @@
 
     <Button
         android:id="@+id/scan_button"
+        style="@style/Button"
         android:layout_width="258dp"
         android:layout_height="71dp"
         android:layout_marginTop="128dp"
@@ -39,7 +40,8 @@
         android:text="@string/input_isbn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fillin_ISBN" />
+        app:layout_constraintTop_toBottomOf="@+id/fillin_ISBN"
+        style="@style/Button" />
 
     <TextView
         android:id="@+id/textView"
