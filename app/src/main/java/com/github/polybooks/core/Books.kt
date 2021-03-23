@@ -3,6 +3,7 @@
  * */
 package com.github.polybooks.core
 
+import com.google.firebase.Timestamp
 import java.util.*
 
 /**
@@ -24,6 +25,6 @@ data class Book(
         val edition : String?,
         val language : String?,
         val publisher : String?,
-        val publishDate : Int?,
+        val publishDate : Timestamp?,
         val format : String?
 )

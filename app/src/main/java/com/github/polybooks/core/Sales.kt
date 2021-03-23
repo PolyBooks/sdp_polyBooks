@@ -1,5 +1,6 @@
 package com.github.polybooks.core
 
+import com.google.firebase.Timestamp
 import java.util.*
 
 /**
@@ -16,7 +17,7 @@ data class Sale(
     val seller : Int,
     val price : Float,
     val condition : BookCondition,
-    val publicationDate : Date,
+    val publicationDate : Timestamp,
     val state : SaleState)
 
 /**

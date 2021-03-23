@@ -93,14 +93,12 @@ class SaleDatabase : SaleDatabase {
                 snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
                 snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
                 BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-                // FIXME Maybe rather store timestamps?
-                Date(snapshot.getString(SaleFields.PUBLICATION_DATE.fieldName)!!),
+                snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!,
                 SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
             )
         }
 
         override fun getAll(): CompletableFuture<List<Sale>> {
-
             val future: CompletableFuture<List<Sale>> = CompletableFuture()
 
             getQuery()
@@ -120,11 +118,51 @@ class SaleDatabase : SaleDatabase {
         }
 
         override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
-            TODO("Not yet implemented")
+            val future: CompletableFuture<List<Sale>> = CompletableFuture()
+
+            if (n < 0 || page < 0) {
+                future.completeExceptionally(
+                    IllegalArgumentException(
+                        if (n < 0) "Cannot return a negative ($n) number of results"
+                        else "Cannot return a negative ($page) page number"
+                    )
+                )
+                return future
+            }
+
+            // FIXME ignoring page number for now
+            getQuery()
+                .limit(n.toLong())
+                .get()
+                .addOnSuccessListener { documents ->
+                    future.complete(documents.map { document ->
+                        snapshotToSale(document)
+                    })
+                }
+                .addOnFailureListener {
+                    future.completeExceptionally(
+                        DatabaseException("Query could not be completed")
+                    )
+                }
+
+            return future
         }
 
         override fun getCount(): CompletableFuture<Int> {
-            TODO("Not yet implemented")
+            val future: CompletableFuture<Int> = CompletableFuture()
+
+            getQuery()
+                .get()
+                .addOnSuccessListener { documents ->
+                    future.complete(documents.fold(0){ acc, _ -> acc + 1 })
+                }
+                .addOnFailureListener {
+                    future.completeExceptionally(
+                        DatabaseException("Query count could not be completed")
+                    )
+                }
+
+            return future
         }
     }
 
