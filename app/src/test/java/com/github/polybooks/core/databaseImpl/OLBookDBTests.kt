@@ -22,4 +22,66 @@ class OLBookDBTests {
         assertEquals(3,book.publishDate!!.date)
     }
 
+    @Test
+    fun canGetBookByISBN() {
+        val olDB = OLBookDatabase()
+        val future = olDB.queryBooks().searchByISBN13("9782376863069").getAll()
+        val books = future.get()
+        assertEquals(1, books.size)
+        val book = books[0]
+        assertEquals("Liavek", book.title)
+        assertEquals("9782376863069", book.isbn13)
+        assertEquals("ACTUSF", book.publisher)
+        assertNotNull(book.authors)
+        assertEquals("paperback", book.format)
+        assertNotNull(book.publishDate)
+        assertEquals(6,book.publishDate!!.month)
+        assertEquals(2020-1900,book.publishDate!!.year)
+        assertEquals(3,book.publishDate!!.date)
+    }
+
+    @Test
+    fun weirdISBNFormatStillWork() {
+        val olDB = OLBookDatabase()
+        val future = olDB.queryBooks().searchByISBN13("  978-2376863069 ").getAll()
+        val books = future.get()
+        assertEquals(1, books.size)
+        val book = books[0]
+        assertEquals("Liavek", book.title)
+        assertEquals("9782376863069", book.isbn13)
+        assertEquals("ACTUSF", book.publisher)
+        assertNotNull(book.authors)
+        assertEquals("paperback", book.format)
+        assertNotNull(book.publishDate)
+        assertEquals(6,book.publishDate!!.month)
+        assertEquals(2020-1900,book.publishDate!!.year)
+        assertEquals(3,book.publishDate!!.date)
+    }
+
+    @Test
+    fun isbn10alsoWorks() {
+        val olDB = OLBookDatabase()
+        val future = olDB.queryBooks().searchByISBN13("  978-2376863069 ").getAll()
+        val books = future.get()
+        assertEquals(1, books.size)
+        val book = books[0]
+        assertEquals("Liavek", book.title)
+        assertEquals("9782376863069", book.isbn13)
+        assertEquals("ACTUSF", book.publisher)
+        assertNotNull(book.authors)
+        assertEquals("paperback", book.format)
+        assertNotNull(book.publishDate)
+        assertEquals(6,book.publishDate!!.month)
+        assertEquals(2020-1900,book.publishDate!!.year)
+        assertEquals(3,book.publishDate!!.date)
+    }
+
+    @Test
+    fun wrongISBNyieldsEmptyList() {
+        val olDB = OLBookDatabase()
+        val future = olDB.queryBooks().searchByISBN13("1234567890666").getAll()
+        val books = future.get()
+        assertEquals(0, books.size)
+    }
+
 }

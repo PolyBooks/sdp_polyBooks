@@ -5,10 +5,11 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.*
 import com.github.polybooks.core.database.BookOrdering.*
+import com.github.polybooks.utils.url2json
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import java.lang.IllegalArgumentException
+import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -22,6 +23,11 @@ private const val PUBLISHER_FIELD_NAME = "publishers"
 private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
+private const val ISBN13_FORMAT = """(\d|-){12}\d"""
+private const val ISBN10_FORMAT = """(\d|-){9}\d"""
+private const val ISBN_FORMAT = "($ISBN10_FORMAT)|($ISBN13_FORMAT)"
+
+private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
 /**
  * An implementation of a book database based on the Open Library online database
@@ -36,8 +42,8 @@ class OLBookDatabase : BookDatabase {
         private var ordering = DEFAULT
 
         private var empty : Boolean = false
-        private var title : Optional<String> = Optional.empty()
-        private var isbn : Optional<String> = Optional.empty()
+        private var title : String? = null
+        private var isbn : String? = null
 
         override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
             System.err.println("Warning: onlyIncludeInterest not fully implemented for OLBookQuery")
@@ -47,15 +53,15 @@ class OLBookDatabase : BookDatabase {
 
         override fun searchByTitle(title: String): BookQuery {
             this.empty = false
-            this.title = Optional.of(title)
-            this.isbn = Optional.empty()
+            this.title = title
+            this.isbn = null
             return this
         }
 
         override fun searchByISBN13(isbn13: String): BookQuery {
             this.empty = false
-            this.title = Optional.empty()
-            this.isbn = Optional.of(isbn13)
+            this.title = null
+            this.isbn = isbn13
             return this
         }
 
@@ -65,7 +71,28 @@ class OLBookDatabase : BookDatabase {
         }
 
         override fun getAll(): CompletableFuture<List<Book>> {
-            TODO("Not yet implemented")
+            if (empty) return CompletableFuture.completedFuture(Collections.emptyList())
+            else if (title != null) {
+                return TODO("Search by title")
+            } else { assert(isbn != null)
+                isbn = isbn!!.trim()
+                if (isbn!!.matches(Regex(ISBN_FORMAT))) {
+                    val bookURL = "$OL_BASE_ADDR/isbn/$isbn.json"
+                    val bookJsonFuture = url2json(bookURL)
+                    return bookJsonFuture.handleAsync { bookJson, exception ->
+                        //handle a FileNotFound
+                        if (exception is FileNotFoundException) return@handleAsync Collections.emptyList<Book>()
+                        //do not handle any other exception
+                        if (exception != null) throw exception
+                        //If things go smoothly return the book
+                        return@handleAsync listOf(parseBook(bookJson))
+                    }
+                } else {
+                    val future = CompletableFuture<List<Book>>()
+                    future.completeExceptionally(Exception("ISBN is not valid"))
+                    return future
+                }
+            }
         }
 
         override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
@@ -107,7 +134,7 @@ fun parseBook(jsonBook : JsonElement) : Book {
                 .map{parsePublishDate(it)}
                 .orElse(null)
 
-    return Book(isbn13, authors, title, edition = null, language = null,
+    return Book(isbn13, authors, title, null, null,
                 publisher, publishDate, format)
 
 }
