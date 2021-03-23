@@ -222,7 +222,8 @@
         android:text="@string/add_picture"
         app:layout_constraintBottom_toBottomOf="@+id/confirm_sale"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/confirm_sale" />
+        app:layout_constraintTop_toTopOf="@+id/confirm_sale"
+        style="@style/Button" />
 
     <Button
         android:id="@+id/confirm_sale"
@@ -233,6 +234,7 @@
         android:onClick="confirmSale"
         android:text="@string/confirm_sale"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
