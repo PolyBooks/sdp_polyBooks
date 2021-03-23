@@ -90,21 +90,20 @@
         android:layout_marginEnd="120dp"
         android:layout_marginBottom="5dp"
         android:text="Log In using Tequila"
-        app:layout_constraintBottom_toTopOf="@+id/signin_google"
+        app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log_button_sub" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/signin_google"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="84dp"
-        android:layout_marginBottom="28dp"
-        android:text="Sign in using Google account"
+        android:layout_marginStart="142dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="142dp"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toTopOf="@+id/text_info3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -113,16 +112,14 @@
     <TextView
         android:id="@+id/text_info3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="19dp"
         android:layout_marginStart="134dp"
         android:layout_marginEnd="135dp"
-        android:layout_marginBottom="3dp"
         android:text="Don't have an account?"
         app:layout_constraintBottom_toTopOf="@+id/register_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signin_google" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/register_button"
@@ -135,7 +132,7 @@
         android:text="Register"
         app:layout_constraintBottom_toTopOf="@+id/bottom_line"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_info3" />
 

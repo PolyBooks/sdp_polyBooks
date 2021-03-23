@@ -8,12 +8,11 @@
     <string name="bio">Biology</string>
     <string name="archi">Architecture</string>
 
-    <string name="ba1">BA1</string>
-    <string name="ba2">BA2</string>
-    <string name="ba3">BA3</string>
-    <string name="ba4">BA4</string>
-    <string name="ba5">BA5</string>
-    <string name="ba6">BA6</string>
+    <string name="ic_ba1">IC-BA1</string>
+    <string name="ma_ba2">MA-BA2</string>
+    <string name="sv_ba3">SA-BA3</string>
+    <string name="gc_ma1">GC-MA1</string>
+    <string name="mt_ma2">MT-MA2</string>
 
     <string name="cs306">CS-306</string>
     <string name="com480">COM-480</string>

@@ -8,19 +8,19 @@
         android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/dummy_id"
+            android:id="@+id/BookName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Id" />
+            android:text="@string/dummy_book_name"
+            android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/dummy_name"
+            android:id="@+id/SalePrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="21dp"
-            android:layout_toEndOf="@+id/dummy_id"
-            android:text="Name"
-            android:textStyle="bold" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:text="@string/dummy_price" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

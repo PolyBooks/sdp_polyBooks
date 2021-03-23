@@ -9,11 +9,11 @@
 <!--    Reset default filtering values-->
     <Button
         android:id="@+id/reset_button"
+        android:text= "@string/reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="9dp"
-        android:text= "@string/reset"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,10 +21,10 @@
 <!--    Go to results -->
     <Button
         android:id="@+id/results_button"
+        android:text="@string/results"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
-        android:text="@string/results"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,36 +53,37 @@
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
-
-            <LinearLayout
+            
+            <RadioGroup
+                android:id="@+id/sortGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <Button
+                <RadioButton
                     android:id="@+id/Popularity_sort"
                     android:text="@string/popularity"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
+                <RadioButton
                     android:id="@+id/Title_inc_sort"
                     android:text="@string/title_inc"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />                   android:layout_height="match_parent"
 
-                <Button
+                <RadioButton
                     android:id="@+id/Title_dec_sort"
                     android:text="@string/title_dec"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-            </LinearLayout>
+            </RadioGroup>
 
         </LinearLayout>
 
 
-        <!-- Fiels parameter (eg. Computer Science, Biology) -->
+        <!-- Field parameter (eg. Computer Science, Biology) -->
         <LinearLayout
             android:id="@+id/field_view"
             android:layout_width="wrap_content"
@@ -90,40 +91,41 @@
             android:orientation="vertical">
 
             <TextView
+                android:text="@string/field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/field"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
-            <LinearLayout
+            <RadioGroup
+                android:id="@+id/fieldGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
+                <RadioButton
                     android:id="@+id/CS"
                     android:text="@string/cs"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
+                <RadioButton
                     android:id="@+id/Biology"
                     android:text="@string/bio"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
+                <RadioButton
                     android:id="@+id/Archi"
                     android:text="@string/archi"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-            </LinearLayout>
+            </RadioGroup>
 
         </LinearLayout>
 
-        <!-- Semester Parameter (eg. BA1. BA6) -->
+        <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
         <LinearLayout
             android:id="@+id/semester_view"
             android:layout_width="wrap_content"
@@ -131,54 +133,49 @@
             android:orientation="vertical">
 
             <TextView
+                android:text="@string/semester"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/semester"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
-            <LinearLayout
+            <RadioGroup
+                android:id="@+id/semGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <Button
-                    android:id="@+id/BA1"
-                    android:text="@string/ba1"
+                <RadioButton
+                    android:id="@+id/ic_ba1"
+                    android:text="@string/ic_ba1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
-                    android:id="@+id/BA2"
-                    android:text="@string/ba2"
+                <RadioButton
+                    android:id="@+id/ma_ba2"
+                    android:text="@string/ma_ba2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
-                    android:id="@+id/BA3"
-                    android:text="@string/ba3"
+                <RadioButton
+                    android:id="@+id/sv_ba3"
+                    android:text="@string/sv_ba3"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
-                    android:id="@+id/BA4"
-                    android:text="@string/ba4"
+                <RadioButton
+                    android:id="@+id/gc_ma1"
+                    android:text="@string/gc_ma1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
-                    android:id="@+id/BA5"
-                    android:text="@string/ba5"
+                <RadioButton
+                    android:id="@+id/mt_ma2"
+                    android:text="@string/mt_ma2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
-                    android:id="@+id/BA6"
-                    android:text="@string/ba6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-            </LinearLayout>
+            </RadioGroup>
 
         </LinearLayout>
 
@@ -191,30 +188,31 @@
             android:orientation="vertical">
 
             <TextView
+                android:text="@string/course"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/course"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
-            <LinearLayout
+            <RadioGroup
+                android:id="@+id/courseGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <Button
+                <RadioButton
                     android:id="@+id/CS306"
                     android:text="@string/cs306"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-                <Button
+                <RadioButton
                     android:id="@+id/COM480"
                     android:text="@string/com480"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-            </LinearLayout>
+            </RadioGroup>
 
         </LinearLayout>
 
