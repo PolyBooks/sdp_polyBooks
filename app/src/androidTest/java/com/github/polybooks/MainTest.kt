@@ -42,7 +42,7 @@ class MainTest {
         assertDisplayed(R.id.button_open_db_tests)
         assertClickable(R.id.button_open_db_tests)
     }
-
+/*
     @Test
     fun loginButton() {
         Intents.init()
@@ -73,5 +73,5 @@ class MainTest {
         clickOn(R.id.signup_button)
         assertDisplayed(R.id.register_button)
     }
-
+*/
 }
