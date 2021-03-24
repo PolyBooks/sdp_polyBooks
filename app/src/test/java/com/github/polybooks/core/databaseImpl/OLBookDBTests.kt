@@ -61,7 +61,7 @@ class OLBookDBTests {
     @Test
     fun isbn10alsoWorks() {
         val olDB = OLBookDatabase()
-        val future = olDB.queryBooks().searchByISBN13("  978-2376863069 ").getAll()
+        val future = olDB.queryBooks().searchByISBN13("2376863066").getAll()
         val books = future.get()
         assertEquals(1, books.size)
         val book = books[0]

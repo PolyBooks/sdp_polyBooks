@@ -13,6 +13,7 @@ import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletionException
 
 
 private const val TITLE_FIELD_NAME = "full_title"
@@ -23,9 +24,9 @@ private const val PUBLISHER_FIELD_NAME = "publishers"
 private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
-private const val ISBN13_FORMAT = """(\d|-){12}\d"""
-private const val ISBN10_FORMAT = """(\d|-){9}\d"""
-private const val ISBN_FORMAT = "($ISBN10_FORMAT)|($ISBN13_FORMAT)"
+private const val ISBN13_FORMAT = """[0-9]{13}"""
+private const val ISBN10_FORMAT = """[0-9]{9}[0-9X]"""
+private const val ISBN_FORMAT = """($ISBN10_FORMAT)|($ISBN13_FORMAT)"""
 
 private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
@@ -75,17 +76,16 @@ class OLBookDatabase : BookDatabase {
             else if (title != null) {
                 return TODO("Search by title")
             } else { assert(isbn != null)
-                isbn = isbn!!.trim()
-                if (isbn!!.matches(Regex(ISBN_FORMAT))) {
-                    val bookURL = "$OL_BASE_ADDR/isbn/$isbn.json"
-                    val bookJsonFuture = url2json(bookURL)
-                    return bookJsonFuture.handleAsync { bookJson, exception ->
-                        //handle a FileNotFound
-                        if (exception is FileNotFoundException) return@handleAsync Collections.emptyList<Book>()
-                        //do not handle any other exception
-                        if (exception != null) throw exception
-                        //If things go smoothly return the book
-                        return@handleAsync listOf(parseBook(bookJson))
+                val url = userISBN2URL(isbn!!)
+                if (url != null) {
+                    println("Querying \"$url\"")
+                    return url2json(url)
+                        .thenApplyAsync { listOf(parseBook(it)) }
+                        .exceptionally { exception ->
+                            if (exception is CompletionException && exception.cause is FileNotFoundException)
+                                return@exceptionally Collections.emptyList<Book>()
+                            else if (exception is CompletionException) throw exception.cause!!
+                            else throw exception
                     }
                 } else {
                     val future = CompletableFuture<List<Book>>()
@@ -105,6 +105,16 @@ class OLBookDatabase : BookDatabase {
 
     }
 
+}
+
+//takes a string and try to interpret it as an isbn
+//then makes an URL to the OpenLibrary page of that isbn
+@SuppressLint("NewApi")
+private fun userISBN2URL(isbn : String) : String? {
+    val regularised = isbn.replace("[- ]".toRegex(), "")
+    if (!regularised.matches(Regex(ISBN_FORMAT))) println("fuck you \"$regularised\"")
+    return if (!regularised.matches(Regex(ISBN_FORMAT))) null
+    else "$OL_BASE_ADDR/isbn/$regularised.json"
 }
 
 private const val errorMessage = "Cannot parse OpenLibrary book because : "
