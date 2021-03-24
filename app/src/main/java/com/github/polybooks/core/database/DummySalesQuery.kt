@@ -1,6 +1,7 @@
 package com.github.polybooks.core.database
 
 import android.os.Build
+import android.os.Parcelable
 import android.os.SystemClock
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.BookCondition
@@ -9,6 +10,7 @@ import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.SaleOrdering
 import com.github.polybooks.core.database.SaleQuery
+import java.io.Serializable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -34,35 +36,42 @@ val default_sale: List<Sale> = listOf(
  * Default sales query used for tests
  * @property sale the list of sales you query
  */
-class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
+class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery, Serializable {
 
 
     override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun searchByTitle(title: String): SaleQuery {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun searchByState(state: Collection<SaleState>): SaleQuery {
-        return DummySalesQuery(sale.filter { sale -> sale.state in state })
+//        return DummySalesQuery(sale.filter { sale -> sale.state in state })
+        return DummySalesQuery()
     }
 
     override fun searchByCondition(condition: Collection<BookCondition>): SaleQuery {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun searchByPrice(min: Float, max: Float): SaleQuery {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun withOrdering(ordering: SaleOrdering): SaleQuery {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun searchByISBN13(isbn13: String): SaleQuery {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun getAll(): CompletableFuture<List<Sale>> {
@@ -71,8 +80,6 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
             sale
         }
     }
-
-
 
     override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
         TODO("Not yet implemented")

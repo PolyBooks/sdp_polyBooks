@@ -55,25 +55,25 @@
                 android:textSize="20sp" />
             
             <RadioGroup
-                android:id="@+id/sortGroup"
+                android:id="@+id/sort_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
                 <RadioButton
-                    android:id="@+id/Popularity_sort"
+                    android:id="@+id/popularity_sort"
                     android:text="@string/popularity"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
                 <RadioButton
-                    android:id="@+id/Title_inc_sort"
+                    android:id="@+id/title_inc_sort"
                     android:text="@string/title_inc"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />                   android:layout_height="match_parent"
 
                 <RadioButton
-                    android:id="@+id/Title_dec_sort"
+                    android:id="@+id/title_dec_sort"
                     android:text="@string/title_dec"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
@@ -140,7 +140,7 @@
                 android:textSize="20sp" />
 
             <RadioGroup
-                android:id="@+id/semGroup"
+                android:id="@+id/semester_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >

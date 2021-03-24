@@ -67,34 +67,37 @@ class FilteringBooksActivity : AppCompatActivity() {
         setParametersListener()
     }
 
-    fun setResetButtonBehaviour() {
+    private fun setResetButtonBehaviour() {
         mResetParameters.setOnClickListener {
             mSortGroup.clearCheck()
             mSemGroup.clearCheck()
             mFieldGroup.clearCheck()
             mCourseGroup.clearCheck()
+
+            // TODO reset query
+            // mQuery = new Query
         }
     }
 
-    fun setResultsButtonBehaviour() {
+    private fun setResultsButtonBehaviour() {
         mResults.setOnClickListener {
             val i : Intent = Intent(this, ListSalesActivity::class.java)
             startActivity(i)
         }
     }
 
-    fun setParametersButtons() {
-        mSortGroup = findViewById(R.id.sortGroup)
-        mSortPopularity = findViewById(R.id.Popularity_sort)
-        mSortTitleInc = findViewById(R.id.Title_inc_sort)
-        mSortTitleDec = findViewById(R.id.Title_dec_sort)
+    private fun setParametersButtons() {
+        mSortGroup = findViewById(R.id.sort_group)
+        mSortPopularity = findViewById(R.id.popularity_sort)
+        mSortTitleInc = findViewById(R.id.title_inc_sort)
+        mSortTitleDec = findViewById(R.id.title_dec_sort)
 
         mFieldGroup = findViewById(R.id.fieldGroup)
         mFieldCS = findViewById(R.id.CS)
         mFieldBio = findViewById(R.id.Biology)
         mFieldArchi = findViewById(R.id.Archi)
 
-        mSemGroup = findViewById(R.id.semGroup)
+        mSemGroup = findViewById(R.id.semester_group)
         mSemBa1 = findViewById(R.id.ic_ba1)
         mSemBa2 = findViewById(R.id.ma_ba2)
         mSemBa3 = findViewById(R.id.sv_ba3)
@@ -106,7 +109,7 @@ class FilteringBooksActivity : AppCompatActivity() {
         mCourseCOM480 = findViewById(R.id.COM480)
     }
 
-    fun setParametersListener() {
+    private fun setParametersListener() {
         setClickListener(mSortPopularity)
         setClickListener(mSortTitleInc)
         setClickListener(mSortTitleDec)
@@ -124,7 +127,7 @@ class FilteringBooksActivity : AppCompatActivity() {
         setClickListener(mCourseCOM480)
     }
 
-    var setClickListener = { b: RadioButton ->
+    private var setClickListener = { b: RadioButton ->
         b.setOnClickListener {
             when (b.id) {
                 mSortPopularity.id -> print("TODO")

@@ -3,4 +3,8 @@
     <string name="reset">Reset</string>
     <string name="results">Results</string>
     <string name="sort_by">Sort by</string>
+    <string name="enter_book_name">Enter book name</string>
+    <string name="enter_book_isbn">Enter book ISBN</string>
+    <string name="enter_min_price">Enter min price</string>
+    <string name="enter_max_price">Enter max price</string>
 </resources>
