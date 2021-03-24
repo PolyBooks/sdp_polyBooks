@@ -17,17 +17,8 @@ class ListSalesTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(ListSalesActivity::class.java)
 
-    @Before
-    fun before() {
-        sleep(1, TimeUnit.SECONDS)
-        Intents.init()
-    }
 
-    @After
-    fun after() {
-        Intents.release()
-    }
-
+    //This one
     @Test
     fun countIsCorrect() {
         assertRecyclerViewItemCount(R.id.recyclerView, 1)

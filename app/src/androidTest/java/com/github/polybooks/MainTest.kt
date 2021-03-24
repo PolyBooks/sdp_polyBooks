@@ -18,6 +18,7 @@ class MainTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
+    /*
     @Before
     fun before() {
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
@@ -28,7 +29,8 @@ class MainTest {
     fun after() {
         Intents.release()
     }
-
+*/
+    //This one
     @Test
     fun allButtonsClickable() {
         assertDisplayed(R.id.log_button)
@@ -43,22 +45,29 @@ class MainTest {
 
     @Test
     fun loginButton() {
+        Intents.init()
         clickOn(R.id.log_button)
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
+        Intents.release()
     }
 
     @Test
     fun sellButton() {
+        Intents.init()
         clickOn(R.id.sell_button)
         Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
+        Intents.release()
     }
 
     @Test
     fun databaseButton() {
+        Intents.init()
         clickOn(R.id.button_open_db_tests)
         Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
+        Intents.release()
     }
 
+    //This one
     @Test
     fun signUpButton() {
         clickOn(R.id.signup_button)
