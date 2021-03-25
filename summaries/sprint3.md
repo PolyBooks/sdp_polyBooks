@@ -6,6 +6,11 @@
 
 ## Joshua (Scrum Master)
 
+I helped Nicolas a bit with connecting to the database before going on to try to create tests for the main activity. There I encountered problems that ate up the rest of my time
+
+Next time I hope to be able to find a solution to this problem.
+
+
 ##
 
 ## Nicolas
@@ -33,3 +38,6 @@ For next week, I need to 1. Fix this issue 2. implement the tests for the two ac
 ##
 
 ## Overall team
+
+This week was rough with several people encountering roadblocks, but interactions in the team remain good. Several PR that are in the works should be able to get finished up. get finished up
+Next week I hope we can resolve these test issues that can end up being a real dealbreaker for the app.
