@@ -74,15 +74,15 @@ class SaleDatabase : SaleDatabase {
         }
 
         private fun getQuery() : Query {
-            var query :Query = saleRef
+            var query: Query = saleRef
 
             // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
             title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
             states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
             conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
-            minPrice?.let { query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!) }
-            maxPrice?.let { query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!) }
+            minPrice?.let { query = query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!) }
+            maxPrice?.let { query = query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!) }
 
             return query
         }
