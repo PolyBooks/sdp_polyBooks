@@ -15,7 +15,7 @@
         android:layout_marginEnd="276dp"
         android:layout_marginBottom="14dp"
         android:onClick="backhome"
-        android:text="PolyBooks"
+        android:text="@string/polybooks"
         android:textColor="#CA2020"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/top_line"
@@ -34,7 +34,9 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo2" />
+        app:layout_constraintTop_toBottomOf="@+id/textInfo2"
+        android:autofillHints="Password"
+        tools:ignore="LabelFor" />
 
     <EditText
         android:id="@+id/email_field"
@@ -49,7 +51,9 @@
         app:layout_constraintBottom_toTopOf="@+id/textInfo2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo1" />
+        app:layout_constraintTop_toBottomOf="@+id/textInfo1"
+        android:autofillHints=""
+        tools:ignore="LabelFor" />
 
     <TextView
         android:id="@+id/copyrights"
@@ -59,7 +63,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="172dp"
         android:layout_marginBottom="16dp"
-        android:text="Copyrights"
+        android:text="@string/copyrights"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +77,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="167dp"
         android:layout_marginBottom="5dp"
-        android:text="Register"
+        android:text="@string/register"
         app:layout_constraintBottom_toTopOf="@+id/signup_google"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -87,7 +91,7 @@
         android:layout_marginStart="156dp"
         android:layout_marginEnd="167dp"
         android:layout_marginBottom="112dp"
-        android:text="Log in"
+        android:text="@string/log_in"
         app:layout_constraintBottom_toTopOf="@+id/bottom_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -102,7 +106,7 @@
         android:layout_marginTop="11dp"
         android:layout_marginEnd="82dp"
         android:layout_marginBottom="9dp"
-        android:text="Sign Up using Google account"
+        android:text="@string/sign_up_using_google_account"
         app:layout_constraintBottom_toTopOf="@+id/textinfo4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -138,7 +142,7 @@
         android:layout_marginStart="102dp"
         android:layout_marginTop="94dp"
         android:layout_marginEnd="227dp"
-        android:text="Address mail"
+        android:text="@string/address_mail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_line" />
@@ -150,7 +154,7 @@
         android:layout_marginStart="102dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="247dp"
-        android:text="Password (1)"
+        android:text="@string/password_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -167,7 +171,9 @@
         app:layout_constraintBottom_toTopOf="@+id/register_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo3" />
+        app:layout_constraintTop_toBottomOf="@+id/textInfo3"
+        android:autofillHints="Password"
+        tools:ignore="LabelFor" />
 
     <TextView
         android:id="@+id/textInfo3"
@@ -176,7 +182,7 @@
         android:layout_marginStart="102dp"
         android:layout_marginTop="3dp"
         android:layout_marginEnd="225dp"
-        android:text="Password (2)"
+        android:text="@string/password_2"
         app:layout_constraintBottom_toTopOf="@+id/password_field2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -189,7 +195,7 @@
         android:layout_marginStart="126dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="126dp"
-        android:text="Already have an account?"
+        android:text="@string/already_have_an_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

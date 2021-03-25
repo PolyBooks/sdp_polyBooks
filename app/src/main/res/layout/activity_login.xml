@@ -14,8 +14,7 @@
         android:layout_marginTop="22dp"
         android:layout_marginEnd="276dp"
         android:layout_marginBottom="14dp"
-        android:onClick="backhome"
-        android:text="PolyBooks"
+        android:text="@string/polybooks"
         android:textColor="#CA2020"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/top_line"
@@ -36,7 +35,9 @@
         app:layout_constraintBottom_toTopOf="@+id/log_button_sub"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo2" />
+        app:layout_constraintTop_toBottomOf="@+id/textInfo2"
+        android:autofillHints="Password"
+        tools:ignore="LabelFor" />
 
     <EditText
         android:id="@+id/email_field"
@@ -51,7 +52,9 @@
         app:layout_constraintBottom_toTopOf="@+id/textInfo2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo1" />
+        app:layout_constraintTop_toBottomOf="@+id/textInfo1"
+        android:autofillHints="Email"
+        tools:ignore="LabelFor" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/log_button_sub"
@@ -61,7 +64,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="167dp"
         android:layout_marginBottom="24dp"
-        android:text="Log In"
+        android:text="@string/log_in"
         app:layout_constraintBottom_toTopOf="@+id/tequila_log_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +79,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="172dp"
         android:layout_marginBottom="16dp"
-        android:text="Copyrights"
+        android:text="@string/copyrights"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +92,7 @@
         android:layout_marginStart="120dp"
         android:layout_marginEnd="120dp"
         android:layout_marginBottom="5dp"
-        android:text="Log In using Tequila"
+        android:text="@string/log_in_using_tequila"
         app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -115,7 +118,7 @@
         android:layout_height="19dp"
         android:layout_marginStart="134dp"
         android:layout_marginEnd="135dp"
-        android:text="Don't have an account?"
+        android:text="@string/don_t_have_an_account"
         app:layout_constraintBottom_toTopOf="@+id/register_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,8 +131,7 @@
         android:layout_marginStart="156dp"
         android:layout_marginEnd="167dp"
         android:layout_marginBottom="71dp"
-        android:onClick="signup"
-        android:text="Register"
+        android:text="@string/register"
         app:layout_constraintBottom_toTopOf="@+id/bottom_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -164,7 +166,7 @@
         android:layout_marginStart="102dp"
         android:layout_marginTop="94dp"
         android:layout_marginEnd="227dp"
-        android:text="Address mail"
+        android:text="@string/address_mail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_line" />
@@ -176,7 +178,7 @@
         android:layout_marginStart="102dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="247dp"
-        android:text="Password"
+        android:text="@string/password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_field" />
