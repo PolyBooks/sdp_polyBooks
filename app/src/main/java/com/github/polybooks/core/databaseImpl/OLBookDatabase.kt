@@ -78,7 +78,6 @@ class OLBookDatabase : BookDatabase {
             } else { assert(isbn != null)
                 val url = userISBN2URL(isbn!!)
                 if (url != null) {
-                    println("Querying \"$url\"")
                     return url2json(url)
                         .thenApplyAsync { listOf(parseBook(it)) }
                         .exceptionally { exception ->
