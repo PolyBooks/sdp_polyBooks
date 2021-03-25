@@ -84,4 +84,13 @@ class OLBookDBTests {
         assertEquals(0, books.size)
     }
 
+    @Test
+    fun countCorrect() {
+        val olDB = OLBookDatabase()
+        val query0 = olDB.queryBooks().searchByISBN13("1234567890666")
+        assertEquals(0, query0.getCount().get())
+        val query1 = olDB.queryBooks().searchByISBN13("9782376863069")
+        assertEquals(1, query1.getCount().get())
+    }
+
 }

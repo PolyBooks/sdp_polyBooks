@@ -95,11 +95,21 @@ class OLBookDatabase : BookDatabase {
         }
 
         override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            TODO("Not yet implemented")
+            if (n < 0 || page < 0) {
+                val future : CompletableFuture<List<Book>> = CompletableFuture()
+                future.completeExceptionally(
+                    IllegalArgumentException(
+                        if (n < 0) "Cannot return a negative ($n) number of results"
+                        else "Cannot return a negative ($page) page number"
+                    )
+                )
+                return future
+            }
+            return getAll()
         }
 
         override fun getCount(): CompletableFuture<Int> {
-            TODO("Not yet implemented")
+            return getAll().thenApplyAsync { it.size }
         }
 
     }
