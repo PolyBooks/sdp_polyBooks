@@ -6,6 +6,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.schibsted.spain.barista.assertion.BaristaClickableAssertions.assertClickable
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
+
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
 import org.junit.After
 import org.junit.Before
@@ -33,16 +34,20 @@ class MainTest {
     //This one
     @Test
     fun allButtonsClickable() {
+
         assertDisplayed(R.id.log_button)
         assertClickable(R.id.log_button)
+
         assertDisplayed(R.id.signup_button)
         assertClickable(R.id.signup_button)
+
         assertDisplayed(R.id.sell_button)
         assertClickable(R.id.sell_button)
+
         assertDisplayed(R.id.button_open_db_tests)
         assertClickable(R.id.button_open_db_tests)
     }
-/*
+
     @Test
     fun loginButton() {
         Intents.init()
@@ -73,5 +78,5 @@ class MainTest {
         clickOn(R.id.signup_button)
         assertDisplayed(R.id.register_button)
     }
-*/
+
 }

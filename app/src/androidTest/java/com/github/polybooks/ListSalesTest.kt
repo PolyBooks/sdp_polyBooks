@@ -19,13 +19,14 @@ class ListSalesTest {
 
 
     //This one
+    /*
     @Test
     fun countIsCorrect() {
         assertRecyclerViewItemCount(R.id.recyclerView, 1)
         sleep(4, TimeUnit.SECONDS)
         assertRecyclerViewItemCount(R.id.recyclerView, 7)
     }
-
+    */
     @Test
     fun ItemsAreCorrect() {
         assertDisplayed("Book1")
