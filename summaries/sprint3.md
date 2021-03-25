@@ -1,6 +1,7 @@
 # Summary for week 3
 
 ## Dario
+I think that my time estimate this week was accurate. I implemented the Open library Book database, wrote tests for it. I also discussed about the API/interface with Josh and updated the interface for interests accordingly. I also reviewed some pull requests. So all in all, I should continue like that, and maybe become a bit more efficient.
 
 ##
 
