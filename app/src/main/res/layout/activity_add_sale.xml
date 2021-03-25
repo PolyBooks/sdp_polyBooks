@@ -12,14 +12,17 @@
         android:layout_height="34dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Maybe navBar here ? If yes, design once for all activities"
+        android:text="@string/maybe_navbar_here_if_yes_design_once_for_all_activities"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
 
     <Button
         android:id="@+id/scan_button"
+        style="@style/Button"
         android:layout_width="258dp"
         android:layout_height="71dp"
         android:layout_marginTop="128dp"
@@ -39,7 +42,8 @@
         android:text="@string/input_isbn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fillin_ISBN" />
+        app:layout_constraintTop_toBottomOf="@+id/fillin_ISBN"
+        style="@style/Button" />
 
     <TextView
         android:id="@+id/textView"
