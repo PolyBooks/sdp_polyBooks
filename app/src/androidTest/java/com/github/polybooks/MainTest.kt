@@ -23,13 +23,13 @@ class MainTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-    /*
+
     @Before
     fun before() {
-        BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
+        BaristaSleepInteractions.sleep(2, TimeUnit.SECONDS)
         Intents.init()
     }
-
+/*
     @After
     fun after() {
         Intents.release()
@@ -55,7 +55,7 @@ class MainTest {
     @Test
     fun loginButton() {
         Intents.init()
-        clickOn(R.id.log_button)
+        onView(withId(R.id.log_button)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
         Intents.release()
     }
@@ -63,7 +63,7 @@ class MainTest {
     @Test
     fun sellButton() {
         Intents.init()
-        clickOn(R.id.sell_button)
+        onView(withId(R.id.sell_button)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
         Intents.release()
     }
@@ -71,7 +71,7 @@ class MainTest {
     @Test
     fun databaseButton() {
         Intents.init()
-        clickOn(R.id.button_open_db_tests)
+        onView(withId(R.id.button_open_db_tests)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
         Intents.release()
     }
