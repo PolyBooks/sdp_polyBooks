@@ -36,6 +36,10 @@ For next week, I need to 1. Fix this issue 2. implement the tests for the two ac
 
 ## Zied
 
+This week was all about fixing all the warnings generated in some xml activites and writing some tests to make sure that the google authentification doesn't generate any errors or exceptions. I also started the creation of the user profile but didn't have time to finish it. I only worked 6 hours instead of 8 hours this week due to some projects deadlines in other courses.
+
+Next week I will be able to work the full 8 hours on the user profile.
+
 ##
 
 ## Overall team
