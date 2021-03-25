@@ -1,7 +1,11 @@
 package com.github.polybooks
 
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.schibsted.spain.barista.assertion.BaristaClickableAssertions.assertClickable
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
@@ -34,18 +38,18 @@ class MainTest {
     //This one
     @Test
     fun allButtonsClickable() {
+        onView(withId(R.id.log_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.log_button)).check(matches(isClickable()))
 
-        assertDisplayed(R.id.log_button)
-        assertClickable(R.id.log_button)
+        onView(withId(R.id.signup_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.signup_button)).check(matches(isClickable()))
 
-        assertDisplayed(R.id.signup_button)
-        assertClickable(R.id.signup_button)
+        onView(withId(R.id.sell_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.sell_button)).check(matches(isClickable()))
 
-        assertDisplayed(R.id.sell_button)
-        assertClickable(R.id.sell_button)
+        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
+        onView(withId(R.id.button_open_db_tests)).check(matches(isClickable()))
 
-        assertDisplayed(R.id.button_open_db_tests)
-        assertClickable(R.id.button_open_db_tests)
     }
 
     @Test
@@ -75,8 +79,8 @@ class MainTest {
     //This one
     @Test
     fun signUpButton() {
-        clickOn(R.id.signup_button)
-        assertDisplayed(R.id.register_button)
+        onView(withId(R.id.signup_button)).perform(click())
+        onView(withId(R.id.register_button)).check(matches(isDisplayed()))
     }
 
 }
