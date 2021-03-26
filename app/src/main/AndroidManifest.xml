@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.polybooks">
-
+    <!--Should we only allow for back-cameras? If yes, keep this line commented out
+    <uses-feature android:name="android.hardware.camera.any" />-->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -12,9 +15,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyBooks">
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode"/>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".DummyDatabaseActivity"></activity>
-        <activity android:name=".FirebaseActivity"></activity>
+        <activity android:name=".ScanBarcodeActivity"
+            android:parentActivityName=".AddSaleActivity"></activity>
+        <activity android:name=".FillSaleActivity"
+            android:parentActivityName=".AddSaleActivity"/>
+        <activity android:name=".AddSaleActivity"
+            android:parentActivityName=".MainActivity"/>
+
+        <activity android:name=".ListSalesActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
 
         <activity android:name=".MainActivity">
             <intent-filter>

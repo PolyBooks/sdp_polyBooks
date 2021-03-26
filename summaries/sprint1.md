@@ -25,7 +25,7 @@ First, I set-up Cirrus, CodeClimate, the PR rules and the badges for our github 
 
 Then, I started to work on the activity to add a new sale, but as I was conceptualising it, I realised it needed to be 3-4 activities instead of 1 and would require much more work. Instead of a single task, it should probably be divided between “Set-up the flow logic and basic activities to add a sale” (mostly done), “Scan a barcode and retrieve the ISBN from it”, “Convert an ISBN into book data”, “Take a picture of a book” and later “Improve UI and design”.
 
-I have kept this work locally for now, as it is neither functional, nor tested yet.
+I have kept this work locally for now, as it is neither functional, nor tested yet. Edit Post-Weekly-Meeting: I have worked 1 extra hour after the meeting so I can PR my work with a couple of tests and blend it into sprint1 tasks.
 
 Lastly, I also reviewed each PR.
 
