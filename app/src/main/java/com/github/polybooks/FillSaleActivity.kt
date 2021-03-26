@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture
 class FillSaleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fill_sale)
+        setContentView(R.layout.activity_fill_sale_fancy)
 
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
@@ -24,7 +24,7 @@ class FillSaleActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.filled_authors)         .apply { text = stringISBN }
 
         // Check if ISBN in our database: (could check ISBN validity before)
-        
+
         // TODO Commenting out the whole chunk as it depends on the API which is not ready yet.
         /*
         val book: CompletableFuture<Book> = CompletableFuture().supplyAsync {

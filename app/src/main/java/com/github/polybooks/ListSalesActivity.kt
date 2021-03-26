@@ -1,10 +1,6 @@
 package com.github.polybooks
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +23,7 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //TODO: rename / change this
-        setContentView(R.layout.activity_dummy_database)
+        setContentView(R.layout.activity_basic_database)
 
         mRecycler = findViewById(R.id.recyclerView)
         mRecycler.setHasFixedSize(true)
