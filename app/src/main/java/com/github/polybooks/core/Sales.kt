@@ -13,11 +13,11 @@ import java.util.*
  * @property state The state of the Sale (see {@link SaleState})
  * */
 data class Sale(
-    val book : String,
+    val title : String,
     val seller : Int,
     val price : Float,
     val condition : BookCondition,
-    val publicationDate : Timestamp,
+    val date : Timestamp,
     val state : SaleState)
 
 /**

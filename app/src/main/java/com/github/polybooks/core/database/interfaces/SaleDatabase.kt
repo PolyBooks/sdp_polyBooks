@@ -106,7 +106,7 @@ enum class SaleFields(val fieldName: String) {
     TITLE("title"),
     CONDITION("condition"),
     PRICE("price"),
-    PUBLICATION_DATE("publicationDate"),
+    PUBLICATION_DATE("date"),
     SELLER("seller"),
     STATE("state"),
 }

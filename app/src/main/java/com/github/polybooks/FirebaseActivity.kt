@@ -82,7 +82,7 @@ class FirebaseActivity : AppCompatActivity() {
         val future: CompletableFuture<List<Sale>> = database.querySales().getAll()
         future.thenApply { results ->
             println("-------------- SALES (${results.size}) --------------")
-            results.forEach { s -> println("SALE : ${s.book}") }
+            results.forEach { s -> println("SALE : ${s.title}") }
             println("---------------------------------------")
         }
     }

@@ -130,6 +130,12 @@ class SaleDatabase : SaleDatabase {
                 return future
             }
 
+            // Firebase cannot handle querying 0 element
+            if (n == 0) {
+                future.complete(emptyList())
+                return future
+            }
+
             // FIXME ignoring page number for now
             getQuery()
                 .limit(n.toLong())
