@@ -40,6 +40,6 @@ interface InterestDatabase {
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    fun setUserInterests(user : User, interests : List<Interest>) : CompletableFuture<Nothing>
+    fun setUserInterests(user : User, interests : List<Interest>) : CompletableFuture<Unit>
 
 }
