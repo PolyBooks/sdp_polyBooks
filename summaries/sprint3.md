@@ -58,5 +58,5 @@ Next week I will be able to work the full 8 hours on the user profile.
 
 ## Overall team
 
-This week was rough with several people encountering roadblocks, but interactions in the team remain good. Several PR that are in the works should be able to get finished up. get finished up
+This week was rough with several people encountering roadblocks, but interactions in the team remain good. Several PR that are in the works should be able to get finished up.
 Next week I hope we can resolve these test issues that can end up being a real dealbreaker for the app.
