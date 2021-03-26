@@ -22,6 +22,7 @@ private const val FORMAT_FIELD_NAME = "physical_format"
 private const val ISBN13_FIELD_NAME = "isbn_13"
 private const val PUBLISHER_FIELD_NAME = "publishers"
 private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
+private const val AUTHOR_NAME_FIELD_NAME = "name"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
 private const val ISBN13_FORMAT = """[0-9]{13}"""
@@ -79,7 +80,9 @@ class OLBookDatabase : BookDatabase {
                 val url = userISBN2URL(isbn!!)
                 if (url != null) {
                     return url2json(url)
-                        .thenApplyAsync { listOf(parseBook(it)) }
+                        .thenApply { parseBook(it) }
+                        .thenCompose { updateBookWithAuthorName(it) }
+                        .thenApply { listOf(it) }
                         .exceptionally { exception ->
                             if (exception is CompletionException && exception.cause is FileNotFoundException)
                                 return@exceptionally Collections.emptyList<Book>()
@@ -109,7 +112,7 @@ class OLBookDatabase : BookDatabase {
         }
 
         override fun getCount(): CompletableFuture<Int> {
-            return getAll().thenApplyAsync { it.size }
+            return getAll().thenApply { it.size }
         }
 
     }
@@ -121,12 +124,33 @@ class OLBookDatabase : BookDatabase {
 @SuppressLint("NewApi")
 private fun userISBN2URL(isbn : String) : String? {
     val regularised = isbn.replace("[- ]".toRegex(), "")
-    if (!regularised.matches(Regex(ISBN_FORMAT))) println("fuck you \"$regularised\"")
     return if (!regularised.matches(Regex(ISBN_FORMAT))) null
     else "$OL_BASE_ADDR/isbn/$regularised.json"
 }
 
 private const val errorMessage = "Cannot parse OpenLibrary book because : "
+
+//takes a book that has the authors in the form /authors/<authorID>
+//and fetches the actual name of the author
+@SuppressLint("NewApi")
+fun updateBookWithAuthorName(book : Book) : CompletableFuture<Book> {
+    if (book.authors == null) return CompletableFuture.completedFuture(book)
+    //This is a list of futures that are concurrently fetching the name of the authors
+    val newAuthorsFutures = book.authors.map { authorID ->
+        val authorsUrl = "$OL_BASE_ADDR$authorID.json"
+        url2json(authorsUrl).thenApply { parseAuthor(it) }
+    }
+    val emptyFuture = CompletableFuture.completedFuture(Collections.emptyList<String>())
+    //Combine those futures into one future of a list of names
+    val combined : CompletableFuture<List<String>> =
+        newAuthorsFutures.fold(emptyFuture) { acc , curr ->
+            acc.thenCombine(curr) { listAcc, currAuthor ->
+                listAcc.plus(currAuthor)
+            }
+        }
+    //update the book with the names of the authors
+    return combined.thenApply { newAuthors -> book.copy(authors = newAuthors) }
+}
 
 /**
  * Function for internal use in OLBookDatabase. Takes the json of a book, and makes a Book from it.
@@ -158,6 +182,12 @@ fun parseBook(jsonBook : JsonElement) : Book {
 
 }
 
+@SuppressLint("NewApi")
+private fun parseAuthor(jsonAuthor : JsonElement) : String {
+    val nameField = getJsonField(asJsonObject(jsonAuthor), AUTHOR_NAME_FIELD_NAME)
+    return nameField.map { asString(it) }.orElseThrow(cantParseException(AUTHOR_NAME_FIELD_NAME))
+}
+
 private fun parseTitle(jsonTitle : JsonElement) : String = asString(jsonTitle)
 
 private fun parseISBN13(jsonISBN13 : JsonElement) : String {
@@ -174,7 +204,7 @@ private fun parseAuthors(jsonAuthors : JsonElement) : List<String> {
             val authorOption = getJsonField(asJsonObject(it), "key")
             val authorJson = authorOption.orElseThrow(cantParseException("$AUTHORS_FIELD_NAME[n].key"))
             asString(authorJson)
-        } //TODO to get the actual names of the authors: need to execute more requests
+        }
         .toList()
 }
 
