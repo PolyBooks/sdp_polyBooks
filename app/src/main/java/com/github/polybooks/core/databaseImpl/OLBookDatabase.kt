@@ -43,7 +43,7 @@ class OLBookDatabase : BookDatabase {
 
         private var ordering = DEFAULT
 
-        private var empty : Boolean = false
+        private var empty : Boolean = true
         private var title : String? = null
         private var isbn : String? = null
 
@@ -54,9 +54,8 @@ class OLBookDatabase : BookDatabase {
         }
 
         override fun searchByTitle(title: String): BookQuery {
-            this.empty = false
-            this.title = title
-            this.isbn = null
+            System.err.println("Warning: search by title not fully implemented for OLBookQuery")
+            this.empty = true
             return this
         }
 
@@ -74,9 +73,7 @@ class OLBookDatabase : BookDatabase {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             if (empty) return CompletableFuture.completedFuture(Collections.emptyList())
-            else if (title != null) {
-                return TODO("Search by title")
-            } else { assert(isbn != null)
+            else { assert(isbn != null)
                 val url = userISBN2URL(isbn!!)
                 if (url != null) {
                     return url2json(url)
