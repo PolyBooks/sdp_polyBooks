@@ -29,12 +29,12 @@ class MainTest {
         BaristaSleepInteractions.sleep(2, TimeUnit.SECONDS)
         Intents.init()
     }
-/*
+
     @After
     fun after() {
         Intents.release()
     }
-*/
+
     //This one
     @Test
     fun allButtonsClickable() {
@@ -54,26 +54,26 @@ class MainTest {
 
     @Test
     fun loginButton() {
-        Intents.init()
+
         onView(withId(R.id.log_button)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
-        Intents.release()
+
     }
 
     @Test
     fun sellButton() {
-        Intents.init()
+
         onView(withId(R.id.sell_button)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
-        Intents.release()
+
     }
 
     @Test
     fun databaseButton() {
-        Intents.init()
+
         onView(withId(R.id.button_open_db_tests)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
-        Intents.release()
+
     }
 
     //This one
