@@ -13,15 +13,15 @@ class FilteringSalesActivity : AppCompatActivity() {
 
     private lateinit var mReset : Button
     private lateinit var mResults : Button
-    private lateinit var mQuery : DummySalesQuery //TODO @josh
+    private lateinit var mQuery : DummySalesQuery
 
     //--- hardcoded parameters: make it dynamic
     private lateinit var mName : EditText
     private lateinit var mISBN : EditText
     private lateinit var mPriceMin : EditText
     private lateinit var mPriceMax : EditText
-    private var mMinPrice : Float = 0.0f //TODO ask db to have default?
-    private var mMaxPrice : Float = 0.0f //TODO ask db to have default?
+    private var mMinPrice : Float = 0.0f
+    private var mMaxPrice : Float = 0.0f
 
     private lateinit var mSortGroup : RadioGroup
     private lateinit var mSortTitleInc : RadioButton
@@ -93,7 +93,7 @@ class FilteringSalesActivity : AppCompatActivity() {
             mConditionWorn.setChecked(false)
 
             // reset query
-            mQuery = DummySalesQuery() //TODO @josh
+            mQuery = DummySalesQuery()
         }
     }
 
@@ -104,8 +104,8 @@ class FilteringSalesActivity : AppCompatActivity() {
             mQuery.searchByCondition(mConditions)
 
             val intent : Intent = Intent(this, ListSalesActivity::class.java)
+            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, DummySalesQuery())
             //TODO @josh ca fait planter le programme de passer mQuery
-            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, mQuery)
             startActivity(intent)
         }
     }
@@ -206,18 +206,18 @@ class FilteringSalesActivity : AppCompatActivity() {
     }
 
     private var setClickListenerCheckBox = { b: CheckBox ->
-        var addFieldInterest = { b.setOnClickListener {
+        val addFieldInterest = { b.setOnClickListener {
             if(b.isChecked) { mInterests.add(Field(b.text.toString()))}
             else { mInterests.remove(Field(b.text.toString()))}
         }}
 
-        var addSemesterInterest = { b.setOnClickListener {
+        val addSemesterInterest = { b.setOnClickListener {
             // TODO faux, corriger plus tard
             if(b.isChecked) { mInterests.add(Semester(b.text.toString(),b.text.toString()))}
             else { mInterests.remove(Semester(b.text.toString(),b.text.toString()))}
         }}
 
-        var addCourseInterest = { b.setOnClickListener {
+        val addCourseInterest = { b.setOnClickListener {
             // TODO faux, corriger plus tard
             if(b.isChecked) { mInterests.add(Course(b.text.toString()))}
             else { mInterests.remove(Course(b.text.toString()))}

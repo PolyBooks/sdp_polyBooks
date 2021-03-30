@@ -3,6 +3,7 @@
  * */
 package com.github.polybooks.core
 
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -25,5 +26,5 @@ data class Book(
         val language : String?,
         val publisher : String?,
         val publishDate : Date?,
-        val format : String?)
+        val format : String?) : Serializable
 

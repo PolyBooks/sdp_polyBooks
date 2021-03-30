@@ -1,5 +1,6 @@
 package com.github.polybooks.core
 
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -11,13 +12,13 @@ import java.util.*
  * @property publicationDate The date on which the Sale has been issued/published
  * @property state The state of the Sale (see {@link SaleState})
  * */
-data class Sale(
+data class Sale (
     val book : String,
     val seller : Int,
     val price : Float,
     val condition : BookCondition,
     val publicationDate : Date,
-    val state : SaleState)
+    val state : SaleState) : Serializable
 
 /**
  * The condition of a book (as in "in great condition").
