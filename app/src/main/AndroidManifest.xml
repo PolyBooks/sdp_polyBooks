@@ -28,7 +28,8 @@
         <activity android:name=".AddSaleActivity"
             android:parentActivityName=".MainActivity"/>
 
-        <activity android:name=".ListSalesActivity"></activity>
+        <activity android:name=".ListSalesActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
 
         <activity android:name=".MainActivity">
