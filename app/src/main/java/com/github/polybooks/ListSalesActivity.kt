@@ -14,7 +14,8 @@ import com.github.polybooks.core.database.format
  * Activity to list all active sales
  * @property saleQuery the query listing what is to be shown
  */
-class ListSalesActivity() : AppCompatActivity() {
+// TODO enlever parametre
+class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : AppCompatActivity() {
 
     companion object {
         val EXTRA_SALE_QUERY :String = "saleQuery"
@@ -38,7 +39,7 @@ class ListSalesActivity() : AppCompatActivity() {
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = mAdapter
 
-        val saleQuery = if ( intent.getSerializableExtra(EXTRA_SALE_QUERY) != null) {
+        val saleQuery1 = if ( intent.getSerializableExtra(EXTRA_SALE_QUERY) != null) {
             intent.getSerializableExtra(EXTRA_SALE_QUERY) as DummySalesQuery
         } else {
             DummySalesQuery()
