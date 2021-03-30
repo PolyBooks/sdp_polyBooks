@@ -227,6 +227,7 @@ class FilteringSalesActivity : AppCompatActivity() {
 //    }
 
     private var setClickListenerCheckBox = { b: CheckBox ->
+
         val addFieldInterest = { b.setOnClickListener {
             if(b.isChecked) { mInterests.add(Field(b.text.toString()))}
             else { mInterests.remove(Field(b.text.toString()))}

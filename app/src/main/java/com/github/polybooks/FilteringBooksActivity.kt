@@ -2,12 +2,18 @@ package com.github.polybooks
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.core.Course
+import com.github.polybooks.core.Field
+import com.github.polybooks.core.Interest
+import com.github.polybooks.core.Semester
+import com.github.polybooks.core.database.BookOrdering
 import com.github.polybooks.core.database.BookQuery
+import com.github.polybooks.core.database.SaleOrdering
 
 /**
  * This activity let the users to select the sorting and filtering parameters
@@ -21,10 +27,7 @@ class FilteringBooksActivity : AppCompatActivity() {
 
     private lateinit var mResetParameters : Button
     private lateinit var mResults : Button
-    private lateinit var mQuery : BookQuery
-//    private var mCourse : Course? = null
-//    private var mField : Field? = null
-//    private var mSemester : Semester ? = null
+//    private lateinit var mQuery : BookQuery TODO decomment when ready
 
     //--- TODO hardcoded parameters: make it dynamic
     private lateinit var mSortGroup : RadioGroup
@@ -32,21 +35,20 @@ class FilteringBooksActivity : AppCompatActivity() {
     private lateinit var mSortTitleInc : RadioButton
     private lateinit var mSortTitleDec : RadioButton
 
-    private lateinit var mFieldGroup : RadioGroup
-    private lateinit var mFieldCS : RadioButton
-    private lateinit var mFieldBio : RadioButton
-    private lateinit var mFieldArchi : RadioButton
+    private lateinit var mFieldCS : CheckBox
+    private lateinit var mFieldBio : CheckBox
+    private lateinit var mFieldArchi : CheckBox
 
-    private lateinit var mSemGroup : RadioGroup
-    private lateinit var mSemBa1 : RadioButton
-    private lateinit var mSemBa2 : RadioButton
-    private lateinit var mSemBa3 : RadioButton
-    private lateinit var mSemMa1 : RadioButton
-    private lateinit var mSemMa2 : RadioButton
+    private lateinit var mSemBa1 : CheckBox
+    private lateinit var mSemBa2 : CheckBox
+    private lateinit var mSemBa3 : CheckBox
+    private lateinit var mSemMa1 : CheckBox
+    private lateinit var mSemMa2 : CheckBox
 
-    private lateinit var mCourseGroup : RadioGroup
-    private lateinit var mCourseCS306 : RadioButton
-    private lateinit var mCourseCOM480 : RadioButton
+    private lateinit var mCourseCS306 : CheckBox
+    private lateinit var mCourseCOM480 : CheckBox
+
+    private var mInterests = mutableSetOf<Interest> ()
     //------
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +58,7 @@ class FilteringBooksActivity : AppCompatActivity() {
         // Get a reference to the UI parameters
         mResetParameters = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
-//        mQuery = queryBook() use db when merged // TODO : uncomment when DB ready
+//        mQuery = queryBook() // TODO : uncomment when DB ready
 
         // Set behaviour Reset and Results
         setResetButtonBehaviour()
@@ -69,10 +71,19 @@ class FilteringBooksActivity : AppCompatActivity() {
 
     private fun setResetButtonBehaviour() {
         mResetParameters.setOnClickListener {
+
             mSortGroup.clearCheck()
-            mSemGroup.clearCheck()
-            mFieldGroup.clearCheck()
-            mCourseGroup.clearCheck()
+
+            mFieldCS.setChecked(false)
+            mFieldBio.setChecked(false)
+            mFieldArchi.setChecked(false)
+            mSemBa1.setChecked(false)
+            mSemBa2.setChecked(false)
+            mSemBa3.setChecked(false)
+            mSemMa1.setChecked(false)
+            mSemMa2.setChecked(false)
+            mCourseCS306.setChecked(false)
+            mCourseCOM480.setChecked(false)
 
             // TODO reset query
             // mQuery = new Query
@@ -81,8 +92,12 @@ class FilteringBooksActivity : AppCompatActivity() {
 
     private fun setResultsButtonBehaviour() {
         mResults.setOnClickListener {
-            val i : Intent = Intent(this, ListSalesActivity::class.java)
-            startActivity(i)
+
+//            mQuery.onlyIncludeInterests(mInterests) TODO decomment when ready
+
+            val intent : Intent = Intent(this, ListSalesActivity::class.java)
+            //intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, mQuery)
+            startActivity(intent)
         }
     }
 
@@ -92,63 +107,78 @@ class FilteringBooksActivity : AppCompatActivity() {
         mSortTitleInc = findViewById(R.id.title_inc_sort)
         mSortTitleDec = findViewById(R.id.title_dec_sort)
 
-        mFieldGroup = findViewById(R.id.fieldGroup)
         mFieldCS = findViewById(R.id.CS)
         mFieldBio = findViewById(R.id.Biology)
         mFieldArchi = findViewById(R.id.Archi)
 
-        mSemGroup = findViewById(R.id.semester_group)
         mSemBa1 = findViewById(R.id.ic_ba1)
         mSemBa2 = findViewById(R.id.ma_ba2)
         mSemBa3 = findViewById(R.id.sv_ba3)
         mSemMa1 = findViewById(R.id.gc_ma1)
         mSemMa2 = findViewById(R.id.mt_ma2)
 
-        mCourseGroup = findViewById(R.id.courseGroup)
         mCourseCS306 = findViewById(R.id.CS306)
         mCourseCOM480 = findViewById(R.id.COM480)
     }
 
     private fun setParametersListener() {
-        setClickListener(mSortPopularity)
-        setClickListener(mSortTitleInc)
-        setClickListener(mSortTitleDec)
+        setRadioButtonClickListener(mSortPopularity)
+        setRadioButtonClickListener(mSortTitleInc)
+        setRadioButtonClickListener(mSortTitleDec)
 
-        setClickListener(mFieldCS)
-        setClickListener(mFieldBio)
-        setClickListener(mFieldArchi)
+        setCheckBoxClickListener(mFieldCS)
+        setCheckBoxClickListener(mFieldBio)
+        setCheckBoxClickListener(mFieldArchi)
 
-        setClickListener(mSemBa1)
-        setClickListener(mSemBa2)
-        setClickListener(mSemBa3)
-        setClickListener(mSemMa1)
-        setClickListener(mSemMa2)
-        setClickListener(mCourseCS306)
-        setClickListener(mCourseCOM480)
+        setCheckBoxClickListener(mSemBa1)
+        setCheckBoxClickListener(mSemBa2)
+        setCheckBoxClickListener(mSemBa3)
+        setCheckBoxClickListener(mSemMa1)
+        setCheckBoxClickListener(mSemMa2)
+        setCheckBoxClickListener(mCourseCS306)
+        setCheckBoxClickListener(mCourseCOM480)
     }
 
-    private var setClickListener = { b: RadioButton ->
-        b.setOnClickListener {
-            when (b.id) {
-                mSortPopularity.id -> print("TODO")
-                    // mQuery.withOrdering(BookOrdering.DEFAULT)
-                mSortTitleInc.id -> print("TODO")
-                    // mQuery.withOrdering(BookOrdering.TITLE_INC)
-                mSortTitleDec.id -> print("TODO")
-                    // mQuery.withOrdering(BookOrdering.TITLE_DEC)
-                else -> {
-                    val parentId = (b.parent.parent as View).id
-                    when (parentId) {
-                        mFieldGroup.id -> print("TODO")
-                        mSemGroup.id -> print("TODO")
-                        mCourseGroup.id -> print("TODO")
-                        // mField = Field(b.text)
-                        // mSemester = Semester(b.text)
-                        // mCourse = Course(b.text)
-                    }
-                }
-            }
+    private var setRadioButtonClickListener = { b: RadioButton ->
+        when (b.id) {
+            // TODO decomment when ready
+//            mSortPopularity.id -> b.setOnClickListener{ mQuery.withOrdering(BookOrdering.POPULARITY) }
+//            mSortTitleInc.id -> b.setOnClickListener{ mQuery.withOrdering(BookOrdering.TITLE_INC) }
+//            mSortTitleDec.id -> b.setOnClickListener{ mQuery.withOrdering(BookOrdering.TITLE_DEC) }
         }
     }
 
+    private var setCheckBoxClickListener = { b : CheckBox ->
+        val addFieldInterest = { b.setOnClickListener {
+            if(b.isChecked) { mInterests.add(Field(b.text.toString()))}
+            else { mInterests.remove(Field(b.text.toString()))}
+        }}
+
+        val addSemesterInterest = { b.setOnClickListener {
+            // TODO faux, corriger plus tard
+            if(b.isChecked) { mInterests.add(Semester(b.text.toString(),b.text.toString()))}
+            else { mInterests.remove(Semester(b.text.toString(),b.text.toString()))}
+        }}
+
+        val addCourseInterest = { b.setOnClickListener {
+            // TODO faux, corriger plus tard
+            if(b.isChecked) { mInterests.add(Course(b.text.toString()))}
+            else { mInterests.remove(Course(b.text.toString()))}
+        }}
+
+        when(b.id) {
+            mFieldCS.id -> addFieldInterest
+            mFieldBio.id -> addFieldInterest
+            mFieldArchi.id -> addFieldInterest
+            mSemBa1.id -> addSemesterInterest
+            mSemBa2.id -> addSemesterInterest
+            mSemBa3.id -> addSemesterInterest
+            mSemMa1.id -> addSemesterInterest
+            mSemMa2.id -> addSemesterInterest
+            mCourseCS306.id -> addCourseInterest
+            mCourseCOM480.id -> addCourseInterest
+
+            else ->{}
+        }
+    }
 }

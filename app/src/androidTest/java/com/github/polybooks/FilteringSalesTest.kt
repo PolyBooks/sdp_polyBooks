@@ -85,11 +85,17 @@ class FilteringSalesTest {
     @Test
     fun clickingOnResetClearsEverything() {
         Intents.init()
+
+        // set everything
         writeInTextEdits()
         clickOnAllParamButtons()
+
+        // click on reset to clear everything
         onView(withId(R.id.reset_button)).perform(click())
 
-//        checkTextEditsAreEmpty() // TODO enlever
+//        checkTextEditsAreEmpty() // TODO enlever pour Cirrus
+
+        // check everything is cleared
         checkAllParamButtons(false)
 
         Intents.release()
