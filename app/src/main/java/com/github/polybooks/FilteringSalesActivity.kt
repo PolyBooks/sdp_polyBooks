@@ -92,6 +92,12 @@ class FilteringSalesActivity : AppCompatActivity() {
             mConditionGood.setChecked(false)
             mConditionWorn.setChecked(false)
 
+            // reset the Edit Text views
+            mName.text.clear()
+            mISBN.text.clear()
+            mPriceMin.text.clear()
+            mPriceMax.text.clear()
+
             // reset query
             mQuery = DummySalesQuery()
         }
