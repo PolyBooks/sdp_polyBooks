@@ -1,7 +1,6 @@
 package com.github.polybooks
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -10,15 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.common.InputImage
+import com.github.polybooks.camera.BarcodeAnalyzer
 import kotlinx.android.synthetic.main.activity_scan_barcode.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -84,7 +79,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
-                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer())
+                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this, cameraExecutor, this))
                 }
 
             // Select back camera as a default
@@ -118,75 +113,11 @@ class ScanBarcodeActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
-    private fun passISBN(stringISBN: String) {
+    fun passISBN(stringISBN: String) {
         val intent = Intent(this, FillSaleActivity::class.java).apply {
             putExtra(ISBN, stringISBN)
         }
         startActivity(intent)
-    }
-
-
-    private inner class BarcodeAnalyzer : ImageAnalysis.Analyzer {
-
-        // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
-        @SuppressLint("UnsafeExperimentalUsageError")
-        private fun scanBarcodes(imageProxy: ImageProxy) {
-
-            val mediaImage = imageProxy.image
-            if (mediaImage != null) {
-                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-
-
-                // [START set_detector_options]
-                // ISBNs are represented on EAN-13 barcodes only.
-                val options = BarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(Barcode.FORMAT_EAN_13)
-                        .build()
-                // [END set_detector_options]
-
-                // [START get_detector]
-                // Specifying the formats to recognize:
-                val scanner = BarcodeScanning.getClient(options)
-                // [END get_detector]
-
-                // [START run_detector]
-                scanner.process(image)
-                    .addOnSuccessListener { barcodes ->
-                        // Task completed successfully
-                        // [START_EXCLUDE]
-                        // [START get_barcodes]
-                        for (barcode in barcodes) {
-                            // In the case of ISBN, both rawValue and displayValue are identical and simply contain the ISBN with no extra text.
-                            when (barcode.valueType) {
-                                Barcode.TYPE_ISBN -> {
-                                    val displayValue = barcode.displayValue
-                                    if (displayValue != null) {
-                                        // Needs to shutdown and close here to avoid starting the next activity several times!
-                                        cameraExecutor.shutdown()
-                                        scanner.close()
-                                        passISBN(displayValue)
-                                    }
-                                }
-                            }
-                        }
-                        // [END get_barcodes]
-                        // [END_EXCLUDE]
-                        imageProxy.close()
-                    }
-                    .addOnFailureListener {
-                        // Task failed with an exception
-                        it.printStackTrace()
-                        imageProxy.close()
-                    }
-                // [END run_detector]
-            }
-        }
-
-        override fun analyze(imageProxy: ImageProxy) {
-            // Pass image to an ML Kit Vision API
-            scanBarcodes(imageProxy)
-        }
-
     }
 
 
