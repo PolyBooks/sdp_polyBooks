@@ -21,7 +21,7 @@ class AddSaleActivityTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(AddSaleActivity::class.java)
 
-    /*
+
     @Before
     fun before() {
         Intents.init()
@@ -31,21 +31,17 @@ class AddSaleActivityTest {
     fun after() {
         Intents.release()
     }
-*/
+
     @Test
     fun scanButtonRedirects() {
-        Intents.init()
         onView(withId(R.id.scan_button)).perform(click())
         intended(hasComponent(ScanBarcodeActivity::class.java.name))
-        Intents.release()
     }
 
     @Test
     fun passISBNButtonRedirects() {
-        Intents.init()
         onView(withId(R.id.pass_isbn_button)).perform(click())
         // TODO could check that the ISBN is correctly passed too
         intended(hasComponent(FillSaleActivity::class.java.name))
-        Intents.release()
     }
 }
