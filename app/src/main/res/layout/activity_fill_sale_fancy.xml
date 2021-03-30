@@ -70,11 +70,7 @@
 
     <Button
         android:id="@+id/add_picture"
-        style="@style/Button"
-        android:layout_width="137dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        style="@style/SmallButton"
         android:layout_marginBottom="16dp"
         android:text="@string/add_picture"
         app:layout_constraintBottom_toTopOf="@+id/filled_condition"
@@ -83,11 +79,7 @@
 
     <Button
         android:id="@+id/confirm_sale"
-        style="@style/Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        style="@style/SmallButton"
         android:layout_marginBottom="32dp"
         android:onClick="confirmSale"
         android:text="@string/confirm_sale"

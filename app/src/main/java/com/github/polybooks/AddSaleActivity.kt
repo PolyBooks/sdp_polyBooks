@@ -28,7 +28,7 @@ class AddSaleActivity : AppCompatActivity() {
     }
 
     fun passISBN(view: View) {
-        val editISBN = findViewById<EditText>(R.id.filling_ISBN)
+        val editISBN = findViewById<EditText>(R.id.fill_in_ISBN)
         val stringISBN = editISBN.text.toString()
         val intent = Intent(this, FillSaleActivity::class.java).apply {
             putExtra(ISBN, stringISBN)
