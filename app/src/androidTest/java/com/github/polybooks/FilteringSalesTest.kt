@@ -181,21 +181,4 @@ class FilteringSalesTest {
         onView(withId(R.id.condition_good)).perform(scrollTo(), click())
         onView(withId(R.id.condition_worn)).perform(scrollTo(), click())
     }
-
-//    @Test
-//    fun testingCallingActivityFunctions() {
-//        Intents.init()
-//
-//        activityRule.scenario.onActivity {
-//            assertFalse(it.getTestValue())
-//        }
-//
-//        onView(withId(R.id.reset_button)).perform(click())
-//
-//        activityRule.scenario.onActivity {
-//            assertTrue(it.getTestValue())
-//        }
-//
-//        Intents.release()
-//    }
 }

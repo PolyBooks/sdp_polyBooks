@@ -68,11 +68,19 @@ class MainTest {
 
     }
 
+//    @Test
+//    fun databaseButton() {
+//
+//        onView(withId(R.id.button_open_db_tests)).perform(click())
+//        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
+//
+//    }
+
     @Test
-    fun databaseButton() {
+    fun salesFilterButton() {
 
         onView(withId(R.id.button_open_db_tests)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
 
     }
 
