@@ -9,21 +9,22 @@ import com.github.polybooks.core.Book
 import java.util.concurrent.CompletableFuture
 
 /**
-This activity receives the ISBN, either manually inputted from AddSale or deduced from the scanned barcode,
-shows the retrieved data, but do not allow modification of it, only confirmation,
-and offers some additional manual fields such as price, condition, etc.
- **/
+ * This activity receives the ISBN, either manually inputted from AddSale or deduced from the scanned barcode,
+ * shows the retrieved data, but does not allow modification of it, only confirmation,
+ * and offers some additional manual fields such as price, condition, etc.
+ */
 class FillSaleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fill_sale)
+        setContentView(R.layout.activity_fill_sale_fancy)
 
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
-        // TODO for testing purpose, the ISBN will temporarily be displayer in the authors field
-        findViewById<TextView>(R.id.filled_authors)         .apply { text = stringISBN }
+        // TODO for testing purpose, the ISBN will temporarily be displayed in the publisher field
+        findViewById<TextView>(R.id.filled_publisher)         .apply { text = stringISBN }
 
         // Check if ISBN in our database: (could check ISBN validity before)
+
         // TODO Commenting out the whole chunk as it depends on the API which is not ready yet.
         /*
         val book: CompletableFuture<Book> = CompletableFuture().supplyAsync {

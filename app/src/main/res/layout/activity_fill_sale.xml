@@ -10,7 +10,7 @@
         android:id="@+id/filled_authors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/fill_sale_authors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -32,7 +32,7 @@
         android:id="@+id/filled_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/fill_sale_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -54,7 +54,7 @@
         android:id="@+id/filled_edition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/fill_sale_edition"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -76,7 +76,7 @@
         android:id="@+id/filled_language"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/fill_sale_language"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -98,7 +98,7 @@
         android:id="@+id/filled_publisher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/fill_sale_publisher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -120,7 +120,7 @@
         android:id="@+id/filled_publish_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/fill_sale_publish_date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -142,7 +142,7 @@
         android:id="@+id/filled_format"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/fill_sale_format"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -199,11 +199,12 @@
         android:layout_height="43dp"
         android:layout_marginStart="148dp"
         android:ems="10"
-        android:hint="0.00"
+        android:hint="@string/default_price_hint"
         android:inputType="numberDecimal"
         app:layout_constraintBottom_toBottomOf="@+id/fill_chf"
         app:layout_constraintStart_toEndOf="@+id/fill_sale_price"
-        app:layout_constraintTop_toTopOf="@+id/fill_chf" />
+        app:layout_constraintTop_toTopOf="@+id/fill_chf"
+        android:importantForAutofill="no" />
 
     <TextView
         android:id="@+id/fill_chf"
@@ -222,7 +223,8 @@
         android:text="@string/add_picture"
         app:layout_constraintBottom_toBottomOf="@+id/confirm_sale"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/confirm_sale" />
+        app:layout_constraintTop_toTopOf="@+id/confirm_sale"
+        style="@style/Button" />
 
     <Button
         android:id="@+id/confirm_sale"
@@ -233,6 +235,7 @@
         android:onClick="confirmSale"
         android:text="@string/confirm_sale"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
