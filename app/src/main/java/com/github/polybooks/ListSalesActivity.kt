@@ -39,21 +39,31 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = mAdapter
 
-        val saleQuery1 = if ( intent.getSerializableExtra(EXTRA_SALE_QUERY) != null) {
-            intent.getSerializableExtra(EXTRA_SALE_QUERY) as DummySalesQuery
-        } else {
-            DummySalesQuery()
-        }
-
-        saleQuery.searchByState(setOf(SaleState.ACTIVE)).getAll().thenAccept{ list ->
+        /*
+        val saleQuery1 = intent.getSerializableExtra(EXTRA_SALE_QUERY)?:
+        */
+        val saleQuery1: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY)
+                ?.let{ intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery}
+                ?: DummySalesQuery()
+        saleQuery1.getAll().thenAccept{ list ->
             this.updateAdapter(list)
         }
+    /*if ( intent.getSerializableExtra(EXTRA_SALE_QUERY) != null) {
+    intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery
+    } else {
+    DummySalesQuery()
+    }
+    */
+    /*
+    saleQuery.searchByState(setOf(SaleState.ACTIVE)).getAll().thenAccept{ list ->
+    this.updateAdapter(list)
+    }*/
     }
 
-    private fun updateAdapter(sales : List<Sale>){
-        runOnUiThread {
-            mAdapter = SalesAdapter(sales)
-            mRecycler.adapter= mAdapter
-        }
-    }
+private fun updateAdapter(sales : List<Sale>){
+runOnUiThread {
+mAdapter = SalesAdapter(sales)
+mRecycler.adapter= mAdapter
+}
+}
 }

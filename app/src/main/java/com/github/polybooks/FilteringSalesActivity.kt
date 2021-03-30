@@ -3,17 +3,15 @@ package com.github.polybooks
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.*
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DummySalesQuery //TODO @josh
-import com.github.polybooks.core.database.SaleOrdering
+import com.github.polybooks.core.database.SaleQuery
 
 class FilteringSalesActivity : AppCompatActivity() {
 
     private lateinit var mReset : Button
     private lateinit var mResults : Button
-    private lateinit var mQuery : DummySalesQuery
 
     //--- hardcoded parameters: make it dynamic
     private lateinit var mName : EditText
@@ -26,6 +24,7 @@ class FilteringSalesActivity : AppCompatActivity() {
     private lateinit var mSortTitleDec : RadioButton
     private lateinit var mSortPriceInc : RadioButton
     private lateinit var mSortPriceDec : RadioButton
+    /*
     private lateinit var mSortPublishDateInc : RadioButton
     private lateinit var mSortPublishDateDec : RadioButton
 
@@ -40,16 +39,16 @@ class FilteringSalesActivity : AppCompatActivity() {
     private lateinit var mCourseCS306 : CheckBox
     private lateinit var mCourseCOM480 : CheckBox
     private var mInterests = mutableSetOf<Interest> ()
-
+*/
     private lateinit var mStateActive : CheckBox
     private lateinit var mStateRetracted : CheckBox
     private lateinit var mStateConcluded : CheckBox
-    private var mStates = mutableSetOf<SaleState>()
+    //private var mStates = mutableSetOf<SaleState>()
 
     private lateinit var mConditionNew : CheckBox
     private lateinit var mConditionGood : CheckBox
     private lateinit var mConditionWorn : CheckBox
-    private var mConditions = mutableSetOf<BookCondition>()
+    //private var mConditions = mutableSetOf<BookCondition>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +57,6 @@ class FilteringSalesActivity : AppCompatActivity() {
         // Get a reference to the UI parameters
         mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
-        mQuery = DummySalesQuery()
 
         // Set behaviour Reset and Results
         setResetButtonBehaviour()
@@ -66,12 +64,13 @@ class FilteringSalesActivity : AppCompatActivity() {
 
         // hardcoded : make it dynamic
         setParametersButtons()
-        setParametersListener()
+        // setParametersListener()
     }
 
     private fun setResetButtonBehaviour() {
         mReset.setOnClickListener {
             mSortGroup.clearCheck()
+            /*
             mFieldCS.setChecked(false)
             mFieldBio.setChecked(false)
             mFieldArchi.setChecked(false)
@@ -83,12 +82,13 @@ class FilteringSalesActivity : AppCompatActivity() {
             mCourseCS306.setChecked(false)
             mCourseCOM480.setChecked(false)
             mCourseCOM480.setChecked(false)
-            mStateActive.setChecked(false)
-            mStateRetracted.setChecked(false)
-            mStateConcluded.setChecked(false)
-            mConditionNew.setChecked(false)
-            mConditionGood.setChecked(false)
-            mConditionWorn.setChecked(false)
+            */
+            mStateActive.isChecked = false
+            mStateRetracted.isChecked = false
+            mStateConcluded.isChecked = false
+            mConditionNew.isChecked = false
+            mConditionGood.isChecked = false
+            mConditionWorn.isChecked = false
 
             // reset the Edit Text views
             mName.text.clear()
@@ -96,22 +96,22 @@ class FilteringSalesActivity : AppCompatActivity() {
             mPriceMin.text.clear()
             mPriceMax.text.clear()
 
-            // reset query
-            mQuery = DummySalesQuery()
         }
     }
 
     private fun setResultsButtonBehaviour() {
         mResults.setOnClickListener {
-            mQuery.onlyIncludeInterests(mInterests)
-            mQuery.searchByState(mStates)
-            mQuery.searchByCondition(mConditions)
+            //mQuery.onlyIncludeInterests(mInterests)
+            // reset query
+            var query : SaleQuery = DummySalesQuery()
+                    .searchByState(getStates())
+                    .searchByCondition(getCondition())
 
             if(mName.text.isNotEmpty())
-                mQuery.searchByTitle(mName.text.toString())
+                query = query.searchByTitle(mName.text.toString())
 
             if(mISBN.text.isNotEmpty())
-                mQuery.searchByTitle(mISBN.text.toString())
+                query = query.searchByTitle(mISBN.text.toString())
 
             // price
             val minPrice =
@@ -122,11 +122,11 @@ class FilteringSalesActivity : AppCompatActivity() {
                     if(mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
                     else 0.0f
 
-            mQuery.searchByPrice(minPrice,maxPrice)
+            query = query.searchByPrice(minPrice,maxPrice)
             //---
 
             val intent : Intent = Intent(this, ListSalesActivity::class.java)
-            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, mQuery)
+            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, query)
             startActivity(intent)
         }
     }
@@ -142,6 +142,7 @@ class FilteringSalesActivity : AppCompatActivity() {
         mSortTitleDec = findViewById(R.id.title_dec_sort)
         mSortPriceInc = findViewById(R.id.price_inc_sort)
         mSortPriceDec = findViewById(R.id.price_dec_sort)
+        /*
         mSortPublishDateInc = findViewById(R.id.publish_date_inc_sort)
         mSortPublishDateDec = findViewById(R.id.publish_date_dec_sort)
 
@@ -157,7 +158,7 @@ class FilteringSalesActivity : AppCompatActivity() {
 
         mCourseCS306 = findViewById(R.id.CS306)
         mCourseCOM480 = findViewById(R.id.COM480)
-
+        */
         mStateActive = findViewById(R.id.state_active)
         mStateRetracted = findViewById(R.id.state_retracted)
         mStateConcluded = findViewById(R.id.state_concluded)
@@ -167,6 +168,22 @@ class FilteringSalesActivity : AppCompatActivity() {
         mConditionWorn = findViewById(R.id.condition_worn)
     }
 
+    private fun getStates() : Set<SaleState> {
+        var state = mutableSetOf<SaleState>()
+        if(mStateActive.isChecked) state.add(SaleState.ACTIVE)
+        if(mStateConcluded.isChecked) state.add(SaleState.CONCLUDED)
+        if(mStateRetracted.isChecked) state.add(SaleState.RETRACTED)
+        return if(state.isEmpty()) SaleState.values().toSet() else state.toSet()
+    }
+
+    private fun getCondition() : Set<BookCondition> {
+        var condition = mutableSetOf<BookCondition>()
+        if(mConditionGood.isChecked) condition.add(BookCondition.GOOD)
+        if(mConditionNew.isChecked) condition.add(BookCondition.NEW)
+        if(mConditionWorn.isChecked) condition.add(BookCondition.WORN)
+        return if(condition.isEmpty()) BookCondition.values().toSet() else condition.toSet()
+    }
+/*
     private fun setParametersListener() {
 
         setClickListenerRadioButton(mSortTitleInc)
@@ -176,7 +193,7 @@ class FilteringSalesActivity : AppCompatActivity() {
 //        setClickListenerEditText(mISBN)
 //        setClickListenerEditText(mPriceMin)
 //        setClickListenerEditText(mPriceMax)
-
+/*
         setClickListenerCheckBox(mFieldCS)
         setClickListenerCheckBox(mFieldBio)
         setClickListenerCheckBox(mFieldArchi)
@@ -187,7 +204,7 @@ class FilteringSalesActivity : AppCompatActivity() {
         setClickListenerCheckBox(mSemMa2)
         setClickListenerCheckBox(mCourseCS306)
         setClickListenerCheckBox(mCourseCOM480)
-
+*/
         setClickListenerCheckBox(mStateActive)
         setClickListenerCheckBox(mStateConcluded)
         setClickListenerCheckBox(mStateRetracted)
@@ -203,30 +220,33 @@ class FilteringSalesActivity : AppCompatActivity() {
             mSortTitleDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.TITLE_DEC) }
             mSortPriceInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PRICE_INC) }
             mSortPriceDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PRICE_DEC) }
+            /*
             mSortPublishDateInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PUBLISH_DATE_INC) }
             mSortPublishDateDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PUBLISH_DATE_DEC) }
+            */
             else -> {}
         }
     }
+/*
+    private var setClickListenerEditText = { b : EditText ->
+        when (b.id) {
+            mName.id -> b.setOnClickListener { mQuery.searchByTitle(b.text.toString()) }
+            mISBN.id -> b.setOnClickListener { mQuery.searchByISBN13(b.text.toString()) }
 
-//    private var setClickListenerEditText = { b : EditText ->
-//        when (b.id) {
-//            mName.id -> b.setOnClickListener { mQuery.searchByTitle(b.text.toString()) }
-//            mISBN.id -> b.setOnClickListener { mQuery.searchByISBN13(b.text.toString()) }
-//
-//            mPriceMin.id -> b.setOnClickListener {
-//                mMinPrice = b.text.toString().toFloat()
-//                mQuery.searchByPrice(mMinPrice,mMaxPrice)
-//            }
-//
-//            mPriceMax.id -> b.setOnClickListener {
-//                mMaxPrice = b.text.toString().toFloat()
-//                mQuery.searchByPrice(mMinPrice,mMaxPrice)
-//            }
-//        }
-//    }
+            mPriceMin.id -> b.setOnClickListener {
+                mMinPrice = b.text.toString().toFloat()
+                mQuery.searchByPrice(mMinPrice,mMaxPrice)
+            }
 
+            mPriceMax.id -> b.setOnClickListener {
+                mMaxPrice = b.text.toString().toFloat()
+                mQuery.searchByPrice(mMinPrice,mMaxPrice)
+            }
+        }
+    }
+*/
     private var setClickListenerCheckBox = { b: CheckBox ->
+        /*
         val addFieldInterest = { b.setOnClickListener {
             if(b.isChecked) { mInterests.add(Field(b.text.toString()))}
             else { mInterests.remove(Field(b.text.toString()))}
@@ -243,7 +263,7 @@ class FilteringSalesActivity : AppCompatActivity() {
             if(b.isChecked) { mInterests.add(Course(b.text.toString()))}
             else { mInterests.remove(Course(b.text.toString()))}
         }}
-
+        */
         when (b.id) {
             mStateActive.id -> b.setOnClickListener { mStates.add(SaleState.ACTIVE) }
             mStateRetracted.id -> b.setOnClickListener { mStates.add(SaleState.RETRACTED) }
@@ -252,6 +272,7 @@ class FilteringSalesActivity : AppCompatActivity() {
             mConditionNew.id -> b.setOnClickListener { mConditions.add(BookCondition.NEW) }
             mConditionGood.id -> b.setOnClickListener { mConditions.add(BookCondition.GOOD) }
             mConditionWorn.id -> b.setOnClickListener { mConditions.add(BookCondition.WORN) }
+            /*
 
             //--- TODO ATTENTION!! : ne marchera pas pour l'instant!!!! (Interest doit implementer comparable)
             mFieldCS.id -> addFieldInterest
@@ -265,7 +286,10 @@ class FilteringSalesActivity : AppCompatActivity() {
             mCourseCS306.id -> addCourseInterest
             mCourseCOM480.id -> addCourseInterest
             //---
+            */
             else -> {}
         }
     }
+    */
+
 }

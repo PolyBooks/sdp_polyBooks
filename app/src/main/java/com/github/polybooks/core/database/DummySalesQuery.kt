@@ -36,42 +36,46 @@ val default_sale: List<Sale> = listOf(
  * Default sales query used for tests
  * @property sale the list of sales you query
  */
-class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery, Serializable {
+class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
 
 
-    override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
+    override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
 //        TODO("Not yet implemented")
-        return DummySalesQuery()
+        println("Search by interest not correct yet")
+        return DummySalesQuery(sale)
     }
 
     override fun searchByTitle(title: String): SaleQuery {
 //        TODO("Not yet implemented")
-        return DummySalesQuery()
+//        return DummySalesQuery()
+        println("Search by title not correct yet")
+        return DummySalesQuery(sale)
     }
 
-    override fun searchByState(state: Collection<SaleState>): SaleQuery {
-//        return DummySalesQuery(sale.filter { sale -> sale.state in state })
-        return DummySalesQuery()
+    override fun searchByState(state: Set<SaleState>): SaleQuery {
+        return DummySalesQuery(sale.filter { sale -> sale.state in state })
+//        return DummySalesQuery()
     }
 
-    override fun searchByCondition(condition: Collection<BookCondition>): SaleQuery {
+    override fun searchByCondition(condition: Set<BookCondition>): SaleQuery {
 //        TODO("Not yet implemented")
-        return DummySalesQuery()
+        return DummySalesQuery(sale.filter { sale -> sale.condition in condition })
+//        return DummySalesQuery()
     }
 
     override fun searchByPrice(min: Float, max: Float): SaleQuery {
 //        TODO("Not yet implemented")
-        return DummySalesQuery()
+        return DummySalesQuery(sale.filter { sale -> sale.price >= min && max <= sale.price })
     }
 
     override fun withOrdering(ordering: SaleOrdering): SaleQuery {
 //        TODO("Not yet implemented")
-        return DummySalesQuery()
+        return DummySalesQuery(sale)
     }
 
     override fun searchByISBN13(isbn13: String): SaleQuery {
 //        TODO("Not yet implemented")
-        return DummySalesQuery()
+        return DummySalesQuery(sale.filter { sale -> sale.book == isbn13 })
     }
 
     override fun getAll(): CompletableFuture<List<Sale>> {
