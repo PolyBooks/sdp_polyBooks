@@ -44,7 +44,7 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
         */
         val saleQuery1: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY)
                 ?.let{ intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery}
-                ?: DummySalesQuery()
+                ?: DummySalesQuery().searchByState(setOf(SaleState.ACTIVE))
         saleQuery1.getAll().thenAccept{ list ->
             this.updateAdapter(list)
         }
