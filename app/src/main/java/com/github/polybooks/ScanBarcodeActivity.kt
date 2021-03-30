@@ -1,7 +1,6 @@
 package com.github.polybooks
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +23,7 @@ import java.util.concurrent.Executors
  */
 class ScanBarcodeActivity : AppCompatActivity() {
 
-    // TODO next step: Maybe refactor the inner class and/or the CameraX related code, but it causes issues with access rights...
+    // TODO next step: Maybe refactor the CameraX related code?
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -79,7 +78,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
-                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this, cameraExecutor, this))
+                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer(cameraExecutor, this))
                 }
 
             // Select back camera as a default
@@ -111,13 +110,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
         private const val TAG = "CameraXBasic"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-    }
-
-    fun passISBN(stringISBN: String) {
-        val intent = Intent(this, FillSaleActivity::class.java).apply {
-            putExtra(ISBN, stringISBN)
-        }
-        startActivity(intent)
     }
 
 

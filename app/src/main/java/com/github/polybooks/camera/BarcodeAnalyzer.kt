@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.core.content.ContextCompat.startActivity
 import com.github.polybooks.FillSaleActivity
 import com.github.polybooks.ISBN
-import com.github.polybooks.ScanBarcodeActivity
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -16,11 +14,9 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
 
 class BarcodeAnalyzer(
-    private val AppCompatActivity: ScanBarcodeActivity,
     private val cameraExecutor: ExecutorService,
     private val context: Context
 ) : ImageAnalysis.Analyzer {
-
 
     // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
     @SuppressLint("UnsafeExperimentalUsageError")
