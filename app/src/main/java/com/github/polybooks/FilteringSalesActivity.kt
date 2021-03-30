@@ -20,8 +20,6 @@ class FilteringSalesActivity : AppCompatActivity() {
     private lateinit var mISBN : EditText
     private lateinit var mPriceMin : EditText
     private lateinit var mPriceMax : EditText
-    private var mMinPrice : Float = 0.0f
-    private var mMaxPrice : Float = 0.0f
 
     private lateinit var mSortGroup : RadioGroup
     private lateinit var mSortTitleInc : RadioButton
@@ -60,7 +58,7 @@ class FilteringSalesActivity : AppCompatActivity() {
         // Get a reference to the UI parameters
         mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
-        mQuery = DummySalesQuery() //TODO @josh
+        mQuery = DummySalesQuery()
 
         // Set behaviour Reset and Results
         setResetButtonBehaviour()
@@ -109,9 +107,26 @@ class FilteringSalesActivity : AppCompatActivity() {
             mQuery.searchByState(mStates)
             mQuery.searchByCondition(mConditions)
 
+            if(mName.text.isNotEmpty())
+                mQuery.searchByTitle(mName.text.toString())
+
+            if(mISBN.text.isNotEmpty())
+                mQuery.searchByTitle(mISBN.text.toString())
+
+            // price
+            val minPrice =
+                    if(mPriceMin.text.isNotEmpty()) mPriceMin.text.toString().toFloat()
+                    else 0.0f
+
+            val maxPrice =
+                    if(mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
+                    else 0.0f
+
+            mQuery.searchByPrice(minPrice,maxPrice)
+            //---
+
             val intent : Intent = Intent(this, ListSalesActivity::class.java)
-            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, DummySalesQuery())
-            //TODO @josh ca fait planter le programme de passer mQuery
+            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, mQuery)
             startActivity(intent)
         }
     }
@@ -156,11 +171,11 @@ class FilteringSalesActivity : AppCompatActivity() {
 
         setClickListenerRadioButton(mSortTitleInc)
         setClickListenerRadioButton(mSortTitleDec)
-
-        setClickListenerEditText(mName)
-        setClickListenerEditText(mISBN)
-        setClickListenerEditText(mPriceMin)
-        setClickListenerEditText(mPriceMax)
+// TODO enlever quand on sera surs que c'est bon
+//        setClickListenerEditText(mName)
+//        setClickListenerEditText(mISBN)
+//        setClickListenerEditText(mPriceMin)
+//        setClickListenerEditText(mPriceMax)
 
         setClickListenerCheckBox(mFieldCS)
         setClickListenerCheckBox(mFieldBio)
@@ -194,22 +209,22 @@ class FilteringSalesActivity : AppCompatActivity() {
         }
     }
 
-    private var setClickListenerEditText = { b : EditText ->
-        when (b.id) {
-            mName.id -> b.setOnClickListener { mQuery.searchByTitle(b.text.toString()) }
-            mISBN.id -> b.setOnClickListener { mQuery.searchByISBN13(b.text.toString()) }
-
-            mPriceMin.id -> b.setOnClickListener {
-                mMinPrice = b.text.toString().toFloat()
-                mQuery.searchByPrice(mMinPrice,mMaxPrice)
-            }
-
-            mPriceMax.id -> b.setOnClickListener {
-                mMaxPrice = b.text.toString().toFloat()
-                mQuery.searchByPrice(mMinPrice,mMaxPrice)
-            }
-        }
-    }
+//    private var setClickListenerEditText = { b : EditText ->
+//        when (b.id) {
+//            mName.id -> b.setOnClickListener { mQuery.searchByTitle(b.text.toString()) }
+//            mISBN.id -> b.setOnClickListener { mQuery.searchByISBN13(b.text.toString()) }
+//
+//            mPriceMin.id -> b.setOnClickListener {
+//                mMinPrice = b.text.toString().toFloat()
+//                mQuery.searchByPrice(mMinPrice,mMaxPrice)
+//            }
+//
+//            mPriceMax.id -> b.setOnClickListener {
+//                mMaxPrice = b.text.toString().toFloat()
+//                mQuery.searchByPrice(mMinPrice,mMaxPrice)
+//            }
+//        }
+//    }
 
     private var setClickListenerCheckBox = { b: CheckBox ->
         val addFieldInterest = { b.setOnClickListener {

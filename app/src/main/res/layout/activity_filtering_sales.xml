@@ -112,15 +112,15 @@
                         android:id="@+id/price_min"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="textFilter"
-                        android:hint="@string/enter_min_price"/>
+                        android:inputType="numberDecimal"
+                        android:hint="@string/enter_min_price" />
 
                     <EditText
                         android:id="@+id/price_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/enter_max_price"
-                        android:inputType="textFilter" />
+                        android:inputType="numberDecimal"
+                        android:hint="@string/enter_max_price" />
 
                 </LinearLayout>
             </HorizontalScrollView>
