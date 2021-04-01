@@ -186,7 +186,7 @@ class SaleDatabase : SaleDatabase {
         payload["price"] = sale.price
         payload["condition"] = sale.condition
         payload["date"] = sale.date
-        payload["state"] = SaleState.ACTIVE
+        payload["state"] = sale.state
 
         saleRef.document("Sale_ID").set(payload)
     }

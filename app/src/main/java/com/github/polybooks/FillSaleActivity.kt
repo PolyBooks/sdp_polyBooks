@@ -3,11 +3,16 @@ package com.github.polybooks
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.Sale
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.BookDatabase
+import com.google.firebase.Timestamp
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 
@@ -17,13 +22,18 @@ import java.util.concurrent.CompletableFuture
  * and offers some additional manual fields such as price, condition, etc.
  */
 class FillSaleActivity : AppCompatActivity() {
+
+    // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
+    private val salesDB = SaleDatabase()
+    private val bookDB = BookDatabase()
+
+    private lateinit var dateFromBookToSale: Timestamp
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_sale_fancy)
 
-        // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
-        val salesDB = SaleDatabase()
-        val bookDB = BookDatabase()
+
 
         val DFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
@@ -45,6 +55,8 @@ class FillSaleActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
                 findViewById<TextView>(R.id.filled_publish_date)    .apply { text = DFormat.format(book.publishDate?.toDate()) }
                 findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
+
+                dateFromBookToSale = book.publishDate!!
             }
         }
 
@@ -79,6 +91,16 @@ class FillSaleActivity : AppCompatActivity() {
     fun confirmSale(view: View) {
         // TODO determine to which activity we land, but probably not MainActivity but rather a confirmation page
         // store Sale in our database
+        val sale: Sale = Sale(
+                findViewById<TextView>(R.id.filled_title).text.toString(),
+                123, // TODO userID???
+                findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
+                // TODO spinner, both here and related to the choices availables in the xml
+                findViewById<Spinner>(R.id.filled_condition).getSelectedItem().toString(),
+                dateFromBookToSale,
+                SaleState.ACTIVE
+        )
+        salesDB.addSale(sale)
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
