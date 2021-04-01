@@ -12,6 +12,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashMap
 
 class SaleDatabase : SaleDatabase {
 
@@ -174,6 +175,20 @@ class SaleDatabase : SaleDatabase {
 
     override fun querySales(): SalesQuery {
         return SalesQuery()
+    }
+
+    fun addSale(sale: Sale) {
+        // TODO determine how to compute the sale_ID
+        // probably also add it to the interface, but as it's not a final version, it's kinda fine for now, just don't forget.77
+        val payload: MutableMap<String, Any> = HashMap()
+        payload["title"] = sale.title
+        payload["seller"] = sale.seller
+        payload["price"] = sale.price
+        payload["condition"] = sale.condition
+        payload["date"] = sale.date
+        payload["state"] = SaleState.ACTIVE
+
+        saleRef.document("Sale_ID").set(payload)
     }
 }
 

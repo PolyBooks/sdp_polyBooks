@@ -48,12 +48,12 @@ class FillSaleActivity : AppCompatActivity() {
             }
         }
 
-        // TODO Old version of doing the future, can handle errors, but probably not compatible with Firebase, and I think the interface is handling the
-        // case when our DB does not have the book already.
+
         /*
+        // Old version of doing the future, can handle errors, but probably not compatible with Firebase, and I think the interface is handling the
+        // case when our DB does not have the book already.
 
         val book: CompletableFuture<Book> = bookDB.getBook(stringISBN)
-
         book.handle { (book, err) ->
         {
             if (err == null) {
@@ -68,10 +68,8 @@ class FillSaleActivity : AppCompatActivity() {
             } else {
     // No: Use Google Books to convert stringISBN to JSON with relevant data, and also add to our database
                 // If Google Books fails to find the ISBN, pop-out an error message about invalid ISBN and go back to AddSale page
-
             }
         }
-
          */
     }
 
