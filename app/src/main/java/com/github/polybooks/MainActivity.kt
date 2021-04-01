@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         val dbButton: Button = findViewById(R.id.button_open_db_tests)
         dbButton.setOnClickListener {
-            val i : Intent = Intent(this, FirebaseActivity::class.java)
+            val i : Intent = Intent(this, ListSalesActivity::class.java)
             startActivity(i)
         }
 
