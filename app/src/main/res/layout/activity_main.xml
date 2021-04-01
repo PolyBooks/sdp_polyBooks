@@ -8,28 +8,29 @@
 
     <SearchView
         android:id="@+id/search_bar"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="284dp"
-        android:layout_marginEnd="55dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
         android:background="#DCDADA"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="137dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginBottom="26dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="32dp"
         android:text="PolyBooks"
-        android:textColor="#D83030"
+        android:textColor="?attr/colorPrimary"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/search_bar"
+        app:layout_constraintBottom_toTopOf="@id/search_bar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -37,12 +38,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginBottom="219dp"
+        android:layout_marginTop="16dp"
         android:onClick="sellBook"
         android:text="Sell"
-        app:layout_constraintBottom_toTopOf="@+id/search_bar"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/log_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="0dp"
+        android:text="Log In"
+        app:layout_constraintEnd_toStartOf="@+id/signup_button"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
@@ -51,28 +62,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="27dp"
-        android:layout_marginBottom="220dp"
+        android:layout_marginEnd="20dp"
         android:onClick="signup"
         android:text="Sign Up"
-        app:layout_constraintBottom_toTopOf="@+id/search_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/log_button"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="MissingConstraints" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/log_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="154dp"
-        android:text="Log In"
-        app:layout_constraintBottom_toTopOf="@+id/logo"
-        app:layout_constraintEnd_toStartOf="@+id/signup_button"
-        app:layout_constraintStart_toEndOf="@+id/sell_button"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
@@ -80,26 +73,20 @@
         android:id="@+id/copyrights"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="171dp"
-        android:layout_marginTop="362dp"
-        android:layout_marginEnd="172dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="16dp"
         android:text="Copyrights"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_open_db_tests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="138dp"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="139dp"
-        android:layout_marginBottom="293dp"
+        android:layout_marginTop="20dp"
         android:text="View all books"
-        app:layout_constraintBottom_toTopOf="@+id/copyrights"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar" />
@@ -108,10 +95,8 @@
         android:id="@+id/top_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginBottom="143dp"
-        android:background="#CC1A25"
-        app:layout_constraintBottom_toTopOf="@+id/logo"
+        android:layout_marginTop="10dp"
+        android:background="?attr/colorPrimaryVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sell_button" />
@@ -120,12 +105,10 @@
         android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="279dp"
-        android:layout_marginBottom="13dp"
+        android:layout_marginBottom="10dp"
         android:background="#D4D1D1"
         app:layout_constraintBottom_toTopOf="@+id/copyrights"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_open_db_tests" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

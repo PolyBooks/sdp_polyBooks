@@ -23,16 +23,13 @@ import kotlinx.android.synthetic.main.activity_scan_barcode.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-/*
-This activity opens the camera (ask permission for it if not already given) and try to detect a barcode,
-when it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
+/**
+ * This activity opens the camera (ask permission for it if not already given) and tries to detect a barcode.
+ * When it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
  */
 class ScanBarcodeActivity : AppCompatActivity() {
 
-    /* TODO next steps would be to refactor and write tests
-     * Then implement the automatic passing of ISBN to the next activity, retest and debug
-     * Then clean up code and comment it
-     */
+    // TODO next step: Maybe refactor the inner class and/or the CameraX related code, but it causes issues with access rights...
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -84,6 +81,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 }
 
             val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
                     it.setAnalyzer(cameraExecutor, BarcodeAnalyzer())
@@ -114,18 +112,13 @@ class ScanBarcodeActivity : AppCompatActivity() {
             baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
-    }
-
     companion object {
         private const val TAG = "CameraXBasic"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
-    fun passISBN(stringISBN: String) {
+    private fun passISBN(stringISBN: String) {
         val intent = Intent(this, FillSaleActivity::class.java).apply {
             putExtra(ISBN, stringISBN)
         }
@@ -157,41 +150,37 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 // [END get_detector]
 
                 // [START run_detector]
-                val result = scanner.process(image)
-                        .addOnSuccessListener { barcodes ->
-                            // Task completed successfully
-                            // [START_EXCLUDE]
-                            // [START get_barcodes]
-                            for (barcode in barcodes) {
-                                /*val bounds = barcode.boundingBox
-                                val corners = barcode.cornerPoints
-                                val rawValue = barcode.rawValue*/
-                                // In the case of ISBN, both rawValue and displayValue are identical and simply contain the ISBN with no extra text.
-
-                                when (barcode.valueType) {
-                                    Barcode.TYPE_ISBN -> {
-                                        val displayValue = barcode.displayValue
-                                        if (displayValue != null) {
-                                            Log.d("ScanBarcodeActivity", "barcode detected: ${displayValue}.")
-                                            // TODO there's a sync issue, the next activity will be started several times as it is still scanning the barcode while the next activity is starting
-                                            passISBN(displayValue)
-                                        }
+                scanner.process(image)
+                    .addOnSuccessListener { barcodes ->
+                        // Task completed successfully
+                        // [START_EXCLUDE]
+                        // [START get_barcodes]
+                        for (barcode in barcodes) {
+                            // In the case of ISBN, both rawValue and displayValue are identical and simply contain the ISBN with no extra text.
+                            when (barcode.valueType) {
+                                Barcode.TYPE_ISBN -> {
+                                    val displayValue = barcode.displayValue
+                                    if (displayValue != null) {
+                                        // Needs to shutdown and close here to avoid starting the next activity several times!
+                                        cameraExecutor.shutdown()
+                                        scanner.close()
+                                        passISBN(displayValue)
                                     }
                                 }
                             }
-                            // [END get_barcodes]
-                            // [END_EXCLUDE]
-                            imageProxy.close()
                         }
-                        .addOnFailureListener {
-                            // Task failed with an exception
-                            it.printStackTrace()
-                            imageProxy.close()
-                        }
+                        // [END get_barcodes]
+                        // [END_EXCLUDE]
+                        imageProxy.close()
+                    }
+                    .addOnFailureListener {
+                        // Task failed with an exception
+                        it.printStackTrace()
+                        imageProxy.close()
+                    }
                 // [END run_detector]
             }
         }
-
 
         override fun analyze(imageProxy: ImageProxy) {
             // Pass image to an ML Kit Vision API
