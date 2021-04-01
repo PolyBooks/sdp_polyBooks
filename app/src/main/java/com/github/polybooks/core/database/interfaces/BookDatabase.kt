@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
