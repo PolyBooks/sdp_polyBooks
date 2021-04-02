@@ -28,9 +28,8 @@ I guess next week I should focus more on my official tasks, but the pressure put
 ---
 
 
-
 ## Sophie (Scrum Master)
-
+I adapted the layouts of my Activities, so that it adapts to the cirrus emulator screen, and I took the occasion to make the views more scalable (adding different scrolling views). I also wrote tests for the two filtering activities. The overall work was much more than 8 hours, but at least I was able to finish my task. There is just a minor fix that I need to do before merging to the main branch today and moving to the next task, which is loading the filtering parameters and display dynamically the two filtering activities.
 
 ---
 
@@ -43,5 +42,5 @@ I guess next week I should focus more on my official tasks, but the pressure put
 ---
 
 
-
 ## Overall team
+This week the whole team focused on improving the test coverage. This was more difficult for some of us because their implementation use external libraries and frameworks that are very difficult to test. As the weeks pass, we will probably get a better sense of what is "testable" and how to test efficiently our code. We also did our two weekly meetings plus one long meeting to discuss of the user experience and the architecture of the UI and one meeting with the epfl's library to see if we can work with their API to query for the books in epfl.
