@@ -1,11 +1,15 @@
-package com.github.polybooks.core.databaseImpl
+package com.github.polybooks.core.database.implementation
 
 import android.annotation.SuppressLint
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.*
-import com.github.polybooks.core.database.BookOrdering.*
+import com.github.polybooks.core.database.interfaces.BookDatabase
+import com.github.polybooks.core.database.interfaces.BookOrdering
+import com.github.polybooks.core.database.interfaces.BookOrdering.*
+import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.url2json
+import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -214,11 +218,11 @@ private fun parsePublisher(jsonPublisher : JsonElement) : String {
 }
 
 @SuppressLint("SimpleDateFormat")
-private fun parsePublishDate(jsonPublishDate : JsonElement) : Date {
+private fun parsePublishDate(jsonPublishDate : JsonElement) : Timestamp {
     val dateString = asString(jsonPublishDate)
     val dateFormat = SimpleDateFormat(DATE_FORMAT)
     dateFormat.isLenient = false
-    return dateFormat.parse(dateString)
+    return Timestamp(dateFormat.parse(dateString)!!)
 }
 
 private fun asJsonObject(jsonElement : JsonElement) : JsonObject {
