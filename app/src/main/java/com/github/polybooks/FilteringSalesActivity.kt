@@ -3,11 +3,11 @@ package com.github.polybooks
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.*
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DummySalesQuery //TODO @josh
 import com.github.polybooks.core.database.SaleOrdering
+import com.github.polybooks.core.database.SaleQuery
 
 class FilteringSalesActivity : AppCompatActivity() {
 
@@ -66,7 +66,7 @@ class FilteringSalesActivity : AppCompatActivity() {
 
         // hardcoded : make it dynamic
         setParametersButtons()
-        setParametersListener()
+//        setParametersListener()
     }
 
     private fun setResetButtonBehaviour() {
@@ -97,21 +97,27 @@ class FilteringSalesActivity : AppCompatActivity() {
             mPriceMax.text.clear()
 
             // reset query
-            mQuery = DummySalesQuery()
+//            mQuery = DummySalesQuery()
         }
     }
 
     private fun setResultsButtonBehaviour() {
         mResults.setOnClickListener {
-            mQuery.onlyIncludeInterests(mInterests)
-            mQuery.searchByState(mStates)
-            mQuery.searchByCondition(mConditions)
+
+            // reset query
+            var query : SaleQuery = DummySalesQuery()
+//                    .searchByState(getStates())
+//                    .searchByCondition(getCondition())
+
+//            query.onlyIncludeInterests(mInterests)
+//            query.searchByState(mStates)
+//            query.searchByCondition(mConditions)
 
             if(mName.text.isNotEmpty())
-                mQuery.searchByTitle(mName.text.toString())
+                query.searchByTitle(mName.text.toString())
 
             if(mISBN.text.isNotEmpty())
-                mQuery.searchByTitle(mISBN.text.toString())
+                query.searchByISBN13(mISBN.text.toString())
 
             // price
             val minPrice =
@@ -122,11 +128,11 @@ class FilteringSalesActivity : AppCompatActivity() {
                     if(mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
                     else 0.0f
 
-            mQuery.searchByPrice(minPrice,maxPrice)
+            query.searchByPrice(minPrice,maxPrice)
             //---
 
-            val intent : Intent = Intent(this, ListSalesActivity::class.java)
-            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, mQuery)
+            val intent = Intent(this, ListSalesActivity::class.java)
+            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, query)
             startActivity(intent)
         }
     }
@@ -167,106 +173,84 @@ class FilteringSalesActivity : AppCompatActivity() {
         mConditionWorn = findViewById(R.id.condition_worn)
     }
 
-    private fun setParametersListener() {
-
-        setClickListenerRadioButton(mSortTitleInc)
-        setClickListenerRadioButton(mSortTitleDec)
-// TODO enlever quand on sera surs que c'est bon
-//        setClickListenerEditText(mName)
-//        setClickListenerEditText(mISBN)
-//        setClickListenerEditText(mPriceMin)
-//        setClickListenerEditText(mPriceMax)
-
-        setClickListenerCheckBox(mFieldCS)
-        setClickListenerCheckBox(mFieldBio)
-        setClickListenerCheckBox(mFieldArchi)
-        setClickListenerCheckBox(mSemBa1)
-        setClickListenerCheckBox(mSemBa2)
-        setClickListenerCheckBox(mSemBa3)
-        setClickListenerCheckBox(mSemMa1)
-        setClickListenerCheckBox(mSemMa2)
-        setClickListenerCheckBox(mCourseCS306)
-        setClickListenerCheckBox(mCourseCOM480)
-
-        setClickListenerCheckBox(mStateActive)
-        setClickListenerCheckBox(mStateConcluded)
-        setClickListenerCheckBox(mStateRetracted)
-
-        setClickListenerCheckBox(mConditionNew)
-        setClickListenerCheckBox(mConditionGood)
-        setClickListenerCheckBox(mConditionWorn)
-    }
-
-    private var setClickListenerRadioButton = { b: RadioButton ->
-        when (b.id) {
-            mSortTitleInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.TITLE_INC) }
-            mSortTitleDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.TITLE_DEC) }
-            mSortPriceInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PRICE_INC) }
-            mSortPriceDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PRICE_DEC) }
-            mSortPublishDateInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PUBLISH_DATE_INC) }
-            mSortPublishDateDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PUBLISH_DATE_DEC) }
-            else -> {}
-        }
-    }
-
-//    private var setClickListenerEditText = { b : EditText ->
+//    private fun setParametersListener() {
+//
+//        setClickListenerRadioButton(mSortTitleInc)
+//        setClickListenerRadioButton(mSortTitleDec)
+//
+//        setClickListenerCheckBox(mFieldCS)
+//        setClickListenerCheckBox(mFieldBio)
+//        setClickListenerCheckBox(mFieldArchi)
+//        setClickListenerCheckBox(mSemBa1)
+//        setClickListenerCheckBox(mSemBa2)
+//        setClickListenerCheckBox(mSemBa3)
+//        setClickListenerCheckBox(mSemMa1)
+//        setClickListenerCheckBox(mSemMa2)
+//        setClickListenerCheckBox(mCourseCS306)
+//        setClickListenerCheckBox(mCourseCOM480)
+//
+//        setClickListenerCheckBox(mStateActive)
+//        setClickListenerCheckBox(mStateConcluded)
+//        setClickListenerCheckBox(mStateRetracted)
+//
+//        setClickListenerCheckBox(mConditionNew)
+//        setClickListenerCheckBox(mConditionGood)
+//        setClickListenerCheckBox(mConditionWorn)
+//    }
+//
+//    private var setClickListenerRadioButton = { b: RadioButton ->
 //        when (b.id) {
-//            mName.id -> b.setOnClickListener { mQuery.searchByTitle(b.text.toString()) }
-//            mISBN.id -> b.setOnClickListener { mQuery.searchByISBN13(b.text.toString()) }
-//
-//            mPriceMin.id -> b.setOnClickListener {
-//                mMinPrice = b.text.toString().toFloat()
-//                mQuery.searchByPrice(mMinPrice,mMaxPrice)
-//            }
-//
-//            mPriceMax.id -> b.setOnClickListener {
-//                mMaxPrice = b.text.toString().toFloat()
-//                mQuery.searchByPrice(mMinPrice,mMaxPrice)
-//            }
+//            mSortTitleInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.TITLE_INC) }
+//            mSortTitleDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.TITLE_DEC) }
+//            mSortPriceInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PRICE_INC) }
+//            mSortPriceDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PRICE_DEC) }
+//            mSortPublishDateInc.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PUBLISH_DATE_INC) }
+//            mSortPublishDateDec.id -> b.setOnClickListener{ mQuery.withOrdering(SaleOrdering.PUBLISH_DATE_DEC) }
+//            else -> {}
 //        }
 //    }
-
-    private var setClickListenerCheckBox = { b: CheckBox ->
-
-        val addFieldInterest = { b.setOnClickListener {
-            if(b.isChecked) { mInterests.add(Field(b.text.toString()))}
-            else { mInterests.remove(Field(b.text.toString()))}
-        }}
-
-        val addSemesterInterest = { b.setOnClickListener {
-            // TODO faux, corriger plus tard
-            if(b.isChecked) { mInterests.add(Semester(b.text.toString(),b.text.toString()))}
-            else { mInterests.remove(Semester(b.text.toString(),b.text.toString()))}
-        }}
-
-        val addCourseInterest = { b.setOnClickListener {
-            // TODO faux, corriger plus tard
-            if(b.isChecked) { mInterests.add(Course(b.text.toString()))}
-            else { mInterests.remove(Course(b.text.toString()))}
-        }}
-
-        when (b.id) {
-            mStateActive.id -> b.setOnClickListener { mStates.add(SaleState.ACTIVE) }
-            mStateRetracted.id -> b.setOnClickListener { mStates.add(SaleState.RETRACTED) }
-            mStateConcluded.id -> b.setOnClickListener { mStates.add(SaleState.CONCLUDED) }
-
-            mConditionNew.id -> b.setOnClickListener { mConditions.add(BookCondition.NEW) }
-            mConditionGood.id -> b.setOnClickListener { mConditions.add(BookCondition.GOOD) }
-            mConditionWorn.id -> b.setOnClickListener { mConditions.add(BookCondition.WORN) }
-
-            //--- TODO ATTENTION!! : ne marchera pas pour l'instant!!!! (Interest doit implementer comparable)
-            mFieldCS.id -> addFieldInterest
-            mFieldBio.id -> addFieldInterest
-            mFieldArchi.id -> addFieldInterest
-            mSemBa1.id -> addSemesterInterest
-            mSemBa2.id -> addSemesterInterest
-            mSemBa3.id -> addSemesterInterest
-            mSemMa1.id -> addSemesterInterest
-            mSemMa2.id -> addSemesterInterest
-            mCourseCS306.id -> addCourseInterest
-            mCourseCOM480.id -> addCourseInterest
-            //---
-            else -> {}
-        }
-    }
+//
+//    private var setClickListenerCheckBox = { b: CheckBox ->
+//
+//        val addFieldInterest = { b.setOnClickListener {
+//            if(b.isChecked) { mInterests.add(Field(b.text.toString()))}
+//            else { mInterests.remove(Field(b.text.toString()))}
+//        }}
+//
+//        val addSemesterInterest = { b.setOnClickListener {
+//            // TODO faux, corriger plus tard
+//            if(b.isChecked) { mInterests.add(Semester(b.text.toString(),b.text.toString()))}
+//            else { mInterests.remove(Semester(b.text.toString(),b.text.toString()))}
+//        }}
+//
+//        val addCourseInterest = { b.setOnClickListener {
+//            // TODO faux, corriger plus tard
+//            if(b.isChecked) { mInterests.add(Course(b.text.toString()))}
+//            else { mInterests.remove(Course(b.text.toString()))}
+//        }}
+//
+//        when (b.id) {
+//            mStateActive.id -> b.setOnClickListener { mStates.add(SaleState.ACTIVE) }
+//            mStateRetracted.id -> b.setOnClickListener { mStates.add(SaleState.RETRACTED) }
+//            mStateConcluded.id -> b.setOnClickListener { mStates.add(SaleState.CONCLUDED) }
+//
+//            mConditionNew.id -> b.setOnClickListener { mConditions.add(BookCondition.NEW) }
+//            mConditionGood.id -> b.setOnClickListener { mConditions.add(BookCondition.GOOD) }
+//            mConditionWorn.id -> b.setOnClickListener { mConditions.add(BookCondition.WORN) }
+//
+//            //--- TODO ATTENTION!! : ne marchera pas pour l'instant!!!! (Interest doit implementer comparable)
+//            mFieldCS.id -> addFieldInterest
+//            mFieldBio.id -> addFieldInterest
+//            mFieldArchi.id -> addFieldInterest
+//            mSemBa1.id -> addSemesterInterest
+//            mSemBa2.id -> addSemesterInterest
+//            mSemBa3.id -> addSemesterInterest
+//            mSemMa1.id -> addSemesterInterest
+//            mSemMa2.id -> addSemesterInterest
+//            mCourseCS306.id -> addCourseInterest
+//            mCourseCOM480.id -> addCourseInterest
+//            //---
+//            else -> {}
+//        }
+//    }
 }
