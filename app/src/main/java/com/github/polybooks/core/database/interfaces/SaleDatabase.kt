@@ -1,16 +1,22 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+
 import java.io.Serializable
+
+import com.github.polybooks.core.database.interfaces.Query
+
 import java.util.concurrent.CompletableFuture
 
 /**
  * Provides the API for accessing sales in a Database.
  * */
 interface SaleDatabase {
+
+    fun getCollectionName(): String = "sale"
 
     /**
      * Create a new query for Sales. It originally matches all sales.
@@ -38,7 +44,7 @@ interface SaleDatabase {
  * A SaleQuery is a builder for a query to the database that will yield Sales.
  * Most methods return themselves for function chaining.
  * */
-interface SaleQuery : Query<Sale>,Serializable {
+interface SaleQuery : Query<Sale>, Serializable {
 
     /**
      * Set this query to only include sales that satisfy the given interests.
@@ -47,21 +53,33 @@ interface SaleQuery : Query<Sale>,Serializable {
 
     /**
      * Set this query to only search for sales with book's title that are like the given one.
-     * (ignoring other filters)
+     *  If called successively only the last call is taken into account
      * */
     fun searchByTitle(title : String) : SaleQuery
 
     /**
      *  Set this query to only search for sales in the given states.
+     *  If called successively only the last call is taken into account
      *  (see {@link SaleState})
      * */
     fun searchByState(state : Set<SaleState>) : SaleQuery
 
     /**
      * Set this query to only search for sales of books in the given condition.
+     * If called successively only the last call is taken into account
      * (see {@link BookCondition})
      * */
     fun searchByCondition(condition : Set<BookCondition>) : SaleQuery
+
+    /**
+     * Set this query to only search for sales above a certain price.
+     * */
+    fun searchByMinPrice(min : Float) : SaleQuery
+
+    /**
+     * Set this query to only search for sales below a certain price.
+     * */
+    fun searchByMaxPrice(max : Float) : SaleQuery
 
     /**
      * Set this query to only search for sales within the given price range.
@@ -88,4 +106,13 @@ interface SaleQuery : Query<Sale>,Serializable {
  * */
 enum class SaleOrdering {
     DEFAULT, TITLE_INC, TITLE_DEC, PRICE_INC, PRICE_DEC, PUBLISH_DATE_INC, PUBLISH_DATE_DEC,
+}
+
+enum class SaleFields(val fieldName: String) {
+    TITLE("title"),
+    CONDITION("condition"),
+    PRICE("price"),
+    PUBLICATION_DATE("date"),
+    SELLER("seller"),
+    STATE("state"),
 }

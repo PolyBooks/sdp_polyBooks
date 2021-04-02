@@ -5,8 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.DummySalesQuery //TODO @josh
-import com.github.polybooks.core.database.SaleQuery
+import com.github.polybooks.core.database.implementation.DummySalesQuery
+import com.github.polybooks.core.database.interfaces.SaleQuery
+
 
 class FilteringSalesActivity : AppCompatActivity() {
 
