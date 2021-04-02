@@ -6,9 +6,7 @@ import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.*
 import com.github.polybooks.core.database.BookOrdering.*
 import com.github.polybooks.utils.url2json
-import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -74,7 +72,7 @@ class OLBookDatabase : BookDatabase {
         override fun getAll(): CompletableFuture<List<Book>> {
             if (empty) return CompletableFuture.completedFuture(Collections.emptyList())
             else { assert(isbn != null)
-                val url = userISBN2URL(isbn!!)
+                val url = isbn2url(isbn!!)
                 if (url != null) {
                     return url2json(url)
                         .thenApply { parseBook(it) }
@@ -119,13 +117,11 @@ class OLBookDatabase : BookDatabase {
 //takes a string and try to interpret it as an isbn
 //then makes an URL to the OpenLibrary page of that isbn
 @SuppressLint("NewApi")
-private fun userISBN2URL(isbn : String) : String? {
+private fun isbn2url(isbn : String) : String? {
     val regularised = isbn.replace("[- ]".toRegex(), "")
     return if (!regularised.matches(Regex(ISBN_FORMAT))) null
     else "$OL_BASE_ADDR/isbn/$regularised.json"
 }
-
-private const val errorMessage = "Cannot parse OpenLibrary book because : "
 
 //takes a book that has the authors in the form /authors/<authorID>
 //and fetches the actual name of the author
@@ -153,7 +149,7 @@ fun updateBookWithAuthorName(book : Book) : CompletableFuture<Book> {
  * Function for internal use in OLBookDatabase. Takes the json of a book, and makes a Book from it.
  * */
 @SuppressLint("NewApi")
-fun parseBook(jsonBook : JsonElement) : Book {
+private fun parseBook(jsonBook : JsonElement) : Book {
     val jsonBookObject = asJsonObject(jsonBook);
     val title = getJsonField(jsonBookObject, TITLE_FIELD_NAME)
                 .map{parseTitle(it)}
@@ -219,39 +215,4 @@ private fun parsePublishDate(jsonPublishDate : JsonElement) : Date {
     val dateFormat = SimpleDateFormat(DATE_FORMAT)
     dateFormat.isLenient = false
     return dateFormat.parse(dateString)
-}
-
-private fun asJsonObject(jsonElement : JsonElement) : JsonObject {
-    if (!jsonElement.isJsonObject) {
-        throw Exception(errorMessage + "Json is not a JsonObject")
-    }
-    return jsonElement.asJsonObject!!
-}
-
-private fun asJsonArray(jsonElement: JsonElement) : JsonArray {
-    if (!jsonElement.isJsonArray) {
-        throw Exception(errorMessage + "Json is not a JsonArray")
-    }
-    return jsonElement.asJsonArray!!
-}
-
-private fun asString(jsonElement: JsonElement) : String {
-    if (!jsonElement.isJsonPrimitive) {
-        throw Exception(errorMessage + "Json is not a JsonPrimitive")
-    }
-    val primitive = jsonElement.asJsonPrimitive!!
-    if (!primitive.isString) {
-        throw Exception(errorMessage + "Json is not a String")
-    }
-    return primitive.asString!!
-}
-
-//try to access a field of a json object and return an optional instead of a nullable
-@SuppressLint("NewApi")
-private fun getJsonField(jsonObject: JsonObject, fieldName : String) : Optional<JsonElement> {
-    return Optional.ofNullable(jsonObject.get(fieldName))
-}
-
-private fun cantParseException(fieldName : String) : () -> Exception {
-    return { Exception("$errorMessage: Json has no field $fieldName.") }
 }

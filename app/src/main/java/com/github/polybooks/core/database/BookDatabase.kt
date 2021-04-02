@@ -1,5 +1,6 @@
 package com.github.polybooks.core.database
 
+import android.annotation.SuppressLint
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
 import java.util.concurrent.CompletableFuture
@@ -22,8 +23,9 @@ interface BookDatabase {
     /**
      * Get data about a Book from the database given it's ISBN13
      * */
+    @SuppressLint("NewApi")
     fun getBook(isbn13 : String) : CompletableFuture<Book>
-            = TODO("It can be implemented from the previous functions")
+            = queryBooks().searchByISBN13(isbn13).getAll().thenApply { it.first() }
 
     /**
      * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
