@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.interfaces
 
 import android.annotation.SuppressLint
 import com.github.polybooks.core.Book
