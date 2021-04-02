@@ -1,5 +1,6 @@
 package com.github.polybooks.core
 
+import com.google.firebase.Timestamp
 import java.util.*
 
 /**
@@ -12,11 +13,11 @@ import java.util.*
  * @property state The state of the Sale (see {@link SaleState})
  * */
 data class Sale(
-    val book : String,
+    val title : String,
     val seller : Int,
     val price : Float,
     val condition : BookCondition,
-    val publicationDate : Date,
+    val date : Timestamp,
     val state : SaleState)
 
 /**
