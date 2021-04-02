@@ -2,6 +2,8 @@
 
 ## Dario
 
+This week I contacted the EPFL library with the optic of using one of their API to provide us with bibliographic information. This turned out to be more troublesome that I anticipated and I am still investigation how to obtain reliable useful information for our purposes. Since I spent half the week waiting to get information about the Library API I wasn't able to finish the programming part of my week's assignment. Maybe next time I have a task that involves taking to a third party I should also take a small task that can be done before meeting the third party.
+
 ---
 ## Joshua
 
