@@ -1,12 +1,12 @@
-package com.github.polybooks.core.databaseImpl
+package com.github.polybooks.core.database.implementation
 
 import android.annotation.SuppressLint
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
-import com.github.polybooks.core.database.BookDatabase
-import com.github.polybooks.core.database.BookOrdering
-import com.github.polybooks.core.database.BookOrdering.*
-import com.github.polybooks.core.database.BookQuery
+import com.github.polybooks.core.database.interfaces.BookDatabase
+import com.github.polybooks.core.database.interfaces.BookOrdering
+import com.github.polybooks.core.database.interfaces.BookOrdering.*
+import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.url2json
 import com.google.gson.JsonElement
 import java.net.URLEncoder
@@ -32,7 +32,7 @@ private const val ISBN_BOOK_SEARCH = 1
 private const val TITLE_BOOK_SEARCH = 100
 
 
-class PrimoBookDatabase(url2json : (String) -> CompletableFuture<JsonElement>) : BookDatabase{
+class PrimoBookDatabase(url2json : (String) -> CompletableFuture<JsonElement>) : BookDatabase {
 
     override fun queryBooks(): BookQuery = PrimoBookQuery()
 

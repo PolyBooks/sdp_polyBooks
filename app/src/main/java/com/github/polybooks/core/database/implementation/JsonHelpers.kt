@@ -1,4 +1,4 @@
-package com.github.polybooks.core.databaseImpl
+package com.github.polybooks.core.database.implementation
 
 import android.annotation.SuppressLint
 import com.google.gson.JsonArray
