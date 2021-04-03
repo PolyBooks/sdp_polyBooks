@@ -1,4 +1,6 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.interfaces
+
+import com.github.polybooks.core.database.InterestDatabase
 
 /**
  * A Database aggregates the functionality of Book/Sale/Interest Databases in one place
