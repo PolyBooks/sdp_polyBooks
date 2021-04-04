@@ -39,7 +39,8 @@ I adapted the layouts of my Activities, so that it adapts to the cirrus emulator
 
 ## Zied
 
-
+This week I solved more warnings on xml files and created the user profile page. The user profile page is still in my local branch because of some little adjustments that I still have to do. I also spent some time trying to find out how to test that an "external" view has been displayed (for Google authentification) but still didn't find a good solution for that. 
+I will take this holiday week to finish entirely the user profile page so that I can focus on my next task of the week after the holiday (login and register with email and password).
 
 ---
 
