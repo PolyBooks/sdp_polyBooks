@@ -20,6 +20,7 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
 
     companion object {
         val EXTRA_SALE_QUERY :String = "saleQuery"
+        val EXTRA_BOOKS_QUERY : String = "bookQuery"
     }
 
     private lateinit var mRecycler : RecyclerView
