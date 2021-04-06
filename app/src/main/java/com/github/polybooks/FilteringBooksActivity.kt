@@ -93,7 +93,7 @@ class FilteringBooksActivity : AppCompatActivity() {
                     .withOrdering(getOrdering())
 
             val intent : Intent = Intent(this, ListSalesActivity::class.java)
-//            intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY, query)
+            intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY, query)
             startActivity(intent)
         }
     }

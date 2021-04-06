@@ -1,17 +1,18 @@
 package com.github.polybooks
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,10 +30,9 @@ class FilteringBooksTest {
         onView(withId(R.id.results_button)).perform(click())
         intended(hasComponent(ListSalesActivity::class.java.name))
 
-//         TODO later : wait Books DB implemented
-//        Intents.intended(Matchers.allOf(
-//                IntentMatchers.hasComponent(ListSalesActivity::class.java.name),
-//                IntentMatchers.hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY)))
+        intended(allOf(
+                hasComponent(ListSalesActivity::class.java.name),
+                hasExtraWithKey(ListSalesActivity.EXTRA_BOOKS_QUERY)))
 
 
         Intents.release()
