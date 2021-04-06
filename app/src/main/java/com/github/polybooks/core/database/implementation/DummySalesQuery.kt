@@ -36,7 +36,7 @@ val default_sale: List<Sale> = listOf(
  * Default sales query used for tests
  * @property sale the list of sales you query
  */
-class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery, Serializable {
+class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
 
 
     override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
@@ -54,11 +54,6 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery, 
         return DummySalesQuery()
     }
 
-<<<<<<< HEAD:app/src/main/java/com/github/polybooks/core/database/DummySalesQuery.kt
-    override fun searchByCondition(condition: Collection<BookCondition>): SaleQuery {
-//        TODO("Not yet implemented")
-        return DummySalesQuery()
-=======
     override fun searchByCondition(conditions: Collection<BookCondition>): SaleQuery {
         TODO("Not yet implemented")
     }
@@ -69,7 +64,6 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery, 
 
     override fun searchByMaxPrice(max: Float): SaleQuery {
         TODO("Not yet implemented")
->>>>>>> 66d34c2c26adb2f344947512a3e8aecb639a0fa9:app/src/main/java/com/github/polybooks/core/database/implementation/DummySalesQuery.kt
     }
 
     override fun searchByPrice(min: Float, max: Float): SaleQuery {

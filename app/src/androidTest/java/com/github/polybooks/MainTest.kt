@@ -80,7 +80,7 @@ class MainTest {
     fun salesFilterButton() {
 
         onView(withId(R.id.button_open_db_tests)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
 
     }
 
