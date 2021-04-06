@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun signup(view: View) {
-        setContentView(R.layout.signup)
+        setContentView(R.layout.activity_signup)
     }
 
     fun backhome(view: View) {
