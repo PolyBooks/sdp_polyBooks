@@ -3,6 +3,7 @@ package com.github.polybooks.core.database.implementation
 import android.os.Build
 import android.os.Parcelable
 import android.os.SystemClock
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
@@ -41,16 +42,17 @@ val default_sale: List<Sale> = listOf(
  */
 class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
 
-
+    private val TAG: String = "DummySalesQuery"
     override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
 //        TODO("Not yet implemented")
-        println("Search by interest not correct yet")
+        Log.d(TAG, "onlyIncludeInterests not implemented correctly")
         return DummySalesQuery(sale)
     }
 
     override fun searchByTitle(title: String): SaleQuery {
 //        TODO("Not yet implemented")
 //        return DummySalesQuery()
+        Log.d(TAG, "searchByTitle not implemented correctly")
         println("Search by title not correct yet")
         return DummySalesQuery(sale)
     }
@@ -71,7 +73,7 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
     }
 
     override fun searchByMaxPrice(max: Float): SaleQuery {
-        return DummySalesQuery(sale.filter { sale -> max <= sale.price })
+        return DummySalesQuery(sale.filter { sale -> max >= sale.price })
     }
 
 
@@ -81,11 +83,13 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
 
     override fun withOrdering(ordering: SaleOrdering): SaleQuery {
 //        TODO("Not yet implemented")
+        Log.d(TAG, "withOrdering not implemented correctly")
         return DummySalesQuery(sale)
     }
 
     override fun searchByISBN13(isbn13: String): SaleQuery {
 //        TODO("Not yet implemented")
+        Log.d(TAG, "searchByISBN13 not implemented correctly")
         return DummySalesQuery(sale.filter { sale -> sale.title == isbn13 })
     }
 
@@ -97,10 +101,18 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
     }
 
     override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        Log.d(TAG, "getN not implemented correctly")
+        return CompletableFuture.supplyAsync {
+            SystemClock.sleep(2000)
+            sale
+        }
     }
 
     override fun getCount(): CompletableFuture<Int> {
-        TODO("Not yet implemented")
+        return CompletableFuture.supplyAsync {
+            SystemClock.sleep(2000)
+            sale.size
+        }
     }
 }
