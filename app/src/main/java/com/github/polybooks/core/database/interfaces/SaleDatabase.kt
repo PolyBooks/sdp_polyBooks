@@ -1,15 +1,18 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.database.interfaces.Query
 import java.util.concurrent.CompletableFuture
 
 /**
  * Provides the API for accessing sales in a Database.
  * */
 interface SaleDatabase {
+
+    fun getCollectionName(): String = "sale"
 
     /**
      * Create a new query for Sales. It originally matches all sales.
@@ -60,7 +63,17 @@ interface SaleQuery : Query<Sale> {
      * Set this query to only search for sales of books in the given condition.
      * (see {@link BookCondition})
      * */
-    fun searchByCondition(condition : Collection<BookCondition>) : SaleQuery
+    fun searchByCondition(conditions : Collection<BookCondition>) : SaleQuery
+
+    /**
+     * Set this query to only search for sales above a certain price.
+     * */
+    fun searchByMinPrice(min : Float) : SaleQuery
+
+    /**
+     * Set this query to only search for sales below a certain price.
+     * */
+    fun searchByMaxPrice(max : Float) : SaleQuery
 
     /**
      * Set this query to only search for sales within the given price range.
@@ -87,4 +100,13 @@ interface SaleQuery : Query<Sale> {
  * */
 enum class SaleOrdering {
     DEFAULT, TITLE_INC, TITLE_DEC, PRICE_INC, PRICE_DEC, PUBLISH_DATE_INC, PUBLISH_DATE_DEC,
+}
+
+enum class SaleFields(val fieldName: String) {
+    TITLE("title"),
+    CONDITION("condition"),
+    PRICE("price"),
+    PUBLICATION_DATE("date"),
+    SELLER("seller"),
+    STATE("state"),
 }

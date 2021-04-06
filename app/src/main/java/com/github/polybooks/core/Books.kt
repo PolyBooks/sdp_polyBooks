@@ -3,7 +3,7 @@
  * */
 package com.github.polybooks.core
 
-import java.io.Serializable
+import com.google.firebase.Timestamp
 import java.util.*
 
 /**
@@ -15,7 +15,7 @@ import java.util.*
  * @property edition The edition of the book.
  * @property language The language in which the book is written.
  * @property publisher The publisher of the book.
- * @property publishDate The publish date of the book
+ * @property publishDate The publish date (UNIX timestamp) of the book
  * @property format The format of the book (Hard cover, pocket book, magazine, ...)
  * */
 data class Book(
@@ -25,6 +25,6 @@ data class Book(
         val edition : String?,
         val language : String?,
         val publisher : String?,
-        val publishDate : Date?,
-        val format : String?) : Serializable
-
+        val publishDate : Timestamp?,
+        val format : String?
+)
