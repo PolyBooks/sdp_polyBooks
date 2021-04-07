@@ -94,7 +94,7 @@ class FilteringSalesActivity : AppCompatActivity() {
 
             val maxPrice =
                     if(mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
-                    else 0.0f
+                    else Float.MAX_VALUE
 
             query = query.searchByPrice(minPrice,maxPrice)
             //---
