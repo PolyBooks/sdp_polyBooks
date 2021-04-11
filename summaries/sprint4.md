@@ -17,6 +17,7 @@ Next week I hope to get the maintainability under control, even if I'm not sure 
 
 ## Nicolas
 
+This week I tried finding/implementing a way to store/retrieve images for our sale/book catalogue. We also discussed the basic layout of the activity displaying the sales
 
 ---
 
@@ -47,3 +48,4 @@ I will take this holiday week to finish entirely the user profile page so that I
 
 ## Overall team
 This week the whole team focused on improving the test coverage. This was more difficult for some of us because their implementation use external libraries and frameworks that are very difficult to test. As the weeks pass, we will probably get a better sense of what is "testable" and how to test efficiently our code. We also did our two weekly meetings plus one long meeting to discuss of the user experience and the architecture of the UI and one meeting with the epfl's library to see if we can work with their API to query for the books in epfl.
+
