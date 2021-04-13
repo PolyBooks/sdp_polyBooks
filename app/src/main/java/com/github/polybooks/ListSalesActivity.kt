@@ -1,6 +1,7 @@
 package com.github.polybooks
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
     companion object {
         val EXTRA_SALE_QUERY :String = "saleQuery"
     }
+    private val TAG: String = "ListSaleActivity"
 
     private lateinit var mRecycler : RecyclerView
     private lateinit var mAdapter : SalesAdapter
@@ -41,31 +43,20 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = mAdapter
 
-        /*
-        val saleQuery1 = intent.getSerializableExtra(EXTRA_SALE_QUERY)?:
-        */
+
         val saleQuery1: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY)
                 ?.let{ intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery}
                 ?: DummySalesQuery().searchByState(setOf(SaleState.ACTIVE))
         saleQuery1.getAll().thenAccept{ list ->
             this.updateAdapter(list)
         }
-    /*if ( intent.getSerializableExtra(EXTRA_SALE_QUERY) != null) {
-    intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery
-    } else {
-    DummySalesQuery()
-    }
-    */
-    /*
-    saleQuery.searchByState(setOf(SaleState.ACTIVE)).getAll().thenAccept{ list ->
-    this.updateAdapter(list)
-    }*/
     }
 
-private fun updateAdapter(sales : List<Sale>){
-runOnUiThread {
-mAdapter = SalesAdapter(sales)
-mRecycler.adapter= mAdapter
-}
-}
+    private fun updateAdapter(sales : List<Sale>){
+    runOnUiThread {
+        //DEBUG Log.d(TAG, sales.toString())
+        mAdapter = SalesAdapter(sales)
+        mRecycler.adapter= mAdapter
+        }
+    }
 }

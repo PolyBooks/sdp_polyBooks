@@ -3,6 +3,7 @@ package com.github.polybooks
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummySalesQuery
@@ -11,6 +12,7 @@ import com.github.polybooks.core.database.interfaces.SaleQuery
 
 class FilteringSalesActivity : AppCompatActivity() {
 
+    private val TAG: String = "FilteringSalesActivity"
     private lateinit var mReset : Button
     private lateinit var mResults : Button
 
@@ -75,17 +77,21 @@ class FilteringSalesActivity : AppCompatActivity() {
 
     private fun setResultsButtonBehaviour() {
         mResults.setOnClickListener {
-            
-            // reset query
-            var query : SaleQuery = DummySalesQuery()
-                    .searchByState(getStates())
-                    .searchByCondition(getCondition())
 
+            var query : SaleQuery = DummySalesQuery()
+
+            //These 2 in front for dummy sales query
             if(mName.text.isNotEmpty())
                 query = query.searchByTitle(mName.text.toString())
 
+            /*
+            TODO With ordering
             if(mISBN.text.isNotEmpty())
                 query = query.searchByTitle(mISBN.text.toString())
+            */
+            query = query.searchByState(getStates())
+                    .searchByCondition(getCondition())
+
 
             // price
             val minPrice =
@@ -98,7 +104,7 @@ class FilteringSalesActivity : AppCompatActivity() {
 
             query = query.searchByPrice(minPrice,maxPrice)
             //---
-
+            //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
             val intent : Intent = Intent(this, ListSalesActivity::class.java)
             intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, query)
             startActivity(intent)
