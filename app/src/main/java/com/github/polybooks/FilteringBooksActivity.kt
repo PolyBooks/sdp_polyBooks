@@ -2,6 +2,7 @@ package com.github.polybooks
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.RadioButton
@@ -59,43 +60,33 @@ class FilteringBooksActivity : AppCompatActivity() {
         mResetParameters = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
 
-        // Set behaviour Reset and Results
-        setResetButtonBehaviour()
-        setResultsButtonBehaviour()
-
         // --- TODO hardcoded : make it dynamic
         setParametersButtons()
     }
 
-    private fun setResetButtonBehaviour() {
-        mResetParameters.setOnClickListener {
+    fun resetParameters(view: View) {
+        mSortGroup.clearCheck()
 
-            mSortGroup.clearCheck()
-
-            mFieldCS.isChecked = false
-            mFieldBio.isChecked = false
-            mFieldArchi.isChecked = false
-            mSemBa1.isChecked = false
-            mSemBa2.isChecked = false
-            mSemBa3.isChecked = false
-            mSemMa1.isChecked = false
-            mSemMa2.isChecked = false
-            mCourseCS306.isChecked = false
-            mCourseCOM480.isChecked = false
-        }
+        mFieldCS.isChecked = false
+        mFieldBio.isChecked = false
+        mFieldArchi.isChecked = false
+        mSemBa1.isChecked = false
+        mSemBa2.isChecked = false
+        mSemBa3.isChecked = false
+        mSemMa1.isChecked = false
+        mSemMa2.isChecked = false
+        mCourseCS306.isChecked = false
+        mCourseCOM480.isChecked = false
     }
 
-    private fun setResultsButtonBehaviour() {
-        mResults.setOnClickListener {
+    fun getResults(view: View) {
+        var query : BookQuery = DummyBookQuery()
+                .onlyIncludeInterests(getInterests())
+                .withOrdering(getOrdering())
 
-            var query : BookQuery = DummyBookQuery()
-                    .onlyIncludeInterests(getInterests())
-                    .withOrdering(getOrdering())
-
-            val intent : Intent = Intent(this, ListSalesActivity::class.java)
-            intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY, query)
-            startActivity(intent)
-        }
+        val intent : Intent = Intent(this, ListSalesActivity::class.java)
+        intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY, query)
+        startActivity(intent)
     }
 
     private fun setParametersButtons() {
