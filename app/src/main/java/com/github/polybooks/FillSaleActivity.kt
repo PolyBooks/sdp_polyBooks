@@ -3,11 +3,10 @@ package com.github.polybooks
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.SaleDatabase
@@ -21,13 +20,14 @@ import java.util.concurrent.CompletableFuture
  * shows the retrieved data, but does not allow modification of it, only confirmation,
  * and offers some additional manual fields such as price, condition, etc.
  */
-class FillSaleActivity : AppCompatActivity() {
+class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
     private val salesDB = SaleDatabase()
     private val bookDB = BookDatabase()
 
     private lateinit var dateFromBookToSale: Timestamp
+    private lateinit var bookConditionSelected: BookCondition
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +60,35 @@ class FillSaleActivity : AppCompatActivity() {
             }
         }
 
+
+        val spinner: Spinner = findViewById(R.id.filled_condition)
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.condition_options_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinner.adapter = adapter
+        }
+        spinner.onItemSelectedListener = this
+
+        /* Other spinner implementation
+        spinner.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>,
+                                        view: View, position: Int, id: Long) {
+                Toast.makeText(this@MainActivity,
+                    getString(R.string.selected_item) + " " +
+                            "" + languages[position], Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
+        }*/
 
         /*
         // Old version of doing the future, can handle errors, but probably not compatible with Firebase, and I think the interface is handling the
@@ -95,13 +124,51 @@ class FillSaleActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.filled_title).text.toString(),
                 123, // TODO userID???
                 findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
-                // TODO spinner, both here and related to the choices availables in the xml
-                findViewById<Spinner>(R.id.filled_condition).getSelectedItem().toString(),
+                bookConditionSelected,
+                //findViewById<Spinner>(R.id.filled_condition).getSelectedItem().toString(),
                 dateFromBookToSale,
                 SaleState.ACTIVE
         )
         salesDB.addSale(sale)
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+    }
+
+    /**
+     *
+     * Callback method to be invoked when an item in this view has been
+     * selected. This callback is invoked only when the newly selected
+     * position is different from the previously selected position or if
+     * there was no selected item.
+     *
+     * Implementers can call getItemAtPosition(position) if they need to access the
+     * data associated with the selected item.
+     *
+     * @param parent The AdapterView where the selection happened
+     * @param view The view within the AdapterView that was clicked
+     * @param position The position of the view in the adapter
+     * @param id The row id of the item that is selected
+     */
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val stringCondition: String = parent?.getItemAtPosition(position).toString()
+        when (stringCondition) {
+            "New" -> bookConditionSelected = BookCondition.NEW
+            "Good" -> bookConditionSelected = BookCondition.GOOD
+            "Worn" -> bookConditionSelected = BookCondition.WORN
+            else -> {
+                Toast.makeText(applicationContext,"Error in selecting the Book Condtion",Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    /**
+     * Callback method to be invoked when the selection disappears from this
+     * view. The selection can disappear for instance when touch is activated
+     * or when the adapter becomes empty.
+     *
+     * @param parent The AdapterView that now contains no selected item.
+     */
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 }
