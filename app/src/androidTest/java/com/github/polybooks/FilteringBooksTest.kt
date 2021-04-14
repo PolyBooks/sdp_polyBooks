@@ -13,6 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.allOf
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,56 +25,51 @@ class FilteringBooksTest {
     val activityRule : ActivityScenarioRule<FilteringBooksActivity>
             = ActivityScenarioRule(FilteringBooksActivity::class.java)
 
+    @Before
+    fun before() {
+        Intents.init()
+    }
+
+    @After
+    fun after() {
+        Intents.release()
+    }
+
     @Test
     fun intentIsFiredWhenClickingOnResults() {
-        Intents.init()
-
         onView(withId(R.id.results_button)).perform(click())
         intended(hasComponent(ListSalesActivity::class.java.name))
 
         intended(allOf(
                 hasComponent(ListSalesActivity::class.java.name),
                 hasExtraWithKey(ListSalesActivity.EXTRA_BOOKS_QUERY)))
-
-
-        Intents.release()
     }
 
     @Test
     fun clickingOnButtonInViewDoesntCrash() {
-        Intents.init()
         onView(withId(R.id.sv_ba3)).perform(click())
-        Intents.release()
     }
 
     @Test
     fun scrollAndClickingOnButtonOutsideTheViewDoesntCrash() {
-        Intents.init()
         onView(withId(R.id.CS306)).perform(scrollTo(), click())
-        Intents.release()
     }
 
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
-        Intents.init()
         clickOnAllParamButtons()
         checkAllParamButtons(true)
-        Intents.release()
     }
 
     @Test
     fun reclickingOnAParamButtonClearsIt() {
-        Intents.init()
         onView(withId(R.id.ic_ba1)).perform(scrollTo(), click())
         onView(withId(R.id.ic_ba1)).perform(click())
         onView(withId(R.id.ic_ba1)).check(ViewAssertions.matches(ViewMatchers.isNotChecked()))
-        Intents.release()
     }
 
     @Test
     fun clickingOnResetClearsEverything() {
-        Intents.init()
-
         // set everything
         clickOnAllParamButtons()
 
@@ -81,8 +78,6 @@ class FilteringBooksTest {
 
         // check everything is cleared
         checkAllParamButtons(false)
-
-        Intents.release()
     }
 
     private fun clickOnAllParamButtons() {
