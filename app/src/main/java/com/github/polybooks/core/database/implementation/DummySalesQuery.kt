@@ -40,17 +40,14 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
 
 
     override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
-//        TODO("Not yet implemented")
         return DummySalesQuery()
     }
 
     override fun searchByTitle(title: String): SaleQuery {
-//        TODO("Not yet implemented")
         return DummySalesQuery()
     }
 
     override fun searchByState(state: Collection<SaleState>): SaleQuery {
-//        return DummySalesQuery(sale.filter { sale -> sale.state in state })
         return DummySalesQuery()
     }
 
@@ -67,17 +64,14 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
     }
 
     override fun searchByPrice(min: Float, max: Float): SaleQuery {
-//        TODO("Not yet implemented")
         return DummySalesQuery()
     }
 
     override fun withOrdering(ordering: SaleOrdering): SaleQuery {
-//        TODO("Not yet implemented")
         return DummySalesQuery()
     }
 
     override fun searchByISBN13(isbn13: String): SaleQuery {
-//        TODO("Not yet implemented")
         return DummySalesQuery()
     }
 
