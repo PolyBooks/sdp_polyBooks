@@ -12,6 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.*
+import org.junit.After
+import org.junit.Before
 
 import org.junit.Rule
 import org.junit.Test
@@ -27,9 +29,18 @@ class FilteringSalesTest {
     private val RANDOM_STRING = "BL1Abl6-a"
     private val RANDOM_NUMBER = "42"
 
+    @Before
+    fun before() {
+        Intents.init()
+    }
+
+    @After
+    fun after() {
+        Intents.release()
+    }
+
     @Test
     fun intentIsFiredWhenClickingOnResults() {
-        Intents.init()
 
         onView(withId(R.id.results_button)).perform(click())
 
@@ -37,63 +48,52 @@ class FilteringSalesTest {
                 hasComponent(ListSalesActivity::class.java.name),
                 hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY)))
 
-        Intents.release()
     }
 
     @Test
     fun clickingOnButtonInViewDoesntCrash() {
-        Intents.init()
         onView(withId(R.id.title_inc_sort)).perform(click())
-        Intents.release()
     }
 
     @Test
     fun scrollAndClickingOnButtonOutsideTheViewDoesntCrash() {
-        Intents.init()
         onView(withId(R.id.price_dec_sort)).perform(scrollTo(), click())
-        Intents.release()
     }
 
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
-        Intents.init()
         clickOnAllParamButtons()
         checkAllParamButtons(true)
-        Intents.release()
     }
 
     @Test
     fun canWriteInTexts() {
-        Intents.init()
         writeInTextEdits()
 
+        /* this part fails when using the small screen of cirrus because the keyboard hides
+           the text field, must uncomment to test locally */
 //        onView(withId(R.id.book_name)).perform(scrollTo(),click())
 //        onView(withId(R.id.book_name)).check(matches(withText(RANDOM_STRING)))
-
-        Intents.release()
     }
 
-    /*
     @Test
     fun reclickingOnAParamButtonClearsIt() {
-        Intents.init()
-        onView(withId(R.id.ic_ba1)).perform(scrollTo(), click())
-        onView(withId(R.id.ic_ba1)).perform(click())
-        onView(withId(R.id.ic_ba1)).check(matches(isNotChecked()))
-        Intents.release()
+        onView(withId(R.id.state_active)).perform(scrollTo(), click())
+        onView(withId(R.id.state_active)).perform(click())
+        onView(withId(R.id.state_active)).check(matches(isNotChecked()))
     }
-*/
+
     @Test
     fun clickingOnResetClearsEverything() {
-        Intents.init()
         writeInTextEdits()
         clickOnAllParamButtons()
         onView(withId(R.id.reset_button)).perform(click())
 
-//        checkTextEditsAreEmpty() // TODO enlever
-        checkAllParamButtons(false)
+        /* this instruction fails when using the small screen of cirrus because the
+           keyboard hides the text field, must uncomment to test locally */
+//        checkTextEditsAreEmpty()
 
-        Intents.release()
+        checkAllParamButtons(false)
     }
 
     private fun writeInTextEdits() {
@@ -181,8 +181,8 @@ class FilteringSalesTest {
         onView(withId(R.id.state_retracted)).check(matches(checkFun))
         onView(withId(R.id.state_concluded)).check(matches(checkFun))
 
-        onView(withId(R.id.condition_new)).perform(scrollTo(), click())
-        onView(withId(R.id.condition_good)).perform(scrollTo(), click())
-        onView(withId(R.id.condition_worn)).perform(scrollTo(), click())
+        onView(withId(R.id.condition_new)).check(matches(checkFun))
+        onView(withId(R.id.condition_good)).check(matches(checkFun))
+        onView(withId(R.id.condition_worn)).check(matches(checkFun))
     }
 }
