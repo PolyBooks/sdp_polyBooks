@@ -1,5 +1,6 @@
 package com.github.polybooks.core.database.implementation
 
+import android.util.Log
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.interfaces.SaleDatabase
@@ -10,6 +11,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.model.Document
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -76,6 +78,7 @@ class SaleDatabase : SaleDatabase {
         private fun getQuery() : Query {
             var query: Query = saleRef
 
+            // TODO: add these when necessary
             // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
             title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
@@ -174,6 +177,28 @@ class SaleDatabase : SaleDatabase {
 
     override fun querySales(): SalesQuery {
         return SalesQuery()
+    }
+
+    private fun saleToDocument(sale: Sale): Any {
+        return hashMapOf(
+                SaleFields.TITLE.fieldName to sale.title,
+                SaleFields.SELLER.fieldName to sale.seller,
+                SaleFields.PRICE.fieldName to sale.price,
+                SaleFields.CONDITION.fieldName to sale.condition,
+                SaleFields.PUBLICATION_DATE.fieldName to sale.date,
+                SaleFields.STATE.fieldName to sale.state
+        )
+    }
+
+    override fun addSale(sale: Sale) {
+        saleRef.add(saleToDocument(sale))
+                .addOnSuccessListener { documentReference ->
+                        Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
+                .addOnFailureListener {
+                        // TODO: Change this to maybe only log the error
+                        throw DatabaseException("Failed to insert $sale into Database")
+                }
+
     }
 }
 

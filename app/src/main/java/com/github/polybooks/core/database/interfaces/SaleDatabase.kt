@@ -34,6 +34,7 @@ interface SaleDatabase {
             = querySales().withOrdering(ordering).getN(numberOfSales, page)
 
 
+    fun addSale(sale: Sale) : Unit
 }
 
 /**
