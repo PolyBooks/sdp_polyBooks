@@ -24,7 +24,7 @@ interface BookDatabase {
      * Get data about a Book from the database given it's ISBN13
      * */
     fun getBook(isbn13 : String) : CompletableFuture<Book>
-            = TODO("It can be implemented from the previous functions")
+            = queryBooks().searchByISBN13(isbn13).getAll().thenApply { it.first() }
 
     /**
      * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
