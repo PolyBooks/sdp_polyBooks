@@ -18,6 +18,21 @@
     <string name="chf">CHF</string>
     <string name="add_picture">Add Picture</string>
     <string name="confirm_sale">Confirm Sale</string>
+    <string name="log_in_using_tequila">Log In using Tequila</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="address_mail">Address mail</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="password_2">Password (2)</string>
+    <string name="sign_up_using_google_account">Sign Up using Google account</string>
+    <string name="password_1">Password (1)</string>
+    <string name="polybooks">PolyBooks</string>
+    <string name="sell">Sell</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
+    <string name="copyrights">Copyrights</string>
+    <string name="view_all_books">View all books</string>
     <string name="should_appear_automatically">Should appear automatically</string>
     <string name="default_price_hint">0.00</string>
     <string name="maybe_navbar_here_if_yes_design_once_for_all_activities">Maybe navBar here ? If yes, design once for all activities</string>
@@ -33,4 +48,5 @@
         <item>Good</item>
         <item>Worn</item>
     </string-array>
+    <string name="email">Email</string>
 </resources>

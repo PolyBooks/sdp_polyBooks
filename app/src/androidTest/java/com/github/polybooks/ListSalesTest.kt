@@ -27,16 +27,16 @@ class ListSalesTest {
         assertRecyclerViewItemCount(R.id.recyclerView, 7)
     }
     */
-    @Test
-    fun ItemsAreCorrect() {
-        assertDisplayed("Book1")
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName, "Book1");
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice, "23.00");
-        sleep(4, TimeUnit.SECONDS)
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName, "Book1");
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice, "23.00");
-        assertDisplayedAtPosition(R.id.recyclerView, 4, R.id.BookName, "Book6");
-        assertDisplayedAtPosition(R.id.recyclerView, 6, R.id.SalePrice, "23.66");
-    }
+//    @Test
+//    fun ItemsAreCorrect() {
+//        assertDisplayed("Book1")
+//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName, "Book1");
+//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice, "23.00");
+//        sleep(4, TimeUnit.SECONDS)
+//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName, "Book1");
+//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice, "23.00");
+//        assertDisplayedAtPosition(R.id.recyclerView, 4, R.id.BookName, "Book6");
+//        assertDisplayedAtPosition(R.id.recyclerView, 6, R.id.SalePrice, "23.66");
+//    }
 
 }
