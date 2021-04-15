@@ -36,10 +36,6 @@
         <activity
             android:name=".ListSalesActivity"
             android:parentActivityName=".FilteringSalesActivity" />
-
-        <activity
-            android:name=".ListSalesActivity"
-            android:parentActivityName=".FilteringBooksActivity" />
         <activity
             android:name=".FilteringBooksActivity"
             android:parentActivityName=".MainActivity"/>

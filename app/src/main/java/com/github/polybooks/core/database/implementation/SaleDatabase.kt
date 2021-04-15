@@ -193,7 +193,7 @@ class SaleDatabase : SaleDatabase {
             snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
             snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
             BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-            snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!,
+            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate().time),
             SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
         )
     }

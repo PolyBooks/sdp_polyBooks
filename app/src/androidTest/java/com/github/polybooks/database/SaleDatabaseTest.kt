@@ -43,7 +43,7 @@ class SaleDatabaseTest {
         dummySale[SaleFields.PRICE.fieldName] = 500f
         dummySale[SaleFields.CONDITION.fieldName] = BookCondition.WORN
         dummySale[SaleFields.STATE.fieldName] = SaleState.ACTIVE
-        dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!.time)
+        dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(format.parse("2016-05-05")!!.time)
         dummySale[SaleFields.SELLER.fieldName] = 301966
     }
 
@@ -252,7 +252,7 @@ class SaleDatabaseTest {
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
             301943, 666f,
             BookCondition.WORN,
-            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
+            Timestamp(format.parse("2016-05-05")!!.time),
             SaleState.RETRACTED )
         db.deleteSale(saleTest)
         BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
@@ -272,10 +272,11 @@ class SaleDatabaseTest {
     fun Delete(){
         //Used to manually delete sales
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
-            301943, 666.6f,
+        301943, 666f,
             BookCondition.WORN,
-            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
-            SaleState.RETRACTED )
+            Timestamp(format.parse("2016-05-05")!!.time),
+            SaleState.RETRACTED
+        )
         db.deleteSale(saleTest)
     }
 
@@ -286,7 +287,7 @@ class SaleDatabaseTest {
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
             301943, 666.6f,
             BookCondition.WORN,
-            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
+            Timestamp(format.parse("2016-05-05")!!.time),
             SaleState.RETRACTED )
         db.addSale(saleTest)
     }
