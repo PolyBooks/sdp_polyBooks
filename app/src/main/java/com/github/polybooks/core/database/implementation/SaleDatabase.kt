@@ -1,15 +1,24 @@
 package com.github.polybooks.core.database.implementation
 
+import android.util.Log
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.interfaces.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleFields
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
+
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import java.sql.Timestamp
+
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.*
+import com.google.firebase.firestore.model.Document
+
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -30,8 +39,8 @@ class SaleDatabase : SaleDatabase {
         private var minPrice: Float? = null
         private var maxPrice: Float? = null
 
-        override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
-            if (!interests.isEmpty()) this.interests = interests.toSet()
+        override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
+            if (interests.isNotEmpty()) this.interests = interests
             return this
         }
 
@@ -40,13 +49,13 @@ class SaleDatabase : SaleDatabase {
             return this
         }
 
-        override fun searchByState(state: Collection<SaleState>): SaleQuery {
-            if (!state.isEmpty()) this.states = state.toSet()
+        override fun searchByState(state: Set<SaleState>): SaleQuery {
+            if (state.isNotEmpty()) this.states = state
             return this
         }
 
-        override fun searchByCondition(conditions: Collection<BookCondition>): SaleQuery {
-            if (!conditions.isEmpty()) this.conditions = conditions.toSet()
+        override fun searchByCondition(condition: Set<BookCondition>): SaleQuery {
+            if (condition.isNotEmpty()) this.conditions = condition
             return this
         }
 
@@ -76,10 +85,14 @@ class SaleDatabase : SaleDatabase {
         private fun getQuery() : Query {
             var query: Query = saleRef
 
+            // TODO: add these when necessary
             // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
             title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
             states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
+            // TODO: fix this with whereIN
+            // https://stackoverflow.com/questions/45419272/firebase-how-to-structure-for-multiple-where-in-query
+            // Or find a way to this in client
             conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
             minPrice?.let { query = query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!) }
             maxPrice?.let { query = query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!) }
@@ -87,15 +100,13 @@ class SaleDatabase : SaleDatabase {
             return query
         }
 
-        private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
-            return Sale(
-                snapshot.getString(SaleFields.TITLE.fieldName)!!,
-                snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
-                snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
-                BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-                snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!,
-                SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
-            )
+        internal fun getReferenceID(sale: Sale): Task<QuerySnapshot> {
+            val query = querySales()
+                .searchByTitle(sale.title)
+                .searchByState(setOf(sale.state))
+                .searchByPrice(sale.price,sale.price) as SalesQuery
+            return query.getQuery().get()
+
         }
 
         override fun getAll(): CompletableFuture<List<Sale>> {
@@ -174,6 +185,53 @@ class SaleDatabase : SaleDatabase {
 
     override fun querySales(): SalesQuery {
         return SalesQuery()
+    }
+
+    private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
+        return Sale(
+            snapshot.getString(SaleFields.TITLE.fieldName)!!,
+            snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
+            snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
+            BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
+            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate().time),
+            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
+        )
+    }
+
+    private fun saleToDocument(sale: Sale): Any {
+        return hashMapOf(
+                SaleFields.TITLE.fieldName to sale.title,
+                SaleFields.SELLER.fieldName to sale.seller,
+                SaleFields.PRICE.fieldName to sale.price,
+                SaleFields.CONDITION.fieldName to sale.condition,
+                SaleFields.PUBLICATION_DATE.fieldName to sale.date,
+                SaleFields.STATE.fieldName to sale.state
+        )
+    }
+
+    override fun addSale(sale: Sale) {
+        saleRef.add(saleToDocument(sale))
+                .addOnSuccessListener { documentReference ->
+                        Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
+                .addOnFailureListener {
+                        // TODO: Change this to maybe only log the error
+                        throw DatabaseException("Failed to insert $sale into Database")
+                }
+    }
+
+    override fun deleteSale(sale: Sale) {
+        SalesQuery().getReferenceID(sale).continueWith { task ->
+            val result = task.result.filter { document ->
+                val s = snapshotToSale(document)
+                s.condition == sale.condition && s.seller == sale.seller && s.date == sale.date
+            }
+
+            result.forEach { document ->
+                saleRef.document(document.id).delete()
+                    .addOnFailureListener { throw DatabaseException("Could not delete $document") }
+                    .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: ${document}") }
+            }
+        }
     }
 }
 
