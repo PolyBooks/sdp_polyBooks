@@ -31,6 +31,7 @@
         <activity android:name=".ListSalesActivity"
             android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".UserProfileActivity"></activity>
 
         <activity android:name=".MainActivity">
             <intent-filter>
