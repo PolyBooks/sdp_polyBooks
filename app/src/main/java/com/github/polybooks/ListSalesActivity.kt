@@ -19,7 +19,7 @@ import com.google.firebase.Timestamp
 class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : AppCompatActivity() {
 
     companion object {
-        val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
+        val EXTRA_SALE_QUERY :String = "saleQuery"
         val EXTRA_BOOKS_QUERY_SETTINGS : String = "bookQuerySettings"
     }
 
@@ -41,10 +41,8 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = mAdapter
 
-        val saleQuery1 = if ( intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) != null) {
-//            DummySalesQuery().fromSettings(
-//                    intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS))
-            DummySalesQuery()
+        val saleQuery1 = if ( intent.getSerializableExtra(EXTRA_SALE_QUERY) != null) {
+            intent.getSerializableExtra(EXTRA_SALE_QUERY) as DummySalesQuery
         } else {
             DummySalesQuery()
         }
