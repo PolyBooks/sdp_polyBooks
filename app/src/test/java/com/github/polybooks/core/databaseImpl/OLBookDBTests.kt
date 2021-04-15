@@ -1,17 +1,39 @@
 package com.github.polybooks.core.databaseImpl
 
 import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.google.gson.JsonParser
 import junit.framework.AssertionFailedError
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 class OLBookDBTests {
 
-    val url2json = { url : String -> com.github.polybooks.utils.url2json(url)}
+    val urlRegex = """.*openlibrary.org(.*)""".toRegex()
+    val url2filename = mapOf(
+        Pair("/authors/OL7511250A.json", "OL7511250A.json"),
+        Pair("/authors/OL7482089A.json", "OL7482089A.json"),
+        Pair("/isbn/9782376863069.json", "9782376863069.json"),
+        Pair("/isbn/2376863066.json", "9782376863069.json")
+    )
+    val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
+    val url2json = { url : String ->
+        CompletableFuture.supplyAsync {
+            val regexMatch = urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
+            val address = regexMatch.groups[1]?.value ?: throw Error("The regex is wrong")
+            val filename = url2filename[address] ?: throw FileNotFoundException("File Not Found : $url")
+            val file = File("$baseDir/$filename")
+            val stream = file.inputStream()
+            JsonParser.parseReader(InputStreamReader(stream))
+        }
+    }
 
     @Test
     fun canGetBookByISBN() {
