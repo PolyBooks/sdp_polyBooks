@@ -7,6 +7,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import java.lang.Exception
 import java.lang.IllegalArgumentException
+import java.util.*
 
 class OLBookDBTests {
 
@@ -166,6 +167,13 @@ class OLBookDBTests {
             throw AssertionFailedError("Expected IllegalArgumentException, got ${e.javaClass}")
         }
         throw AssertionFailedError("Expected IllegalArgumentException, got nothing")
+    }
+
+    @Test
+    fun onlyIncludeXdontFail() {
+        val olDB = OLBookDatabase(url2json)
+        olDB.queryBooks().onlyIncludeInterests(Collections.emptyList())
+        olDB.queryBooks().searchByTitle("title")
     }
 
 }
