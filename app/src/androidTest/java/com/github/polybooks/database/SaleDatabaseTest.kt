@@ -266,6 +266,7 @@ class SaleDatabaseTest {
 
 
     }
+    
     @Test
     fun Delete(){
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",

@@ -224,42 +224,6 @@ class SaleDatabase : SaleDatabase {
                     .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: ${document}") }
             }
         }
-        /*
-    .continueWith( new Continuation() {
-    @Override
-    public Task<String> then(@NonNull Task<QuerySnapshot> task) throws Exception {
-        // Take the result from the first task and start the second one
-        QuerySnapshot result = task.result
-        return doSomething(result);
-    }
-}
-
-
-
-    .addOnSuccessListener { documents->
-    documents.filter { document ->
-        val s = snapshotToSale(document)
-        s.seller == sale.seller && s.date == sale.date
-    }
-}.addOnFailureListener { DatabaseException("Query could not be completed")  }
-SalesQuery().getReferenceID(sale).continueWith { task ->
-    task.result.documents.forEach{ document -> saleRef.document(document.id)
-        .delete()
-    }
-}
-}
-
-
-SalesQuery().getReferenceID(sale).onSuccessTask { result ->
-    result.documents.{ document -> saleRef.document(document.id)
-        .delete()
-}
-SalesQuery().getReferenceID(sale).result.documents.forEach {
-    document -> saleRef.document(document.id)
-        .delete()
-        .addOnFailureListener { DatabaseException("Could not delete $document") }
-        .addOnSuccessListener {  Log.d("SaleDataBase", "Deleted: ${document}")} }
-}*/
     }
 }
 
