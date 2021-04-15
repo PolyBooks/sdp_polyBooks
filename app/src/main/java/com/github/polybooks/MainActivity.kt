@@ -22,9 +22,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        val dbButton: Button = findViewById(R.id.button_open_db_tests)
-        dbButton.setOnClickListener {
-            val i : Intent = Intent(this, ListSalesActivity::class.java)
+        val booksButton: Button = findViewById(R.id.button_open_db_tests)
+        booksButton.setOnClickListener {
+            val i = Intent(this, FilteringBooksActivity::class.java)
             startActivity(i)
         }
 
