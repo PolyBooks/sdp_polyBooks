@@ -12,8 +12,6 @@ import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.google.firebase.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 val formatString = "yyyy-mm-dd"
@@ -39,15 +37,15 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
 
 
     override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
-        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun searchByTitle(title: String): SaleQuery {
-        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun searchByState(state: Collection<SaleState>): SaleQuery {
-        return DummySalesQuery(sale.filter { sale -> sale.state in state })
+        return DummySalesQuery()
     }
 
     override fun searchByCondition(conditions: Collection<BookCondition>): SaleQuery {
@@ -63,15 +61,15 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
     }
 
     override fun searchByPrice(min: Float, max: Float): SaleQuery {
-        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun withOrdering(ordering: SaleOrdering): SaleQuery {
-        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun searchByISBN13(isbn13: String): SaleQuery {
-        TODO("Not yet implemented")
+        return DummySalesQuery()
     }
 
     override fun getAll(): CompletableFuture<List<Sale>> {
