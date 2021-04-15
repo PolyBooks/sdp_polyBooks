@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />-->
-
+// TODO add X button to cancel the scan?
 <androidx.camera.view.PreviewView
     android:id="@+id/viewFinder"
     android:layout_width="match_parent"
