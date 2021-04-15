@@ -82,7 +82,10 @@ class SaleDatabase : SaleDatabase {
             title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
             states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
-            //conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
+            // TODO: fix this with whereIN
+            // https://stackoverflow.com/questions/45419272/firebase-how-to-structure-for-multiple-where-in-query
+            // Or find a way to this in client
+            conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
             minPrice?.let { query = query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!) }
             maxPrice?.let { query = query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!) }
 
@@ -92,7 +95,6 @@ class SaleDatabase : SaleDatabase {
         internal fun getReferenceID(sale: Sale): Task<QuerySnapshot> {
             val query = querySales()
                 .searchByTitle(sale.title)
-                .searchByCondition(setOf(sale.condition))
                 .searchByState(setOf(sale.state))
                 .searchByPrice(sale.price,sale.price) as SalesQuery
             return query.getQuery().get()
@@ -214,10 +216,9 @@ class SaleDatabase : SaleDatabase {
         SalesQuery().getReferenceID(sale).continueWith { task ->
             val result = task.result.filter { document ->
                 val s = snapshotToSale(document)
-                s.seller == sale.seller && s.date == sale.date
+                s.condition == sale.condition && s.seller == sale.seller && s.date == sale.date
             }
-            Log.d("SaleDataBase", "Results are : ${result}")
-            println("Results are : ${result}")
+
             result.forEach { document ->
                 saleRef.document(document.id).delete()
                     .addOnFailureListener { throw DatabaseException("Could not delete $document") }

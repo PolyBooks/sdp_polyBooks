@@ -266,15 +266,29 @@ class SaleDatabaseTest {
 
 
     }
-    
+
+    @Ignore
     @Test
     fun Delete(){
+        //Used to manually delete sales
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
-            301943, 666f,
+            301943, 666.6f,
             BookCondition.WORN,
             Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
             SaleState.RETRACTED )
         db.deleteSale(saleTest)
+    }
+
+    @Ignore
+    @Test
+    fun Add(){
+        //Used to manually insert sales
+        val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
+            301943, 666.6f,
+            BookCondition.WORN,
+            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
+            SaleState.RETRACTED )
+        db.addSale(saleTest)
     }
 
 
