@@ -95,10 +95,8 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                     disableButton(findViewById<Button>(R.id.confirm_sale))
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
@@ -209,7 +207,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             else -> {
                 Toast.makeText(
                     applicationContext,
-                    "Error in selecting the Book Condtion",
+                    "Error in selecting the Book Condition",
                     Toast.LENGTH_SHORT
                 ).show()
             }
