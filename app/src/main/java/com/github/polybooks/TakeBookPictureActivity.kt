@@ -48,13 +48,18 @@ class TakeBookPictureActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
+        // TODO improve vastly this function (
+        //  stop saving to file,
+        //  automatically go back to FillSaleActivity passing the taken picture as an intent which will be both displayed and saved to DB
+        //  offer flash option)
+
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
-            SimpleDateFormat(FILENAME_FORMAT, Locale.US
+            SimpleDateFormat(FILENAME_FORMAT, Locale.UK
             ).format(System.currentTimeMillis()) + ".jpg")
 
         // Create output options object which contains file + metadata
