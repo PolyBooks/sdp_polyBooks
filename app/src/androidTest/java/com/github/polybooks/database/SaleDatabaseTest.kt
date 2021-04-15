@@ -33,6 +33,7 @@ class SaleDatabaseTest {
 
     private val testSaleName = "test-123456"
 
+
     private val format : DateFormat = SimpleDateFormat("yyyy-mm-dd")
 
     private val dummySale: MutableMap<String, Any> = HashMap()
@@ -245,4 +246,35 @@ class SaleDatabaseTest {
         future = db.querySales().getN(1, 0)
         assertTrue(future.get().size <= 1)
     }
+
+    @Test
+    fun addDelete(){
+        val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
+            301943, 666f,
+            BookCondition.WORN,
+            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
+            SaleState.RETRACTED )
+        db.deleteSale(saleTest)
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        assertEquals(0,db.querySales().searchByTitle(saleTest.title).getCount().get())
+        db.addSale(saleTest)
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        assertEquals( listOf(saleTest), db.querySales().searchByTitle(saleTest.title).getAll().get())
+        db.deleteSale(saleTest)
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        assertEquals(0,db.querySales().searchByTitle(saleTest.title).getCount().get())
+
+
+    }
+    @Test
+    fun Delete(){
+        val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
+            301943, 666f,
+            BookCondition.WORN,
+            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
+            SaleState.RETRACTED )
+        db.deleteSale(saleTest)
+    }
+
+
 }

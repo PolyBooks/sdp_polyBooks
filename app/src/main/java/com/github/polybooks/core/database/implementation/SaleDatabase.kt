@@ -7,10 +7,9 @@ import com.github.polybooks.core.database.interfaces.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleFields
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.model.Document
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -83,22 +82,20 @@ class SaleDatabase : SaleDatabase {
             title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
             states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
-            conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
+            //conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
             minPrice?.let { query = query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!) }
             maxPrice?.let { query = query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!) }
 
             return query
         }
 
-        private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
-            return Sale(
-                snapshot.getString(SaleFields.TITLE.fieldName)!!,
-                snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
-                snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
-                BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-                snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!,
-                SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
-            )
+        internal fun getReferenceID(sale: Sale): Task<QuerySnapshot> {
+            val query = querySales()
+                .searchByTitle(sale.title)
+                .searchByCondition(setOf(sale.condition))
+                .searchByState(setOf(sale.state))
+                .searchByPrice(sale.price,sale.price) as SalesQuery
+            return query.getQuery().get()
         }
 
         override fun getAll(): CompletableFuture<List<Sale>> {
@@ -179,6 +176,17 @@ class SaleDatabase : SaleDatabase {
         return SalesQuery()
     }
 
+    private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
+        return Sale(
+            snapshot.getString(SaleFields.TITLE.fieldName)!!,
+            snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
+            snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
+            BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
+            snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!,
+            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
+        )
+    }
+
     private fun saleToDocument(sale: Sale): Any {
         return hashMapOf(
                 SaleFields.TITLE.fieldName to sale.title,
@@ -198,7 +206,60 @@ class SaleDatabase : SaleDatabase {
                         // TODO: Change this to maybe only log the error
                         throw DatabaseException("Failed to insert $sale into Database")
                 }
+    }
 
+    override fun deleteSale(sale: Sale) {
+        Log.d("SaleDataBase", "HERE")
+        println("HERE")
+        SalesQuery().getReferenceID(sale).continueWith { task ->
+            val result = task.result.filter { document ->
+                val s = snapshotToSale(document)
+                s.seller == sale.seller && s.date == sale.date
+            }
+            Log.d("SaleDataBase", "Results are : ${result}")
+            println("Results are : ${result}")
+            result.forEach { document ->
+                saleRef.document(document.id).delete()
+                    .addOnFailureListener { throw DatabaseException("Could not delete $document") }
+                    .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: ${document}") }
+            }
+        }
+        /*
+    .continueWith( new Continuation() {
+    @Override
+    public Task<String> then(@NonNull Task<QuerySnapshot> task) throws Exception {
+        // Take the result from the first task and start the second one
+        QuerySnapshot result = task.result
+        return doSomething(result);
+    }
+}
+
+
+
+    .addOnSuccessListener { documents->
+    documents.filter { document ->
+        val s = snapshotToSale(document)
+        s.seller == sale.seller && s.date == sale.date
+    }
+}.addOnFailureListener { DatabaseException("Query could not be completed")  }
+SalesQuery().getReferenceID(sale).continueWith { task ->
+    task.result.documents.forEach{ document -> saleRef.document(document.id)
+        .delete()
+    }
+}
+}
+
+
+SalesQuery().getReferenceID(sale).onSuccessTask { result ->
+    result.documents.{ document -> saleRef.document(document.id)
+        .delete()
+}
+SalesQuery().getReferenceID(sale).result.documents.forEach {
+    document -> saleRef.document(document.id)
+        .delete()
+        .addOnFailureListener { DatabaseException("Could not delete $document") }
+        .addOnSuccessListener {  Log.d("SaleDataBase", "Deleted: ${document}")} }
+}*/
     }
 }
 
