@@ -211,8 +211,6 @@ class SaleDatabase : SaleDatabase {
     }
 
     override fun deleteSale(sale: Sale) {
-        Log.d("SaleDataBase", "HERE")
-        println("HERE")
         SalesQuery().getReferenceID(sale).continueWith { task ->
             val result = task.result.filter { document ->
                 val s = snapshotToSale(document)
