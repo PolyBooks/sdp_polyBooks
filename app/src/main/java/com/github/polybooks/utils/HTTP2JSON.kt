@@ -1,6 +1,5 @@
 package com.github.polybooks.utils
 
-import android.annotation.SuppressLint
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import java.io.BufferedReader
@@ -17,7 +16,6 @@ const val READ_TIMEOUT = 10000
  * Given an URL fetches the json at that address and
  * parses it as JSON
  * */
-@SuppressLint("NewApi")
 fun url2json(urlString : String) : CompletableFuture<JsonElement> {
     return CompletableFuture.supplyAsync {
         val url = URL(urlString)

@@ -1,6 +1,5 @@
 package com.github.polybooks.core.database.interfaces
 
-import android.annotation.SuppressLint
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
 import java.util.concurrent.CompletableFuture
@@ -23,7 +22,6 @@ interface BookDatabase {
     /**
      * Get data about a Book from the database given it's ISBN13
      * */
-    @SuppressLint("NewApi")
     fun getBook(isbn13 : String) : CompletableFuture<Book>
             = queryBooks().searchByISBN13(isbn13).getAll().thenApply { it.first() }
 
