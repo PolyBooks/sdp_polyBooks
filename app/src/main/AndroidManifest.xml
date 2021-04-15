@@ -32,15 +32,18 @@
         <activity
             android:name=".ScanBarcodeActivity"
             android:parentActivityName=".AddSaleActivity" />
-        <activity
-            android:name=".FillSaleActivity"
-            android:parentActivityName=".AddSaleActivity" />
-        <activity
-            android:name=".AddSaleActivity"
-            android:parentActivityName=".MainActivity" />
+        <activity android:name=".FillSaleActivity"
+            android:parentActivityName=".AddSaleActivity"/>
+        <activity android:name=".AddSaleActivity"
+            android:parentActivityName=".MainActivity"/>
+
         <activity
             android:name=".ListSalesActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".FilteringBooksActivity" />
+        <activity
+            android:name=".FilteringBooksActivity"
+            android:parentActivityName=".MainActivity"/>
+
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

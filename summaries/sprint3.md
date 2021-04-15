@@ -6,7 +6,6 @@ I think that my time estimate this week was accurate. I implemented the Open lib
 ---
 
 
-
 ## Joshua (Scrum Master)
 
 I helped Nicolas a bit with connecting to the database before going on to try to create tests for the main activity. There I encountered problems that ate up the rest of my time
