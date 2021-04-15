@@ -1,7 +1,6 @@
 package com.github.polybooks.core.database.implementation
 
 import android.os.Build
-import android.os.Parcelable
 import android.os.SystemClock
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.BookCondition
@@ -13,8 +12,6 @@ import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.google.firebase.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 val formatString = "yyyy-mm-dd"
