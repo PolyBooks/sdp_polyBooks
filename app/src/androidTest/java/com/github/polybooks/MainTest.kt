@@ -81,7 +81,10 @@ class MainTest {
 
         onView(withId(R.id.button_open_db_tests)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
-
+      /*
+        onView(withId(R.id.button_open_db_tests)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+      */
     }
 
     //This one

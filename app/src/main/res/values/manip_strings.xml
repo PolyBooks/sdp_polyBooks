@@ -7,4 +7,6 @@
     <string name="enter_book_isbn">Enter book ISBN</string>
     <string name="enter_min_price">min   </string>
     <string name="enter_max_price">max   </string>
+    <string name="enter_min_price">min price</string>
+    <string name="enter_max_price">max price</string>
 </resources>

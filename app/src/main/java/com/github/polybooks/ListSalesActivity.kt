@@ -22,8 +22,10 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
 
     companion object {
         val EXTRA_SALE_QUERY :String = "saleQuery"
+        val EXTRA_BOOKS_QUERY : String = "bookQuery"
     }
     private val TAG: String = "ListSaleActivity"
+
 
     private lateinit var mRecycler : RecyclerView
     private lateinit var mAdapter : SalesAdapter
@@ -44,10 +46,12 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
         mRecycler.adapter = mAdapter
 
 
+
         val saleQuery1: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY)
                 ?.let{ intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery}
                 ?: DummySalesQuery().searchByState(setOf(SaleState.ACTIVE))
         saleQuery1.getAll().thenAccept{ list ->
+
             this.updateAdapter(list)
         }
     }

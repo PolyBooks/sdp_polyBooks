@@ -17,8 +17,6 @@ import java.sql.Timestamp
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 val formatString = "yyyy-mm-dd"
@@ -60,6 +58,7 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
     override fun searchByState(state: Set<SaleState>): SaleQuery {
         return DummySalesQuery(sale.filter { sale -> sale.state in state })
 //        return DummySalesQuery()
+
     }
 
 
@@ -78,6 +77,7 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
 
 
     override fun searchByPrice(min: Float, max: Float): SaleQuery {
+
         return searchByMaxPrice(max).searchByMinPrice(min)
     }
 
@@ -91,6 +91,7 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
 //        TODO("Not yet implemented")
         Log.d(TAG, "searchByISBN13 not implemented correctly")
         return DummySalesQuery(sale.filter { sale -> sale.title == isbn13 })
+
     }
 
     override fun getAll(): CompletableFuture<List<Sale>> {

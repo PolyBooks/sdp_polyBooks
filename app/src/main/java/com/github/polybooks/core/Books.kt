@@ -4,10 +4,8 @@
 package com.github.polybooks.core
 
 
+import java.sql.Timestamp
 import java.io.Serializable
-
-import com.google.firebase.Timestamp
-
 import java.util.*
 
 /**
@@ -30,4 +28,6 @@ data class Book(
         val language : String?,
         val publisher : String?,
         val publishDate : Timestamp?,
-        val format : String?)  : Serializable
+        val format : String?
+) : Serializable
+

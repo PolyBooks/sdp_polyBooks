@@ -10,213 +10,240 @@
     <Button
         android:id="@+id/reset_button"
         android:text= "@string/reset"
+        android:onClick="resetParameters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="9dp"
+
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+        style="@style/Button" />
+
 
 <!--    Go to results -->
     <Button
         android:id="@+id/results_button"
         android:text="@string/results"
+        android:onClick="getResults"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
-        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/Button" />
 
 <!--    Lists of parameters -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/results_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reset_button" >
 
-        <!-- Sort by parameter -->
+
         <LinearLayout
-            android:id="@+id/sortBy_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-            <TextView
-                android:text="@string/sort_by"
+            <!-- Sort by parameter -->
+            <LinearLayout
+                android:id="@+id/sortBy_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-            
-            <RadioGroup
-                android:id="@+id/sort_group"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="@string/sort_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <RadioGroup
+                        android:id="@+id/sort_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <RadioButton
+                            android:id="@+id/popularity_sort"
+                            android:text="@string/popularity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <RadioButton
+                            android:id="@+id/title_inc_sort"
+                            android:text="@string/title_inc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <RadioButton
+                            android:id="@+id/title_dec_sort"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/title_dec" />
+
+                    </RadioGroup>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+
+            <!-- Field parameter (eg. Computer Science, Biology) -->
+            <LinearLayout
+                android:id="@+id/field_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="vertical">
 
-                <RadioButton
-                    android:id="@+id/popularity_sort"
-                    android:text="@string/popularity"
+                <TextView
+                    android:text="@string/field"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
 
-                <RadioButton
-                    android:id="@+id/title_inc_sort"
-                    android:text="@string/title_inc"
+                <HorizontalScrollView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />                   android:layout_height="match_parent"
+                    android:layout_height="wrap_content" >
 
-                <RadioButton
-                    android:id="@+id/title_dec_sort"
-                    android:text="@string/title_dec"
+                    <LinearLayout
+                        android:id="@+id/fieldGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/CS"
+                            android:text="@string/cs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/Biology"
+                            android:text="@string/bio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/Archi"
+                            android:text="@string/archi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
+            <LinearLayout
+                android:id="@+id/semester_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="@string/semester"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
 
-            </RadioGroup>
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:id="@+id/semester_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <CheckBox
+                            android:id="@+id/ic_ba1"
+                            android:text="@string/ic_ba1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/ma_ba2"
+                            android:text="@string/ma_ba2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/sv_ba3"
+                            android:text="@string/sv_ba3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/gc_ma1"
+                            android:text="@string/gc_ma1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/mt_ma2"
+                            android:text="@string/mt_ma2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+
+            <!-- Course parameter (eg. CS306) -->
+            <LinearLayout
+                android:id="@+id/course_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="@string/course"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/courseGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <CheckBox
+                            android:id="@+id/CS306"
+                            android:text="@string/cs306"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/COM480"
+                            android:text="@string/com480"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
 
         </LinearLayout>
 
-
-        <!-- Field parameter (eg. Computer Science, Biology) -->
-        <LinearLayout
-            android:id="@+id/field_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:text="@string/field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-
-            <RadioGroup
-                android:id="@+id/fieldGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/CS"
-                    android:text="@string/cs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <RadioButton
-                    android:id="@+id/Biology"
-                    android:text="@string/bio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <RadioButton
-                    android:id="@+id/Archi"
-                    android:text="@string/archi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-            </RadioGroup>
-
-        </LinearLayout>
-
-        <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
-        <LinearLayout
-            android:id="@+id/semester_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:text="@string/semester"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-
-            <RadioGroup
-                android:id="@+id/semester_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <RadioButton
-                    android:id="@+id/ic_ba1"
-                    android:text="@string/ic_ba1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <RadioButton
-                    android:id="@+id/ma_ba2"
-                    android:text="@string/ma_ba2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <RadioButton
-                    android:id="@+id/sv_ba3"
-                    android:text="@string/sv_ba3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <RadioButton
-                    android:id="@+id/gc_ma1"
-                    android:text="@string/gc_ma1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <RadioButton
-                    android:id="@+id/mt_ma2"
-                    android:text="@string/mt_ma2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-            </RadioGroup>
-
-        </LinearLayout>
-
-
-        <!-- Course parameter (eg. CS306) -->
-        <LinearLayout
-            android:id="@+id/course_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:text="@string/course"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-
-            <RadioGroup
-                android:id="@+id/courseGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <RadioButton
-                    android:id="@+id/CS306"
-                    android:text="@string/cs306"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <RadioButton
-                    android:id="@+id/COM480"
-                    android:text="@string/com480"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-            </RadioGroup>
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

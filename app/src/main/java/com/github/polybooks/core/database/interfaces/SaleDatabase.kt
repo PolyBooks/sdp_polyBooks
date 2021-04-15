@@ -37,7 +37,17 @@ interface SaleDatabase {
     fun getNSales(numberOfSales : Int, page : Int, ordering : SaleOrdering) : CompletableFuture<List<Sale>>
             = querySales().withOrdering(ordering).getN(numberOfSales, page)
 
+    /**
+     * Add the given sale to the database
+     * @param sale The sale to insert
+     */
+    fun addSale(sale: Sale) : Unit
 
+    /**
+     * Delete the given sale to the database
+     * @param sale The sale to delete
+     */
+    fun deleteSale(sale: Sale) : Unit
 }
 
 /**
