@@ -4,7 +4,11 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+
+import java.io.Serializable
+
 import com.github.polybooks.core.database.interfaces.Query
+
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -50,30 +54,32 @@ interface SaleDatabase {
  * A SaleQuery is a builder for a query to the database that will yield Sales.
  * Most methods return themselves for function chaining.
  * */
-interface SaleQuery : Query<Sale> {
+interface SaleQuery : Query<Sale>, Serializable {
 
     /**
      * Set this query to only include sales that satisfy the given interests.
      * */
-    fun onlyIncludeInterests(interests: Collection<Interest>) : SaleQuery
+    fun onlyIncludeInterests(interests: Set<Interest>) : SaleQuery
 
     /**
      * Set this query to only search for sales with book's title that are like the given one.
-     * (ignoring other filters)
+     *  If called successively only the last call is taken into account
      * */
     fun searchByTitle(title : String) : SaleQuery
 
     /**
      *  Set this query to only search for sales in the given states.
+     *  If called successively only the last call is taken into account
      *  (see {@link SaleState})
      * */
-    fun searchByState(state : Collection<SaleState>) : SaleQuery
+    fun searchByState(state : Set<SaleState>) : SaleQuery
 
     /**
      * Set this query to only search for sales of books in the given condition.
+     * If called successively only the last call is taken into account
      * (see {@link BookCondition})
      * */
-    fun searchByCondition(conditions : Collection<BookCondition>) : SaleQuery
+    fun searchByCondition(condition : Set<BookCondition>) : SaleQuery
 
     /**
      * Set this query to only search for sales above a certain price.

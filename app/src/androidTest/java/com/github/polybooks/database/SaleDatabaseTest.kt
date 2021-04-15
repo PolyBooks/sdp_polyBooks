@@ -9,7 +9,6 @@ import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleFields
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
@@ -18,6 +17,7 @@ import org.junit.Assert.*
 import org.junit.rules.ExpectedException
 import java.lang.Exception
 import java.lang.IllegalArgumentException
+import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,7 +43,7 @@ class SaleDatabaseTest {
         dummySale[SaleFields.PRICE.fieldName] = 500f
         dummySale[SaleFields.CONDITION.fieldName] = BookCondition.WORN
         dummySale[SaleFields.STATE.fieldName] = SaleState.ACTIVE
-        dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!)
+        dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(format.parse("2016-05-05")!!.time)
         dummySale[SaleFields.SELLER.fieldName] = 301966
     }
 
@@ -177,22 +177,22 @@ class SaleDatabaseTest {
         // empty collection should be ignored
         assertEquals(
                 db.querySales().getCount().get(),
-                db.querySales().searchByCondition(emptyList()).getCount().get()
+                db.querySales().searchByCondition(emptySet()).getCount().get()
         )
 
         assertEquals(
                 db.listAllSales().get().filter { s -> s.condition == BookCondition.NEW }.size,
-                db.querySales().searchByCondition(listOf(BookCondition.NEW)).getCount().get()
+                db.querySales().searchByCondition(setOf(BookCondition.NEW)).getCount().get()
         )
 
         assertEquals(
                 db.listAllSales().get().filter { s -> (s.condition == BookCondition.NEW || s.condition == BookCondition.WORN)}.size,
-                db.querySales().searchByCondition(listOf(BookCondition.NEW, BookCondition.WORN)).getCount().get()
+                db.querySales().searchByCondition(setOf(BookCondition.NEW, BookCondition.WORN)).getCount().get()
         )
 
         assertEquals(
                 db.querySales().getCount().get(),
-                db.querySales().searchByCondition(listOf(BookCondition.NEW, BookCondition.GOOD, BookCondition.WORN)).getCount().get()
+                db.querySales().searchByCondition(setOf(BookCondition.NEW, BookCondition.GOOD, BookCondition.WORN)).getCount().get()
         )
     }
 
@@ -201,12 +201,12 @@ class SaleDatabaseTest {
         // empty collection should be ignored
         assertEquals(
                 db.querySales().getCount().get(),
-                db.querySales().searchByState(emptyList()).getCount().get()
+                db.querySales().searchByState(emptySet()).getCount().get()
         )
 
         assertEquals(
                 db.listAllSales().get().filter { s -> s.state == SaleState.ACTIVE }.size,
-                db.querySales().searchByState(listOf(SaleState.ACTIVE)).getCount().get()
+                db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
         )
     }
 
@@ -252,7 +252,7 @@ class SaleDatabaseTest {
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
             301943, 666f,
             BookCondition.WORN,
-            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
+            Timestamp(format.parse("2016-05-05")!!.time),
             SaleState.RETRACTED )
         db.deleteSale(saleTest)
         BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
@@ -272,10 +272,11 @@ class SaleDatabaseTest {
     fun Delete(){
         //Used to manually delete sales
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
-            301943, 666.6f,
+        301943, 666f,
             BookCondition.WORN,
-            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
-            SaleState.RETRACTED )
+            Timestamp(format.parse("2016-05-05")!!.time),
+            SaleState.RETRACTED
+        )
         db.deleteSale(saleTest)
     }
 
@@ -286,7 +287,7 @@ class SaleDatabaseTest {
         val saleTest = Sale("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd",
             301943, 666.6f,
             BookCondition.WORN,
-            Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!),
+            Timestamp(format.parse("2016-05-05")!!.time),
             SaleState.RETRACTED )
         db.addSale(saleTest)
     }

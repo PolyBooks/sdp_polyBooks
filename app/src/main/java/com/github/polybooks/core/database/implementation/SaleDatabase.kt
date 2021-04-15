@@ -7,10 +7,18 @@ import com.github.polybooks.core.database.interfaces.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleFields
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
+
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import java.sql.Timestamp
+
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.model.Document
+
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -31,8 +39,8 @@ class SaleDatabase : SaleDatabase {
         private var minPrice: Float? = null
         private var maxPrice: Float? = null
 
-        override fun onlyIncludeInterests(interests: Collection<Interest>): SaleQuery {
-            if (!interests.isEmpty()) this.interests = interests.toSet()
+        override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
+            if (interests.isNotEmpty()) this.interests = interests
             return this
         }
 
@@ -41,13 +49,13 @@ class SaleDatabase : SaleDatabase {
             return this
         }
 
-        override fun searchByState(state: Collection<SaleState>): SaleQuery {
-            if (!state.isEmpty()) this.states = state.toSet()
+        override fun searchByState(state: Set<SaleState>): SaleQuery {
+            if (state.isNotEmpty()) this.states = state
             return this
         }
 
-        override fun searchByCondition(conditions: Collection<BookCondition>): SaleQuery {
-            if (!conditions.isEmpty()) this.conditions = conditions.toSet()
+        override fun searchByCondition(condition: Set<BookCondition>): SaleQuery {
+            if (condition.isNotEmpty()) this.conditions = condition
             return this
         }
 
@@ -98,6 +106,7 @@ class SaleDatabase : SaleDatabase {
                 .searchByState(setOf(sale.state))
                 .searchByPrice(sale.price,sale.price) as SalesQuery
             return query.getQuery().get()
+
         }
 
         override fun getAll(): CompletableFuture<List<Sale>> {
@@ -184,7 +193,7 @@ class SaleDatabase : SaleDatabase {
             snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
             snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
             BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-            snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!,
+            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate().time),
             SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
         )
     }
