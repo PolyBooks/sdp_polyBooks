@@ -3,6 +3,7 @@
  * */
 package com.github.polybooks.core
 
+
 import java.sql.Timestamp
 import java.io.Serializable
 import java.util.*
@@ -29,3 +30,4 @@ data class Book(
         val publishDate : Timestamp?,
         val format : String?
 ) : Serializable
+

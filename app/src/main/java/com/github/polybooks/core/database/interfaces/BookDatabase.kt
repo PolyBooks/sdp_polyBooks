@@ -82,7 +82,7 @@ data class BookSettings(
         val ordering: BookOrdering,
         val isbn13: String?,
         val title : String?,
-        val interests : HashSet<Interest>?
+        val interests : Set<Interest>?
 ) : Serializable
 
 /**

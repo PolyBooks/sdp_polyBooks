@@ -4,7 +4,6 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.core.database.interfaces.Query
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
@@ -34,7 +33,17 @@ interface SaleDatabase {
     fun getNSales(numberOfSales : Int, page : Int, ordering : SaleOrdering) : CompletableFuture<List<Sale>>
             = querySales().withOrdering(ordering).getN(numberOfSales, page)
 
+    /**
+     * Add the given sale to the database
+     * @param sale The sale to insert
+     */
+    fun addSale(sale: Sale) : Unit
 
+    /**
+     * Delete the given sale to the database
+     * @param sale The sale to delete
+     */
+    fun deleteSale(sale: Sale) : Unit
 }
 
 /**
@@ -46,25 +55,27 @@ interface SaleQuery : Query<Sale> {
     /**
      * Set this query to only include sales that satisfy the given interests.
      * */
-    fun onlyIncludeInterests(interests: Collection<Interest>) : SaleQuery
+    fun onlyIncludeInterests(interests: Set<Interest>) : SaleQuery
 
     /**
      * Set this query to only search for sales with book's title that are like the given one.
-     * (ignoring other filters)
+     *  If called successively only the last call is taken into account
      * */
     fun searchByTitle(title : String) : SaleQuery
 
     /**
      *  Set this query to only search for sales in the given states.
+     *  If called successively only the last call is taken into account
      *  (see {@link SaleState})
      * */
-    fun searchByState(state : Collection<SaleState>) : SaleQuery
+    fun searchByState(state : Set<SaleState>) : SaleQuery
 
     /**
      * Set this query to only search for sales of books in the given condition.
+     * If called successively only the last call is taken into account
      * (see {@link BookCondition})
      * */
-    fun searchByCondition(conditions : Collection<BookCondition>) : SaleQuery
+    fun searchByCondition(condition : Set<BookCondition>) : SaleQuery
 
     /**
      * Set this query to only search for sales above a certain price.
@@ -101,7 +112,7 @@ interface SaleQuery : Query<Sale> {
     /**
      * Build new Query from Settings
      */
-    fun fromSettings(settings : BookSettings) : SaleQuery
+    fun fromSettings(settings : SaleSettings) : SaleQuery
 
 }
 
@@ -109,9 +120,9 @@ data class SaleSettings(
         val ordering: SaleOrdering,
         val isbn13: String?,
         val title : String?,
-        val interests : HashSet<Interest>?,
-        val states : HashSet<SaleState> ?,
-        val conditions : HashSet<BookCondition>?,
+        val interests : Set<Interest>?,
+        val states : Set<SaleState> ?,
+        val conditions : Set<BookCondition>?,
         val minPrice : Float?,
         val maxPrice : Float?
 ) : Serializable
