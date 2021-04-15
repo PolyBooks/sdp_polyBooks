@@ -5,6 +5,7 @@ import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.interfaces.Query
+import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -92,8 +93,28 @@ interface SaleQuery : Query<Sale> {
      * */
     fun searchByISBN13(isbn13: String) : SaleQuery
 
+    /**
+     * Get Settings from the book
+     * */
+    fun getSettings() : SaleSettings
+
+    /**
+     * Build new Query from Settings
+     */
+    fun fromSettings(settings : BookSettings) : SaleQuery
+
 }
 
+data class SaleSettings(
+        val ordering: SaleOrdering,
+        val isbn13: String?,
+        val title : String?,
+        val interests : HashSet<Interest>?,
+        val states : HashSet<SaleState> ?,
+        val conditions : HashSet<BookCondition>?,
+        val minPrice : Float?,
+        val maxPrice : Float?
+) : Serializable
 
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.

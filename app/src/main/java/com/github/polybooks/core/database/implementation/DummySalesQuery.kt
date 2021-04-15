@@ -7,8 +7,10 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.google.firebase.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -85,5 +87,14 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
 
     override fun getCount(): CompletableFuture<Int> {
         TODO("Not yet implemented")
+    }
+
+    override fun getSettings(): SaleSettings {
+        return SaleSettings(SaleOrdering.DEFAULT,
+                null, null, null, null, null,null, null)
+    }
+
+    override fun fromSettings(settings: BookSettings): SaleQuery {
+        return DummySalesQuery()
     }
 }
