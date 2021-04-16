@@ -117,12 +117,3 @@ interface SaleQuery : Query<Sale>, Serializable {
 enum class SaleOrdering {
     DEFAULT, TITLE_INC, TITLE_DEC, PRICE_INC, PRICE_DEC, PUBLISH_DATE_INC, PUBLISH_DATE_DEC,
 }
-
-enum class SaleFields(val fieldName: String) {
-    TITLE("title"),
-    CONDITION("condition"),
-    PRICE("price"),
-    PUBLICATION_DATE("date"),
-    SELLER("seller"),
-    STATE("state"),
-}

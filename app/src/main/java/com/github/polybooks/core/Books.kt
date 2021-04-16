@@ -30,3 +30,16 @@ data class Book(
         val format : String?
 ) : Serializable
 
+/**
+ * Allows access to the name of a field
+ */
+enum class BookFields(val fieldName: String) {
+    ISBN13("isbn13"),
+    AUTHORS("authors"),
+    TITLE("title"),
+    EDITION("edition"),
+    LANGUAGE("language"),
+    PUBLISHER("publisher"),
+    PUBLISHDATE("publishDate"),
+    FORMAT("format")
+}

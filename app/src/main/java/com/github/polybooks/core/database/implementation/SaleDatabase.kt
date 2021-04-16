@@ -3,8 +3,8 @@ package com.github.polybooks.core.database.implementation
 import android.util.Log
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
+import com.github.polybooks.core.database.LocalUserException
 import com.github.polybooks.core.database.interfaces.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleFields
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 
@@ -12,10 +12,10 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
-import java.sql.Timestamp
 
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.model.Document
 
@@ -87,7 +87,9 @@ class SaleDatabase : SaleDatabase {
 
             // TODO: add these when necessary
             // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
-            title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
+            // TODO: fix this for title
+            // FieldPath.of(SaleFields.BOOK.fieldName, BookFields.TITLE.fieldName)
+            title?.let { query = query.whereEqualTo(SaleFields.BOOK.fieldName + "." + BookFields.TITLE.fieldName, title) }//SaleFields.BOOK.fieldName[BookFields.TITLE.fieldName]
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
             states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
             // TODO: fix this with whereIN
@@ -102,7 +104,7 @@ class SaleDatabase : SaleDatabase {
 
         internal fun getReferenceID(sale: Sale): Task<QuerySnapshot> {
             val query = querySales()
-                .searchByTitle(sale.title)
+                .searchByTitle(sale.book.title)
                 .searchByState(setOf(sale.state))
                 .searchByPrice(sale.price,sale.price) as SalesQuery
             return query.getQuery().get()
@@ -189,27 +191,31 @@ class SaleDatabase : SaleDatabase {
 
     private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
         return Sale(
-            snapshot.getString(SaleFields.TITLE.fieldName)!!,
-            snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
+            snapshot.get(SaleFields.BOOK.fieldName)!! as Book,
+            snapshot.get(SaleFields.SELLER.fieldName)!! as User,
             snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
             BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate().time),
-            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
+            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
+            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
+            null
         )
     }
 
     private fun saleToDocument(sale: Sale): Any {
         return hashMapOf(
-                SaleFields.TITLE.fieldName to sale.title,
+                SaleFields.BOOK.fieldName to sale.book,
                 SaleFields.SELLER.fieldName to sale.seller,
                 SaleFields.PRICE.fieldName to sale.price,
                 SaleFields.CONDITION.fieldName to sale.condition,
                 SaleFields.PUBLICATION_DATE.fieldName to sale.date,
-                SaleFields.STATE.fieldName to sale.state
+                SaleFields.STATE.fieldName to sale.state,
+                SaleFields.IMAGE.fieldName to null //TODO change this, image goes elsewhere
         )
     }
 
     override fun addSale(sale: Sale) {
+        if(sale.seller == LocalUser)
+            throw LocalUserException("Cannot add sale as LocalUser")
         saleRef.add(saleToDocument(sale))
                 .addOnSuccessListener { documentReference ->
                         Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
@@ -220,6 +226,8 @@ class SaleDatabase : SaleDatabase {
     }
 
     override fun deleteSale(sale: Sale) {
+        if(sale.seller == LocalUser)
+            throw LocalUserException("Cannot add sale as LocalUser")
         SalesQuery().getReferenceID(sale).continueWith { task ->
             val result = task.result.filter { document ->
                 val s = snapshotToSale(document)
