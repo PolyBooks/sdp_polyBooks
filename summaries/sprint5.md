@@ -15,8 +15,11 @@ Next week I hope to be able to do something a bit different
 
 ---
 
-
 ## Nicolas
+
+This week I started working on the UI (show all active sales that correspond to a request) for the first time. This is not finished yet, but it's starting to look good. The tests are lagging behind (ie. minimal for now)
+
+Next week, I'll want to finish this task to get a little more experience with UI. I might also be able to take another task
 
 ---
 
