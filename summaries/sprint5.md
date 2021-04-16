@@ -43,7 +43,10 @@ I was not able to implement my tasks of the week. I spent time correcting the is
 
 ## Zied (Scrum Master)
 
+This week I implemented de user profile page from which we can use there informations to increase the user experience on PolyBooks. I also wanted to implement the registration/login by email and password but because of health issues I didn't have time.
 ---
 
 
 ## Overall team
+
+Overall, this week, we talked a lot on how to organize the database to best fit the service proposed by Polybooks.

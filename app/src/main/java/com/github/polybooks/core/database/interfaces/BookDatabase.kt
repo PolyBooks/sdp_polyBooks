@@ -2,6 +2,7 @@ package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
+import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -23,7 +24,7 @@ interface BookDatabase {
      * Get data about a Book from the database given it's ISBN13
      * */
     fun getBook(isbn13 : String) : CompletableFuture<Book>
-            = TODO("It can be implemented from the previous functions")
+            = queryBooks().searchByISBN13(isbn13).getAll().thenApply { it.first() }
 
     /**
      * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
@@ -40,7 +41,7 @@ interface BookDatabase {
  * A BookQuery is a builder for a query to the database that will yield Books.
  * Most methods return themselves for function chaining.
  * */
-interface BookQuery : Query<Book> {
+interface BookQuery : Query<Book>, Serializable {
 
     /**
      * Set this query to only include books that satisfy the given interests.
