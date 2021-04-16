@@ -1,5 +1,6 @@
 package com.github.polybooks.database
 
+import android.util.Log
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
@@ -20,6 +21,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 class SaleDatabaseTest {
     @get:Rule
@@ -40,7 +42,7 @@ class SaleDatabaseTest {
         dummySale[SaleFields.CONDITION.fieldName] = BookCondition.WORN
         dummySale[SaleFields.STATE.fieldName] = SaleState.ACTIVE
         dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(format.parse("2016-05-05")!!)
-        dummySale[SaleFields.SELLER.fieldName] = 301966
+        dummySale[SaleFields.SELLER.fieldName] = LoggedUser(301966, "Le givre")
     }
 
 
@@ -111,9 +113,9 @@ class SaleDatabaseTest {
 
     @Test
     fun t_searchByTitle() {
-        val initialCount: Int = db.querySales().searchByTitle(dummySale[SaleFields.BOOK.fieldName].toString()).getCount().get()
+        val initialCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
         addDummySaleTest()
-        val secondCount: Int = db.querySales().searchByTitle(dummySale[SaleFields.BOOK.fieldName].toString()).getCount().get()
+        val secondCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
 
         assertEquals(secondCount, initialCount + 1)
         assertEquals(0, db.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getCount().get())
@@ -293,11 +295,11 @@ class SaleDatabaseTest {
         assertEquals(0,db.querySales().searchByTitle(saleTest.book.title).getCount().get())
     }
 
-
+    @Ignore
     @Test
     fun Delete(){
         //Used to manually delete sales
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
+        val saleTest = Sale(anonymousBook("test1"),
                 LoggedUser(301943, "The best"),
                 666f,
                 BookCondition.WORN,
@@ -305,17 +307,46 @@ class SaleDatabaseTest {
                 SaleState.RETRACTED, null )
         db.deleteSale(saleTest)
     }
+    @Ignore
+    @Test
+    fun See(){
+        fun snapshotToBook(map: HashMap<String,Any>): Book {
+            return Book(
+                    map[BookFields.ISBN13.fieldName] as String,
+                    map[BookFields.AUTHORS.fieldName] as List<String>?,
+                    map[BookFields.TITLE.fieldName] as String,
+                    map[BookFields.EDITION.fieldName] as String?,
+                    map[BookFields.LANGUAGE.fieldName] as String?,
+                    map[BookFields.PUBLISHER.fieldName] as String?,
+                    map[BookFields.PUBLISHDATE.fieldName] as java.sql.Timestamp?,
+                    map[BookFields.FORMAT.fieldName] as String?
+            )
 
+        }
+        //Used to manually delete sales
+        assertEquals(SaleFields.BOOK.fieldName + "." + BookFields.TITLE.fieldName, "book.title")
+        saleRef.whereEqualTo("book.title", "test1").get().addOnSuccessListener { documents ->
+            val book = documents.map { document ->
+                //println(document)
+                //Log.d(null, "$document")
+                document.get(SaleFields.BOOK.fieldName) as HashMap<String, Any>//as Book
+            }
+            println("====================================${snapshotToBook(book[0])}")
+            Log.d("====================================", "${snapshotToBook(book[0])}")
+            assertEquals("test1", book[0].get("title") as String)
+        }
+    }
 
+    @Ignore
     @Test
     fun Add(){
         //Used to manually insert sales
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
-                LoggedUser(301943, "The best"),
-                666f,
-                BookCondition.WORN,
-                Timestamp(format.parse("2016-05-05")!!),
-                SaleState.RETRACTED, null )
+        val saleTest = Sale(anonymousBook("Phisics for dummies"),
+                LoggedUser(301966, "La chevre"),
+                49.5f,
+                BookCondition.NEW,
+                Timestamp(format.parse("2022-01-01")!!),
+                SaleState.ACTIVE, null )
         db.addSale(saleTest)
     }
 

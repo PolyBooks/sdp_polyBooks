@@ -21,6 +21,7 @@ import com.google.firebase.firestore.model.Document
 
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashMap
 
 class SaleDatabase : SaleDatabase {
 
@@ -189,15 +190,51 @@ class SaleDatabase : SaleDatabase {
         return SalesQuery()
     }
 
-    private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
+    private fun snapshotToBook(map: HashMap<String,Any>): Book {
+        Log.d("7===================================","${map}" )
+        return Book(
+                map[BookFields.ISBN13.fieldName] as String,
+                map[BookFields.AUTHORS.fieldName] as List<String>?,
+                map[BookFields.TITLE.fieldName] as String,
+                map[BookFields.EDITION.fieldName] as String?,
+                map[BookFields.LANGUAGE.fieldName] as String?,
+                map[BookFields.PUBLISHER.fieldName] as String?,
+                map[BookFields.PUBLISHDATE.fieldName] as java.sql.Timestamp?,
+                map[BookFields.FORMAT.fieldName] as String?
+        )
+
+    }
+
+    private fun snapshotToUser(map: HashMap<String,Any>): User {
+        Log.d("8===================================","${map}" )
+        val b1 = (map[UserFields.UID.fieldName] as Long).toInt()
+        Log.d("b1++++++++++++++++++++","${b1!!.javaClass.name}" )
+        val b2 = map[UserFields.PSEUDO.fieldName] as String
+        Log.d("b2++++++++++++++++++++","${b2}" )
+        return LoggedUser(
+                b1 as Int,
+                b2
+        )
+
+    }
+
+    private fun snapshotToSale(snapshot: DocumentSnapshot): Sale {
+        Log.d("6===================================","${snapshot}" )
+        //println("6=========================${snapshot}")
+        val a1 = snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>)
+        Log.d("a1++++++++++++++++++++","${a1}" )
+        val a2 = snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>)
+        Log.d("a2++++++++++++++++++++","${a2}" )
+        val a3 = snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat()
+        Log.d("a3++++++++++++++++++++","${a3}" )
         return Sale(
-            snapshot.get(SaleFields.BOOK.fieldName)!! as Book,
-            snapshot.get(SaleFields.SELLER.fieldName)!! as User,
-            snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
-            BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
-            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
-            null
+                a1,//snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
+                a2,//snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
+                a3,//snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
+                BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
+                Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
+                SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
+                null
         )
     }
 
@@ -229,12 +266,20 @@ class SaleDatabase : SaleDatabase {
         if(sale.seller == LocalUser)
             throw LocalUserException("Cannot add sale as LocalUser")
         SalesQuery().getReferenceID(sale).continueWith { task ->
-            val result = task.result.filter { document ->
+            Log.d("1===================================","${task.result.documents}" )
+            //println("1=========================${task.result.documents}")
+            val result = task.result.documents.filter { document ->
+                Log.d("0===================================","$document" )
                 val s = snapshotToSale(document)
-                s.condition == sale.condition && s.seller == sale.seller && s.date == sale.date
+                Log.d("2===================================","LEA IS HERE" )
+                Log.d("2===================================","$s" )
+                //println("2=========================$s")
+                s.condition == sale.condition /*&& s.seller == sale.seller */&& s.date == sale.date
             }
 
             result.forEach { document ->
+                Log.d("3===================================","$document" )
+                //println("3=========================$document")
                 saleRef.document(document.id).delete()
                     .addOnFailureListener { throw DatabaseException("Could not delete $document") }
                     .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: ${document}") }
