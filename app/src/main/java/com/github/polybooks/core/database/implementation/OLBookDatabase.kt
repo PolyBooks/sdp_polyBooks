@@ -89,13 +89,13 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            if (n < 0 || page < 0) {
+            if (n <= 0 || page < 0) {
                 throw IllegalArgumentException(
-                    if (n < 0) "Cannot return a negative ($n) number of results"
+                    if (n <= 0) "Cannot return a negative/null ($n) number of results"
                     else "Cannot return a negative ($page) page number"
                 )
             }
-            return getAll()
+            return getAll().thenApply { list -> list.subList(n*page, n*(page+1)) }
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
@@ -127,8 +127,9 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             .thenApply { parseBook(it) }
             .thenCompose { updateBookWithAuthorName(it) }
             .exceptionally { exception ->
-                if (exception is CompletionException && exception.cause is FileNotFoundException)
+                if (exception is CompletionException && exception.cause is FileNotFoundException) {
                     return@exceptionally null
+                }
                 else if (exception is CompletionException) throw exception.cause!!
                 else throw exception
             }
