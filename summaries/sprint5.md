@@ -2,6 +2,9 @@
 
 ## Dario
 
+This week I finally got to merge the OpenLibrary database, and started extending it with firebase.
+I hope I will have more progress next week
+
 ---
 ## Joshua
 
