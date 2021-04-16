@@ -10,6 +10,7 @@ import com.github.polybooks.core.database.interfaces.BookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.core.database.interfaces.BookSettings
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -46,7 +47,6 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     private inner class OLBookQuery : BookQuery {
 
         private var ordering = DEFAULT
-
         private var empty: Boolean = true
         private var title: String? = null
         private var isbn: String? = null
@@ -73,6 +73,16 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
         override fun withOrdering(ordering: BookOrdering): BookQuery {
             this.ordering = ordering
+            return this
+        }
+
+        override fun getSettings(): BookSettings =
+            BookSettings(ordering,isbn,title,null)
+
+        override fun fromSettings(settings: BookSettings): BookQuery {
+            this.withOrdering(settings.ordering)
+            if (settings.isbn13 != null) this.searchByISBN13(settings.isbn13)
+            else empty = true
             return this
         }
 
