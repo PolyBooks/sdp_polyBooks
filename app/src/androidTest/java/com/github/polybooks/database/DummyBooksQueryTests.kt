@@ -41,8 +41,8 @@ class DummyBooksQueryTests {
     fun allFunctionsWork() {
         val q1 = query.onlyIncludeInterests(emptySet()).getAll()
         val q2 = query.searchByTitle("").getAll()
-        val q3 = query.searchByISBN13("blabla").getAll()
-        val q4 = query.searchByISBN13("hello").withOrdering(BookOrdering.TITLE_DEC).getAll()
+        val q3 = query.searchByISBN(setOf("blabla")).getAll()
+        val q4 = query.searchByISBN(setOf("hello")).withOrdering(BookOrdering.TITLE_DEC).getAll()
 
         assertEquals(default_books, q1.get())
         assertEquals(default_books, q2.get())
