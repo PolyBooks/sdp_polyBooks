@@ -3,20 +3,17 @@ package com.github.polybooks.database
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
-import com.github.polybooks.core.Book
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleFields
+import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.rules.ExpectedException
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -33,7 +30,6 @@ class SaleDatabaseTest {
 
     private val testSaleName = "test-123456"
 
-
     private val format : DateFormat = SimpleDateFormat("yyyy-mm-dd")
 
     private val dummySale: MutableMap<String, Any> = HashMap()
@@ -46,7 +42,6 @@ class SaleDatabaseTest {
         dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(format.parse("2016-05-05")!!.time)
         dummySale[SaleFields.SELLER.fieldName] = 301966
     }
-
 
     fun addDummySaleTest(payload: MutableMap<String, Any>? = null) {
         if (payload != null) {
@@ -65,8 +60,6 @@ class SaleDatabaseTest {
         BaristaSleepInteractions.sleep(250, TimeUnit.MILLISECONDS)
     }
 
-
-
     @Before fun setUp() {
         Intents.init()
     }
@@ -77,8 +70,6 @@ class SaleDatabaseTest {
     }
 
     @Rule @JvmField val expectedException: ExpectedException = ExpectedException.none()
-
-
 
     @Test
     fun t_getCount() {
@@ -263,8 +254,72 @@ class SaleDatabaseTest {
         db.deleteSale(saleTest)
         BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
         assertEquals(0,db.querySales().searchByTitle(saleTest.title).getCount().get())
+    }
 
+    @Test
+    fun getSettingsAndFromSettingsMatch() {
+        val settings = SaleSettings(
+                SaleOrdering.DEFAULT,
+                "111222333444",
+                "A Book",
+                setOf(
+                        Course("COM-301"),
+                        Field("Biology"),
+                        Semester("IC", "BA3")),
+                setOf(SaleState.RETRACTED),
+                setOf(BookCondition.WORN, BookCondition.NEW),
+                3.0f,
+                10.0f
+        )
 
+        assertEquals(
+                settings,
+                db.querySales().fromSettings(settings).getSettings()
+        )
+    }
+
+    @Test
+    fun settingsModifiesStateOfQuery() {
+        val settings = SaleSettings(
+                SaleOrdering.DEFAULT, null,null, null,
+                setOf(SaleState.RETRACTED), null, null,null
+        )
+        assertNotEquals(
+                db.querySales().fromSettings(settings).getCount().get(),
+                db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
+        )
+    }
+
+    @Test
+    fun settingsQueriesTheSameWayAsOnlyIncludeInterests() {
+        val settings = SaleSettings(
+            SaleOrdering.DEFAULT, null,null, setOf(Field("Biology")),
+            null, null, null,null
+        )
+
+        assertEquals(
+                db.querySales().fromSettings(settings).getCount().get(),
+                db.querySales().onlyIncludeInterests(setOf(Field("Biology"))).getCount().get()
+        )
+    }
+
+    @Test
+    fun settingsQueriesTheSameWayAsQueryFunctions() {
+        val interests = setOf(Field("Biology"), Course("COM-301"))
+        val minPrice = 0.0f
+        val maxPrice = 10.0f
+
+        var settings = SaleSettings(
+                SaleOrdering.DEFAULT, null, null, interests, null
+                ,null, minPrice, maxPrice
+        )
+        assertEquals(
+                db.querySales().fromSettings(settings).getCount().get(),
+                db.querySales()
+                        .onlyIncludeInterests(interests)
+                        .searchByPrice(minPrice, maxPrice).getCount().get()
+
+        )
     }
 
     @Ignore

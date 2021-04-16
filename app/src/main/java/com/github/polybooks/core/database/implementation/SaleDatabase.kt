@@ -196,9 +196,16 @@ class SaleDatabase : SaleDatabase {
         override fun fromSettings(settings: SaleSettings): SaleQuery {
             isbn13 = settings.isbn13
             title = settings.title
-            interests = settings.interests
-            states = settings.states
-            conditions = settings.conditions
+
+            if(settings.interests == null) interests == null
+            else onlyIncludeInterests(settings.interests)
+
+            if(settings.states == null) states == null
+            else searchByState(settings.states)
+
+            if(settings.conditions == null) conditions
+            else searchByCondition(settings.conditions)
+
             minPrice = settings.minPrice
             maxPrice = settings.maxPrice
 
