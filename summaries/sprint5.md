@@ -29,7 +29,7 @@ Next week I hope to be able to do something a bit different
 
 ## Sophie
 
-I was not able to implement my tasks of the week. I spent time correcting the issues/comments emitted on my pull request. I also reviewed myself a few pull requests. Finally, issues happened after merging the implementation of some classes and I am currently correcting that with help of Dario.
+I was not able to implement my tasks of the week. I spent time correcting the issues/comments emitted on my pull request and added some more tests to the existing code. I also reviewed myself a few pull requests. Finally, issues happened after merging the implementation of some classes with the main branch and I am currently correcting that with help of Dario.
 
 ---
 
