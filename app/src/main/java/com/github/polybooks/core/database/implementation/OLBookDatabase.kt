@@ -15,6 +15,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.io.FileNotFoundException
+import java.lang.Integer.min
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
@@ -95,7 +96,11 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
                     else "Cannot return a negative ($page) page number"
                 )
             }
-            return getAll().thenApply { list -> list.subList(n*page, n*(page+1)) }
+            return getAll().thenApply { list ->
+                val lowRange = min(n*page, list.size)
+                val highRange = min(n*page + n, list.size)
+                list.subList(lowRange, highRange)
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.N)

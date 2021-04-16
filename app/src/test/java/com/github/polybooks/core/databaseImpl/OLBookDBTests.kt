@@ -161,6 +161,14 @@ class OLBookDBTests {
     }
 
     @Test
+    fun getNalsoWorks4() {
+        val olDB = OLBookDatabase(url2json)
+        val future = olDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4,0)
+        val books = future.get()
+        assertEquals(2, books.size)
+    }
+
+    @Test
     fun getMultipleBooksWorks() {
         val olDB = OLBookDatabase(url2json)
         val future = olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getAll()
