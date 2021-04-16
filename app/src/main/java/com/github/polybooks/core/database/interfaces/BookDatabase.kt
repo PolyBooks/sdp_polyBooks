@@ -67,17 +67,21 @@ interface BookQuery : Query<Book> {
     fun withOrdering(ordering : BookOrdering) : BookQuery
 
     /**
-     * Get Settings from the book
-     * */
+     * Get Settings of the BookQuery at current state
+     **/
     fun getSettings() : BookSettings
 
     /**
-     * Build new Query from Settings
+     * Reset this query using the given settings
      */
     fun fromSettings(settings : BookSettings) : BookQuery
 
 }
 
+/**
+ * The settings contains the values for all the possible parameters of the Query
+ * In contrary to Query, it is independent to the state of the database.
+ */
 data class BookSettings(
         val ordering: BookOrdering,
         val isbn13: String?,

@@ -110,12 +110,16 @@ interface SaleQuery : Query<Sale> {
     fun getSettings() : SaleSettings
 
     /**
-     * Build new Query from Settings
+     * Reset this query using the given settings
      */
     fun fromSettings(settings : SaleSettings) : SaleQuery
 
 }
 
+/**
+ * The settings contains the values for all the possible parameters of the Query
+ * In contrary to Query, it is independent to the state of the database.
+ */
 data class SaleSettings(
         val ordering: SaleOrdering,
         val isbn13: String?,
