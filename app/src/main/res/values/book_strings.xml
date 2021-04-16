@@ -16,5 +16,5 @@
 <!--    <string name="condition">Condition</string>-->
     <string name="state">State</string>
 <!--    <string name="price">Price</string>-->
-    <string name="price_min_max">Price (min and max)</string>
+    <string name="price_min_max">Price</string>
 </resources>
