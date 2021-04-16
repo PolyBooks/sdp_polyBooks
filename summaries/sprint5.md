@@ -23,6 +23,9 @@ Next week I hope to be able to do something a bit different
 
 
 ## Raoul
+This week, I finished the logic of last sprint task. As I couldn't run the Activity without the implementation of BookDatabase which was just merged very recently, I couldn't run the emulator and as such, still need to write tests. So while waiting, I already started to work on this sprint task, but couldn't finish it for obvious time reasons. I also spent about 2h reviewing PRs.
+
+Next week, I think I'll bundle up both tasks at once.
 
 ---
 
