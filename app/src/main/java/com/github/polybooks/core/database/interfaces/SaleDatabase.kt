@@ -106,7 +106,7 @@ interface SaleQuery : Query<Sale>, Serializable {
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: String) : SaleQuery
+    fun searchByISBN(isbn13: String) : SaleQuery
 
 }
 

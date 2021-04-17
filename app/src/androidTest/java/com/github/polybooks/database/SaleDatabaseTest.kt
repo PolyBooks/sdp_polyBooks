@@ -17,7 +17,6 @@ import org.junit.Assert.*
 import org.junit.rules.ExpectedException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
@@ -312,7 +311,7 @@ class SaleDatabaseTest {
     fun See(){
         fun snapshotToBook(map: HashMap<String,Any>): Book {
             return Book(
-                    map[BookFields.ISBN13.fieldName] as String,
+                    map[BookFields.ISBN.fieldName] as String,
                     map[BookFields.AUTHORS.fieldName] as List<String>?,
                     map[BookFields.TITLE.fieldName] as String,
                     map[BookFields.EDITION.fieldName] as String?,

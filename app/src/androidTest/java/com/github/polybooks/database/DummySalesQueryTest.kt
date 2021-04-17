@@ -1,19 +1,16 @@
 package com.github.polybooks.database
 
-import androidx.core.os.persistableBundleOf
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LocalUser
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.DummySalesQuery
-import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
 import org.junit.Test
 
 import org.junit.Assert.*
-import org.junit.Before
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -51,7 +48,7 @@ class DummySalesQueryTest {
     fun unimplementedFunctionsWork() {
         val q1 = query.onlyIncludeInterests(emptySet()).getAll()
         val q2 = query.searchByTitle("").getAll()
-        val q3 = query.searchByISBN13("").getAll()
+        val q3 = query.searchByISBN("").getAll()
 
         assertEquals(default_sale, q1.get())
         assertEquals(default_sale, q2.get())

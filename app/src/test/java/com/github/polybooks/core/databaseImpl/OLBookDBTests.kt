@@ -44,7 +44,7 @@ class OLBookDBTests {
         val future = olDB.getBook("9782376863069")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
         assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn13)
+        assertEquals("9782376863069", book.isbn)
         assertEquals("ACTUSF", book.publisher)
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
@@ -60,7 +60,7 @@ class OLBookDBTests {
         val future = olDB.getBook("  978-2376863069 ")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
         assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn13)
+        assertEquals("9782376863069", book.isbn)
         assertEquals("ACTUSF", book.publisher)
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
@@ -76,7 +76,7 @@ class OLBookDBTests {
         val future = olDB.getBook("2376863066")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
         assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn13)
+        assertEquals("9782376863069", book.isbn)
         assertEquals("ACTUSF", book.publisher)
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
@@ -122,7 +122,7 @@ class OLBookDBTests {
         assertEquals(1, books.size)
         val book = books[0]
         assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn13)
+        assertEquals("9782376863069", book.isbn)
         assertEquals("ACTUSF", book.publisher)
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
@@ -140,7 +140,7 @@ class OLBookDBTests {
         assertEquals(1, books.size)
         val book = books[0]
         assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn13)
+        assertEquals("9782376863069", book.isbn)
         assertEquals("ACTUSF", book.publisher)
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
@@ -157,7 +157,7 @@ class OLBookDBTests {
         val books = future.get()
         assertEquals(1, books.size)
         val book = books[0]
-        assertEquals("9781985086593", book.isbn13)
+        assertEquals("9781985086593", book.isbn)
     }
 
     @Test

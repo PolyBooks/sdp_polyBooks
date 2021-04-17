@@ -1,7 +1,6 @@
 package com.github.polybooks.core.database.implementation
 
 import android.os.Build
-import android.os.Parcelable
 import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -85,10 +84,10 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
         return DummySalesQuery(sale)
     }
 
-    override fun searchByISBN13(isbn13: String): SaleQuery {
+    override fun searchByISBN(isbn13: String): SaleQuery {
 //        TODO("Not yet implemented")
         Log.d(TAG, "searchByISBN13 not implemented correctly")
-        return DummySalesQuery(sale.filter { sale -> sale.book.isbn13 == isbn13 })
+        return DummySalesQuery(sale.filter { sale -> sale.book.isbn == isbn13 })
 
     }
 

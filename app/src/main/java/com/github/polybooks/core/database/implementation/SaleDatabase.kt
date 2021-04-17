@@ -11,15 +11,11 @@ import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
 
-import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.model.Document
 
-import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.HashMap
 
@@ -78,7 +74,7 @@ class SaleDatabase : SaleDatabase {
             TODO("Not yet implemented")
         }
 
-        override fun searchByISBN13(isbn13: String): SaleQuery {
+        override fun searchByISBN(isbn13: String): SaleQuery {
             this.isbn13 = isbn13
             return this
         }
@@ -191,9 +187,8 @@ class SaleDatabase : SaleDatabase {
     }
 
     private fun snapshotToBook(map: HashMap<String,Any>): Book {
-        Log.d("7===================================","${map}" )
         return Book(
-                map[BookFields.ISBN13.fieldName] as String,
+                map[BookFields.ISBN.fieldName] as String,
                 map[BookFields.AUTHORS.fieldName] as List<String>?,
                 map[BookFields.TITLE.fieldName] as String,
                 map[BookFields.EDITION.fieldName] as String?,
@@ -206,31 +201,21 @@ class SaleDatabase : SaleDatabase {
     }
 
     private fun snapshotToUser(map: HashMap<String,Any>): User {
-        Log.d("8===================================","${map}" )
-        val b1 = (map[UserFields.UID.fieldName] as Long).toInt()
-        Log.d("b1++++++++++++++++++++","${b1!!.javaClass.name}" )
-        val b2 = map[UserFields.PSEUDO.fieldName] as String
-        Log.d("b2++++++++++++++++++++","${b2}" )
-        return LoggedUser(
-                b1 as Int,
-                b2
-        )
+        val uid = (map[UserFields.UID.fieldName] as Long).toInt()
+        val pseudo = map[UserFields.PSEUDO.fieldName] as String
 
+        return LoggedUser(uid, pseudo)
     }
 
     private fun snapshotToSale(snapshot: DocumentSnapshot): Sale {
-        Log.d("6===================================","${snapshot}" )
-        //println("6=========================${snapshot}")
-        val a1 = snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>)
-        Log.d("a1++++++++++++++++++++","${a1}" )
-        val a2 = snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>)
-        Log.d("a2++++++++++++++++++++","${a2}" )
-        val a3 = snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat()
-        Log.d("a3++++++++++++++++++++","${a3}" )
+        val book = snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>)
+        val seller = snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>)
+        val price = snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat()
+
         return Sale(
-                a1,//snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
-                a2,//snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
-                a3,//snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
+                book,
+                seller,
+                price,
                 BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
                 Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
                 SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
@@ -266,20 +251,12 @@ class SaleDatabase : SaleDatabase {
         if(sale.seller == LocalUser)
             throw LocalUserException("Cannot add sale as LocalUser")
         SalesQuery().getReferenceID(sale).continueWith { task ->
-            Log.d("1===================================","${task.result.documents}" )
-            //println("1=========================${task.result.documents}")
             val result = task.result.documents.filter { document ->
-                Log.d("0===================================","$document" )
                 val s = snapshotToSale(document)
-                Log.d("2===================================","LEA IS HERE" )
-                Log.d("2===================================","$s" )
-                //println("2=========================$s")
                 s.condition == sale.condition /*&& s.seller == sale.seller */&& s.date == sale.date
             }
 
             result.forEach { document ->
-                Log.d("3===================================","$document" )
-                //println("3=========================$document")
                 saleRef.document(document.id).delete()
                     .addOnFailureListener { throw DatabaseException("Could not delete $document") }
                     .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: ${document}") }

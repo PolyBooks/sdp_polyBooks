@@ -10,7 +10,7 @@ import java.io.Serializable
 /**
  * The Book class contains all the information about a book. A Book should not be confused with
  * a Sale which is a concrete instance of a Book being sold by a user.
- * @property isbn13 The ISBN 13 of the book, it's unique identifier.
+ * @property isbn The ISBN 13 of the book, it's unique identifier.
  * @property authors A list of the author(s) of the book.
  * @property title The title of the book.
  * @property edition The edition of the book.
@@ -20,7 +20,7 @@ import java.io.Serializable
  * @property format The format of the book (Hard cover, pocket book, magazine, ...)
  * */
 data class Book(
-        val isbn13 : String,
+        val isbn : String,
         val authors : List<String>?,
         val title : String,
         val edition : String?,
@@ -34,7 +34,7 @@ data class Book(
  * Allows access to the name of a field
  */
 enum class BookFields(val fieldName: String) {
-    ISBN13("isbn13"),
+    ISBN("isbn13"),
     AUTHORS("authors"),
     TITLE("title"),
     EDITION("edition"),
