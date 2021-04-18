@@ -21,7 +21,7 @@ class OLBookDBTests {
         Pair("/authors/OL7511250A.json", "OL7511250A.json"),
         Pair("/authors/OL7482089A.json", "OL7482089A.json"),
         Pair("/isbn/9782376863069.json", "9782376863069.json"),
-        Pair("/isbn/2376863066.json", "9782376863069.json")
+        Pair("/isbn/2376863069.json", "9782376863069.json")
     )
     val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
     val url2json = { url : String ->
@@ -90,7 +90,7 @@ class OLBookDBTests {
     @Test
     fun isbn10alsoWorks() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.queryBooks().searchByISBN13("2376863066").getAll()
+        val future = olDB.queryBooks().searchByISBN13("2376863069").getAll()
         val books = future.get()
         assertEquals(1, books.size)
         val book = books[0]
