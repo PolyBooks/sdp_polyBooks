@@ -208,14 +208,11 @@ class SaleDatabase : SaleDatabase {
     }
 
     private fun snapshotToSale(snapshot: DocumentSnapshot): Sale {
-        val book = snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>)
-        val seller = snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>)
-        val price = snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat()
 
         return Sale(
-                book,
-                seller,
-                price,
+                snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
+                snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
+                snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
                 BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
                 Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
                 SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
