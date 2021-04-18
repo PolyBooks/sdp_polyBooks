@@ -107,6 +107,16 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                     dateFromBookToSale = book.publishDate!!
                 }
             }
+                    .exceptionally { exception ->
+                        // TODO make sure that the user have to go back and try again!
+                        {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Book matching the ISBN could not be found",
+                                    Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
         }
 
         // Drop-down menu for condition
