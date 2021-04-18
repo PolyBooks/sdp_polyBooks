@@ -13,10 +13,16 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.BookDatabase
-import com.google.firebase.Timestamp
+import com.google.gson.JsonParser
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.sql.Timestamp
 import java.text.DateFormat
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 
@@ -29,7 +35,28 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
     private val salesDB = SaleDatabase()
-    private val bookDB = BookDatabase()
+    private val urlRegex = """.*openlibrary.org(.*)""".toRegex()
+    private val url2filename = mapOf(
+        Pair("/authors/OL7511250A.json", "OL7511250A.json"),
+        Pair("/authors/OL7482089A.json", "OL7482089A.json"),
+        Pair("/isbn/9782376863069.json", "9782376863069.json"),
+        Pair("/isbn/2376863066.json", "9782376863069.json")
+    )
+    private val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
+    private val url2json = { url: String ->
+        CompletableFuture.supplyAsync {
+            val regexMatch =
+                urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
+            val address = regexMatch.groups[1]?.value ?: throw Error("The regex is wrong")
+            val filename =
+                url2filename[address] ?: throw FileNotFoundException("File Not Found : $url")
+            val file = File("$baseDir/$filename")
+            val stream = file.inputStream()
+            JsonParser.parseReader(InputStreamReader(stream))
+        }
+    }
+    private val bookDB = OLBookDatabase(url2json)
+
 
     private lateinit var dateFromBookToSale: Timestamp
     private var bookConditionSelected: BookCondition? = null
@@ -48,23 +75,23 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         findViewById<TextView>(R.id.filled_publisher)         .apply { text = stringISBN }
 
         // Check if ISBN in our database: (could check ISBN validity before)
-        val book: CompletableFuture<Book> = bookDB.getBook(stringISBN)
+        if(stringISBN != null) {
+            val book: CompletableFuture<Book> = bookDB.getBook(stringISBN)
 
-        book.thenApply { book ->
-            {
-                findViewById<TextView>(R.id.filled_authors)         .apply { text = book.authors?.get(
-                    0
-                ) ?: "" } //TODO update that to either transform the list to string, and just store the string of authors
-                findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
-                findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
-                findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
-                findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
-                findViewById<TextView>(R.id.filled_publish_date)    .apply { text = dateFormat.format(
-                    book.publishDate?.toDate()
-                ) }
-                findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
+            book.thenApply { book ->
+                {
+                    findViewById<TextView>(R.id.filled_authors)         .apply { text = book.authors?.get(
+                        0
+                    ) ?: "" } //TODO update that to either transform the list to string, and just store the string of authors
+                    findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
+                    findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
+                    findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
+                    findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
+                    findViewById<TextView>(R.id.filled_publish_date)    .apply { text = dateFormat.format(Date(book.publishDate!!.time)) }
+                    findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
 
-                dateFromBookToSale = book.publishDate!!
+                    dateFromBookToSale = book.publishDate!!
+                }
             }
         }
 
