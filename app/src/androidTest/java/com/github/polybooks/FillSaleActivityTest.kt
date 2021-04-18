@@ -30,7 +30,7 @@ class FillSaleActivityTest {
     @Test
     fun confirmSaleRedirects() {
         // TODO the destination in the intent will probably be changed in the future
-        Espresso.onView(ViewMatchers.withId(R.id.confirm_sale)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.confirm_sale_button)).perform(ViewActions.click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 

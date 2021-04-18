@@ -8,14 +8,12 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.BookDatabase
 import com.google.gson.JsonParser
 import java.io.File
 import java.io.FileNotFoundException
@@ -63,12 +61,12 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             val sb = StringBuilder()
             for(i in authors.indices) {
                 sb.append(authors[i])
-                if(authors.size == 1) {
-
-                } else if (i == authors.size - 1) {
-                    sb.append(" and ")
-                } else {
-                    sb.append(", ")
+                if (authors.size != 1) {
+                    if (i == authors.size - 1) {
+                        sb.append(" and ")
+                    } else {
+                        sb.append(", ")
+                    }
                 }
             }
             return sb.toString()
@@ -128,14 +126,14 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
 
         // Disable confirm button until filled
-        disableButton(findViewById<Button>(R.id.confirm_sale))
+        disableButton(findViewById(R.id.confirm_sale_button))
 
         findViewById<EditText>(R.id.filled_price).addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
-                    enableButton(findViewById<Button>(R.id.confirm_sale))
+                    enableButton(findViewById(R.id.confirm_sale_button))
                 } else {
-                    disableButton(findViewById<Button>(R.id.confirm_sale))
+                    disableButton(findViewById(R.id.confirm_sale_button))
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -257,9 +255,9 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             }
         }
         if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
-            enableButton(findViewById<Button>(R.id.confirm_sale))
+            enableButton(findViewById(R.id.confirm_sale_button))
         } else {
-            disableButton(findViewById<Button>(R.id.confirm_sale))
+            disableButton(findViewById(R.id.confirm_sale_button))
         }
     }
 
@@ -271,6 +269,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
      * @param parent The AdapterView that now contains no selected item.
      */
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        disableButton(findViewById<Button>(R.id.confirm_sale))
+        disableButton(findViewById(R.id.confirm_sale_button))
     }
 }
