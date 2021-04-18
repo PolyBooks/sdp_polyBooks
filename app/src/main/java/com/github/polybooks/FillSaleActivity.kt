@@ -228,6 +228,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
      */
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent?.getItemAtPosition(position).toString()) {
+            "Select" -> bookConditionSelected = null
             "New" -> bookConditionSelected = BookCondition.NEW
             "Good" -> bookConditionSelected = BookCondition.GOOD
             "Worn" -> bookConditionSelected = BookCondition.WORN
@@ -239,7 +240,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 ).show()
             }
         }
-        if (findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
+        if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
             enableButton(findViewById<Button>(R.id.confirm_sale))
         }
     }

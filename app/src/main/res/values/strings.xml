@@ -44,6 +44,7 @@
     <string name="book_language">Book language</string>
     <string name="your_picture_of_your_book_condition">Your picture of your book condition</string>
     <string-array name="condition_options_array">
+        <item>Select</item>
         <item>New</item>
         <item>Good</item>
         <item>Worn</item>
