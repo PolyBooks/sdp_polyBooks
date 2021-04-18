@@ -20,6 +20,7 @@ import com.google.gson.JsonParser
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.lang.StringBuilder
 import java.sql.Timestamp
 import java.text.DateFormat
 import java.util.*
@@ -55,6 +56,25 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
     private val bookDB = OLBookDatabase(url2json)
 
+    fun listAuthorsToString(authors: List<String>?): String {
+        if(authors == null) {
+            return ""
+        } else {
+            val sb = StringBuilder()
+            for(i in authors.indices) {
+                sb.append(authors[i])
+                if(authors.size == 1) {
+
+                } else if (i == authors.size - 1) {
+                    sb.append(" and ")
+                } else {
+                    sb.append(", ")
+                }
+            }
+            return sb.toString()
+        }
+    }
+
 
     private lateinit var dateFromBookToSale: Timestamp
     private var bookConditionSelected: BookCondition? = null
@@ -78,9 +98,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
             book.thenApply { book ->
                 {
-                    findViewById<TextView>(R.id.filled_authors)         .apply { text = book.authors?.get(
-                        0
-                    ) ?: "" } //TODO update that to either transform the list to string, and just store the string of authors
+                    findViewById<TextView>(R.id.filled_authors)         .apply { text = listAuthorsToString(book.authors) }
                     findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
                     findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
                     findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
