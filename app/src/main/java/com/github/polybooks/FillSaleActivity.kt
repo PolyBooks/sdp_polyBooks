@@ -35,21 +35,19 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
     private val salesDB = SaleDatabase()
-    private val urlRegex = """.*openlibrary.org(.*)""".toRegex()
-    private val url2filename = mapOf(
-        Pair("/authors/OL7511250A.json", "OL7511250A.json"),
-        Pair("/authors/OL7482089A.json", "OL7482089A.json"),
-        Pair("/isbn/9782376863069.json", "9782376863069.json"),
-        Pair("/isbn/2376863066.json", "9782376863069.json")
+    val urlRegex = """.*openlibrary.org(.*)""".toRegex()
+    val url2filename = mapOf(
+            Pair("/authors/OL7511250A.json", "OL7511250A.json"),
+            Pair("/authors/OL7482089A.json", "OL7482089A.json"),
+            Pair("/isbn/9782376863069.json", "9782376863069.json"),
+            Pair("/isbn/2376863066.json", "9782376863069.json")
     )
-    private val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
-    private val url2json = { url: String ->
+    val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
+    val url2json = { url : String ->
         CompletableFuture.supplyAsync {
-            val regexMatch =
-                urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
+            val regexMatch = urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
             val address = regexMatch.groups[1]?.value ?: throw Error("The regex is wrong")
-            val filename =
-                url2filename[address] ?: throw FileNotFoundException("File Not Found : $url")
+            val filename = url2filename[address] ?: throw FileNotFoundException("File Not Found : $url")
             val file = File("$baseDir/$filename")
             val stream = file.inputStream()
             JsonParser.parseReader(InputStreamReader(stream))
