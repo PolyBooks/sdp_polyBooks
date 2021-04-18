@@ -322,17 +322,12 @@ class SaleDatabaseTest {
             )
 
         }
-        //Used to manually delete sales
-        assertEquals(SaleFields.BOOK.fieldName + "." + BookFields.TITLE.fieldName, "book.title")
         saleRef.whereEqualTo("book.title", "test1").get().addOnSuccessListener { documents ->
             val book = documents.map { document ->
-                //println(document)
-                //Log.d(null, "$document")
                 document.get(SaleFields.BOOK.fieldName) as HashMap<String, Any>//as Book
             }
-            println("====================================${snapshotToBook(book[0])}")
-            Log.d("====================================", "${snapshotToBook(book[0])}")
-            assertEquals("test1", book[0].get("title") as String)
+            
+            println(book)
         }
     }
 
