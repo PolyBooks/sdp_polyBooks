@@ -242,6 +242,8 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         }
         if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
             enableButton(findViewById<Button>(R.id.confirm_sale))
+        } else {
+            disableButton(findViewById<Button>(R.id.confirm_sale))
         }
     }
 
