@@ -14,6 +14,7 @@ import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
+import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.google.gson.JsonParser
 import java.io.File
 import java.io.FileNotFoundException
@@ -54,25 +55,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
     private val bookDB = OLBookDatabase(url2json)
 
-    fun listAuthorsToString(authors: List<String>?): String {
-        if(authors == null) {
-            return ""
-        } else {
-            val sb = StringBuilder()
-            for(i in authors.indices) {
-                sb.append(authors[i])
-                if (authors.size != 1) {
-                    if (i == authors.size - 1) {
-                        sb.append(" and ")
-                    } else {
-                        sb.append(", ")
-                    }
-                }
-            }
-            return sb.toString()
-        }
-    }
-
 
     private lateinit var dateFromBookToSale: Timestamp
     private var bookConditionSelected: BookCondition? = null
@@ -80,7 +62,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_sale_fancy)
-
 
 
         val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
