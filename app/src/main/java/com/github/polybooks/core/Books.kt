@@ -34,7 +34,7 @@ data class Book(
  * Allows access to the name of a field
  */
 enum class BookFields(val fieldName: String) {
-    ISBN("isbn13"),
+    ISBN("isbn"),
     AUTHORS("authors"),
     TITLE("title"),
     EDITION("edition"),
