@@ -102,7 +102,7 @@ interface SaleQuery : Query<Sale> {
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: String) : SaleQuery
+    fun searchByISBN(isbn13: String) : SaleQuery
 
     /**
      * Get Settings from the book
@@ -117,12 +117,16 @@ interface SaleQuery : Query<Sale> {
 }
 
 /**
- * The settings contains the values for all the possible parameters of the Query
- * In contrary to Query, it is independent to the state of the database.
+ * The Settings contains the values for all the possible query parameters (ig. ordering, price).
+ * In contrary to a Query object, it is independent to the state of the database and thus it
+ * implement Serializable and can be passed as parameter between activities.
+ *
+ * To define a Query, a SaleSettings can be used along with fromSettings in substitution to
+ * calling the other methods (ig. searchByPrice)
  */
 data class SaleSettings(
         val ordering: SaleOrdering,
-        val isbn13: String?,
+        val isbn: String?,
         val title : String?,
         val interests : Set<Interest>?,
         val states : Set<SaleState> ?,
@@ -136,13 +140,4 @@ data class SaleSettings(
  * */
 enum class SaleOrdering {
     DEFAULT, TITLE_INC, TITLE_DEC, PRICE_INC, PRICE_DEC, PUBLISH_DATE_INC, PUBLISH_DATE_DEC,
-}
-
-enum class SaleFields(val fieldName: String) {
-    TITLE("title"),
-    CONDITION("condition"),
-    PRICE("price"),
-    PUBLICATION_DATE("date"),
-    SELLER("seller"),
-    STATE("state"),
 }

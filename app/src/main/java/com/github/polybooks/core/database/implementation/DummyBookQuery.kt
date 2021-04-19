@@ -26,9 +26,10 @@ class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery
        return DummyBookQuery()
     }
 
-    override fun searchByISBN13(isbn13: String) : BookQuery {
-       return DummyBookQuery()
+    override fun searchByISBN(isbns: Set<String>): BookQuery {
+        return DummyBookQuery()
     }
+
 
     override fun withOrdering(ordering : BookOrdering) : BookQuery {
         return DummyBookQuery()

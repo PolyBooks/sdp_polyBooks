@@ -4,15 +4,13 @@ import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.Interest
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.core.database.interfaces.SaleSettings
-import java.sql.Timestamp
+import com.github.polybooks.utils.anonymousBook
+import com.google.firebase.Timestamp
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -22,15 +20,15 @@ val formatString = "yyyy-mm-dd"
 val format : DateFormat = SimpleDateFormat(formatString)
 @RequiresApi(Build.VERSION_CODES.O)
 val default_sale: List<Sale> = listOf(
-        Sale("Book1", 1, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!.time), SaleState.ACTIVE),
-        Sale("Book2", 1, 24.55f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!.time), SaleState.ACTIVE),
-        Sale("Book3", 4, 25.00f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!.time), SaleState.ACTIVE),
-        Sale("Book4", 6, 26.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!.time), SaleState.ACTIVE),
-        Sale("Book5", 6, 21.00f, BookCondition.WORN, Timestamp(format.parse("2016-05-05")!!.time), SaleState.CONCLUDED),
-        Sale("Book6", 9, 29.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!.time), SaleState.ACTIVE),
-        Sale("Book7", 8, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!.time), SaleState.ACTIVE),
-        Sale("Book8", 5, 23.66f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!.time), SaleState.ACTIVE),
-        Sale("Book9", 9, 25.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!.time), SaleState.RETRACTED),
+        Sale( anonymousBook("Book1"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+        Sale(anonymousBook("Book2"), LocalUser, 24.55f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+        Sale(anonymousBook("Book3"), LocalUser, 25.00f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+        Sale(anonymousBook("Book4"), LocalUser, 26.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+        Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, Timestamp(format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
+        Sale(anonymousBook("Book6"), LocalUser, 29.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+        Sale(anonymousBook("Book7"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+        Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+        Sale(anonymousBook("Book9"), LocalUser, 25.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.RETRACTED, null),
 )
 
 /**
@@ -86,10 +84,10 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
         return DummySalesQuery(sale)
     }
 
-    override fun searchByISBN13(isbn13: String): SaleQuery {
+    override fun searchByISBN(isbn13: String): SaleQuery {
 //        TODO("Not yet implemented")
         Log.d(TAG, "searchByISBN13 not implemented correctly")
-        return DummySalesQuery(sale.filter { sale -> sale.title == isbn13 })
+        return DummySalesQuery(sale.filter { sale -> sale.book.isbn == isbn13 })
 
     }
 
