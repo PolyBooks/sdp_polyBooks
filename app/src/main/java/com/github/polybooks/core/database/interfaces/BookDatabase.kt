@@ -88,7 +88,7 @@ interface BookQuery : Query<Book> {
  */
 data class BookSettings(
         val ordering: BookOrdering,
-        val isbn : String?, //TODO adapt in another PR
+        val isbns : List<String>?,
         val title : String?,
         val interests : Set<Interest>?
 ) : Serializable

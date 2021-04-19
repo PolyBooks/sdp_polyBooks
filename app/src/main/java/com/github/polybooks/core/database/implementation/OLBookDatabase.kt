@@ -78,26 +78,23 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         }
 
         override fun getSettings(): BookSettings {
-            if(this.isbns != null)
-                return BookSettings(ordering, this.isbns!![0],title,null) // TODO adapt
-            else
-                return BookSettings(ordering, null, title, null)
+            return BookSettings(ordering, this.isbns,title,null)
         }
 
         override fun fromSettings(settings: BookSettings): BookQuery {
             this.withOrdering(settings.ordering)
-            if (settings.isbn != null) this.searchByISBN(setOf(settings.isbn)) // TODO adapt
+            if (settings.isbns != null) this.searchByISBN(settings.isbns.toSet())
             else empty = true
             return this
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getAll(): CompletableFuture<List<Book>> {
-            if (empty) return CompletableFuture.completedFuture(Collections.emptyList())
+            return if (empty) CompletableFuture.completedFuture(Collections.emptyList())
             else {
                 assert(isbns != null)
                 val futures = isbns!!.map{getBookByISBN(it)}
-                return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
+                listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
             }
         }
 
