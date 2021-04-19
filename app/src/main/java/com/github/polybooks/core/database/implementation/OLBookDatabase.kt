@@ -10,10 +10,12 @@ import com.github.polybooks.core.database.interfaces.BookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.io.FileNotFoundException
+import java.lang.Integer.min
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
@@ -49,7 +51,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
         private var empty: Boolean = true
         private var title: String? = null
-        private var isbn: String? = null
+        private var isbns: List<String>? = null
 
         override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
             System.err.println("Warning: onlyIncludeInterest not fully implemented for OLBookQuery")
@@ -63,11 +65,11 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             return this
         }
 
-        override fun searchByISBN13(isbn13: String): BookQuery {
-            val regularised = regulariseISBN(isbn13) ?: throw IllegalArgumentException("Given ISBN is not valid")
+        override fun searchByISBN(isbns: Set<String>): BookQuery {
+            val regularised = isbns.map{regulariseISBN(it) ?: throw IllegalArgumentException("ISBN \"$it\" is not valid")}
             this.empty = false
             this.title = null
-            this.isbn = regularised
+            this.isbns = regularised
             return this
         }
 
@@ -80,30 +82,25 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         override fun getAll(): CompletableFuture<List<Book>> {
             if (empty) return CompletableFuture.completedFuture(Collections.emptyList())
             else {
-                assert(isbn != null)
-                val url = isbn2URL(isbn!!)
-                return url2json(url)
-                        .thenApply { parseBook(it) }
-                        .thenCompose { updateBookWithAuthorName(it) }
-                        .thenApply { listOf(it) }
-                        .exceptionally { exception ->
-                            if (exception is CompletionException && exception.cause is FileNotFoundException)
-                                return@exceptionally Collections.emptyList<Book>()
-                            else if (exception is CompletionException) throw exception.cause!!
-                            else throw exception
-                        }
+                assert(isbns != null)
+                val futures = isbns!!.map{getBookByISBN(it)}
+                return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
             }
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            if (n < 0 || page < 0) {
+            if (n <= 0 || page < 0) {
                 throw IllegalArgumentException(
-                    if (n < 0) "Cannot return a negative ($n) number of results"
+                    if (n <= 0) "Cannot return a negative/null ($n) number of results"
                     else "Cannot return a negative ($page) page number"
                 )
             }
-            return getAll()
+            return getAll().thenApply { list ->
+                val lowRange = min(n*page, list.size)
+                val highRange = min(n*page + n, list.size)
+                list.subList(lowRange, highRange)
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
@@ -128,6 +125,21 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
     private val errorMessage = "Cannot parse OpenLibrary book because : "
 
+    private fun getBookByISBN(isbn : String) : CompletableFuture<Book?> {
+        assert(regulariseISBN(isbn) == isbn)
+        val url = isbn2URL(isbn)
+        return url2json(url)
+            .thenApply { parseBook(it) }
+            .thenCompose { updateBookWithAuthorName(it) }
+            .exceptionally { exception ->
+                if (exception is CompletionException && exception.cause is FileNotFoundException) {
+                    return@exceptionally null
+                }
+                else if (exception is CompletionException) throw exception.cause!!
+                else throw exception
+            }
+    }
+
     //takes a book that has the authors in the form /authors/<authorID>
     //and fetches the actual name of the author
     @RequiresApi(Build.VERSION_CODES.N)
@@ -138,14 +150,9 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             val authorsUrl = "$OL_BASE_ADDR$authorID.json"
             url2json(authorsUrl).thenApply { parseAuthor(it) }
         }
-        val emptyFuture = CompletableFuture.completedFuture(Collections.emptyList<String>())
+
         //Combine those futures into one future of a list of names
-        val combined: CompletableFuture<List<String>> =
-                newAuthorsFutures.fold(emptyFuture) { acc, curr ->
-                    acc.thenCombine(curr) { listAcc, currAuthor ->
-                        listAcc.plus(currAuthor)
-                    }
-                }
+        val combined = listOfFuture2FutureOfList(newAuthorsFutures)
         //update the book with the names of the authors
         return combined.thenApply { newAuthors -> book.copy(authors = newAuthors) }
     }

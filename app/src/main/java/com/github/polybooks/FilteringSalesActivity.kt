@@ -106,7 +106,7 @@ class FilteringSalesActivity : AppCompatActivity() {
             //---
             //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
             val intent : Intent = Intent(this, ListSalesActivity::class.java)
-            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, query)
+            intent//.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, query)
             startActivity(intent)
         }
     }

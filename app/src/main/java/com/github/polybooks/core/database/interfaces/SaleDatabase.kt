@@ -106,7 +106,7 @@ interface SaleQuery : Query<Sale>, Serializable {
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: String) : SaleQuery
+    fun searchByISBN(isbn13: String) : SaleQuery
 
 }
 
@@ -116,13 +116,4 @@ interface SaleQuery : Query<Sale>, Serializable {
  * */
 enum class SaleOrdering {
     DEFAULT, TITLE_INC, TITLE_DEC, PRICE_INC, PRICE_DEC, PUBLISH_DATE_INC, PUBLISH_DATE_DEC,
-}
-
-enum class SaleFields(val fieldName: String) {
-    TITLE("title"),
-    CONDITION("condition"),
-    PRICE("price"),
-    PUBLICATION_DATE("date"),
-    SELLER("seller"),
-    STATE("state"),
 }
