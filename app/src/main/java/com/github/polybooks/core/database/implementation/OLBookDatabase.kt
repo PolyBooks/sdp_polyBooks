@@ -83,8 +83,15 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
         override fun fromSettings(settings: BookSettings): BookQuery {
             this.withOrdering(settings.ordering)
+
             if (settings.isbns != null) this.searchByISBN(settings.isbns.toSet())
-            else empty = true
+            else isbns = null
+
+            this.title = settings.title
+
+            if(settings.interests != null) {
+                System.err.println("Warning: queries by interests not fully implemented for OLBookQuery")
+            }
             return this
         }
 
