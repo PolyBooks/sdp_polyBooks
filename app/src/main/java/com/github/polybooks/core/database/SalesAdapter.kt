@@ -14,20 +14,24 @@ import com.github.polybooks.core.Sale
  */
 class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter.SalesViewHolder>() {
     class SalesViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val mName: TextView = itemView.findViewById(R.id.BookName)
-        val mPrice : TextView = itemView.findViewById(R.id.SalePrice)
+        val viewTitle: TextView = itemView.findViewById(R.id.text_view_title)
+        val viewAuthor: TextView = itemView.findViewById(R.id.text_view_author)
+        val viewCondition: TextView = itemView.findViewById(R.id.text_view_condition)
+        val viewPrice: TextView = itemView.findViewById(R.id.text_view_price)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SalesViewHolder {
-        val v : View = LayoutInflater.from(parent.context).inflate(R.layout.sale_item, parent, false)
-        return SalesAdapter.SalesViewHolder(v)
+        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.sale_item, parent, false)
+        return SalesViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: SalesViewHolder, position: Int) {
-        val currentSale : Sale = salesList[position]
+        val sale: Sale = salesList[position]
 
-        holder.mName.setText(currentSale.title)
-        holder.mPrice.setText( String.format("%.2f",currentSale.price))
+        holder.viewTitle.text = sale.title
+        holder.viewAuthor.text = "Molière"
+        holder.viewCondition.text = sale.condition.name
+        holder.viewPrice.text = String.format("%.2f", sale.price)
     }
 
     override fun getItemCount(): Int {

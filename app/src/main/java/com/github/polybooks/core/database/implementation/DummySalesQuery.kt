@@ -20,7 +20,7 @@ val formatString = "yyyy-mm-dd"
 val format : DateFormat = SimpleDateFormat(formatString)
 @RequiresApi(Build.VERSION_CODES.O)
 val default_sale: List<Sale> = listOf(
-        Sale("Book1", 1, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE),
+        Sale("Le Tartuffe", 1, 69.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE),
         Sale("Book2", 1, 24.55f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE),
         Sale("Book3", 4, 25.00f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE),
         Sale("Book4", 6, 26.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE),
