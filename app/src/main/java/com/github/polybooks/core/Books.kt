@@ -4,7 +4,7 @@
 package com.github.polybooks.core
 
 
-import java.sql.Timestamp
+import com.google.firebase.Timestamp
 import java.io.Serializable
 
 /**

@@ -8,10 +8,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.github.polybooks.core.Book
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
@@ -55,6 +52,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private val bookDB = OLBookDatabase(url2json)
 
 
+    private lateinit var book: CompletableFuture<Book?>
     private lateinit var dateFromBookToSale: Timestamp
     private var bookConditionSelected: BookCondition? = null
 
@@ -72,19 +70,27 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         // Check if ISBN in our database: (could check ISBN validity before)
         if(stringISBN != null) {
-            val book: CompletableFuture<Book> = bookDB.getBook(stringISBN)
+            book = bookDB.getBook(stringISBN)
 
             book.thenApply { book ->
                 {
-                    findViewById<TextView>(R.id.filled_authors)         .apply { text = listAuthorsToString(book.authors) }
-                    findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
-                    findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
-                    findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
-                    findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
-                    findViewById<TextView>(R.id.filled_publish_date)    .apply { text = dateFormat.format(Date(book.publishDate!!.time)) }
-                    findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
+                    if (book != null) {
+                        findViewById<TextView>(R.id.filled_authors)         .apply { text = listAuthorsToString(book.authors) }
+                        findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
+                        findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
+                        findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
+                        findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
+                        findViewById<TextView>(R.id.filled_publish_date)    .apply { text = dateFormat.format(book.publishDate!!.toDate()) }
+                        findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
 
-                    dateFromBookToSale = book.publishDate!!
+                        dateFromBookToSale = book.publishDate!!
+                    } else {
+                        Toast.makeText(
+                                applicationContext,
+                                "Book matching the ISBN could not be found",
+                                Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
                     .exceptionally { exception ->
@@ -179,13 +185,14 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     fun confirmSale(view: View) {
         // store Sale in our database
         val sale = Sale(
-            findViewById<TextView>(R.id.filled_title).text.toString(),
-            123, // TODO userID???
+            book.get()!!, // TODO maybe ensure above that the button is disabled if book is null
+            LocalUser, // TODO user
             findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             // Should never be null as the button is not enabled otherwise
             bookConditionSelected!!,
             dateFromBookToSale,
-            SaleState.ACTIVE
+            SaleState.ACTIVE,
+            null
         )
         salesDB.addSale(sale)
 
