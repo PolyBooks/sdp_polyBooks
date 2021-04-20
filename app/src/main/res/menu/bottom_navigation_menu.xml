@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/user_sales"
+        android:enabled="true"
+        android:title="$"/>
+    <item
+        android:id="@+id/sales"
+        android:enabled="true"
+        android:title="sale"/>
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:title="home"/>
+    <item
+        android:id="@+id/books"
+        android:enabled="true"
+        android:title="books"/>
+    <item
+        android:id="@+id/user_profile"
+        android:enabled="true"
+        android:title="profile"/>
+    <!--android:icon="@drawable/icon_2"-->
+</menu>
