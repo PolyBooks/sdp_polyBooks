@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +19,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.text.DateFormat
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 
@@ -38,6 +38,11 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             Pair("/isbn/9782376863069.json", "9782376863069.json"),
             Pair("/isbn/2376863069.json", "9782376863069.json")
     )
+    /*
+    com\github\polybooks\core\databaseImpl\9782376863069.json
+    app/src/test/java/com/github/polybooks/core/databaseImpl/9782376863069.json
+    src\test\java\com\github\polybooks\core\databaseImpl\9782376863069.json
+    */
     val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
     val url2json = { url : String ->
         CompletableFuture.supplyAsync {
@@ -85,10 +90,11 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
                         dateFromBookToSale = book.publishDate!!
                     } else {
+                        Log.w("BookFuture", "Book matching the ISBN could not be found")
                         Toast.makeText(
-                                applicationContext,
+                                this,
                                 "Book matching the ISBN could not be found",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_LONG
                         ).show()
                     }
                 }
@@ -96,10 +102,11 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                     .exceptionally { exception ->
                         // TODO make sure that the user have to go back and try again!
                         {
+                            Log.w("BookFuture", "Book matching the ISBN could not be found through exception")
                             Toast.makeText(
-                                    applicationContext,
-                                    "Book matching the ISBN could not be found",
-                                    Toast.LENGTH_SHORT
+                                    this,
+                                    "Book matching the ISBN could not be found through exception",
+                                    Toast.LENGTH_LONG
                             ).show()
                         }
                     }
@@ -247,7 +254,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 Toast.makeText(
                     applicationContext,
                     "Error in selecting the Book Condition",
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_LONG
                 ).show()
             }
         }

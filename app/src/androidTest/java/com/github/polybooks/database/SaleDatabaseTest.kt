@@ -379,7 +379,7 @@ class SaleDatabaseTest {
                     map[BookFields.EDITION.fieldName] as String?,
                     map[BookFields.LANGUAGE.fieldName] as String?,
                     map[BookFields.PUBLISHER.fieldName] as String?,
-                    map[BookFields.PUBLISHDATE.fieldName] as java.sql.Timestamp?,
+                    map[BookFields.PUBLISHDATE.fieldName] as com.google.firebase.Timestamp?,
                     map[BookFields.FORMAT.fieldName] as String?
             )
 
