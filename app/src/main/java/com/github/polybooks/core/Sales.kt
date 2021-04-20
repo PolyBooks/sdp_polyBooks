@@ -1,6 +1,11 @@
 package com.github.polybooks.core
 
+
+import android.media.Image
 import com.google.firebase.Timestamp
+import java.io.Serializable
+
+
 import java.util.*
 
 /**
@@ -12,13 +17,17 @@ import java.util.*
  * @property publicationDate The date on which the Sale has been issued/published
  * @property state The state of the Sale (see {@link SaleState})
  * */
+
 data class Sale(
-    val title : String,
-    val seller : Int,
-    val price : Float,
-    val condition : BookCondition,
-    val date : Timestamp,
-    val state : SaleState)
+        val book : Book,
+        val seller : User,
+        val price : Float,
+        val condition : BookCondition,
+        val date : Timestamp,
+        val state : SaleState,
+        val image : Image?
+        ) : Serializable
+
 
 /**
  * The condition of a book (as in "in great condition").
@@ -35,4 +44,17 @@ enum class BookCondition {
  * */
 enum class SaleState {
     ACTIVE, RETRACTED, CONCLUDED
+}
+
+/**
+ * Allows access to the name of a field
+ */
+enum class SaleFields(val fieldName: String) {
+    BOOK("book"),
+    CONDITION("condition"),
+    PRICE("price"),
+    PUBLICATION_DATE("date"),
+    SELLER("seller"),
+    STATE("state"),
+    IMAGE("image")
 }

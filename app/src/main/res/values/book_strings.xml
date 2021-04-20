@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    <string name="isbn">ISBN</string>-->
+<!--    <string name="authors">Authors:</string>-->
+<!--    <string name="title">Title:</string>-->
+<!--    <string name="edition">Edition:</string>-->
+<!--    <string name="language">Language</string>-->
+<!--    <string name="publisher">Publisher</string>-->
+<!--    <string name="date_published">Date Published</string>-->
+<!--    <string name="format">Format</string>-->
+    <string name="book_name">Name</string>
+<!--    <string name="isbn">ISBN</string>-->
+    <string name="field">Field</string>
+    <string name="course">Course</string>
+    <string name="semester">Semester</string>
+<!--    <string name="condition">Condition</string>-->
+    <string name="state">State</string>
+<!--    <string name="price">Price</string>-->
+    <string name="price_min_max">Price</string>
+</resources>

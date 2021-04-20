@@ -26,7 +26,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
     override fun onBindViewHolder(holder: SalesViewHolder, position: Int) {
         val currentSale : Sale = salesList[position]
 
-        holder.mName.setText(currentSale.title)
+        holder.mName.setText(currentSale.book.title)
         holder.mPrice.setText( String.format("%.2f",currentSale.price))
     }
 

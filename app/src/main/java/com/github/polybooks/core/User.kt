@@ -8,3 +8,11 @@ package com.github.polybooks.core
 sealed class User
 data class LoggedUser(val uid : Int, val pseudo : String) : User()
 object LocalUser : User()
+
+/**
+ * Allows access to the name of a field
+ */
+enum class UserFields(val fieldName: String) {
+    UID("uid"),
+    PSEUDO("pseudo"),
+}
