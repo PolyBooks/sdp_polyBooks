@@ -15,11 +15,11 @@ import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
+import com.google.firebase.Timestamp
 import com.google.gson.JsonParser
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
-import java.sql.Timestamp
 import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
