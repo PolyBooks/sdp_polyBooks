@@ -10,9 +10,9 @@ import com.github.polybooks.core.database.SalesAdapter
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.implementation.format
 import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
-
 
 /**
  * Activity to list all active sales
@@ -22,8 +22,8 @@ import com.google.firebase.Timestamp
 class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : AppCompatActivity() {
 
     companion object {
-        val EXTRA_SALE_QUERY :String = "saleQuery"
-        val EXTRA_BOOKS_QUERY : String = "bookQuery"
+        val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
+        val EXTRA_BOOKS_QUERY_SETTINGS : String = "bookQuerySettings"
     }
     private val TAG: String = "ListSaleActivity"
 
@@ -48,8 +48,8 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
 
 
 
-        val saleQuery1: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY)
-                ?.let{ intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery}
+        val saleQuery1: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
+                ?.let{ DummySalesQuery().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)}
                 ?: DummySalesQuery().searchByState(setOf(SaleState.ACTIVE))
         saleQuery1.getAll().thenAccept{ list ->
 

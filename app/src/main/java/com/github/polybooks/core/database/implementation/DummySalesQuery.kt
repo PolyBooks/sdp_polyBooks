@@ -8,9 +8,9 @@ import com.github.polybooks.core.*
 
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
-
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -112,5 +112,14 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
             SystemClock.sleep(2000)
             sale.size
         }
+    }
+
+    override fun getSettings(): SaleSettings {
+        return SaleSettings(SaleOrdering.DEFAULT,
+                null, null, null, null, null,null, null)
+    }
+
+    override fun fromSettings(settings: SaleSettings): SaleQuery {
+        return DummySalesQuery()
     }
 }

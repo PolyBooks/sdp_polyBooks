@@ -84,8 +84,9 @@ class FilteringBooksActivity : AppCompatActivity() {
                 .onlyIncludeInterests(getInterests())
                 .withOrdering(getOrdering())
 
+        val querySettings = query.getSettings()
         val intent : Intent = Intent(this, ListSalesActivity::class.java)
-        intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY, query)
+        intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 
