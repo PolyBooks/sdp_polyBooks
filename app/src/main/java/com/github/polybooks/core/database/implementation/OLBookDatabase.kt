@@ -10,6 +10,7 @@ import com.github.polybooks.core.database.interfaces.BookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement

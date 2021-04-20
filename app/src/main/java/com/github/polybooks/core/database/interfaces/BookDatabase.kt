@@ -41,7 +41,7 @@ interface BookDatabase {
  * A BookQuery is a builder for a query to the database that will yield Books.
  * Most methods return themselves for function chaining.
  * */
-interface BookQuery : Query<Book>, Serializable {
+interface BookQuery : Query<Book> {
 
     /**
      * Set this query to only include books that satisfy the given interests.
@@ -66,8 +66,32 @@ interface BookQuery : Query<Book>, Serializable {
      * */
     fun withOrdering(ordering : BookOrdering) : BookQuery
 
+    /**
+     * Get Settings of the BookQuery at current state
+     **/
+    fun getSettings() : BookSettings
+
+    /**
+     * Reset this query using the given settings
+     */
+    fun fromSettings(settings : BookSettings) : BookQuery
+
 }
 
+/**
+ * The Settings contains the values for all the possible query parameters (ig. ordering, title).
+ * In contrary to a Query object, it is independent to the state of the database and thus it
+ * implements Serializable and can be passed as parameter between activities.
+ *
+ * To define a Query, a SaleSettings can be used along with fromSettings in substitution to
+ * calling other methods (ig. searchByTitle)
+ */
+data class BookSettings(
+        val ordering: BookOrdering,
+        val isbns : List<String>?,
+        val title : String?,
+        val interests : Set<Interest>?
+) : Serializable
 
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.

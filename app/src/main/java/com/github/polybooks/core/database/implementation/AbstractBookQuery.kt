@@ -4,6 +4,7 @@ import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.utils.regulariseISBN
 
 /**
@@ -39,6 +40,18 @@ internal abstract class AbstractBookQuery : BookQuery {
 
     override fun withOrdering(ordering: BookOrdering): BookQuery {
         this.ordering = ordering
+        return this
+    }
+
+    override fun getSettings(): BookSettings {
+        return BookSettings(ordering, isbns?.toList(), title, interests?.toSet())
+    }
+
+    override fun fromSettings(settings: BookSettings): BookQuery {
+        interests = settings.interests
+        title = settings.title
+        isbns = settings.isbns?.toSet()
+        ordering = settings.ordering
         return this
     }
 
