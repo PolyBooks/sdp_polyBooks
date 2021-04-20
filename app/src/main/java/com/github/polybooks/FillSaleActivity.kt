@@ -75,7 +75,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         findViewById<TextView>(R.id.filled_publisher)         .apply { text = stringISBN }
 
         // Check if ISBN in our database: (could check ISBN validity before)
-        if(stringISBN != null) {
+        if(!stringISBN.isNullOrEmpty()) {
             book = bookDB.getBook(stringISBN)
 
             book.thenApply { book ->
@@ -111,6 +111,17 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                             ).show()
                         }
                     }
+        } else {
+            Toast.makeText(
+                    this,
+                    "Please provide an ISBN",
+                    Toast.LENGTH_LONG
+            ).show()
+            /*
+            TODO Enable only on not production build
+            val intent = Intent(this, AddSaleActivity::class.java)
+            startActivity(intent)
+            */
         }
 
         // Drop-down menu for condition
