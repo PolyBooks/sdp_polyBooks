@@ -54,9 +54,9 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        assertEquals(6,book.publishDate!!.toDate().month)
+        assertEquals(2020-1900,book.publishDate!!.toDate().year)
+        assertEquals(3,book.publishDate!!.toDate().date)
     }
 
     @Test
@@ -70,9 +70,9 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        assertEquals(6,book.publishDate!!.toDate().month)
+        assertEquals(2020-1900,book.publishDate!!.toDate().year)
+        assertEquals(3,book.publishDate!!.toDate().date)
     }
 
     @Test
@@ -86,9 +86,9 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        assertEquals(6,book.publishDate!!.toDate().month)
+        assertEquals(2020-1900,book.publishDate!!.toDate().year)
+        assertEquals(3,book.publishDate!!.toDate().date)
     }
 
     @Test
@@ -132,9 +132,9 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        assertEquals(6,book.publishDate!!.toDate().month)
+        assertEquals(2020-1900,book.publishDate!!.toDate().year)
+        assertEquals(3,book.publishDate!!.toDate().date)
     }
 
     @Test
@@ -150,9 +150,9 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        assertEquals(6,book.publishDate!!.toDate().month)
+        assertEquals(2020-1900,book.publishDate!!.toDate().year)
+        assertEquals(3,book.publishDate!!.toDate().date)
     }
 
     @Test
