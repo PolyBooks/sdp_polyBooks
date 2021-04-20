@@ -1,6 +1,11 @@
 package com.github.polybooks.core.databaseImpl
 
+import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.core.database.interfaces.BookOrdering
+import com.github.polybooks.core.database.interfaces.BookSettings
+import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.google.gson.JsonParser
 import junit.framework.AssertionFailedError
 import org.junit.Test
@@ -246,6 +251,48 @@ class OLBookDBTests {
         val olDB = OLBookDatabase(url2json)
         olDB.queryBooks().onlyIncludeInterests(Collections.emptyList())
         olDB.queryBooks().searchByTitle("title")
+    }
+
+    @Test
+    fun getSettingsAndFromSettingsMatch() {
+        val olDB = OLBookDatabase(url2json)
+        val settings = BookSettings(
+                BookOrdering.DEFAULT,
+                listOf("9782376863069", "1234567890666"),
+                "A Book",
+                null // TODO update when interests are ready
+        )
+        assertEquals(
+                settings,
+                olDB.queryBooks().fromSettings(settings).getSettings()
+        )
+    }
+
+    @Test
+    fun settingsModifiesStateOfQuery() {
+        val olDB = OLBookDatabase(url2json)
+        val settings = BookSettings(
+                BookOrdering.DEFAULT,
+                listOf("9782376863069", "1234567890666"),null, null
+        )
+        assertNotEquals(
+                olDB.queryBooks().fromSettings(settings).getCount().get(),
+                olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getCount().get()
+        )
+    }
+
+    @Test
+    fun settingsQueriesTheSameWayAsSearchByISBN() {
+        val olDB = OLBookDatabase(url2json)
+        val settings = BookSettings(
+                BookOrdering.DEFAULT,
+                listOf("9782376863069", "9781985086593"),null, null
+        )
+
+        assertEquals(
+                olDB.queryBooks().fromSettings(settings).getCount().get(),
+                olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getCount().get()
+        )
     }
 
 }
