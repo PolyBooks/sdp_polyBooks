@@ -13,6 +13,7 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
+import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
 import com.google.gson.JsonParser
 import java.io.File
@@ -44,7 +45,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     src\test\java\com\github\polybooks\core\databaseImpl\9782376863069.json
     */
     val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
-    val url2json = { url : String ->
+    /*val url2json = { url : String ->
         CompletableFuture.supplyAsync {
             val regexMatch = urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
             val address = regexMatch.groups[1]?.value ?: throw Error("The regex is wrong")
@@ -53,8 +54,8 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             val stream = file.inputStream()
             JsonParser.parseReader(InputStreamReader(stream))
         }
-    }
-    private val bookDB = OLBookDatabase(url2json)
+    }*/
+    private val bookDB = OLBookDatabase { string -> url2json(string) }
 
 
     private lateinit var book: CompletableFuture<Book?>
