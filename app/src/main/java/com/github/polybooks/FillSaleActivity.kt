@@ -36,7 +36,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             Pair("/authors/OL7511250A.json", "OL7511250A.json"),
             Pair("/authors/OL7482089A.json", "OL7482089A.json"),
             Pair("/isbn/9782376863069.json", "9782376863069.json"),
-            Pair("/isbn/2376863066.json", "9782376863069.json")
+            Pair("/isbn/2376863069.json", "9782376863069.json")
     )
     val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
     val url2json = { url : String ->
