@@ -16,11 +16,12 @@ private const val COLLECTION_NAME = "book"
  * */
 class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) : BookDatabase {
 
-    override fun queryBooks(): BookQuery {
-        TODO("Not yet implemented")
-    }
+    private val bookRef = firebase.collection("book")
+
+    override fun queryBooks(): BookQuery = FBBookQuery()
 
     inner class FBBookQuery : BookQuery {
+
         override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
             TODO("Not yet implemented")
         }
@@ -29,7 +30,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             TODO("Not yet implemented")
         }
 
-        override fun searchByISBN13(isbn13: String): BookQuery {
+        override fun searchByISBN(isbns: Set<String>): BookQuery {
             TODO("Not yet implemented")
         }
 
