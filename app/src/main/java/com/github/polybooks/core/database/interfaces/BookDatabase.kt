@@ -2,6 +2,7 @@ package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
+import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -20,10 +21,10 @@ interface BookDatabase {
     fun listAllBooks() : CompletableFuture<List<Book>> = queryBooks().getAll()
 
     /**
-     * Get data about a Book from the database given it's ISBN13
+     * Get data about a Book from the database given it's ISBN
      * */
-    fun getBook(isbn13 : String) : CompletableFuture<Book>
-            = TODO("It can be implemented from the previous functions")
+    fun getBook(isbn : String) : CompletableFuture<Book?>
+            = queryBooks().searchByISBN(setOf(isbn)).getAll().thenApply { it.firstOrNull() }
 
     /**
      * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
@@ -40,7 +41,7 @@ interface BookDatabase {
  * A BookQuery is a builder for a query to the database that will yield Books.
  * Most methods return themselves for function chaining.
  * */
-interface BookQuery : Query<Book> {
+interface BookQuery : Query<Book>, Serializable {
 
     /**
      * Set this query to only include books that satisfy the given interests.
@@ -54,10 +55,10 @@ interface BookQuery : Query<Book> {
     fun searchByTitle(title : String) : BookQuery
 
     /**
-     * Set this query to get the book associated with the given isbn13, if it exists.
+     * Set this query to get the books associated with the given ISBNs, if they exist.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: String) : BookQuery
+    fun searchByISBN(isbns : Set<String>) : BookQuery
 
     /**
      * Set this query to order books with the given ordering.

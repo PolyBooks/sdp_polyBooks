@@ -1,14 +1,13 @@
 package com.github.polybooks.database
 
+import android.util.Log
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
-import com.github.polybooks.core.Book
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
+import com.github.polybooks.core.database.LocalUserException
 import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleFields
+import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,14 +15,12 @@ import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.rules.ExpectedException
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 class SaleDatabaseTest {
     @get:Rule
@@ -33,17 +30,18 @@ class SaleDatabaseTest {
 
     private val testSaleName = "test-123456"
 
+
     private val format : DateFormat = SimpleDateFormat("yyyy-mm-dd")
 
     private val dummySale: MutableMap<String, Any> = HashMap()
 
     init {
-        dummySale[SaleFields.TITLE.fieldName] = "test-book-6Zzn8ZNPeK-cXFEfCvqbs-spf0eCVEqa"
+        dummySale[SaleFields.BOOK.fieldName] = anonymousBook("test-book-6Zzn8ZNPeK-cXFEfCvqbs-spf0eCVEqa")
         dummySale[SaleFields.PRICE.fieldName] = 500f
         dummySale[SaleFields.CONDITION.fieldName] = BookCondition.WORN
         dummySale[SaleFields.STATE.fieldName] = SaleState.ACTIVE
-        dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(com.github.polybooks.database.format.parse("2016-05-05")!!)
-        dummySale[SaleFields.SELLER.fieldName] = 301966
+        dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(format.parse("2016-05-05")!!)
+        dummySale[SaleFields.SELLER.fieldName] = LoggedUser(301966, "Le givre")
     }
 
 
@@ -102,9 +100,9 @@ class SaleDatabaseTest {
         listAllSales = db.listAllSales().get()
         assertEquals(expectedSize + 1, listAllSales.size)
 
-        val isolatedAddition = listAllSales.filter { s -> s.title == dummySale[SaleFields.TITLE.fieldName] }
+        val isolatedAddition = listAllSales.filter { s -> s.book == dummySale[SaleFields.BOOK.fieldName] }
         assertEquals(1, isolatedAddition.size)
-        assertEquals(dummySale[SaleFields.TITLE.fieldName], isolatedAddition[0].title)
+        assertEquals(dummySale[SaleFields.BOOK.fieldName], isolatedAddition[0].book)
         assertEquals(dummySale[SaleFields.PRICE.fieldName], isolatedAddition[0].price)
         assertEquals(dummySale[SaleFields.CONDITION.fieldName], isolatedAddition[0].condition)
         assertEquals(dummySale[SaleFields.STATE.fieldName], isolatedAddition[0].state)
@@ -114,9 +112,9 @@ class SaleDatabaseTest {
 
     @Test
     fun t_searchByTitle() {
-        val initialCount: Int = db.querySales().searchByTitle(dummySale[SaleFields.TITLE.fieldName].toString()).getCount().get()
+        val initialCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
         addDummySaleTest()
-        val secondCount: Int = db.querySales().searchByTitle(dummySale[SaleFields.TITLE.fieldName].toString()).getCount().get()
+        val secondCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
 
         assertEquals(secondCount, initialCount + 1)
         assertEquals(0, db.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getCount().get())
@@ -176,22 +174,22 @@ class SaleDatabaseTest {
         // empty collection should be ignored
         assertEquals(
                 db.querySales().getCount().get(),
-                db.querySales().searchByCondition(emptyList()).getCount().get()
+                db.querySales().searchByCondition(emptySet()).getCount().get()
         )
 
         assertEquals(
                 db.listAllSales().get().filter { s -> s.condition == BookCondition.NEW }.size,
-                db.querySales().searchByCondition(listOf(BookCondition.NEW)).getCount().get()
+                db.querySales().searchByCondition(setOf(BookCondition.NEW)).getCount().get()
         )
 
         assertEquals(
                 db.listAllSales().get().filter { s -> (s.condition == BookCondition.NEW || s.condition == BookCondition.WORN)}.size,
-                db.querySales().searchByCondition(listOf(BookCondition.NEW, BookCondition.WORN)).getCount().get()
+                db.querySales().searchByCondition(setOf(BookCondition.NEW, BookCondition.WORN)).getCount().get()
         )
 
         assertEquals(
                 db.querySales().getCount().get(),
-                db.querySales().searchByCondition(listOf(BookCondition.NEW, BookCondition.GOOD, BookCondition.WORN)).getCount().get()
+                db.querySales().searchByCondition(setOf(BookCondition.NEW, BookCondition.GOOD, BookCondition.WORN)).getCount().get()
         )
     }
 
@@ -200,12 +198,12 @@ class SaleDatabaseTest {
         // empty collection should be ignored
         assertEquals(
                 db.querySales().getCount().get(),
-                db.querySales().searchByState(emptyList()).getCount().get()
+                db.querySales().searchByState(emptySet()).getCount().get()
         )
 
         assertEquals(
                 db.listAllSales().get().filter { s -> s.state == SaleState.ACTIVE }.size,
-                db.querySales().searchByState(listOf(SaleState.ACTIVE)).getCount().get()
+                db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
         )
     }
 
@@ -245,4 +243,106 @@ class SaleDatabaseTest {
         future = db.querySales().getN(1, 0)
         assertTrue(future.get().size <= 1)
     }
+
+    @Test
+    fun addAsLocalUser(){
+        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
+                LocalUser, 666f,
+                BookCondition.WORN,
+                Timestamp(format.parse("2016-05-05")!!),
+                SaleState.RETRACTED, null )
+        try {
+            db.addSale(saleTest)
+        }catch (e: LocalUserException) {
+           assertEquals("Cannot add sale as LocalUser", e.message)
+        } catch (e: Throwable) {
+            fail("Wrong exception type")
+        }
+    }
+
+    @Test
+    fun deleteAsLocalUser(){
+        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
+                LocalUser, 666f,
+                BookCondition.WORN,
+                Timestamp(format.parse("2016-05-05")!!),
+                SaleState.RETRACTED, null )
+        try {
+            db.deleteSale(saleTest)
+        }catch (e: LocalUserException) {
+            assertEquals("Cannot add sale as LocalUser", e.message)
+        } catch (e: Throwable) {
+            fail("Wrong exception type")
+        }
+    }
+
+    @Test
+    fun addDelete(){
+        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
+            LoggedUser(301943, "The best"), 666f,
+            BookCondition.WORN,
+            Timestamp(format.parse("2016-05-05")!!),
+            SaleState.RETRACTED, null )
+        db.deleteSale(saleTest)
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        assertEquals(0,db.querySales().searchByTitle(saleTest.book.title).getCount().get())
+        db.addSale(saleTest)
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        assertEquals( listOf(saleTest), db.querySales().searchByTitle(saleTest.book.title).getAll().get())
+        db.deleteSale(saleTest)
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        assertEquals(0,db.querySales().searchByTitle(saleTest.book.title).getCount().get())
+    }
+
+    @Ignore
+    @Test
+    fun Delete(){
+        //Used to manually delete sales
+        val saleTest = Sale(anonymousBook("test1"),
+                LoggedUser(301943, "The best"),
+                666f,
+                BookCondition.WORN,
+                Timestamp(format.parse("2016-05-05")!!),
+                SaleState.RETRACTED, null )
+        db.deleteSale(saleTest)
+    }
+    @Ignore
+    @Test
+    fun See(){
+        fun snapshotToBook(map: HashMap<String,Any>): Book {
+            return Book(
+                    map[BookFields.ISBN.fieldName] as String,
+                    map[BookFields.AUTHORS.fieldName] as List<String>?,
+                    map[BookFields.TITLE.fieldName] as String,
+                    map[BookFields.EDITION.fieldName] as String?,
+                    map[BookFields.LANGUAGE.fieldName] as String?,
+                    map[BookFields.PUBLISHER.fieldName] as String?,
+                    map[BookFields.PUBLISHDATE.fieldName] as java.sql.Timestamp?,
+                    map[BookFields.FORMAT.fieldName] as String?
+            )
+
+        }
+        saleRef.whereEqualTo("book.title", "test1").get().addOnSuccessListener { documents ->
+            val book = documents.map { document ->
+                document.get(SaleFields.BOOK.fieldName) as HashMap<String, Any>//as Book
+            }
+            
+            println(book)
+        }
+    }
+
+    @Ignore
+    @Test
+    fun Add(){
+        //Used to manually insert sales
+        val saleTest = Sale(anonymousBook("Phisics for dummies"),
+                LoggedUser(301966, "La chevre"),
+                49.5f,
+                BookCondition.NEW,
+                Timestamp(format.parse("2022-01-01")!!),
+                SaleState.ACTIVE, null )
+        db.addSale(saleTest)
+    }
+
+
 }
