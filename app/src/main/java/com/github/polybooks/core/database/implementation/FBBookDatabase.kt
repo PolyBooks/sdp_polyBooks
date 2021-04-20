@@ -1,10 +1,14 @@
 package com.github.polybooks.core.database.implementation
 
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.interfaces.BookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.utils.listOfFuture2FutureOfList
+import com.github.polybooks.utils.regulariseISBN
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.CompletableFuture
 
@@ -20,26 +24,32 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    inner class FBBookQuery : BookQuery {
-
-        override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
-            TODO("Not yet implemented")
-        }
-
-        override fun searchByTitle(title: String): BookQuery {
-            TODO("Not yet implemented")
-        }
-
-        override fun searchByISBN(isbns: Set<String>): BookQuery {
-            TODO("Not yet implemented")
-        }
-
-        override fun withOrdering(ordering: BookOrdering): BookQuery {
-            TODO("Not yet implemented")
-        }
+    private inner class FBBookQuery() : AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
-            TODO("Not yet implemented")
+            when {
+                interests != null -> {
+                    TODO("Not yet implemented")
+                }
+                title != null -> {
+                    TODO("Not yet implemented")
+                }
+                isbns != null -> {
+                    //TODO change this so that it first searches in the Firebase instance
+                    val booksFromOLFuture = isbnDB.queryBooks().searchByISBN(isbns!!).getAll()
+                    val booksToFBFuture =
+                        booksFromOLFuture.thenCompose {
+                        val listOfFutures =
+                            it.map { book -> addBookToFirebase(book) }
+                        listOfFuture2FutureOfList(listOfFutures)
+                    }
+                    //fail if writing to FB fails. return books otherwise.
+                    return booksToFBFuture.thenCompose {booksFromOLFuture}
+                }
+                else -> {
+                    throw Error("BookQuery is in an illegal state")
+                }
+            }
         }
 
         override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
@@ -48,6 +58,34 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
         override fun getCount(): CompletableFuture<Int> {
             TODO("Not yet implemented")
+        }
+
+        private fun bookToDocument(book : Book) : Any {
+            return hashMapOf(
+                BookFields.AUTHORS.fieldName to book.authors,
+                BookFields.EDITION.fieldName to book.edition,
+                BookFields.FORMAT.fieldName to book.format,
+                BookFields.ISBN.fieldName to book.isbn,
+                BookFields.LANGUAGE.fieldName to book.language,
+                BookFields.PUBLISHDATE.fieldName to book.publishDate,
+                BookFields.PUBLISHER.fieldName to book.publisher,
+                BookFields.TITLE.fieldName to book.title,
+            )
+        }
+
+        private fun snapshotToBook(snapshot : DocumentSnapshot) : Book {
+            TODO("Not yet implemented")
+        }
+
+        private fun addBookToFirebase(book : Book) : CompletableFuture<Unit> {
+            val future = CompletableFuture<Unit>()
+            bookRef.document(book.isbn).set(bookToDocument(book))
+                .addOnSuccessListener {
+                    future.complete(Unit)
+                }.addOnFailureListener {
+                    future.completeExceptionally(it)
+                }
+            return future
         }
 
     }

@@ -20,7 +20,7 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionException
+import com.github.polybooks.utils.unwrapException
 
 
 private const val TITLE_FIELD_NAME = "full_title"
@@ -32,9 +32,6 @@ private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
 private const val AUTHOR_NAME_FIELD_NAME = "name"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
-private const val ISBN13_FORMAT = """[0-9]{13}"""
-private const val ISBN10_FORMAT = """[0-9]{9}[0-9X]"""
-private const val ISBN_FORMAT = """($ISBN10_FORMAT)|($ISBN13_FORMAT)"""
 
 private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
@@ -45,46 +42,14 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
     override fun queryBooks(): BookQuery = OLBookQuery()
 
-    private inner class OLBookQuery : BookQuery {
-
-        private var ordering = DEFAULT
-
-        private var empty: Boolean = true
-        private var title: String? = null
-        private var isbns: List<String>? = null
-
-        override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
-            System.err.println("Warning: onlyIncludeInterest not fully implemented for OLBookQuery")
-            this.empty = true
-            return this
-        }
-
-        override fun searchByTitle(title: String): BookQuery {
-            System.err.println("Warning: search by title not fully implemented for OLBookQuery")
-            this.empty = true
-            return this
-        }
-
-        override fun searchByISBN(isbns: Set<String>): BookQuery {
-            val regularised = isbns.map{regulariseISBN(it) ?: throw IllegalArgumentException("ISBN \"$it\" is not valid")}
-            this.empty = false
-            this.title = null
-            this.isbns = regularised
-            return this
-        }
-
-        override fun withOrdering(ordering: BookOrdering): BookQuery {
-            this.ordering = ordering
-            return this
-        }
+    private inner class OLBookQuery() : AbstractBookQuery() {
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getAll(): CompletableFuture<List<Book>> {
-            if (empty) return CompletableFuture.completedFuture(Collections.emptyList())
+            return if (isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
             else {
-                assert(isbns != null)
                 val futures = isbns!!.map{getBookByISBN(it)}
-                return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
+                listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
             }
         }
 
@@ -110,14 +75,6 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
     }
 
-
-    //takes a string and try to interpret it as an isbn
-    private fun regulariseISBN(userISBN : String) : String? {
-        val regularised = userISBN.replace("[- ]".toRegex(), "")
-        return if (!regularised.matches(Regex(ISBN_FORMAT))) null
-        else regularised
-    }
-
     //makes an URL to the OpenLibrary page out of an isbn
     private fun isbn2URL(isbn: String): String {
         return "$OL_BASE_ADDR/isbn/$isbn.json"
@@ -126,17 +83,16 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     private val errorMessage = "Cannot parse OpenLibrary book because : "
 
     private fun getBookByISBN(isbn : String) : CompletableFuture<Book?> {
-        assert(regulariseISBN(isbn) == isbn)
         val url = isbn2URL(isbn)
         return url2json(url)
             .thenApply { parseBook(it) }
             .thenCompose { updateBookWithAuthorName(it) }
             .exceptionally { exception ->
-                if (exception is CompletionException && exception.cause is FileNotFoundException) {
+                val unwraped = unwrapException(exception)
+                if (unwraped is FileNotFoundException) {
                     return@exceptionally null
                 }
-                else if (exception is CompletionException) throw exception.cause!!
-                else throw exception
+                else throw unwraped
             }
     }
 
