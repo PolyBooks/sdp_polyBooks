@@ -2,6 +2,7 @@ package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
+import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -20,10 +21,10 @@ interface BookDatabase {
     fun listAllBooks() : CompletableFuture<List<Book>> = queryBooks().getAll()
 
     /**
-     * Get data about a Book from the database given it's ISBN13
+     * Get data about a Book from the database given it's ISBN
      * */
-    fun getBook(isbn13 : String) : CompletableFuture<Book>
-            = TODO("It can be implemented from the previous functions")
+    fun getBook(isbn : String) : CompletableFuture<Book?>
+            = queryBooks().searchByISBN(setOf(isbn)).getAll().thenApply { it.firstOrNull() }
 
     /**
      * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
@@ -54,10 +55,10 @@ interface BookQuery : Query<Book> {
     fun searchByTitle(title : String) : BookQuery
 
     /**
-     * Set this query to get the book associated with the given isbn13, if it exists.
+     * Set this query to get the books associated with the given ISBNs, if they exist.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: String) : BookQuery
+    fun searchByISBN(isbns : Set<String>) : BookQuery
 
     /**
      * Set this query to order books with the given ordering.
@@ -65,8 +66,32 @@ interface BookQuery : Query<Book> {
      * */
     fun withOrdering(ordering : BookOrdering) : BookQuery
 
+    /**
+     * Get Settings of the BookQuery at current state
+     **/
+    fun getSettings() : BookSettings
+
+    /**
+     * Reset this query using the given settings
+     */
+    fun fromSettings(settings : BookSettings) : BookQuery
+
 }
 
+/**
+ * The Settings contains the values for all the possible query parameters (ig. ordering, title).
+ * In contrary to a Query object, it is independent to the state of the database and thus it
+ * implements Serializable and can be passed as parameter between activities.
+ *
+ * To define a Query, a SaleSettings can be used along with fromSettings in substitution to
+ * calling other methods (ig. searchByTitle)
+ */
+data class BookSettings(
+        val ordering: BookOrdering,
+        val isbns : List<String>?,
+        val title : String?,
+        val interests : Set<Interest>?
+) : Serializable
 
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.
