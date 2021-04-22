@@ -74,21 +74,6 @@ class SaleDatabaseTest {
     @Rule @JvmField val expectedException: ExpectedException = ExpectedException.none()
 
     @Test
-    fun t_listExistingOrderings() {
-        assertEquals(SaleOrdering.values().toList(), db.listExistingOrderings())
-    }
-
-    @Test
-    fun t_listExistingStates() {
-        assertEquals(SaleState.values().toList(), db.listExistingStates())
-    }
-
-    @Test
-    fun t_listExistingBookConditions() {
-        assertEquals(BookCondition.values().toList(), db.listExistingsBookConditions())
-    }
-
-    @Test
     fun t_getCount() {
         val allSales: CompletableFuture<List<Sale>> = db.querySales().getAll()
         val count: CompletableFuture<Int> = db.querySales().getCount()

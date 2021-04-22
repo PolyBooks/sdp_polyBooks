@@ -44,12 +44,6 @@ class OLBookDBTests {
     }
 
     @Test
-    fun t_listExistingOrderings() {
-        val olDB = OLBookDatabase(url2json)
-        assertEquals(BookOrdering.values().toList(), olDB.listExistingOrderings())
-    }
-
-    @Test
     fun canGetBookByISBN() {
         val olDB = OLBookDatabase(url2json)
         val future = olDB.getBook("9782376863069")

@@ -44,25 +44,6 @@ interface SaleDatabase {
      * @param sale The sale to delete
      */
     fun deleteSale(sale: Sale) : Unit
-
-    /**
-     * Get the list of possible ordering parameters
-     */
-    fun listExistingOrderings() : List<SaleOrdering> =
-            SaleOrdering.values().toList()
-
-    /**
-     * Get the list of possible states
-     */
-    fun listExistingStates() : List<SaleState> =
-            SaleState.values().toList()
-
-    /**
-     * Get the list of possible book conditions
-     */
-    fun listExistingsBookConditions() : List<BookCondition> =
-            BookCondition.values().toList()
-
 }
 
 /**
