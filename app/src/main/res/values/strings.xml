@@ -47,4 +47,5 @@
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
+    <string name="value_by">by</string>
 </resources>

@@ -17,19 +17,17 @@ import com.google.firebase.Timestamp
 
 /**
  * Activity to list all active sales
- * @property saleQuery the query listing what is to be shown
  */
-class ListSalesActivity(private val saleQuery: SaleQuery = SaleDatabase().querySales()) : AppCompatActivity() {
+class ListSalesActivity : AppCompatActivity() {
     companion object {
-        val EXTRA_SALE_QUERY :String = "saleQuery"
-        val EXTRA_BOOKS_QUERY : String = "bookQuery"
+        val EXTRA_SALE_QUERY: String = "saleQuery"
+        val EXTRA_BOOKS_QUERY: String = "bookQuery"
     }
-    private val TAG: String = "ListSaleActivity"
 
-    private lateinit var mRecycler : RecyclerView
-    private lateinit var mAdapter : SalesAdapter
-    private val mLayout : RecyclerView.LayoutManager = LinearLayoutManager(this)
-    private val initialBooks : List<Sale> = emptyList()
+    private lateinit var mRecycler: RecyclerView
+    private lateinit var mAdapter: SalesAdapter
+    private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
+    private val initialBooks: List<Sale> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +44,7 @@ class ListSalesActivity(private val saleQuery: SaleQuery = SaleDatabase().queryS
 
         val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY)
                 ?.let{ intent.getSerializableExtra(EXTRA_SALE_QUERY) as SaleQuery }
-                ?: saleQuery.searchByState(setOf(SaleState.ACTIVE))
+                ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
         saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
     }
 
