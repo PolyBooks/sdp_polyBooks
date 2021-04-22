@@ -39,8 +39,11 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
                 else authorsFromListRec("${list[0]}, ", list.drop(1))
             }
 
-            if (list.size == 1) return list[0]
-            else return authorsFromListRec("", list)
+            return when {
+                (list.isEmpty()) -> ""
+                (list.size == 1) -> list[0]
+                else -> authorsFromListRec("", list)
+            }
         }
 
         val sale: Sale = salesList[position]
@@ -55,11 +58,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
             holder.viewBy.setVisibility(View.GONE)
             holder.viewAuthor.setVisibility(View.GONE)
         } else {
-            if (sale.book.authors.size == 1) {
-                holder.viewAuthor.text = sale.book.authors[0]
-            } else {
-                holder.viewAuthor.text = authorsFromList(sale.book.authors)
-            }
+            holder.viewAuthor.text = authorsFromList(sale.book.authors)
         }
 
         holder.viewCondition.text = sale.condition.name

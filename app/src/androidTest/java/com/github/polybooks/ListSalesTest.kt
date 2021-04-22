@@ -21,7 +21,7 @@ class ListSalesTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(ListSalesActivity::class.java)
-    
+
 
     //This one
     /*
