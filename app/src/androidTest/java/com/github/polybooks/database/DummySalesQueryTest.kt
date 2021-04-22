@@ -5,7 +5,9 @@ import com.github.polybooks.core.LocalUser
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.DummySalesQuery
+import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
 import org.junit.Test
@@ -80,5 +82,22 @@ class DummySalesQueryTest {
         assertEquals(q1Result, q1.get())
         assertEquals(q2Result, q2.get())
         assertEquals(q3Result, q3.get())
+    }
+
+    @Test
+    fun settingsTest() {
+        val settingsRes = SaleSettings(SaleOrdering.DEFAULT,
+                null, null, null, null, null,null, null)
+        val settings = query.searchByMaxPrice(10.0f).getSettings()
+        assertEquals(settingsRes, settings)
+    }
+
+    @Test
+    fun getSettingsAfterFromSettingsShouldCorrespond() {
+        val settingsRes = SaleSettings(SaleOrdering.DEFAULT,
+                null, null, null, null, null,null, null)
+
+        val settings = query.fromSettings(settingsRes).getSettings()
+        assertEquals(settingsRes, settings)
     }
 }

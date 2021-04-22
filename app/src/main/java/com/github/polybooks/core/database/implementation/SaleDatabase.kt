@@ -5,6 +5,7 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.LocalUserException
 import com.github.polybooks.core.database.interfaces.SaleDatabase
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 
@@ -179,6 +180,38 @@ class SaleDatabase : SaleDatabase {
                 }
 
             return future
+        }
+
+        override fun getSettings(): SaleSettings {
+            return SaleSettings(
+                    SaleOrdering.DEFAULT, //TODO change when ordering implemented
+                    isbn13,
+                    title,
+                    interests,
+                    states,
+                    conditions,
+                    minPrice,
+                    maxPrice
+            )
+        }
+
+        override fun fromSettings(settings: SaleSettings): SaleQuery {
+            isbn13 = settings.isbn
+            title = settings.title
+
+            if(settings.interests == null) interests == null
+            else onlyIncludeInterests(settings.interests)
+
+            if(settings.states == null) states == null
+            else searchByState(settings.states)
+
+            if(settings.conditions == null) conditions
+            else searchByCondition(settings.conditions)
+
+            minPrice = settings.minPrice
+            maxPrice = settings.maxPrice
+
+            return this
         }
     }
 
