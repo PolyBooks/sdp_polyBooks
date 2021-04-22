@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.RadioButton
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.database.interfaces.SaleOrdering
@@ -18,6 +17,7 @@ class SortByAdapter(private val sortByParams: List<SaleOrdering>):
 
     inner class SortByViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val mSortButton : CheckBox = itemView.findViewById(R.id.sort_by_button)
+        lateinit var mSortValue : SaleOrdering
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SortByViewHolder {
@@ -27,7 +27,8 @@ class SortByAdapter(private val sortByParams: List<SaleOrdering>):
     }
 
     override fun onBindViewHolder(viewHolder: SortByViewHolder, position: Int) {
-        viewHolder.mSortButton.text = saleOrderingTextValues[sortByParams[position]]
+        viewHolder.mSortValue = sortByParams[position]
+        viewHolder.mSortButton.text = saleOrderingTextValues[viewHolder.mSortValue]
 
         viewHolder.mSortButton.setOnClickListener { v ->
             if(lastSelectedButton != null && lastSelectedButton != v) {
@@ -38,10 +39,4 @@ class SortByAdapter(private val sortByParams: List<SaleOrdering>):
     }
 
     override fun getItemCount() = sortByParams.size
-
-    fun clearAllParameters() {
-        for (i in 0 until itemCount) {
-            
-        }
-    }
 }

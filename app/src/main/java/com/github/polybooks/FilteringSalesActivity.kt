@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.adapter.SortByAdapter
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.SalesAdapter
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.google.firebase.firestore.core.OrderBy
 
 class FilteringSalesActivity : AppCompatActivity() {
 
@@ -74,6 +72,8 @@ class FilteringSalesActivity : AppCompatActivity() {
 
     fun getResults(view: View) {
         var query : SaleQuery = DummySalesQuery()
+
+        checkAndSetOrdering(query)
 
         //These 2 in front for dummy sales query
         if(mName.text.isNotEmpty())
@@ -142,10 +142,30 @@ class FilteringSalesActivity : AppCompatActivity() {
 
         val itemCount = mSortView.adapter!!.itemCount
         for (i in 0 until itemCount) {
-            val holder = mSortView.findViewHolderForAdapterPosition(i)
-            if(holder != null) {
-                val sortByButton = holder.itemView.findViewById(R.id.sort_by_button) as CheckBox
-                sortByButton.isChecked = false
+            val h = mSortView.findViewHolderForAdapterPosition(i)
+            if (h != null) {
+                val holder = h as SortByAdapter.SortByViewHolder
+                val button = holder.mSortButton
+                button.isChecked = false
+            }
+        }
+    }
+
+    private fun checkAndSetOrdering(query : SaleQuery) {
+        if(mSortView.adapter == null)
+            return
+
+        val itemCount = mSortView.adapter!!.itemCount
+        for (i in 0 until itemCount) {
+            val h = mSortView.findViewHolderForAdapterPosition(i)
+            if (h != null) {
+                val holder = h as SortByAdapter.SortByViewHolder
+                val button = holder.mSortButton
+                val value = holder.mSortValue
+
+                if (button.isChecked) {
+                    query.withOrdering(value)
+                }
             }
         }
     }
