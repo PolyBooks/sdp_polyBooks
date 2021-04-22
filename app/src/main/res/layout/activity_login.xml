@@ -6,22 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/mini_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="183dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/polybooks"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/top_line"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/password_field"
         android:layout_width="wrap_content"
@@ -72,20 +56,6 @@
         app:layout_constraintTop_toBottomOf="@+id/password_field"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/copyrights"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="113dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="114dp"
-        android:layout_marginBottom="1dp"
-        android:text="@string/copyrights"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_line" />
-
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
@@ -93,43 +63,16 @@
         android:layout_marginStart="85dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="87dp"
-        android:layout_marginBottom="35dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log_button_sub" />
-
-    <View
-        android:id="@+id/top_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="10dp"
-        android:background="?attr/colorPrimaryVariant"
-        app:layout_constraintBottom_toTopOf="@+id/textInfo1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mini_logo" />
-
-    <View
-        android:id="@+id/bottom_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="8dp"
-        android:background="#CCCECE"
-        app:layout_constraintBottom_toTopOf="@+id/copyrights"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
     <TextView
         android:id="@+id/textInfo1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="176dp"
         android:layout_marginBottom="1dp"
         android:text="@string/address_mail"
@@ -137,14 +80,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_line" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textInfo2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="213dp"
         android:text="@string/password"
         app:layout_constraintBottom_toTopOf="@+id/password_field"

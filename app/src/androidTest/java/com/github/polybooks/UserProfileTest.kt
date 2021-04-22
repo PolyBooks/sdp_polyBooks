@@ -45,15 +45,6 @@ class UserProfileTest {
 
         onView(withId(com.github.polybooks.R.id.my_sales_button)).check(ViewAssertions.matches(isDisplayed()))
         onView(withId(com.github.polybooks.R.id.my_sales_button)).check(ViewAssertions.matches(isClickable()))
-
-        onView(withId(com.github.polybooks.R.id.logo)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withId(com.github.polybooks.R.id.logo)).check(ViewAssertions.matches(isClickable()))
-    }
-
-    @Test
-    fun backHome(){
-        onView(withId(com.github.polybooks.R.id.logo)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 
     @Test

@@ -37,12 +37,6 @@ class LoginActivity : AppCompatActivity() {
             signIn()
         }
 
-        val backhome : TextView = findViewById(R.id.mini_logo)
-        backhome.setOnClickListener {
-            val i : Intent = Intent(this, MainActivity::class.java)
-            startActivity(i)
-        }
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()

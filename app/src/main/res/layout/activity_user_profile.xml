@@ -6,58 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".UserProfileActivity">
 
-    <TextView
-        android:id="@+id/copyrights"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="113dp"
-        android:layout_marginEnd="114dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/copyrights"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/polybooks"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/top_line"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/top_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="?attr/colorPrimaryVariant"
-        app:layout_constraintBottom_toTopOf="@+id/button_disco"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo" />
-
-    <View
-        android:id="@+id/bottom_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="10dp"
-        android:background="#D4D1D1"
-        app:layout_constraintBottom_toTopOf="@+id/copyrights"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="100dp"
@@ -95,9 +43,7 @@
         android:layout_marginStart="76dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="73dp"
-        android:layout_marginBottom="5dp"
         android:text="@string/my_book_sales"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sell_book_button" />
@@ -123,12 +69,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="197dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="24dp"
         android:text="@string/disconnect"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_line" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

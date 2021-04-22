@@ -16,15 +16,8 @@ class UserProfileActivity : AppCompatActivity() {
         val username = intent.getStringExtra(EXTRA_MESSAGE);
         val welcomeText = "Hello $username !"
 
-        val textView = findViewById<TextView>(R.id.welcome_text).apply {
-            text = welcomeText
-        }
-
-        val backhome : TextView = findViewById(R.id.logo)
-        backhome.setOnClickListener {
-            val i : Intent = Intent(this, MainActivity::class.java)
-            startActivity(i)
-        }
+        val textMessageView = findViewById<TextView>(R.id.welcome_text);
+        textMessageView.apply {text = welcomeText}
 
         val buttonDisconnect: Button = findViewById(R.id.button_disco)
         buttonDisconnect.setOnClickListener {
