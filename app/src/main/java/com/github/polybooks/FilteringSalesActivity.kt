@@ -3,12 +3,17 @@ package com.github.polybooks
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.github.polybooks.adapter.SortByAdapter
 import com.github.polybooks.core.*
+import com.github.polybooks.core.database.SalesAdapter
 import com.github.polybooks.core.database.implementation.DummySalesQuery
+import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
-
+import com.google.firebase.firestore.core.OrderBy
 
 class FilteringSalesActivity : AppCompatActivity() {
 
@@ -22,16 +27,11 @@ class FilteringSalesActivity : AppCompatActivity() {
     private lateinit var mPriceMin : EditText
     private lateinit var mPriceMax : EditText
 
-    private lateinit var mSortGroup : RadioGroup
-    private lateinit var mSortTitleInc : RadioButton
-    private lateinit var mSortTitleDec : RadioButton
-    private lateinit var mSortPriceInc : RadioButton
-    private lateinit var mSortPriceDec : RadioButton
+    private lateinit var mSortView : RecyclerView
 
     private lateinit var mStateActive : CheckBox
     private lateinit var mStateRetracted : CheckBox
     private lateinit var mStateConcluded : CheckBox
-
 
     private lateinit var mConditionNew : CheckBox
     private lateinit var mConditionGood : CheckBox
@@ -46,70 +46,63 @@ class FilteringSalesActivity : AppCompatActivity() {
         mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
 
-        // Set behaviour Reset and Results
-        setResetButtonBehaviour()
-        setResultsButtonBehaviour()
+        mSortView = findViewById(R.id.sort_by)
+        mSortView.setHasFixedSize(true)
+        mSortView.adapter = SortByAdapter(SaleOrdering.values().drop(1))
+        mSortView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         // hardcoded : make it dynamic
         setParametersButtons()
-        // setParametersListener()
     }
 
-    private fun setResetButtonBehaviour() {
-        mReset.setOnClickListener {
-            mSortGroup.clearCheck()
+    fun resetParameters(view : View) {
+        resetSortByButtons()
 
-            mStateActive.isChecked = false
-            mStateRetracted.isChecked = false
-            mStateConcluded.isChecked = false
-            mConditionNew.isChecked = false
-            mConditionGood.isChecked = false
-            mConditionWorn.isChecked = false
+        mStateActive.isChecked = false
+        mStateRetracted.isChecked = false
+        mStateConcluded.isChecked = false
+        mConditionNew.isChecked = false
+        mConditionGood.isChecked = false
+        mConditionWorn.isChecked = false
 
-            // reset the Edit Text views
-            mName.text.clear()
-            mISBN.text.clear()
-            mPriceMin.text.clear()
-            mPriceMax.text.clear()
-
-        }
+        // reset the Edit Text views
+        mName.text.clear()
+        mISBN.text.clear()
+        mPriceMin.text.clear()
+        mPriceMax.text.clear()
     }
 
-    private fun setResultsButtonBehaviour() {
-        mResults.setOnClickListener {
+    fun getResults(view: View) {
+        var query : SaleQuery = DummySalesQuery()
 
-            var query : SaleQuery = DummySalesQuery()
+        //These 2 in front for dummy sales query
+        if(mName.text.isNotEmpty())
+            query.searchByTitle(mName.text.toString())
 
-            //These 2 in front for dummy sales query
-            if(mName.text.isNotEmpty())
-                query = query.searchByTitle(mName.text.toString())
+        /*
+        TODO With ordering
+        if(mISBN.text.isNotEmpty())
+            query = query.searchByTitle(mISBN.text.toString())
+        */
+        query.searchByState(getStates())
+             .searchByCondition(getCondition())
 
-            /*
-            TODO With ordering
-            if(mISBN.text.isNotEmpty())
-                query = query.searchByTitle(mISBN.text.toString())
-            */
-            query = query.searchByState(getStates())
-                    .searchByCondition(getCondition())
+        // price
+        val minPrice =
+            if(mPriceMin.text.isNotEmpty()) mPriceMin.text.toString().toFloat()
+            else 0.0f
 
+        val maxPrice =
+            if(mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
+            else Float.MAX_VALUE
 
-            // price
-            val minPrice =
-                    if(mPriceMin.text.isNotEmpty()) mPriceMin.text.toString().toFloat()
-                    else 0.0f
-
-            val maxPrice =
-                    if(mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
-                    else Float.MAX_VALUE
-
-            query = query.searchByPrice(minPrice,maxPrice)
-            //---
-            //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
-            val querySettings = query.getSettings()
-            val intent : Intent = Intent(this, ListSalesActivity::class.java)
-            intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
-            startActivity(intent)
-        }
+        query = query.searchByPrice(minPrice,maxPrice)
+        //---
+        //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
+        val querySettings = query.getSettings()
+        val intent = Intent(this, ListSalesActivity::class.java)
+        intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
+        startActivity(intent)
     }
 
     private fun setParametersButtons() {
@@ -117,12 +110,6 @@ class FilteringSalesActivity : AppCompatActivity() {
         mISBN = findViewById(R.id.book_isbn)
         mPriceMin = findViewById(R.id.price_min)
         mPriceMax = findViewById(R.id.price_max)
-
-        mSortGroup = findViewById(R.id.sort_group)
-        mSortTitleInc = findViewById(R.id.title_inc_sort)
-        mSortTitleDec = findViewById(R.id.title_dec_sort)
-        mSortPriceInc = findViewById(R.id.price_inc_sort)
-        mSortPriceDec = findViewById(R.id.price_dec_sort)
 
         mStateActive = findViewById(R.id.state_active)
         mStateRetracted = findViewById(R.id.state_retracted)
@@ -149,4 +136,17 @@ class FilteringSalesActivity : AppCompatActivity() {
         return if(condition.isEmpty()) BookCondition.values().toSet() else condition.toSet()
     }
 
+    private fun resetSortByButtons() {
+        if(mSortView.adapter == null)
+            return
+
+        val itemCount = mSortView.adapter!!.itemCount
+        for (i in 0 until itemCount) {
+            val holder = mSortView.findViewHolderForAdapterPosition(i)
+            if(holder != null) {
+                val sortByButton = holder.itemView.findViewById(R.id.sort_by_button) as CheckBox
+                sortByButton.isChecked = false
+            }
+        }
+    }
 }

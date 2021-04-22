@@ -25,7 +25,7 @@ class SaleDatabase : SaleDatabase {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val saleRef: CollectionReference = db.collection(getCollectionName())
 
-    inner class SalesQuery : SaleQuery {
+    inner class SalesQuery: SaleQuery {
 
         private var isbn13: String? = null
         private var title: String? = null
