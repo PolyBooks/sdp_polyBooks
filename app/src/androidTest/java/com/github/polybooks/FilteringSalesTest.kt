@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 class FilteringSalesTest {
 
     @get:Rule
-    val activityRule : ActivityScenarioRule<FilteringSalesActivity>
+    val activityRule: ActivityScenarioRule<FilteringSalesActivity>
         = ActivityScenarioRule(FilteringSalesActivity::class.java)
 
     private val RANDOM_STRING = "BL1Abl6-a"
