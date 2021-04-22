@@ -23,6 +23,10 @@ Next week I hope I'll be able to discover what the GPS will require.
 
 ## Raoul
 
+This week, I got stuck several hours trying to debug the relationship between my FillSaleActivity and the OpenLibraryDatabase, to no avail. After already spending more than my "remaining expected" time on this, I decided to switch to attend my other task of taking book pictures. There, I could lay down the groundwork, but as I did not had my full 4 hours left to work on it and had to switch to using Fragments, I couldn't finish it. I also spent some time reviewing PRs. 
+My time-estimates were obviously off, but I don't feel like I could have foreseen spending so much time on a bug.
+
+Next week, I will probably again focus on those two tasks as I don't think it would be too wise to take on a 3rd task, nor leave those 2 unfinished.
 
 ---
 
