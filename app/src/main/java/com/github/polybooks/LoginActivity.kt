@@ -37,11 +37,6 @@ class LoginActivity : AppCompatActivity() {
             signIn()
         }
 
-        val signOutButton = findViewById<Button>(R.id.tequila_log_button)
-        signOutButton.setOnClickListener{
-            signOut()
-        }
-
         val backhome : TextView = findViewById(R.id.mini_logo)
         backhome.setOnClickListener {
             val i : Intent = Intent(this, MainActivity::class.java)
