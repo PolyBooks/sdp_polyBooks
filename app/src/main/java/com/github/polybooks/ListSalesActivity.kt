@@ -43,7 +43,9 @@ class ListSalesActivity : AppCompatActivity() {
         mRecycler.adapter = mAdapter
 
         val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
-                ?.let { intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleQuery }
+                ?.let {
+                    SaleDatabase().querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
+                }
                 ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
         saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
     }

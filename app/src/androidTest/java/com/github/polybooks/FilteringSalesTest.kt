@@ -36,7 +36,6 @@ class FilteringSalesTest {
         Intents.release()
     }
 
-    @Ignore
     @Test
     fun intentIsFiredWhenClickingOnResults() {
 
