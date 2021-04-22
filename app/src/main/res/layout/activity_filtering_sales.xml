@@ -10,6 +10,7 @@
     <Button
         android:id="@+id/reset_button"
         android:text= "@string/reset"
+        android:onClick="resetParameters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
@@ -23,6 +24,7 @@
     <Button
         android:id="@+id/results_button"
         android:text="@string/results"
+        android:onClick="getResults"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
@@ -41,7 +43,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reset_button"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_goneMarginBottom="9dp"
+        android:padding="9dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -132,7 +136,6 @@
 
             <!-- Sort by parameter -->
             <LinearLayout
-                android:id="@+id/sortBy_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -144,44 +147,11 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sort_by"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-
-                    <RadioGroup
-                        android:id="@+id/sort_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:ignore="ExtraText">
-
-                        <RadioButton
-                            android:id="@+id/title_inc_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/title_inc" />
-                        android:layout_height="match_parent"
-
-                        <RadioButton
-                            android:id="@+id/title_dec_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/title_dec" />
-
-                        <RadioButton
-                            android:id="@+id/price_inc_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/price_inc" />
-
-                        <RadioButton
-                            android:id="@+id/price_dec_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/price_dec" />
-
-                    </RadioGroup>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
