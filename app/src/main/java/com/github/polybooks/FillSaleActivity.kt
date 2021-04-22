@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.util.Preconditions
 import androidx.core.widget.addTextChangedListener
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
@@ -18,6 +19,9 @@ import com.github.polybooks.core.database.interfaces.BookDatabase
 import com.google.firebase.Timestamp
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
+import androidx.fragment.app.FragmentTransaction.*
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 
 
 /**
@@ -33,6 +37,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     private lateinit var dateFromBookToSale: Timestamp
     private var bookConditionSelected: BookCondition? = null
+
+    companion object {
+        val requestK = "pictureTaken"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,6 +151,25 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
 
     // TODO all the picture stuff.
+    fun takePicture(view: View) {
+        supportFragmentManager
+                .setFragmentResultListener(requestK, this) { requestKey, bundle ->
+
+                    if (requestKey == requestK) {
+                        // process image
+
+                        // delete fragment
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+                            remove(supportFragmentManager.findFragmentById(R.id.fragment_take_picture)!!)
+                        }
+                    }
+                }
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add<TakeBookPictureFragment>(R.id.fragment_take_picture)
+        }
+    }
 
 
     fun confirmSale(view: View) {

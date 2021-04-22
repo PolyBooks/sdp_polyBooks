@@ -72,6 +72,7 @@
         android:id="@+id/add_picture"
         style="@style/SmallButton"
         android:layout_marginBottom="16dp"
+        android:onClick="takePicture"
         android:text="@string/add_picture"
         app:layout_constraintBottom_toTopOf="@+id/filled_condition"
         app:layout_constraintEnd_toEndOf="parent"
@@ -215,5 +216,17 @@
         app:srcCompat="@android:drawable/ic_menu_mapmode"
         tools:srcCompat="@tools:sample/backgrounds/scenic"
         android:contentDescription="@string/your_picture_of_your_book_condition" />
+
+    <!--    TODO test different height/width/constraints and see what works best -->
+    <fragment
+        android:id="@+id/fragment_take_picture"
+        android:name="com.github.polybooks.TakeBookPictureFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

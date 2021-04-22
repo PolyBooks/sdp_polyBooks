@@ -1,16 +1,15 @@
 package com.github.polybooks
 
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.Manifest
 import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,36 +20,48 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class TakeBookPictureActivity : AppCompatActivity() {
+class TakeBookPictureFragment : Fragment() {
+
     private var imageCapture: ImageCapture? = null
 
-    private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_take_book_picture)
+    companion object {
+        fun newInstance() = TakeBookPictureFragment()
+        private const val TAG = "CameraXBasic"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.take_book_picture_fragment, container, false)
+    }
+
+
+    override fun onStart() {
+        // TODO okay here on start to avoid starting the camera too early, or should be in createView?
+        super.onStart()
 
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+                requireActivity(),
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
         }
 
-        // Set up the listener for take photo button
-        camera_capture_button.setOnClickListener { takePhoto() }
-
-        outputDirectory = getOutputDirectory()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
-    private fun takePhoto() {
+    private fun takePhoto(view: View) {
         // TODO improve vastly this function (
-        //  stop saving to file,
-        //  automatically go back to FillSaleActivity passing the taken picture as an intent which will be both displayed and saved to DB
         //  offer flash option)
 
         // Get a stable reference of the modifiable image capture use case
@@ -59,31 +70,34 @@ class TakeBookPictureActivity : AppCompatActivity() {
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
-            SimpleDateFormat(FILENAME_FORMAT, Locale.UK
+            SimpleDateFormat(
+                FILENAME_FORMAT, Locale.UK
             ).format(System.currentTimeMillis()) + ".jpg")
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
         imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(this), object : ImageCapture.OnImageSavedCallback {
+            ContextCompat.getMainExecutor(activity), object : ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    // TODO The application is responsible for calling ImageProxy.close() to close the image.
+                    super.onCaptureSuccess(image)
+                    val msg = "Photo capture succeeded"
+                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+                    parentFragmentManager.setFragmentResult(
+                        FillSaleActivity.requestK,
+                        image // TODO convert to bundle, but also as needed by DB
+                    )
                 }
             })
     }
 
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
 
         cameraProviderFuture.addListener(Runnable {
             // Used to bind the lifecycle of cameras to the lifecycle owner
@@ -113,12 +127,12 @@ class TakeBookPictureActivity : AppCompatActivity() {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
-        }, ContextCompat.getMainExecutor(this))
+        }, ContextCompat.getMainExecutor(activity))
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
+            requireActivity(), it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -128,7 +142,7 @@ class TakeBookPictureActivity : AppCompatActivity() {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
-                Toast.makeText(this,
+                Toast.makeText(activity,
                     "Permissions not granted by the user.",
                     Toast.LENGTH_SHORT).show()
                 finish()
@@ -136,22 +150,9 @@ class TakeBookPictureActivity : AppCompatActivity() {
         }
     }
 
-    private fun getOutputDirectory(): File {
-        val mediaDir = externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
-        return if (mediaDir != null && mediaDir.exists())
-            mediaDir else filesDir
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
 
-    companion object {
-        private const val TAG = "CameraXBasic"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-    }
 }
