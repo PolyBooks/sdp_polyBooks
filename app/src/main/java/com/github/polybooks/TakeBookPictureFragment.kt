@@ -13,6 +13,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.commit
 import kotlinx.android.synthetic.main.activity_take_book_picture.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -61,18 +62,11 @@ class TakeBookPictureFragment : Fragment() {
     }
 
     private fun takePhoto(view: View) {
-        // TODO improve vastly this function (
-        //  offer flash option)
+        // TODO offer flash option and other quality of life upgrades
 
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-        // Create time-stamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(
-                FILENAME_FORMAT, Locale.UK
-            ).format(System.currentTimeMillis()) + ".jpg")
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
@@ -142,10 +136,15 @@ class TakeBookPictureFragment : Fragment() {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
+                // TODO also improve UX here
                 Toast.makeText(activity,
-                    "Permissions not granted by the user.",
+                    "You must grant camera permissions to take a picture.",
                     Toast.LENGTH_SHORT).show()
-                finish()
+                // Close the fragment
+                parentFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    remove(parentFragmentManager.findFragmentById(R.id.fragment_take_picture)!!)
+                }
             }
         }
     }
