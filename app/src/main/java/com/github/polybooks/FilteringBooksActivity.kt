@@ -111,26 +111,26 @@ class FilteringBooksActivity : AppCompatActivity() {
     }
 
     private fun getOrdering() : BookOrdering {
-        if(mSortPopularity.isChecked) return BookOrdering.DEFAULT //add it when available
-        if(mSortTitleDec.isChecked) return BookOrdering.TITLE_DEC //add it when available
-        if(mSortTitleInc.isChecked) return BookOrdering.TITLE_INC //add it when available
+        if (mSortPopularity.isChecked) return BookOrdering.DEFAULT //add it when available
+        if (mSortTitleDec.isChecked) return BookOrdering.TITLE_DEC //add it when available
+        if (mSortTitleInc.isChecked) return BookOrdering.TITLE_INC //add it when available
         else return BookOrdering.DEFAULT
     }
 
     private fun getInterests() : Set<Interest> {
         val interests = mutableSetOf<Interest>()
-        if(mFieldCS.isChecked) interests.add(Field(mFieldCS.text.toString()))
-        if(mFieldBio.isChecked) interests.add(Field(mFieldBio.text.toString()))
-        if(mFieldArchi.isChecked) interests.add(Field(mFieldArchi.text.toString()))
+        if (mFieldCS.isChecked) interests.add(Field(mFieldCS.text.toString()))
+        if (mFieldBio.isChecked) interests.add(Field(mFieldBio.text.toString()))
+        if (mFieldArchi.isChecked) interests.add(Field(mFieldArchi.text.toString()))
 
-        if(mCourseCOM480.isChecked) interests.add(Course(mCourseCOM480.text.toString()))
-        if(mCourseCS306.isChecked) interests.add(Course(mCourseCS306.text.toString()))
+        if (mCourseCOM480.isChecked) interests.add(Course(mCourseCOM480.text.toString()))
+        if (mCourseCS306.isChecked) interests.add(Course(mCourseCS306.text.toString()))
 
-        if(mSemBa1.isChecked) interests.add(Semester(mSemBa1.text.toString(), "?"))
-        if(mSemBa2.isChecked) interests.add(Semester(mSemBa2.text.toString(), "?"))
-        if(mSemBa3.isChecked) interests.add(Semester(mSemBa3.text.toString(), "?"))
-        if(mSemMa1.isChecked) interests.add(Semester(mSemMa1.text.toString(), "?"))
-        if(mSemMa2.isChecked) interests.add(Semester(mSemMa2.text.toString(), "?"))
+        if (mSemBa1.isChecked) interests.add(Semester(mSemBa1.text.toString(), "?"))
+        if (mSemBa2.isChecked) interests.add(Semester(mSemBa2.text.toString(), "?"))
+        if (mSemBa3.isChecked) interests.add(Semester(mSemBa3.text.toString(), "?"))
+        if (mSemMa1.isChecked) interests.add(Semester(mSemMa1.text.toString(), "?"))
+        if (mSemMa2.isChecked) interests.add(Semester(mSemMa2.text.toString(), "?"))
 
         return interests.toSet()
     }
