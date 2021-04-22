@@ -53,5 +53,11 @@ class UserProfileTest {
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
     }
 
+    @Test
+    fun sellButton(){
+        onView(withId(com.github.polybooks.R.id.sell_book_button)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
+    }
+
 
 }

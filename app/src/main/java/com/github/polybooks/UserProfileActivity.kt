@@ -19,6 +19,12 @@ class UserProfileActivity : AppCompatActivity() {
         val textMessageView = findViewById<TextView>(R.id.welcome_text);
         textMessageView.apply {text = welcomeText}
 
+        val buttonSellBook: Button = findViewById(R.id.sell_book_button)
+        buttonSellBook.setOnClickListener {
+            val intent = Intent(this, AddSaleActivity::class.java)
+            startActivity(intent)
+        }
+
         val buttonDisconnect: Button = findViewById(R.id.button_disco)
         buttonDisconnect.setOnClickListener {
             LoginActivity().signOut()
