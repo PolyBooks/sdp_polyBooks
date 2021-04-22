@@ -1,7 +1,7 @@
 package com.github.polybooks.core.database.implementation
 
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.InterestDatabase
+import com.github.polybooks.core.database.interfaces.InterestDatabase
 import com.github.polybooks.utils.mockCourses
 import com.github.polybooks.utils.mockFields
 import com.github.polybooks.utils.mockSemesters
