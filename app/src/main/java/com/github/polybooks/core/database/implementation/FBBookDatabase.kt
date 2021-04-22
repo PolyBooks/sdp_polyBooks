@@ -8,7 +8,9 @@ import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.github.polybooks.utils.regulariseISBN
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.CompletableFuture
 
@@ -19,6 +21,17 @@ private const val COLLECTION_NAME = "book"
  * database that only allows searching by isbn.
  * */
 class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) : BookDatabase {
+
+    /*TODO:
+    [x] proxy search by isbn to OLBookDatabase
+    [x] save books from OL to Firebase
+    [x] use firebase as cache
+    [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
+    [x] optimise the search by ISBN
+    [ ] allow search by title
+    [ ] allow search by interest
+    [ ] implement getN and count
+    */
 
     private val bookRef = firebase.collection("book")
 
@@ -35,16 +48,18 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                     TODO("Not yet implemented")
                 }
                 isbns != null -> {
+                    val isbns = this.isbns!!
                     //TODO change this so that it first searches in the Firebase instance
-                    val booksFromOLFuture = isbnDB.queryBooks().searchByISBN(isbns!!).getAll()
-                    val booksToFBFuture =
-                        booksFromOLFuture.thenCompose {
-                        val listOfFutures =
-                            it.map { book -> addBookToFirebase(book) }
-                        listOfFuture2FutureOfList(listOfFutures)
+                    val booksFromFBFuture = getBooksByISBNFromFirebase(isbns.toList())
+                    return booksFromFBFuture.thenCompose { booksFromFB ->
+                        val isbnsFound = booksFromFB.map { it.isbn }
+                        val remainingISBNs = isbns.minus(isbnsFound)
+                        val booksFromOLFuture = isbnDB.queryBooks().searchByISBN(remainingISBNs).getAll()
+                        val allBooksFuture = booksFromOLFuture.thenApply { booksFromOL ->
+                            booksFromOL + booksFromFB
+                        }
+                        allBooksFuture
                     }
-                    //fail if writing to FB fails. return books otherwise.
-                    return booksToFBFuture.thenCompose {booksFromOLFuture}
                 }
                 else -> {
                     throw Error("BookQuery is in an illegal state")
@@ -73,17 +88,55 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             )
         }
 
-        private fun snapshotToBook(snapshot : DocumentSnapshot) : Book {
-            TODO("Not yet implemented")
+        private fun assembleBookEntry(bookDocument : Any) : Any {
+            return hashMapOf(
+                "book" to bookDocument,
+                "interests" to listOf<Any>()
+            )
+        }
+
+        private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
+            return Book(
+                map[BookFields.ISBN.fieldName] as String,
+                map[BookFields.AUTHORS.fieldName] as List<String>?,
+                map[BookFields.TITLE.fieldName] as String,
+                map[BookFields.EDITION.fieldName] as String?,
+                map[BookFields.LANGUAGE.fieldName] as String?,
+                map[BookFields.PUBLISHER.fieldName] as String?,
+                (map[BookFields.PUBLISHDATE.fieldName] as Timestamp?)?.let {timestampConvert(it)},
+                map[BookFields.FORMAT.fieldName] as String?
+            )
+        }
+
+        private fun timestampConvert(firebase : Timestamp) : java.sql.Timestamp {
+            return java.sql.Timestamp(firebase.toDate().time)
+        }
+
+        private fun snapshotEntryToBook(snapshot : DocumentSnapshot) : Book {
+            val bookDocument = snapshot.get("book") as HashMap<String, Any>
+            return snapshotBookToBook(bookDocument)
         }
 
         private fun addBookToFirebase(book : Book) : CompletableFuture<Unit> {
             val future = CompletableFuture<Unit>()
-            bookRef.document(book.isbn).set(bookToDocument(book))
+            val bookEntry = assembleBookEntry(bookToDocument(book))
+            bookRef.document(book.isbn).set(bookEntry)
                 .addOnSuccessListener {
                     future.complete(Unit)
                 }.addOnFailureListener {
                     future.completeExceptionally(it)
+                }
+            return future
+        }
+
+        private fun getBooksByISBNFromFirebase(isbns : List<String>) : CompletableFuture<List<Book>> {
+            val future = CompletableFuture<List<Book>>()
+            bookRef.whereIn(FieldPath.documentId(), isbns)
+                .get().addOnSuccessListener { bookEntries ->
+                    val books = bookEntries.map { bookEntry ->
+                        snapshotEntryToBook(bookEntry)
+                    }
+                    future.complete(books)
                 }
             return future
         }
