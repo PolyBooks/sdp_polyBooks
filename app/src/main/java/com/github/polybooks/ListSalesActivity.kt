@@ -22,8 +22,8 @@ import com.google.firebase.Timestamp
 class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : AppCompatActivity() {
 
     companion object {
-        val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
-        val EXTRA_BOOKS_QUERY_SETTINGS : String = "bookQuerySettings"
+        const val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
+        const val EXTRA_BOOKS_QUERY_SETTINGS : String = "bookQuerySettings"
     }
     private val TAG: String = "ListSaleActivity"
 
