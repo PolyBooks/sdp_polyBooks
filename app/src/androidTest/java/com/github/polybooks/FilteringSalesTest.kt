@@ -42,8 +42,9 @@ class FilteringSalesTest {
 
         onView(withId(R.id.results_button)).perform(click())
 
-        intended(hasComponent(ListSalesActivity::class.java.name))
-
+        intended(allOf(
+                hasComponent(ListSalesActivity::class.java.name),
+                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)))
     }
 
     @Test

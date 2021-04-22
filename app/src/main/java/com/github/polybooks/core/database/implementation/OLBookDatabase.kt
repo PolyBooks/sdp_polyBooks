@@ -10,6 +10,7 @@ import com.github.polybooks.core.database.interfaces.BookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -44,11 +45,9 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>) : BookDatabase {
 
     override fun queryBooks(): BookQuery = OLBookQuery()
-
     private inner class OLBookQuery : BookQuery {
 
         private var ordering = DEFAULT
-
         private var empty: Boolean = true
         private var title: String? = null
         private var isbns: List<String>? = null
@@ -78,13 +77,31 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             return this
         }
 
+        override fun getSettings(): BookSettings {
+            return BookSettings(ordering, this.isbns,title,null)
+        }
+
+        override fun fromSettings(settings: BookSettings): BookQuery {
+            this.withOrdering(settings.ordering)
+
+            if (settings.isbns != null) this.searchByISBN(settings.isbns.toSet())
+            else isbns = null
+
+            this.title = settings.title
+
+            if(settings.interests != null) {
+                System.err.println("Warning: queries by interests not fully implemented for OLBookQuery")
+            }
+            return this
+        }
+
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getAll(): CompletableFuture<List<Book>> {
-            if (empty) return CompletableFuture.completedFuture(Collections.emptyList())
+            return if (empty) CompletableFuture.completedFuture(Collections.emptyList())
             else {
                 assert(isbns != null)
                 val futures = isbns!!.map{getBookByISBN(it)}
-                return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
+                listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
             }
         }
 
@@ -109,6 +126,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         }
 
     }
+
 
 
     //takes a string and try to interpret it as an isbn
