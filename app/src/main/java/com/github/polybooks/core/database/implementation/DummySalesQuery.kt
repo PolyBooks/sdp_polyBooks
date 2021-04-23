@@ -20,15 +20,15 @@ val formatString = "yyyy-mm-dd"
 val format : DateFormat = SimpleDateFormat(formatString)
 @RequiresApi(Build.VERSION_CODES.O)
 val default_sale: List<Sale> = listOf(
-        Sale( anonymousBook("Book1"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-        Sale(anonymousBook("Book2"), LocalUser, 24.55f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-        Sale(anonymousBook("Book3"), LocalUser, 25.00f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-        Sale(anonymousBook("Book4"), LocalUser, 26.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-        Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, Timestamp(format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
-        Sale(anonymousBook("Book6"), LocalUser, 29.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-        Sale(anonymousBook("Book7"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-        Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-        Sale(anonymousBook("Book9"), LocalUser, 25.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.RETRACTED, null),
+    Sale( anonymousBook("Book1"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+    Sale(anonymousBook("Book2"), LocalUser, 24.55f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+    Sale(anonymousBook("Book3"), LocalUser, 25.00f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+    Sale(anonymousBook("Book4"), LocalUser, 26.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+    Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, Timestamp(format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
+    Sale(anonymousBook("Book6"), LocalUser, 29.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+    Sale(anonymousBook("Book7"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+    Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, Timestamp(format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+    Sale(anonymousBook("Book9"), LocalUser, 25.00f, BookCondition.GOOD, Timestamp(format.parse("2016-05-05")!!), SaleState.RETRACTED, null),
 )
 
 /**
