@@ -13,7 +13,7 @@ Next week I hope I'll be able to discover what the GPS will require.
 
 ---
 
-## Nicolas
+## Nicolas (Scrum Master)
 
 
 
@@ -37,7 +37,7 @@ Next week, I will probably again focus on those two tasks as I don't think it wo
 
 ---
 
-## Zied (Scrum Master)
+## Zied
 
 This week I cleaned the User profile page and cleaned some other code that I did. 
 I also finished to implement the registration and login by email/password but still have to create tests for it.
