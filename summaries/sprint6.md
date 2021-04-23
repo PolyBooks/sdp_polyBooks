@@ -39,6 +39,10 @@ Next week, I will probably again focus on those two tasks as I don't think it wo
 
 ## Zied (Scrum Master)
 
+This week I cleaned the User profile page and cleaned some other code that I did. 
+I also finished to implement the registration and login by email/password but still have to create tests for it.
+The implementation of registration and login by email/password should have been scheduled for 2 weeks for it to be perfectly implemented (with the tests etc...)
+So Next week, If I am taking a task that seems too big, I will break it into smaller tasks.
 
 
 ---
