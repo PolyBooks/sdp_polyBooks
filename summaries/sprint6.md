@@ -13,9 +13,11 @@ Next week I hope I'll be able to discover what the GPS will require.
 
 ---
 
-## Nicolas
+## Nicolas (Scrum Master)
 
+This week I focused on finishing the sale UI display (show all the books that correspond to a particular request) as well as helping my teammates on brainstorming how to implement a particular feature.
 
+Next week I'll try to take a little bit more work, because as said last weekly meeting, I expected my work to not take the full 8h of work.
 
 ---
 
@@ -37,7 +39,7 @@ Next week, I will probably again focus on those two tasks as I don't think it wo
 
 ---
 
-## Zied (Scrum Master)
+## Zied
 
 This week I cleaned the User profile page and cleaned some other code that I did. 
 I also finished to implement the registration and login by email/password but still have to create tests for it.
@@ -49,4 +51,4 @@ So Next week, If I am taking a task that seems too big, I will break it into sma
 
 ## Overall team
 
-
+Overall, this week we made progress on different fronts ranging from login/sale display/firebase revamp/sale filtering. We also defined a set of coding guidelines that we are now all using in order to unify the project. Our two meetings were fruitful: we had a short but concise meeting on Tuesday and decided of our coding guidelines on Thursday.
