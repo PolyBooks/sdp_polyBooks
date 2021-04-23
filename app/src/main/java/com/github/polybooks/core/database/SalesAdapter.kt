@@ -14,20 +14,54 @@ import com.github.polybooks.core.Sale
  */
 class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter.SalesViewHolder>() {
     class SalesViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val mName: TextView = itemView.findViewById(R.id.BookName)
-        val mPrice : TextView = itemView.findViewById(R.id.SalePrice)
+        val viewTitle: TextView = itemView.findViewById(R.id.text_view_title)
+        val viewEdition: TextView = itemView.findViewById(R.id.text_view_edition)
+        val viewBy: TextView = itemView.findViewById(R.id.text_view_by)
+        val viewAuthor: TextView = itemView.findViewById(R.id.text_view_author)
+        val viewCondition: TextView = itemView.findViewById(R.id.text_view_condition)
+        val viewPrice: TextView = itemView.findViewById(R.id.text_view_price)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SalesViewHolder {
-        val v : View = LayoutInflater.from(parent.context).inflate(R.layout.sale_item, parent, false)
-        return SalesAdapter.SalesViewHolder(v)
+        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.sale_item, parent, false)
+        return SalesViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: SalesViewHolder, position: Int) {
-        val currentSale : Sale = salesList[position]
 
-        holder.mName.setText(currentSale.title)
-        holder.mPrice.setText( String.format("%.2f",currentSale.price))
+        /**
+         * Creates an authors string from a list of author(s)
+         */
+        fun authorsFromList(list: List<String>): String {
+            fun authorsFromListRec(acc: String, list: List<String>): String {
+                return if (list.size == 1) "${acc}and ${list[0]}"
+                else authorsFromListRec("${list[0]}, ", list.drop(1))
+            }
+
+            return when {
+                (list.isEmpty()) -> ""
+                (list.size == 1) -> list[0]
+                else -> authorsFromListRec("", list)
+            }
+        }
+
+        val sale: Sale = salesList[position]
+
+        holder.viewTitle.text = sale.book.title
+
+        if (sale.book.edition != null) holder.viewEdition.text = sale.book.edition
+        else holder.viewEdition.setVisibility(View.GONE)
+
+        // FIXME should not be nullable! If no authors, then empty list. @Joshua
+        if (sale.book.authors!!.isEmpty()) {
+            holder.viewBy.setVisibility(View.GONE)
+            holder.viewAuthor.setVisibility(View.GONE)
+        } else {
+            holder.viewAuthor.text = authorsFromList(sale.book.authors)
+        }
+
+        holder.viewCondition.text = sale.condition.name
+        holder.viewPrice.text = String.format("%.2f", sale.price)
     }
 
     override fun getItemCount(): Int {

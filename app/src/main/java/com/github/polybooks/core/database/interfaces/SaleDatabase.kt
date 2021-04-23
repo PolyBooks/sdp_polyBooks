@@ -4,11 +4,7 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-
 import java.io.Serializable
-
-import com.github.polybooks.core.database.interfaces.Query
-
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -54,7 +50,7 @@ interface SaleDatabase {
  * A SaleQuery is a builder for a query to the database that will yield Sales.
  * Most methods return themselves for function chaining.
  * */
-interface SaleQuery : Query<Sale>, Serializable {
+interface SaleQuery : Query<Sale> {
 
     /**
      * Set this query to only include sales that satisfy the given interests.
@@ -106,23 +102,42 @@ interface SaleQuery : Query<Sale>, Serializable {
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN13(isbn13: String) : SaleQuery
+    fun searchByISBN(isbn13: String) : SaleQuery
+
+    /**
+     * Get Settings from the book
+     * */
+    fun getSettings() : SaleSettings
+
+    /**
+     * Reset this query using the given settings
+     */
+    fun fromSettings(settings : SaleSettings) : SaleQuery
 
 }
 
+/**
+ * The Settings contains the values for all the possible query parameters (ig. ordering, price).
+ * In contrary to a Query object, it is independent to the state of the database and thus it
+ * implement Serializable and can be passed as parameter between activities.
+ *
+ * To define a Query, a SaleSettings can be used along with fromSettings in substitution to
+ * calling the other methods (ig. searchByPrice)
+ */
+data class SaleSettings(
+        val ordering: SaleOrdering,
+        val isbn: String?,
+        val title : String?,
+        val interests : Set<Interest>?,
+        val states : Set<SaleState> ?,
+        val conditions : Set<BookCondition>?,
+        val minPrice : Float?,
+        val maxPrice : Float?
+) : Serializable
 
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.
  * */
 enum class SaleOrdering {
     DEFAULT, TITLE_INC, TITLE_DEC, PRICE_INC, PRICE_DEC, PUBLISH_DATE_INC, PUBLISH_DATE_DEC,
-}
-
-enum class SaleFields(val fieldName: String) {
-    TITLE("title"),
-    CONDITION("condition"),
-    PRICE("price"),
-    PUBLICATION_DATE("date"),
-    SELLER("seller"),
-    STATE("state"),
 }

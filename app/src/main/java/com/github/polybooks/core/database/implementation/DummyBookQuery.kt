@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.core.database.interfaces.BookSettings
 import java.sql.Timestamp
 import java.util.concurrent.CompletableFuture
 
@@ -25,9 +26,10 @@ class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery
        return DummyBookQuery()
     }
 
-    override fun searchByISBN13(isbn13: String) : BookQuery {
-       return DummyBookQuery()
+    override fun searchByISBN(isbns: Set<String>): BookQuery {
+        return DummyBookQuery()
     }
+
 
     override fun withOrdering(ordering : BookOrdering) : BookQuery {
         return DummyBookQuery()
@@ -46,5 +48,13 @@ class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery
 
     override fun getCount(): CompletableFuture<Int> {
         TODO("Not yet implemented")
+    }
+
+    override fun getSettings() : BookSettings {
+        return BookSettings(BookOrdering.DEFAULT, null, null, null)
+    }
+
+    override fun fromSettings(settings: BookSettings): BookQuery {
+        return DummyBookQuery()
     }
 }

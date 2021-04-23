@@ -3,24 +3,22 @@ package com.github.polybooks.core.database.implementation
 import android.util.Log
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
+import com.github.polybooks.core.database.LocalUserException
 import com.github.polybooks.core.database.interfaces.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleFields
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import java.sql.Timestamp
 
-import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.model.Document
 
-import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashMap
 
 class SaleDatabase : SaleDatabase {
 
@@ -77,7 +75,7 @@ class SaleDatabase : SaleDatabase {
             TODO("Not yet implemented")
         }
 
-        override fun searchByISBN13(isbn13: String): SaleQuery {
+        override fun searchByISBN(isbn13: String): SaleQuery {
             this.isbn13 = isbn13
             return this
         }
@@ -87,7 +85,9 @@ class SaleDatabase : SaleDatabase {
 
             // TODO: add these when necessary
             // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
-            title?.let { query = query.whereEqualTo(SaleFields.TITLE.fieldName, title) }
+            // TODO: fix this for title
+            // FieldPath.of(SaleFields.BOOK.fieldName, BookFields.TITLE.fieldName)
+            title?.let { query = query.whereEqualTo(SaleFields.BOOK.fieldName + "." + BookFields.TITLE.fieldName, title) }//SaleFields.BOOK.fieldName[BookFields.TITLE.fieldName]
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
             states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
             // TODO: fix this with whereIN
@@ -102,7 +102,7 @@ class SaleDatabase : SaleDatabase {
 
         internal fun getReferenceID(sale: Sale): Task<QuerySnapshot> {
             val query = querySales()
-                .searchByTitle(sale.title)
+                .searchByTitle(sale.book.title)
                 .searchByState(setOf(sale.state))
                 .searchByPrice(sale.price,sale.price) as SalesQuery
             return query.getQuery().get()
@@ -181,49 +181,109 @@ class SaleDatabase : SaleDatabase {
 
             return future
         }
+
+        override fun getSettings(): SaleSettings {
+            return SaleSettings(
+                    SaleOrdering.DEFAULT, //TODO change when ordering implemented
+                    isbn13,
+                    title,
+                    interests,
+                    states,
+                    conditions,
+                    minPrice,
+                    maxPrice
+            )
+        }
+
+        override fun fromSettings(settings: SaleSettings): SaleQuery {
+            isbn13 = settings.isbn
+            title = settings.title
+
+            if(settings.interests == null) interests == null
+            else onlyIncludeInterests(settings.interests)
+
+            if(settings.states == null) states == null
+            else searchByState(settings.states)
+
+            if(settings.conditions == null) conditions
+            else searchByCondition(settings.conditions)
+
+            minPrice = settings.minPrice
+            maxPrice = settings.maxPrice
+
+            return this
+        }
     }
 
     override fun querySales(): SalesQuery {
         return SalesQuery()
     }
 
-    private fun snapshotToSale(snapshot: QueryDocumentSnapshot): Sale {
+    private fun snapshotToBook(map: HashMap<String, Any>): Book {
+        return Book(
+            map[BookFields.ISBN.fieldName] as String,
+            map[BookFields.AUTHORS.fieldName] as List<String>?,
+            map[BookFields.TITLE.fieldName] as String,
+            map[BookFields.EDITION.fieldName] as String?,
+            map[BookFields.LANGUAGE.fieldName] as String?,
+            map[BookFields.PUBLISHER.fieldName] as String?,
+            map[BookFields.PUBLISHDATE.fieldName] as java.sql.Timestamp?,
+            map[BookFields.FORMAT.fieldName] as String?
+        )
+
+    }
+
+    private fun snapshotToUser(map: HashMap<String, Any>): User {
+        val uid = (map[UserFields.UID.fieldName] as Long).toInt()
+        val pseudo = map[UserFields.PSEUDO.fieldName] as String
+
+        return LoggedUser(uid, pseudo)
+    }
+
+    private fun snapshotToSale(snapshot: DocumentSnapshot): Sale {
+
         return Sale(
-            snapshot.getString(SaleFields.TITLE.fieldName)!!,
-            snapshot.getLong(SaleFields.SELLER.fieldName)!!.toInt(),
+            snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
+            snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
             snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
             BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate().time),
-            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!)
+            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
+            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
+            null
         )
     }
 
     private fun saleToDocument(sale: Sale): Any {
         return hashMapOf(
-                SaleFields.TITLE.fieldName to sale.title,
-                SaleFields.SELLER.fieldName to sale.seller,
-                SaleFields.PRICE.fieldName to sale.price,
-                SaleFields.CONDITION.fieldName to sale.condition,
-                SaleFields.PUBLICATION_DATE.fieldName to sale.date,
-                SaleFields.STATE.fieldName to sale.state
+            SaleFields.BOOK.fieldName to sale.book,
+            SaleFields.SELLER.fieldName to sale.seller,
+            SaleFields.PRICE.fieldName to sale.price,
+            SaleFields.CONDITION.fieldName to sale.condition,
+            SaleFields.PUBLICATION_DATE.fieldName to sale.date,
+            SaleFields.STATE.fieldName to sale.state,
+            SaleFields.IMAGE.fieldName to null //TODO change this, image goes elsewhere
         )
     }
 
     override fun addSale(sale: Sale) {
+        if(sale.seller == LocalUser)
+            throw LocalUserException("Cannot add sale as LocalUser")
         saleRef.add(saleToDocument(sale))
                 .addOnSuccessListener { documentReference ->
-                        Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
+                    Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
                 .addOnFailureListener {
-                        // TODO: Change this to maybe only log the error
-                        throw DatabaseException("Failed to insert $sale into Database")
+                    // TODO: Change this to maybe only log the error
+                    throw DatabaseException("Failed to insert $sale into Database")
                 }
     }
 
     override fun deleteSale(sale: Sale) {
+        if(sale.seller == LocalUser)
+            throw LocalUserException("Cannot add sale as LocalUser")
         SalesQuery().getReferenceID(sale).continueWith { task ->
-            val result = task.result.filter { document ->
+            val result = task.result.documents.filter { document ->
                 val s = snapshotToSale(document)
-                s.condition == sale.condition && s.seller == sale.seller && s.date == sale.date
+                s.condition == sale.condition /*&& s.seller == sale.seller */&& s.date == sale.date
             }
 
             result.forEach { document ->
