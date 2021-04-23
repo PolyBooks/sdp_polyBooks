@@ -1,6 +1,5 @@
 package com.github.polybooks
 
-import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -9,15 +8,14 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.utils.saleOrderingTextValues
-import com.schibsted.spain.barista.internal.matcher.HelperMatchers.atPosition
-import org.hamcrest.Matchers.*
+import com.github.polybooks.core.database.interfaces.SaleOrdering
+import org.hamcrest.Matchers.allOf
 import org.junit.*
-
 import org.junit.runner.RunWith
 
 
@@ -25,8 +23,8 @@ import org.junit.runner.RunWith
 class FilteringSalesTest {
 
     @get:Rule
-    val activityRule: ActivityScenarioRule<FilteringSalesActivity>
-        = ActivityScenarioRule(FilteringSalesActivity::class.java)
+    val activityRule: ActivityScenarioRule<FilteringSalesActivity> =
+        ActivityScenarioRule(FilteringSalesActivity::class.java)
 
     private val RANDOM_STRING = "BL1Abl6-a"
     private val RANDOM_NUMBER = "42"
@@ -47,12 +45,15 @@ class FilteringSalesTest {
 
         onView(withId(R.id.results_button)).perform(click())
 
-        intended(allOf(
+        intended(
+            allOf(
                 hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)))
+                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)
+            )
+        )
     }
 
-//    @Ignore
+    //    @Ignore
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
         clickOnAllParamButtons()
@@ -105,21 +106,30 @@ class FilteringSalesTest {
     }
 
     private fun checkTextEditsAreEmpty() {
-        onView(withId(R.id.book_name)).perform(scrollTo(),click())
+        onView(withId(R.id.book_name)).perform(scrollTo(), click())
         onView(withId(R.id.book_name)).check(matches(withText("")))
-        onView(withId(R.id.book_isbn)).perform(scrollTo(),click())
+        onView(withId(R.id.book_isbn)).perform(scrollTo(), click())
         onView(withId(R.id.book_isbn)).check(matches(withText("")))
-        onView(withId(R.id.price_min)).perform(scrollTo(),click())
+        onView(withId(R.id.price_min)).perform(scrollTo(), click())
         onView(withId(R.id.price_min)).check(matches(withText("")))
-        onView(withId(R.id.price_max)).perform(scrollTo(),click())
+        onView(withId(R.id.price_max)).perform(scrollTo(), click())
         onView(withId(R.id.price_max)).check(matches(withText("")))
     }
 
     private fun clickOnAllParamButtons() {
-        saleOrderingTextValues.size
-        for (i in 0 until saleOrderingTextValues.size) {
-            onView(withId(R.id.sort_by)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, click()))
-            onView(withId(R.id.sort_by)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, scrollTo()))
+        for (i in SaleOrdering.values().indices) {
+            onView(withId(R.id.sort_by)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    i,
+                    click()
+                )
+            )
+            onView(withId(R.id.sort_by)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    i,
+                    scrollTo()
+                )
+            )
         }
 
         onView(withId(R.id.state_active)).perform(scrollTo(), click())
@@ -131,12 +141,17 @@ class FilteringSalesTest {
         onView(withId(R.id.condition_worn)).perform(scrollTo(), click())
     }
 
-    private fun checkAllParamButtons(isChecked : Boolean) {
-        val checkFun = if(isChecked) isChecked() else isNotChecked()
+    private fun checkAllParamButtons(isChecked: Boolean) {
+        val checkFun = if (isChecked) isChecked() else isNotChecked()
 
-        if(!isChecked) {
-            for (i in 0 until saleOrderingTextValues.size) {
-                onView(withId(R.id.sort_by)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, click()))
+        if (!isChecked) {
+            for (i in SaleOrdering.values().indices) {
+                onView(withId(R.id.sort_by)).perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        i,
+                        click()
+                    )
+                )
                 onView(withId(R.id.sort_by)).check(matches(checkFun));
             }
             onView(withId(R.id.title_inc_sort)).check(matches(checkFun))

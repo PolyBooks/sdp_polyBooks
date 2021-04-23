@@ -2,6 +2,7 @@ package com.github.polybooks.core
 
 
 import android.media.Image
+import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.google.firebase.Timestamp
 import java.io.Serializable
 
