@@ -12,18 +12,15 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.*
-import org.junit.After
-import org.junit.Before
+import org.junit.*
 
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
 class FilteringSalesTest {
     @get:Rule
-    val activityRule : ActivityScenarioRule<FilteringSalesActivity>
+    val activityRule: ActivityScenarioRule<FilteringSalesActivity>
         = ActivityScenarioRule(FilteringSalesActivity::class.java)
 
     private val RANDOM_STRING = "BL1Abl6-a"
