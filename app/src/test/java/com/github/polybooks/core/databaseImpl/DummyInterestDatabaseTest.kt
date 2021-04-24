@@ -3,17 +3,14 @@ package com.github.polybooks.core.databaseImpl
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.database.implementation.DummyInterestDatabase
-import com.github.polybooks.utils.mockCourses
-import com.github.polybooks.utils.mockFields
-import com.github.polybooks.utils.mockSemesters
 
 import org.junit.Test
 import org.junit.Assert.*
 
 class DummyInterestDatabaseTest {
-    private val fields = mockFields
-    private val courses = mockCourses
-    private val semesters = mockSemesters
+    private val fields = DummyInterestDatabase.mockFields
+    private val courses = DummyInterestDatabase.mockCourses
+    private val semesters = DummyInterestDatabase.mockSemesters
 
     private val db = DummyInterestDatabase()
 
