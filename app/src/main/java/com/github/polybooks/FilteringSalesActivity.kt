@@ -9,18 +9,64 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.adapter.SortByAdapter
+import com.github.polybooks.adapter.ParametersAdapter
+import com.github.polybooks.adapter.SalesSortByAdapter
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 
+
 class FilteringSalesActivity: AppCompatActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
+
     private lateinit var mReset: Button
     private lateinit var mResults: Button
+
+    inner class FilteringParameter<VH: ParametersAdapter<VH>.ParameterViewHolder>(
+        viewId: Int,
+        adapter: ParametersAdapter<VH>
+    ) {
+        private val mView: RecyclerView = findViewById(viewId)
+        private val mAdapter = adapter
+        private val mlayoutManager = LinearLayoutManager(
+            this@FilteringSalesActivity,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
+        init {
+            mView.adapter = mAdapter
+            mView.layoutManager = mlayoutManager
+        }
+
+        fun resetViewItems() {
+            performOnItems { viewHolder -> viewHolder.resetItem() }
+        }
+
+        fun getSelected(): List<Any> {
+            val res = mutableListOf<Any>()
+            performOnItems { viewHolder ->
+                val item = viewHolder.getItemIfSelected()
+                if (item != null) {
+                    res.add(item)
+                }
+            }
+
+            return res
+        }
+
+        private fun performOnItems(f: (VH) -> Unit) {
+            for (i in 0 until mAdapter.itemCount) {
+                val holder = mView.findViewHolderForAdapterPosition(i)
+                if (holder != null) {
+                    f(holder as VH)
+                }
+            }
+        }
+    }
 
     //--- hardcoded parameters: make it dynamic
     private lateinit var mName: EditText
@@ -28,7 +74,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     private lateinit var mPriceMin: EditText
     private lateinit var mPriceMax: EditText
 
-    private lateinit var mSortView: RecyclerView
+    private lateinit var mSortBy: FilteringParameter<SalesSortByAdapter.SortByViewHolder>
 
     private lateinit var mStateActive: CheckBox
     private lateinit var mStateRetracted: CheckBox
@@ -38,7 +84,6 @@ class FilteringSalesActivity: AppCompatActivity() {
     private lateinit var mConditionGood: CheckBox
     private lateinit var mConditionWorn: CheckBox
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_filtering_sales)
@@ -47,17 +92,14 @@ class FilteringSalesActivity: AppCompatActivity() {
         mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
 
-        mSortView = findViewById(R.id.sort_by)
-        mSortView.setHasFixedSize(true)
-        mSortView.adapter = SortByAdapter(SaleOrdering.values().drop(1))
-        mSortView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        mSortBy = FilteringParameter(R.id.sort_by, SalesSortByAdapter())
 
         // hardcoded : make it dynamic
         setParametersButtons()
     }
 
     fun resetParameters(view: View) {
-        resetSortByButtons()
+        mSortBy.resetViewItems()
 
         mStateActive.isChecked = false
         mStateRetracted.isChecked = false
@@ -76,7 +118,9 @@ class FilteringSalesActivity: AppCompatActivity() {
     fun getResults(view: View) {
         var query: SaleQuery = DummySalesQuery()
 
-        checkAndSetOrdering(query)
+        val ordering: List<Any> = mSortBy.getSelected()
+        if (ordering.isNotEmpty())
+            query.withOrdering(ordering[0] as SaleOrdering)
 
         //These 2 in front for dummy sales query
         if (mName.text.isNotEmpty())
@@ -137,39 +181,5 @@ class FilteringSalesActivity: AppCompatActivity() {
         if (mConditionNew.isChecked) condition.add(BookCondition.NEW)
         if (mConditionWorn.isChecked) condition.add(BookCondition.WORN)
         return if (condition.isEmpty()) BookCondition.values().toSet() else condition.toSet()
-    }
-
-    private fun resetSortByButtons() {
-        if (mSortView.adapter == null)
-            return
-
-        val itemCount = mSortView.adapter!!.itemCount
-        for (i in 0 until itemCount) {
-            val h = mSortView.findViewHolderForAdapterPosition(i)
-            if (h != null) {
-                val holder = h as SortByAdapter.SortByViewHolder
-                val button = holder.mSortButton
-                button.isChecked = false
-            }
-        }
-    }
-
-    private fun checkAndSetOrdering(query: SaleQuery) {
-        if (mSortView.adapter == null)
-            return
-
-        val itemCount = mSortView.adapter!!.itemCount
-        for (i in 0 until itemCount) {
-            val h = mSortView.findViewHolderForAdapterPosition(i)
-            if (h != null) {
-                val holder = h as SortByAdapter.SortByViewHolder
-                val button = holder.mSortButton
-                val value = holder.mSortValue
-
-                if (button.isChecked) {
-                    query.withOrdering(value)
-                }
-            }
-        }
     }
 }
