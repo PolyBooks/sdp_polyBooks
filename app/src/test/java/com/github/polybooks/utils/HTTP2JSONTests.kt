@@ -11,7 +11,7 @@ class HTTP2JSONTests {
         val json = url2json("https://openlibrary.org/books/OL29583638M.json")
             .handle { json, exception ->
                 assertNotNull(json)
-            }
+            }.get()
     }
 
     @Test
@@ -20,7 +20,7 @@ class HTTP2JSONTests {
                 .handle { json, exception ->
                     assertNull(json)
                     assertNotNull(exception)
-                }
+                }.get()
     }
 
     @Test
@@ -29,7 +29,7 @@ class HTTP2JSONTests {
                 .handle { json, exception ->
                     assertNull(json)
                     assertNotNull(exception) // should throw an exception because it's not json
-                }
+                }.get()
     }
 
 }
