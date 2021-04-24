@@ -164,10 +164,10 @@ class FilteringSalesActivity: AppCompatActivity() {
             if (h != null) {
                 val holder = h as SortByAdapter.SortByViewHolder
                 val button = holder.mSortButton
-                val value = holder.mSortValue
+//                val value = holder.mSortValue
 
                 if (button.isChecked) {
-                    query.withOrdering(value)
+//                    query.withOrdering(value)
                 }
             }
         }

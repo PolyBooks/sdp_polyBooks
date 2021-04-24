@@ -13,6 +13,8 @@ class SortByAdapter(private val sortByParams: List<SaleOrdering>):
 
     private var lastSelectedButton: CheckBox? = null
 
+    override fun getItemCount(): Int = sortByParams.size
+
     inner class SortByViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val mSortButton: CheckBox = itemView.findViewById(R.id.sort_by_button)
         lateinit var mSortValue: SaleOrdering
@@ -26,7 +28,7 @@ class SortByAdapter(private val sortByParams: List<SaleOrdering>):
 
     override fun onBindViewHolder(viewHolder: SortByViewHolder, position: Int) {
         viewHolder.mSortValue = sortByParams[position]
-        viewHolder.mSortButton.text = viewHolder.mSortValue.orderingName
+        viewHolder.mSortButton.text = sortByParams[position].orderingName
 
         viewHolder.mSortButton.setOnClickListener { v ->
             if (lastSelectedButton != null && lastSelectedButton != v) {
@@ -36,5 +38,4 @@ class SortByAdapter(private val sortByParams: List<SaleOrdering>):
         }
     }
 
-    override fun getItemCount() = sortByParams.size
 }

@@ -1,6 +1,5 @@
 package com.github.polybooks
 
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -13,6 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.polybooks.adapter.SortByAdapter
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import org.hamcrest.Matchers.allOf
 import org.junit.*
@@ -39,10 +39,8 @@ class FilteringSalesTest {
         Intents.release()
     }
 
-    @Ignore
     @Test
     fun intentIsFiredWhenClickingOnResults() {
-
         onView(withId(R.id.results_button)).perform(click())
 
         intended(
@@ -53,14 +51,23 @@ class FilteringSalesTest {
         )
     }
 
-    //    @Ignore
+    @Test
+    fun sortByItemsAreDisplayed() {
+        for (order in SaleOrdering.values().drop(1)) {
+            onView(withId(R.id.sort_by)).perform(
+                RecyclerViewActions.scrollTo<SortByAdapter.SortByViewHolder>(
+                    hasDescendant(withText(order.orderingName))
+                )
+            )
+        }
+    }
+
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
         clickOnAllParamButtons()
         checkAllParamButtons(true)
     }
 
-    @Ignore
     @Test
     fun canWriteInTexts() {
         writeInTextEdits()
@@ -71,7 +78,6 @@ class FilteringSalesTest {
 //        onView(withId(R.id.book_name)).check(matches(withText(RANDOM_STRING)))
     }
 
-    @Ignore
     @Test
     fun reclickingOnAParamButtonClearsIt() {
         onView(withId(R.id.state_active)).perform(scrollTo(), click())
@@ -79,7 +85,6 @@ class FilteringSalesTest {
         onView(withId(R.id.state_active)).check(matches(isNotChecked()))
     }
 
-    @Ignore
     @Test
     fun clickingOnResetClearsEverything() {
         writeInTextEdits()
@@ -117,18 +122,11 @@ class FilteringSalesTest {
     }
 
     private fun clickOnAllParamButtons() {
-        for (i in SaleOrdering.values().indices) {
+        for (order in SaleOrdering.values().drop(1)) {
             onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    i,
-                    click()
-                )
-            )
-            onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    i,
-                    scrollTo()
-                )
+                RecyclerViewActions.scrollTo<SortByAdapter.SortByViewHolder>(
+                    hasDescendant(withText(order.orderingName))
+                ), click()
             )
         }
 
@@ -145,18 +143,16 @@ class FilteringSalesTest {
         val checkFun = if (isChecked) isChecked() else isNotChecked()
 
         if (!isChecked) {
-            for (i in SaleOrdering.values().indices) {
+            for (order in SaleOrdering.values().drop(1)) {
                 onView(withId(R.id.sort_by)).perform(
-                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                        i,
-                        click()
+                    RecyclerViewActions.scrollTo<SortByAdapter.SortByViewHolder>(
+                        hasDescendant(withText(order.orderingName))
                     )
                 )
-                onView(withId(R.id.sort_by)).check(matches(checkFun));
+                onView(withText(order.orderingName)).check(matches(checkFun))
             }
-            onView(withId(R.id.title_inc_sort)).check(matches(checkFun))
-            onView(withId(R.id.title_dec_sort)).check(matches(checkFun))
         }
+
         onView(withId(R.id.state_active)).check(matches(checkFun))
         onView(withId(R.id.state_retracted)).check(matches(checkFun))
         onView(withId(R.id.state_concluded)).check(matches(checkFun))
