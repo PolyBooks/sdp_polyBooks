@@ -9,17 +9,40 @@
     <string name="sale_book">Book</string>
     <string name="sale_price">Price</string>
     <string name="sale_publication_date">Date</string>
+
     <string name="sale_book_condition">Condition</string>
-    <string name="sale_book_condition_new">New</string>
-    <string name="sale_book_condition_good">Good</string>
-    <string name="sale_book_condition_worn">Worn</string>
+    <string-array name="sale_book_conditions_array">
+        <item>New</item>
+        <item>Good</item>
+        <item>Worn</item>
+    </string-array>
+
     <string name="sale_state">State</string>
-    <string name="sale_state_active">Active</string>
-    <string name="sale_state_retracted">Retracted</string>
-    <string name="sale_state_concluded">Concluded</string>
+    <string-array name="sale_states_array">
+        <item>Active</item>
+        <item>Retracted</item>
+        <item>Concluded</item>
+    </string-array>
+
+    <string name="sale_ordering">Ordering</string>
+    <string-array name="sale_orderings_array">
+        <item>Default</item>
+        <item>Title (ascending)</item>
+        <item>Title (descending)</item>
+        <item>Price (ascending)</item>
+        <item>Price (descending)</item>
+        <item>Publish date (ascending)</item>
+        <item>Publish date (descending)</item>
+    </string-array>
 
     <!-- Books -->
     <string name="book_isbn">ISBN</string>
+    <string name="book_ordering">Ordering</string>
+    <string-array name="book_orderings_array">
+        <item>Default</item>
+        <item>Title (ascending)</item>
+        <item>Title (descending)</item>
+    </string-array>
 
     <!-- Interests -->
     <string name="interest_field">Field</string>
@@ -37,12 +60,12 @@
     <string name="email">Email</string>
 
     <!-- User Interaction (could be further organized) -->
+    <string name="sort_by">Sort by</string>
     <string name="add_picture">Add Picture</string>
     <string name="scan_book">Scan Book Barcode</string>
     <string name="confirm_sale">Confirm Sale</string>
     <string name="reset">Reset</string>
     <string name="results">Results</string>
-    <string name="sort_by">Sort by</string>
     <string name="enter_book_name">Enter book name</string>
     <string name="enter_book_isbn">Enter book ISBN</string>
     <string name="input_isbn">Input Book ISBN</string>
