@@ -79,7 +79,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         }
 
         override fun getSettings(): BookSettings {
-            return BookSettings(ordering, this.isbns,title,null)
+            return BookSettings(ordering, isbns,title,null)
         }
 
         override fun fromSettings(settings: BookSettings): BookQuery {
