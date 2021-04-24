@@ -58,7 +58,11 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                         val allBooksFuture = booksFromOLFuture.thenApply { booksFromOL ->
                             booksFromOL + booksFromFB
                         }
-                        allBooksFuture
+                        val booksToFBFuture = booksFromOLFuture.thenCompose { booksFromOL ->
+                            val futures = booksFromOL.map { book -> addBookToFirebase(book) }
+                            listOfFuture2FutureOfList(futures)
+                        }
+                        booksToFBFuture.thenCompose { allBooksFuture }
                     }
                 }
                 else -> {

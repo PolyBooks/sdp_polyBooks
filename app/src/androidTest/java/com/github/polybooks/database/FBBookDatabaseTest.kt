@@ -69,6 +69,14 @@ class FBBookDatabaseTest {
         assertEquals(3, book.publishDate!!.date)
     }
 
+    @Test
+    fun usesFirebaseAsCache2() {
+        //ensure the database had an opportunity to cache
+        val getBookWithRegularDB = fbBookDB.getBook("9780156881807").get()
+        val future = fbWithoutOL.getBook("9780156881807")
+        val book = future.get() ?: throw AssertionFailedError("Book was not cached")
+    }
+
     @Ignore
     @Test
     fun isbn10alsoWorksWithoutOL() {
