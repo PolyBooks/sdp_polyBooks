@@ -1,6 +1,5 @@
 package com.github.polybooks.core.databaseImpl
 
-import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookSettings
@@ -54,9 +53,8 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test
@@ -77,9 +75,8 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test
@@ -93,9 +90,8 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test
@@ -139,9 +135,8 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test
@@ -157,9 +152,9 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        //This hurts, but otherwise we have problems with CEST and CET
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test

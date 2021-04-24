@@ -12,12 +12,13 @@ import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.utils.listOfFuture2FutureOfList
+import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.io.FileNotFoundException
 import java.lang.Integer.min
-import java.sql.Timestamp
+
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -247,7 +248,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val dateString = asString(jsonPublishDate)
         val dateFormat = SimpleDateFormat(DATE_FORMAT)
         dateFormat.isLenient = false
-        return Timestamp(dateFormat.parse(dateString)?.time!!)
+        return Timestamp(dateFormat.parse(dateString)!!)
     }
 
     private fun asJsonObject(jsonElement: JsonElement): JsonObject {
