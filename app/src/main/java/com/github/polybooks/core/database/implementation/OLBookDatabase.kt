@@ -24,7 +24,8 @@ import java.util.concurrent.CompletableFuture
 import com.github.polybooks.utils.unwrapException
 
 
-private const val TITLE_FIELD_NAME = "full_title"
+private const val TITLE_FIELD_NAME1 = "full_title"
+private const val TITLE_FIELD_NAME2 = "title"
 private const val AUTHORS_FIELD_NAME = "authors"
 private const val FORMAT_FIELD_NAME = "physical_format"
 private const val ISBN13_FIELD_NAME = "isbn_13"
@@ -120,9 +121,11 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseBook(jsonBook: JsonElement): Book {
         val jsonBookObject = asJsonObject(jsonBook);
-        val title = getJsonField(jsonBookObject, TITLE_FIELD_NAME)
+        val title = getJsonField(jsonBookObject, TITLE_FIELD_NAME1)
+                .map { Optional.of(it) }
+                .orElseGet { getJsonField(jsonBookObject, TITLE_FIELD_NAME2) }
                 .map { parseTitle(it) }
-                .orElseThrow(cantParseException(TITLE_FIELD_NAME))!!
+                .orElseThrow(cantParseException("$TITLE_FIELD_NAME1 or $TITLE_FIELD_NAME2"))!!
         val isbn13 = getJsonField(jsonBookObject, ISBN13_FIELD_NAME)
                 .map { parseISBN13(it) }
                 .orElseThrow(cantParseException(ISBN13_FIELD_NAME))!!
