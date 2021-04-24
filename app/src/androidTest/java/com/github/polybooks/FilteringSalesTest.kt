@@ -15,7 +15,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.adapter.SortByAdapter
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import org.hamcrest.Matchers.allOf
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 
 
