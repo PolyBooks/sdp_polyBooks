@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/book_name"
+                    android:text="@string/name"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -81,7 +81,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/isbn"
+                    android:text="@string/book_isbn"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -108,7 +108,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/price_min_max"
+                        android:text="@string/sale_price"
                         android:textAllCaps="false"
                         android:textSize="20sp" />
 
@@ -196,7 +196,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/state"
+                    android:text="@string/sale_state"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -214,19 +214,19 @@
                             android:id="@+id/state_active"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="@string/state_active" />
+                            android:text="@string/sale_state_active" />
 
                         <CheckBox
                             android:id="@+id/state_retracted"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="@string/state_retracted" />
+                            android:text="@string/sale_state_retracted" />
 
                         <CheckBox
                             android:id="@+id/state_concluded"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="@string/state_concluded" />
+                            android:text="@string/sale_state_concluded" />
 
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -243,7 +243,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/condition"
+                    android:text="@string/sale_book_condition"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -261,19 +261,19 @@
                             android:id="@+id/condition_new"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="@string/condition_new" />
+                            android:text="@string/sale_book_condition_new" />
 
                         <CheckBox
                             android:id="@+id/condition_good"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="@string/condition_good" />
+                            android:text="@string/sale_book_condition_good" />
 
                         <CheckBox
                             android:id="@+id/condition_worn"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="@string/condition_worn" />
+                            android:text="@string/sale_book_condition_worn" />
 
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -292,7 +292,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/semester"
+                    android:text="@string/interest_semester"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -318,7 +318,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/course"
+                    android:text="@string/interest_course"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -343,7 +343,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/field"
+                    android:text="@string/interest_field"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 

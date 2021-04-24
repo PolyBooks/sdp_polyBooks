@@ -1,51 +1,114 @@
 <resources>
+
+    <!-- PolyBooks -->
     <string name="app_name">PolyBooks</string>
-    <string name="dummy_book_name">Dummy Book</string>
-    <string name="dummy_price">0.000</string>
-    <string name="input_isbn">Input Book ISBN</string>
-    <string name="scan_book">Scan Book Barcode</string>
-    <string name="isbn">ISBN</string>
-    <string name="or">Or</string>
-    <string name="authors">Authors:</string>
-    <string name="title">Title:</string>
-    <string name="edition">Edition:</string>
-    <string name="language">Language</string>
-    <string name="publisher">Publisher</string>
-    <string name="date_published">Date Published</string>
-    <string name="format">format</string>
-    <string name="condition">Condition</string>
-    <string name="price">Price</string>
-    <string name="chf">CHF</string>
-    <string name="add_picture">Add Picture</string>
-    <string name="confirm_sale">Confirm Sale</string>
-    <string name="log_in_using_tequila">Log In using Tequila</string>
-    <string name="don_t_have_an_account">Don\'t have an account?</string>
-    <string name="register">Register</string>
+    <string name="polybooks">PolyBooks</string>
+    <string name="copyrights">Copyrights</string>
+
+    <!-- Sales -->
+    <string name="sale_book">Book</string>
+    <string name="sale_price">Price</string>
+    <string name="sale_publication_date">Date</string>
+    <string name="sale_book_condition">Condition</string>
+    <string name="sale_book_condition_new">New</string>
+    <string name="sale_book_condition_good">Good</string>
+    <string name="sale_book_condition_worn">Worn</string>
+    <string name="sale_state">State</string>
+    <string name="sale_state_active">Active</string>
+    <string name="sale_state_retracted">Retracted</string>
+    <string name="sale_state_concluded">Concluded</string>
+
+    <!-- Books -->
+    <string name="book_isbn">ISBN</string>
+
+    <!-- Interests -->
+    <string name="interest_field">Field</string>
+    <string name="interest_course">Course</string>
+    <string name="interest_semester">Semester</string>
+
+    <!-- User -->
+
+    <!-- Login -->
     <string name="password">Password</string>
     <string name="address_mail">Address mail</string>
-    <string name="already_have_an_account">Already have an account?</string>
-    <string name="password_2">Password (2)</string>
-    <string name="sign_up_using_google_account">Sign Up using Google account</string>
-    <string name="password_1">Password (1)</string>
-    <string name="polybooks">PolyBooks</string>
-    <string name="sell">Sell</string>
+    <string name="register">Register</string>
     <string name="sign_up">Sign Up</string>
     <string name="log_in">Log In</string>
-    <string name="copyrights">Copyrights</string>
+    <string name="email">Email</string>
+
+    <!-- User Interaction (could be further organized) -->
+    <string name="add_picture">Add Picture</string>
+    <string name="scan_book">Scan Book Barcode</string>
+    <string name="confirm_sale">Confirm Sale</string>
+    <string name="reset">Reset</string>
+    <string name="results">Results</string>
+    <string name="sort_by">Sort by</string>
+    <string name="enter_book_name">Enter book name</string>
+    <string name="enter_book_isbn">Enter book ISBN</string>
+    <string name="input_isbn">Input Book ISBN</string>
+    <string name="enter_min_price">min   </string>
+    <string name="enter_max_price">max   </string>
+    <string name="log_in_using_tequila">Log In using Tequila</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="password_2">Password (2)</string>
+    <string name="password_1">Password (1)</string>
+    <string name="sign_up_using_google_account">Sign Up using Google account</string>
+    <string name="sell">Sell</string>
     <string name="view_all_books">View all books</string>
-    <string name="should_appear_automatically">Should appear automatically</string>
-    <string name="default_price_hint">0.00</string>
-    <string name="maybe_navbar_here_if_yes_design_once_for_all_activities">Maybe navBar here ? If yes, design once for all activities</string>
+
+
+    <!-- Adverbs/Prepositions-->
+    <string name="or">Or</string>
     <string name="in">in</string>
     <string name="by">by</string>
+
+    <!-- Others -->
+    <string name="value_by">by</string>
+    <string name="title">Title:</string>
+    <string name="edition">Edition:</string>
+    <string name="book_language">Book language</string>
+    <string name="name">Name</string>
+    <string name="authors">Authors:</string>
+    <string name="language">Language</string>
+    <string name="publisher">Publisher</string>
+    <string name="chf">CHF</string>
+    <string name="currency">CHF</string>
+    <string name="date_published">Date Published</string>
+    <string name="format">format</string>
+    <string name="should_appear_automatically">Should appear automatically</string>
+    <string name="default_price_hint">0.00</string>
+    <string name="published_on_the">Published on the</string>
+
+    <!-- Debug (move it when we do build variants)-->
+    <string name="dummy_book_name">Dummy Book</string>
+    <string name="dummy_price">0.000</string>
+    <string name="maybe_navbar_here_if_yes_design_once_for_all_activities">Maybe navBar here ? If yes, design once for all activities</string>
     <string name="placeholder_title">The Eternities of Physics</string>
     <string name="placeholder_edition">1st Edition</string>
-    <string name="published_on_the">Published on the</string>
-    <string name="book_language">Book language</string>
     <string name="your_picture_of_your_book_condition">Your picture of your book condition</string>
-    <string name="email">Email</string>
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
-    <string name="currency">CHF</string>
-    <string name="value_by">by</string>
+
+    <string name="popularity">Popularity</string>
+    <string name="title_inc">Title (inc)</string>
+    <string name="title_dec">Title (dec)</string>
+    <string name="price_inc">Price (inc)</string>
+    <string name="price_dec">Price (dec)</string>
+    <string name="publish_date_inc">Publish date (inc)</string>
+    <string name="publish_date_dec">Publish date (dec)</string>
+
+    <string name="cs">Computer Science</string>
+    <string name="bio">Biology</string>
+    <string name="archi">Architecture</string>
+
+    <string name="ic_ba1">IC-BA1</string>
+    <string name="ma_ba2">MA-BA2</string>
+    <string name="sv_ba3">SA-BA3</string>
+    <string name="gc_ma1">GC-MA1</string>
+    <string name="mt_ma2">MT-MA2</string>
+
+    <string name="cs306">CS-306</string>
+    <string name="com480">COM-480</string>
+
 </resources>

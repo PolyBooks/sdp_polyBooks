@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:text="@string/condition"
+        android:text="@string/sale_book_condition"
         app:layout_constraintBottom_toBottomOf="@+id/filled_condition"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/filled_condition" />
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:text="@string/price"
+        android:text="@string/sale_price"
         app:layout_constraintBottom_toBottomOf="@+id/filled_price"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/filled_price" />
