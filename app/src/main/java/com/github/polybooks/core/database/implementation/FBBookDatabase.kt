@@ -12,9 +12,11 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
 import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "book"
+private const val DATE_FORMAT = "yyyy MM dd"
 
 /**
  * A book database that uses Firebase Firestore to augment the capabilities of a
@@ -33,7 +35,9 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
     [ ] implement getN and count
     */
 
-    private val bookRef = firebase.collection("book")
+    private val bookRef = firebase.collection(COLLECTION_NAME)
+
+    private val dateFormater = SimpleDateFormat(DATE_FORMAT)
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
@@ -49,7 +53,6 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                 }
                 isbns != null -> {
                     val isbns = this.isbns!!
-                    //TODO change this so that it first searches in the Firebase instance
                     val booksFromFBFuture = getBooksByISBNFromFirebase(isbns.toList())
                     return booksFromFBFuture.thenCompose { booksFromFB ->
                         val isbnsFound = booksFromFB.map { it.isbn }
@@ -80,13 +83,16 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
         }
 
         private fun bookToDocument(book : Book) : Any {
+            val publishDate : String? = book.publishDate?.let {
+                dateFormater.format(it.toDate())
+            }
             return hashMapOf(
                 BookFields.AUTHORS.fieldName to book.authors,
                 BookFields.EDITION.fieldName to book.edition,
                 BookFields.FORMAT.fieldName to book.format,
                 BookFields.ISBN.fieldName to book.isbn,
                 BookFields.LANGUAGE.fieldName to book.language,
-                BookFields.PUBLISHDATE.fieldName to book.publishDate,
+                BookFields.PUBLISHDATE.fieldName to publishDate,
                 BookFields.PUBLISHER.fieldName to book.publisher,
                 BookFields.TITLE.fieldName to book.title,
             )
@@ -100,6 +106,9 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
         }
 
         private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
+            val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
+                Timestamp(dateFormater.parse(it)!!)
+            }
             return Book(
                 map[BookFields.ISBN.fieldName] as String,
                 map[BookFields.AUTHORS.fieldName] as List<String>?,
@@ -107,7 +116,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                 map[BookFields.EDITION.fieldName] as String?,
                 map[BookFields.LANGUAGE.fieldName] as String?,
                 map[BookFields.PUBLISHER.fieldName] as String?,
-                map[BookFields.PUBLISHDATE.fieldName] as Timestamp?,
+                publishDate,
                 map[BookFields.FORMAT.fieldName] as String?
             )
         }

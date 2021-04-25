@@ -5,11 +5,13 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
 import java.io.FileNotFoundException
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class FBBookDatabaseTest {
@@ -45,6 +47,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
+        val publishDate = Date(2020 - 1900, 6, 3)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -59,6 +63,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -82,6 +88,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -105,6 +113,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Ignore
@@ -120,6 +130,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Ignore
