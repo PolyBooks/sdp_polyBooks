@@ -107,13 +107,9 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                 map[BookFields.EDITION.fieldName] as String?,
                 map[BookFields.LANGUAGE.fieldName] as String?,
                 map[BookFields.PUBLISHER.fieldName] as String?,
-                (map[BookFields.PUBLISHDATE.fieldName] as Timestamp?)?.let {timestampConvert(it)},
+                map[BookFields.PUBLISHDATE.fieldName] as Timestamp?,
                 map[BookFields.FORMAT.fieldName] as String?
             )
-        }
-
-        private fun timestampConvert(firebase : Timestamp) : java.sql.Timestamp {
-            return java.sql.Timestamp(firebase.toDate().time)
         }
 
         private fun snapshotEntryToBook(snapshot : DocumentSnapshot) : Book {

@@ -1,6 +1,9 @@
 package com.github.polybooks.utils
 
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.Course
+import com.github.polybooks.core.Field
+import com.github.polybooks.core.Semester
 
 
 private const val ISBN13_FORMAT = """[0-9]{13}"""
