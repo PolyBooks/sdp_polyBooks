@@ -1,5 +1,7 @@
 package com.github.polybooks
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -12,7 +14,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.adapter.SalesSortByAdapter
+import com.github.polybooks.adapter.SortByViewHolder
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -28,6 +30,8 @@ class FilteringSalesTest {
     @get:Rule
     val activityRule: ActivityScenarioRule<FilteringSalesActivity> =
         ActivityScenarioRule(FilteringSalesActivity::class.java)
+
+    private val targetContext: Context = ApplicationProvider.getApplicationContext();
 
     private val RANDOM_STRING = "BL1Abl6-a"
     private val RANDOM_NUMBER = "42"
@@ -58,8 +62,8 @@ class FilteringSalesTest {
     fun sortByItemsAreDisplayed() {
         for (order in SaleOrdering.values().drop(1)) {
             onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.scrollTo<SalesSortByAdapter.SortByViewHolder>(
-                    hasDescendant(withText(order.orderingName))
+                RecyclerViewActions.scrollTo<SortByViewHolder<SaleOrdering>>(
+                    hasDescendant(withText(order.fieldName(targetContext)))
                 )
             )
         }
@@ -127,8 +131,8 @@ class FilteringSalesTest {
     private fun clickOnAllParamButtons() {
         for (order in SaleOrdering.values().drop(1)) {
             onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.scrollTo<SalesSortByAdapter.SortByViewHolder>(
-                    hasDescendant(withText(order.orderingName))
+                RecyclerViewActions.scrollTo<SortByViewHolder<SaleOrdering>>(
+                    hasDescendant(withText(order.fieldName(targetContext)))
                 ), click()
             )
         }
@@ -148,11 +152,11 @@ class FilteringSalesTest {
         if (!isChecked) {
             for (order in SaleOrdering.values().drop(1)) {
                 onView(withId(R.id.sort_by)).perform(
-                    RecyclerViewActions.scrollTo<SalesSortByAdapter.SortByViewHolder>(
-                        hasDescendant(withText(order.orderingName))
+                    RecyclerViewActions.scrollTo<SortByViewHolder<SaleOrdering>>(
+                        hasDescendant(withText(order.fieldName(targetContext)))
                     )
                 )
-                onView(withText(order.orderingName)).check(matches(checkFun))
+                onView(withText(order.fieldName(targetContext))).check(matches(checkFun))
             }
         }
 

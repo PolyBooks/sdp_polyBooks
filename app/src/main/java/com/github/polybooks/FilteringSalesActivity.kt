@@ -9,9 +9,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.adapter.ParameterAdapter
-import com.github.polybooks.adapter.ParameterViewHolder
-import com.github.polybooks.adapter.SalesSortByAdapter
+import com.github.polybooks.adapter.*
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.DummySalesQuery
@@ -35,12 +33,11 @@ class FilteringSalesActivity: AppCompatActivity() {
      * @param adapter   The adapter that will binds the different values to the recyclerView
      * @see ParameterAdapter
      */
-    inner class FilteringParameter<VH: ParameterViewHolder>(
+    inner class FilteringParameter<T, VH: ParameterViewHolder<T>>(
         viewId: Int,
-        adapter: ParameterAdapter<VH>
+        private val mAdapter: ParameterAdapter<T, VH>
     ) {
         private val mView: RecyclerView = findViewById(viewId)
-        private val mAdapter = adapter
         private val mlayoutManager = LinearLayoutManager(
             this@FilteringSalesActivity,
             LinearLayoutManager.HORIZONTAL,
@@ -48,6 +45,7 @@ class FilteringSalesActivity: AppCompatActivity() {
         )
 
         init {
+            mAdapter.setContext(this@FilteringSalesActivity)
             mView.adapter = mAdapter
             mView.layoutManager = mlayoutManager
         }
@@ -62,8 +60,8 @@ class FilteringSalesActivity: AppCompatActivity() {
         /**
          * Get the list of selected values
          */
-        fun getSelectedValues(): List<Any> {
-            val res = mutableListOf<Any>()
+        fun getSelectedValues(): List<T> {
+            val res = mutableListOf<T>()
             performOnItems { viewHolder ->
                 val item = viewHolder.getValueIfSelected()
                 if (item != null) {
@@ -85,7 +83,6 @@ class FilteringSalesActivity: AppCompatActivity() {
     }
 
     private lateinit var mReset: Button
-
     private lateinit var mResults: Button
 
     //--- hardcoded parameters: make it dynamic
@@ -94,7 +91,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     private lateinit var mPriceMin: EditText
     private lateinit var mPriceMax: EditText
 
-    private lateinit var mSortBy: FilteringParameter<SalesSortByAdapter.SortByViewHolder>
+    private lateinit var mSortBy: FilteringParameter<SaleOrdering, SortByViewHolder<SaleOrdering>>
 
     private lateinit var mStateActive: CheckBox
     private lateinit var mStateRetracted: CheckBox
@@ -112,7 +109,8 @@ class FilteringSalesActivity: AppCompatActivity() {
         mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
 
-        mSortBy = FilteringParameter(R.id.sort_by, SalesSortByAdapter())
+        mSortBy =
+            FilteringParameter(R.id.sort_by, SortByAdapter<SaleOrdering>(SaleOrdering.DEFAULT))
 
         // hardcoded : make it dynamic
         setParametersButtons()
@@ -138,9 +136,9 @@ class FilteringSalesActivity: AppCompatActivity() {
     fun getResults(view: View) {
         var query: SaleQuery = DummySalesQuery()
 
-        val ordering: List<Any> = mSortBy.getSelectedValues()
+        val ordering: List<SaleOrdering> = mSortBy.getSelectedValues()
         if (ordering.isNotEmpty())
-            query.withOrdering(ordering[0] as SaleOrdering)
+            query.withOrdering(ordering[0])
 
         //These 2 in front for dummy sales query
         if (mName.text.isNotEmpty())

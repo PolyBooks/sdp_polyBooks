@@ -1,9 +1,12 @@
 package com.github.polybooks.core.database.interfaces
 
+import android.content.Context
+import com.github.polybooks.R
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.utils.FieldWithName
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
@@ -141,12 +144,17 @@ data class SaleSettings(
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.
  * */
-enum class SaleOrdering(val orderingName : String) {
-    DEFAULT("Default"),
-    TITLE_INC("Title (ascending)"),
-    TITLE_DEC("Title (descending)"),
-    PRICE_INC("Price (ascending)"),
-    PRICE_DEC("Price (descending)"),
-    PUBLISH_DATE_INC("Publish date (ascending)"),
-    PUBLISH_DATE_DEC("Publish date (descending)")
+enum class SaleOrdering(private val stringId: Int): FieldWithName {
+    // FIXME adapt stringIDs
+    DEFAULT(R.string.reset),
+    TITLE_INC(R.string.title_inc),
+    TITLE_DEC(R.string.title_dec),
+    PRICE_INC(R.string.price_inc),
+    PRICE_DEC(R.string.price_dec),
+    PUBLISH_DATE_INC(R.string.publish_date_inc),
+    PUBLISH_DATE_DEC(R.string.publish_date_dec);
+
+    override fun fieldName(c: Context?): String {
+        return c?.getString(stringId) ?: name
+    }
 }
