@@ -9,7 +9,8 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.adapter.ParametersAdapter
+import com.github.polybooks.adapter.ParameterAdapter
+import com.github.polybooks.adapter.ParameterViewHolder
 import com.github.polybooks.adapter.SalesSortByAdapter
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.SaleState
@@ -18,16 +19,25 @@ import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 
 
+/**
+ * Activity to filter the sales existing in the database given different parameters
+ */
 class FilteringSalesActivity: AppCompatActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
 
-    private lateinit var mReset: Button
-    private lateinit var mResults: Button
-
-    inner class FilteringParameter<VH: ParametersAdapter<VH>.ParameterViewHolder>(
+    /**
+     * A parameter with a set of different values to filter the Sales
+     *
+     * @param <VH>      A viewHolder holding the individual value items of the
+     *                  parameter, need to implement ParameterViewHolder
+     * @param viewId    The view id of the RecyclerView holding the values of that parameter
+     * @param adapter   The adapter that will binds the different values to the recyclerView
+     * @see ParameterAdapter
+     */
+    inner class FilteringParameter<VH: ParameterViewHolder>(
         viewId: Int,
-        adapter: ParametersAdapter<VH>
+        adapter: ParameterAdapter<VH>
     ) {
         private val mView: RecyclerView = findViewById(viewId)
         private val mAdapter = adapter
@@ -42,14 +52,20 @@ class FilteringSalesActivity: AppCompatActivity() {
             mView.layoutManager = mlayoutManager
         }
 
-        fun resetViewItems() {
-            performOnItems { viewHolder -> viewHolder.resetItem() }
+        /**
+         * Reset the views of all the values items of the parameter
+         */
+        fun resetItemsViews() {
+            performOnItems { viewHolder -> viewHolder.resetItemView() }
         }
 
-        fun getSelected(): List<Any> {
+        /**
+         * Get the list of selected values
+         */
+        fun getSelectedValues(): List<Any> {
             val res = mutableListOf<Any>()
             performOnItems { viewHolder ->
-                val item = viewHolder.getItemIfSelected()
+                val item = viewHolder.getValueIfSelected()
                 if (item != null) {
                     res.add(item)
                 }
@@ -67,6 +83,10 @@ class FilteringSalesActivity: AppCompatActivity() {
             }
         }
     }
+
+    private lateinit var mReset: Button
+
+    private lateinit var mResults: Button
 
     //--- hardcoded parameters: make it dynamic
     private lateinit var mName: EditText
@@ -99,7 +119,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     }
 
     fun resetParameters(view: View) {
-        mSortBy.resetViewItems()
+        mSortBy.resetItemsViews()
 
         mStateActive.isChecked = false
         mStateRetracted.isChecked = false
@@ -118,7 +138,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     fun getResults(view: View) {
         var query: SaleQuery = DummySalesQuery()
 
-        val ordering: List<Any> = mSortBy.getSelected()
+        val ordering: List<Any> = mSortBy.getSelectedValues()
         if (ordering.isNotEmpty())
             query.withOrdering(ordering[0] as SaleOrdering)
 

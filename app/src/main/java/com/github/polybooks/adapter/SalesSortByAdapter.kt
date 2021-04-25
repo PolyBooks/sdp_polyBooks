@@ -7,7 +7,12 @@ import android.widget.CheckBox
 import com.github.polybooks.R
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 
-class SalesSortByAdapter: ParametersAdapter<SalesSortByAdapter.SortByViewHolder>() {
+typealias SortByViewHolder = SalesSortByAdapter.SortByViewHolder
+
+/**
+ * Binds the values items for the SortBy parameter of Sales to the views of a RecyclerView.
+ */
+class SalesSortByAdapter: ParameterAdapter<SortByViewHolder>() {
 
     private val values = SaleOrdering.values().drop(1)
 
@@ -15,18 +20,20 @@ class SalesSortByAdapter: ParametersAdapter<SalesSortByAdapter.SortByViewHolder>
 
     override fun getItemCount(): Int = values.size
 
-    inner class SortByViewHolder(itemView: View):
-        ParametersAdapter<SalesSortByAdapter.SortByViewHolder>.ParameterViewHolder(itemView) {
+    /**
+     * Holds the view of a SortBy parameter value item
+     */
+    inner class SortByViewHolder(itemView: View): ParameterViewHolder(itemView) {
 
         val mSortButton: CheckBox = itemView.findViewById(R.id.sort_by_button)
         lateinit var mSortValue: SaleOrdering
 
-        override fun resetItem() {
+        override fun resetItemView() {
             mSortButton.isChecked = false
         }
 
-        override fun getItemIfSelected(): Any? {
-            return if(mSortButton.isChecked) mSortValue
+        override fun getValueIfSelected(): Any? {
+            return if (mSortButton.isChecked) mSortValue
             else null
         }
     }
