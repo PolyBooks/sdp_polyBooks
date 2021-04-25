@@ -113,13 +113,25 @@
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
 
-    <string name="popularity">Popularity</string>
-    <string name="title_inc">Title (inc)</string>
-    <string name="title_dec">Title (dec)</string>
-    <string name="price_inc">Price (inc)</string>
-    <string name="price_dec">Price (dec)</string>
-    <string name="publish_date_inc">Publish date (inc)</string>
-    <string name="publish_date_dec">Publish date (dec)</string>
+    <string name="sale_ordering_popularity">Popularity</string>
+    <string name="sale_ordering_title_inc">Title (ascending)</string>
+    <string name="sale_ordering_title_dec">Title (descending)</string>
+    <string name="sale_ordering_price_inc">Price (ascending)</string>
+    <string name="sale_ordering_price_dec">Price (descending)</string>
+    <string name="sale_ordering_publish_date_inc">Publish date (ascending)</string>
+    <string name="sale_ordering_publish_date_dec">Publish date (descending)</string>
+
+    <string name="book_ordering_popularity">Popularity</string>
+    <string name="book_ordering_title_inc">Title (ascending)</string>
+    <string name="book_ordering_title_dec">Title (descending)</string>
+
+    <string name="sale_state_active">Active</string>
+    <string name="sale_state_retracted">Retracted</string>
+    <string name="sale_state_concluded">Concluded</string>
+
+    <string name="sale_book_condition_new">New</string>
+    <string name="sale_book_condition_good">Good</string>
+    <string name="sale_book_condition_worn">Worn</string>
 
     <string name="cs">Computer Science</string>
     <string name="bio">Biology</string>
