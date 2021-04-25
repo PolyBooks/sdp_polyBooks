@@ -52,6 +52,30 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    fun canGetBookByTitle() {
+        fbBookDB.getBook("9780156881807").get() //insure at least one Tartuffe book is in the database
+        val future = fbBookDB.queryBooks().searchByTitle("Tartuffe").getAll()
+        val books = future.get()
+        assertTrue(books.isNotEmpty())
+        books.forEach {
+            assertTrue(it.title.contains("Tartuffe"))
+        }
+
+    }
+
+    @Test
+    fun canGetBookByTitle2() {
+        fbBookDB.getBook("9781985086593").get() //insure at least one OSTEP book is in the database
+        val future = fbBookDB.queryBooks().searchByTitle("Operat").getAll()
+        val books = future.get()
+        assertTrue(books.isNotEmpty())
+        books.forEach {
+            assertTrue(it.title.contains("Operat"))
+        }
+
+    }
+
+    @Test
     fun usesFirebaseAsCache() {
         //ensure the database had an opportunity to cache
         val getBookWithRegularDB = fbBookDB.getBook("9782376863069").get()

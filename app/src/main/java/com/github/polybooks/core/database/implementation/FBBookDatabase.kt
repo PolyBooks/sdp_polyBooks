@@ -30,7 +30,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
     [x] use firebase as cache
     [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
     [x] optimise the search by ISBN
-    [ ] allow search by title
+    [x] allow search by title
     [ ] allow search by interest
     [ ] implement getN and count
     */
@@ -49,7 +49,17 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                     TODO("Not yet implemented")
                 }
                 title != null -> {
-                    TODO("Not yet implemented")
+                    val future = CompletableFuture<List<Book>>()
+                    bookRef
+                        .whereGreaterThanOrEqualTo("book.title", title!!)
+                        .whereLessThanOrEqualTo("book.title", title!! + '\uf88f')
+                        .get().addOnSuccessListener { bookEntries ->
+                            val books = bookEntries.map { bookEntry ->
+                                snapshotEntryToBook(bookEntry)
+                            }
+                            future.complete(books)
+                        }
+                    return future
                 }
                 isbns != null -> {
                     val isbns = this.isbns!!
