@@ -5,13 +5,13 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.github.polybooks.utils.url2json
-import com.google.gson.JsonElement
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
 import java.io.FileNotFoundException
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class FBBookDatabaseTest {
@@ -47,9 +47,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6, book.publishDate!!.month)
-        assertEquals(2020 - 1900, book.publishDate!!.year)
-        assertEquals(3, book.publishDate!!.date)
+        val publishDate = Date(2020 - 1900, 6, 3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test
@@ -64,9 +63,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6, book.publishDate!!.month)
-        assertEquals(2020 - 1900, book.publishDate!!.year)
-        assertEquals(3, book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test
@@ -90,9 +88,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Test
@@ -116,9 +113,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Ignore
@@ -134,9 +130,8 @@ class FBBookDatabaseTest {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        assertEquals(6,book.publishDate!!.month)
-        assertEquals(2020-1900,book.publishDate!!.year)
-        assertEquals(3,book.publishDate!!.date)
+        val publishDate = Date(2020 -1900,6,3)
+        assertEquals(Timestamp(publishDate), book.publishDate)
     }
 
     @Ignore
