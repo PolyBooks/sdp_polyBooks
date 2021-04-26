@@ -1,9 +1,6 @@
 package com.github.polybooks.core.database.interfaces
 
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.Interest
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
@@ -37,13 +34,18 @@ interface SaleDatabase {
      * Add the given sale to the database
      * @param sale The sale to insert
      */
-    fun addSale(sale: Sale) : Unit
+    fun addSale(book : ISBN,
+                seller : User,
+                price : Float,
+                condition : BookCondition,
+                state : SaleState,
+                image : Image?) : CompletableFuture<Sale>
 
     /**
      * Delete the given sale to the database
      * @param sale The sale to delete
      */
-    fun deleteSale(sale: Sale) : Unit
+    fun deleteSale(sale: Sale) : CompletableFuture<Unit>
 }
 
 /**

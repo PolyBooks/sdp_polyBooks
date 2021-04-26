@@ -7,20 +7,12 @@ import com.github.polybooks.core.database.LocalUserException
 import com.github.polybooks.core.database.interfaces.*
 import com.github.polybooks.core.database.interfaces.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering.*
-import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.github.polybooks.utils.url2json
-
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import java.lang.IllegalStateException
-
+import com.google.firebase.firestore.Query
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
 
 class SaleDatabase : SaleDatabase {
 
@@ -100,6 +92,11 @@ class SaleDatabase : SaleDatabase {
             return query
         }
 
+        //FIXME make pages work
+        private fun paginateQuery(query: Query, n: Int, page: Int) : Query {
+            return query.limit(n.toLong())
+        }
+
         private fun doQuery(query : Query) : CompletableFuture<QuerySnapshot> {
             val future = CompletableFuture<QuerySnapshot>()
             query.get()
@@ -108,7 +105,7 @@ class SaleDatabase : SaleDatabase {
                 }
                 .addOnFailureListener {
                     future.completeExceptionally(
-                        DatabaseException("Query could not be completed")
+                        DatabaseException("Query could not be completed: $it")
                     )
                 }
             return future
@@ -123,7 +120,6 @@ class SaleDatabase : SaleDatabase {
         }
 
         override fun getAll(): CompletableFuture<List<Sale>> {
-
             if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
                 return doQuery(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
             } else {
@@ -156,13 +152,33 @@ class SaleDatabase : SaleDatabase {
                 return future
             }
 
-            TODO("Not Implemented")
+            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                return doQuery(paginateQuery(filterQuery(saleRef), n, page)).thenCompose { snapshotsToSales(it) }
+            } else {
+                val booksFuture = getBookQuery().getAll()
+                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                    val isbns = books.map {it.isbn}
+                    val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
+                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    doQuery(paginateQuery(filterQuery(saleQuery), n, page)).thenCompose { snapshotsToSales(it,isbnToBook) }
+                }
+            }
 
             return future
         }
 
         override fun getCount(): CompletableFuture<Int> {
-            TODO("Not Implemented")
+            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                return doQuery(filterQuery(saleRef)).thenApply { it.size() }
+            } else {
+                val booksFuture = getBookQuery().getAll()
+                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                    if (books.isEmpty()) return@thenCompose CompletableFuture.completedFuture(0)
+                    val isbns = books.map {it.isbn}
+                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    doQuery(filterQuery(saleQuery)).thenApply { it.size() }
+                }
+            }
         }
 
         override fun getSettings(): SaleSettings {
@@ -203,7 +219,7 @@ class SaleDatabase : SaleDatabase {
         return LoggedUser(uid, pseudo)
     }
 
-    private fun snapshotToSale(snapshot: DocumentSnapshot, bookCache : Map<ISBN, Book> = mapOf()): Sale {
+    private fun snapshotToSale(snapshot: DocumentSnapshot, bookCache : Map<ISBN, Book>): Sale {
         val isbn = snapshot[SaleFields.BOOK_ISBN.fieldName] as ISBN
         return Sale(
             bookCache[isbn]!!, // The cache should contain the book, otherwise the call to this function is illegal
@@ -216,8 +232,8 @@ class SaleDatabase : SaleDatabase {
         )
     }
 
-    private fun snapshotsToSales(snapshots : QuerySnapshot, bookCache: Map<ISBN, Book> = mapOf()) : CompletableFuture<List<Sale>> {
-        val missingBooks = snapshots.map { doc -> doc[SaleFields.BOOK_ISBN.fieldName] as ISBN }.minus(bookCache.keys)
+    private fun snapshotsToSales(snapshots : Iterable<DocumentSnapshot>, bookCache: Map<ISBN, Book> = mapOf()) : CompletableFuture<List<Sale>> {
+        val missingBooks = snapshots.map { doc -> doc[SaleFields.BOOK_ISBN.fieldName] as ISBN }.toSet().minus(bookCache.keys)
         if (missingBooks.isEmpty()) {
             val sales = snapshots.map { doc ->
                 snapshotToSale(doc, bookCache)
@@ -249,43 +265,61 @@ class SaleDatabase : SaleDatabase {
         )
     }
 
-    override fun addSale(sale: Sale) {
-        if(sale.seller == LocalUser)
-            throw LocalUserException("Cannot add sale as LocalUser")
-        saleRef.add(saleToDocument(sale))
-                .addOnSuccessListener { documentReference ->
-                    Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
-                .addOnFailureListener {
-                    // TODO: Change this to maybe only log the error
-                    throw DatabaseException("Failed to insert $sale into Database")
-                }
+    override fun addSale(bookISBN : ISBN,
+                         seller : User,
+                         price : Float,
+                         condition : BookCondition,
+                         state : SaleState,
+                         image : Image?) : CompletableFuture<Sale> {
+
+        if(seller == LocalUser) {
+            val future = CompletableFuture<Sale>()
+            future.completeExceptionally(LocalUserException("Cannot add sale as LocalUser"))
+            return future
+        }
+        val bookFuture = bookDB.getBook(bookISBN)
+        return bookFuture.thenCompose { book ->
+            val future = CompletableFuture<Sale>()
+            if (book == null) {
+                future.completeExceptionally(DatabaseException("Could not find book associated with sale : isbn = $bookISBN"))
+
+            } else {
+                val sale = Sale(book, seller, price, condition, Timestamp.now(), state, image)
+                saleRef.add(saleToDocument(sale))
+                    .addOnSuccessListener {
+                        future.complete(sale)
+                    }
+                    .addOnFailureListener {
+                        future.completeExceptionally(DatabaseException("Failed to insert $sale into Database because of : $it"))
+                    }
+            }
+            future
+        }
     }
 
     //find the ID of a sale based on the ISBN of the book being sold, the time of the publication and the UID of the seller
-    private fun getReferenceID(sale: Sale): Task<QuerySnapshot> {
+    private fun getReferenceID(sale: Sale): Task<DocumentSnapshot?> {
         var query = saleRef
             .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
             .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
             .whereEqualTo(SaleFields.SELLER.fieldName +"."+UserFields.UID.fieldName, (sale.seller as LoggedUser).uid)
-        return query.get()
+        return query.get().continueWith { task -> task.result.documents.firstOrNull() }
 
     }
 
-    override fun deleteSale(sale: Sale) {
+    override fun deleteSale(sale: Sale) : CompletableFuture<Unit> {
         if(sale.seller == LocalUser)
             throw LocalUserException("Cannot add sale as LocalUser")
-        getReferenceID(sale).continueWith { task ->
-            val result = task.result.documents.filter { document ->
-                val s = snapshotToSale(document, mapOf())
-                s.condition == sale.condition /*&& s.seller == sale.seller */&& s.date == sale.date
-            }
-
-            result.forEach { document ->
-                saleRef.document(document.id).delete()
-                    .addOnFailureListener { throw DatabaseException("Could not delete $document") }
-                    .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: ${document}") }
+        val future = CompletableFuture<Unit>()
+        getReferenceID(sale).addOnSuccessListener { toDelete ->
+            if (toDelete == null) future.complete(Unit)
+            else {
+                saleRef.document(toDelete.id).delete()
+                    .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete $toDelete")) }
+                    .addOnSuccessListener { future.complete(Unit) }
             }
         }
+        return future
     }
 }
 
