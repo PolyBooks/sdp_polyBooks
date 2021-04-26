@@ -168,7 +168,7 @@ class FilteringSalesActivity: AppCompatActivity() {
             AdapterFactory.saleStateAdapter()
         )
         mBookConditionParameter = RecyclerViewParameter(
-            R.id.sale_book_condition_parameter,
+            R.id.sale_condition_parameter,
             AdapterFactory.saleBookConditionAdapter()
         )
 
