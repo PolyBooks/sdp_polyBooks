@@ -216,16 +216,11 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_semester_parameter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:id="@+id/semester_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
             <!-- Course parameter (eg. CS306) -->
@@ -242,17 +237,13 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_course_parameter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:id="@+id/courseGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
+
             <!-- Field parameter (eg. Computer Science, Biology) -->
             <LinearLayout
                 android:id="@+id/field_view"
@@ -267,16 +258,11 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_field_parameter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:id="@+id/fieldGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
         </LinearLayout>

@@ -18,7 +18,7 @@ typealias ParameterViewHolder<T> = ParameterAdapter<T>.ParameterViewHolder<T>
  */
 abstract class ParameterAdapter<T>(
     val itemViewId: Int,
-    private val mValues: List<T>
+    private var mValues: List<T>
 ):
     RecyclerView.Adapter<ParameterViewHolder<T>>() {
 
@@ -27,15 +27,22 @@ abstract class ParameterAdapter<T>(
         const val VIEW_TYPE_RADIOBOX = 1
     }
 
-
     // useful in the case of VIEW_TYPE_RADIOBOX viewType
     private var lastSelectedButton: CheckBox? = null
-
 
     override fun getItemCount(): Int = mValues.size
 
     override fun getItemViewType(position: Int): Int {
         return getItemViewType()
+    }
+
+    /**
+     * Can be used when the parameter values cannot be determined on creation (typically for
+     * CompletableFuture)
+     */
+    protected fun setValues(newValues: List<T>) {
+        mValues = newValues
+        notifyDataSetChanged()
     }
 
     /**

@@ -9,8 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.adapter.*
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
@@ -93,6 +92,10 @@ class FilteringSalesActivity: AppCompatActivity() {
     private lateinit var mStateParameter: RecyclerViewParameter<SaleState>
     private lateinit var mBookConditionParameter: RecyclerViewParameter<BookCondition>
 
+    private lateinit var mCourseParameter: RecyclerViewParameter<Course>
+    private lateinit var mSemesterParameter: RecyclerViewParameter<Semester>
+    private lateinit var mFieldParameter: RecyclerViewParameter<Field>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_filtering_sales)
@@ -114,6 +117,10 @@ class FilteringSalesActivity: AppCompatActivity() {
         mSortParameter.resetItemsViews()
         mStateParameter.resetItemsViews()
         mBookConditionParameter.resetItemsViews()
+
+        mCourseParameter.resetItemsViews()
+        mSemesterParameter.resetItemsViews()
+        mFieldParameter.resetItemsViews()
     }
 
     fun getResults(view: View) {
@@ -139,17 +146,7 @@ class FilteringSalesActivity: AppCompatActivity() {
 
         query = query.searchByPrice(minPrice, maxPrice)
 
-        val ordering: List<SaleOrdering> = mSortParameter.getSelectedValues()
-        if (ordering.isNotEmpty())
-            query.withOrdering(ordering[0])
-
-        resultByParameter(query, mSortParameter) { q, orderings -> q.withOrdering(orderings[0]) }
-        resultByParameter(query, mStateParameter) { q, states -> q.searchByState(states.toSet()) }
-        resultByParameter(query, mBookConditionParameter) { q, conditions ->
-            q.searchByCondition(
-                conditions.toSet()
-            )
-        }
+        resultByParameter(query)
 
         //---
         //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
@@ -160,10 +157,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     }
 
     private fun setParametersButtons() {
-        mName = findViewById(R.id.book_name)
-        mISBN = findViewById(R.id.book_isbn)
-        mPriceMin = findViewById(R.id.price_min)
-        mPriceMax = findViewById(R.id.price_max)
+        setTextParameters()
 
         mSortParameter = RecyclerViewParameter(
             R.id.sale_sort_parameter,
@@ -177,6 +171,43 @@ class FilteringSalesActivity: AppCompatActivity() {
             R.id.sale_book_condition_parameter,
             AdapterFactory.saleBookConditionAdapter()
         )
+
+        mCourseParameter = RecyclerViewParameter(
+            R.id.sale_course_parameter,
+            AdapterFactory.courseInterestAdapter()
+        )
+
+        mSemesterParameter = RecyclerViewParameter(
+            R.id.sale_semester_parameter,
+            AdapterFactory.semesterInterestAdapter()
+        )
+
+        mFieldParameter = RecyclerViewParameter(
+            R.id.sale_field_parameter,
+            AdapterFactory.fieldInterestAdapter()
+        )
+    }
+
+    private fun setTextParameters() {
+        mName = findViewById(R.id.book_name)
+        mISBN = findViewById(R.id.book_isbn)
+        mPriceMin = findViewById(R.id.price_min)
+        mPriceMax = findViewById(R.id.price_max)
+    }
+
+    private fun resultByParameter(query: SaleQuery) {
+        resultByParameter(query, mSortParameter) { q, orderings ->
+            q.withOrdering(orderings[0])
+        }
+        resultByParameter(query, mStateParameter) { q, states ->
+            q.searchByState(states.toSet())
+        }
+        resultByParameter(query, mBookConditionParameter) { q, conditions ->
+            q.searchByCondition(conditions.toSet())
+        }
+        resultByParameter(query, mCourseParameter) { q, courses ->
+            q.onlyIncludeInterests(courses.toSet())
+        }
     }
 
     private fun <T> resultByParameter(
