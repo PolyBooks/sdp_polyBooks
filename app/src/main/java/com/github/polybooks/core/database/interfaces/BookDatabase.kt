@@ -34,7 +34,6 @@ interface BookDatabase {
      * */
     fun getNBooks(numberOfBooks : Int, page : Int, ordering : BookOrdering) : CompletableFuture<List<Book>>
             = queryBooks().withOrdering(ordering).getN(numberOfBooks, page)
-
 }
 
 /**

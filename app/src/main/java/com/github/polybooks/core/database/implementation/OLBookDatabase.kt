@@ -12,19 +12,21 @@ import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.utils.listOfFuture2FutureOfList
+import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.io.FileNotFoundException
 import java.lang.Integer.min
-import java.sql.Timestamp
+
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 
 
-private const val TITLE_FIELD_NAME = "full_title"
+private const val TITLE_FIELD_NAME1 = "full_title"
+private const val TITLE_FIELD_NAME2 = "title"
 private const val AUTHORS_FIELD_NAME = "authors"
 private const val FORMAT_FIELD_NAME = "physical_format"
 private const val ISBN13_FIELD_NAME = "isbn_13"
@@ -78,7 +80,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         }
 
         override fun getSettings(): BookSettings {
-            return BookSettings(ordering, this.isbns,title,null)
+            return BookSettings(ordering, isbns,title,null)
         }
 
         override fun fromSettings(settings: BookSettings): BookQuery {
@@ -181,9 +183,11 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseBook(jsonBook: JsonElement): Book {
         val jsonBookObject = asJsonObject(jsonBook);
-        val title = getJsonField(jsonBookObject, TITLE_FIELD_NAME)
+        val title = getJsonField(jsonBookObject, TITLE_FIELD_NAME1)
+                .map { Optional.of(it) }
+                .orElseGet { getJsonField(jsonBookObject, TITLE_FIELD_NAME2) }
                 .map { parseTitle(it) }
-                .orElseThrow(cantParseException(TITLE_FIELD_NAME))!!
+                .orElseThrow(cantParseException("$TITLE_FIELD_NAME1 or $TITLE_FIELD_NAME2"))!!
         val isbn13 = getJsonField(jsonBookObject, ISBN13_FIELD_NAME)
                 .map { parseISBN13(it) }
                 .orElseThrow(cantParseException(ISBN13_FIELD_NAME))!!
@@ -244,7 +248,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val dateString = asString(jsonPublishDate)
         val dateFormat = SimpleDateFormat(DATE_FORMAT)
         dateFormat.isLenient = false
-        return Timestamp(dateFormat.parse(dateString)?.time!!)
+        return Timestamp(dateFormat.parse(dateString)!!)
     }
 
     private fun asJsonObject(jsonElement: JsonElement): JsonObject {
