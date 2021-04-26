@@ -320,7 +320,7 @@ class SaleDatabaseTest {
         )
         assertNotEquals(
                 db.querySales().fromSettings(settings).getCount().get(),
-                db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
+                db.querySales().searchByState(setOf(SaleState.RETRACTED)).getCount().get()
         )
     }
 
