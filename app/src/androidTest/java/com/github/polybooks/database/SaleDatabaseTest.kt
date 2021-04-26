@@ -318,10 +318,15 @@ class SaleDatabaseTest {
                 SaleOrdering.DEFAULT, null,null, null,
                 setOf(SaleState.RETRACTED), null, null,null
         )
+
+        addDummySaleTest()
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
         assertNotEquals(
-                db.querySales().fromSettings(settings).getCount().get(),
-                db.querySales().searchByState(setOf(SaleState.RETRACTED)).getCount().get()
+                db.querySales().searchByState(setOf(SaleState.ACTIVE)).fromSettings(settings).getCount().get(),
+                db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
         )
+        deleteDummySaleTest()
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
     }
 
     @Test
