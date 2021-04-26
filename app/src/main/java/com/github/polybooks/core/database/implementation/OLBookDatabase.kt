@@ -251,9 +251,11 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val dateFormat2 = SimpleDateFormat(DATE_FORMAT2)
         dateFormat1.isLenient = false
         dateFormat2.isLenient = false
-        return Timestamp(
-            dateFormat2.parse(dateString)
-        )
+        try {
+            return Timestamp(dateFormat1.parse(dateString)!!)
+        } catch (e : java.text.ParseException) {
+            return Timestamp(dateFormat2.parse(dateString)!!)
+        }
     }
 
     private fun asJsonObject(jsonElement: JsonElement): JsonObject {
