@@ -91,7 +91,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     private lateinit var mPriceMin: EditText
     private lateinit var mPriceMax: EditText
 
-    private lateinit var mSortBy: FilteringParameter<SaleOrdering, SortByViewHolder<SaleOrdering>>
+    private lateinit var mSortBy: FilteringParameter<SaleOrdering, SortingParameterViewHolder<SaleOrdering>>
 
     private lateinit var mStateActive: CheckBox
     private lateinit var mStateRetracted: CheckBox
@@ -110,7 +110,7 @@ class FilteringSalesActivity: AppCompatActivity() {
         mResults = findViewById(R.id.results_button)
 
         mSortBy =
-            FilteringParameter(R.id.sort_by, SortByAdapter<SaleOrdering>(SaleOrdering.DEFAULT))
+            FilteringParameter(R.id.sort_by, SortingParameterAdapter(SaleOrdering.DEFAULT))
 
         // hardcoded : make it dynamic
         setParametersButtons()
