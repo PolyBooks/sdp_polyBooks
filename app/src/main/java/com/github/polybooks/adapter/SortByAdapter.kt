@@ -11,10 +11,7 @@ import com.github.polybooks.utils.FieldWithName
 typealias SortByViewHolder<T> = SortByAdapter<T>.SortByViewHolder<T>
 
 /**
- * An adapter for an ordering parameter
- *
- * @param enumInstance any instance of class T to be able to use T functions
- * @see ParameterAdapter
+ * Binds the values items for the SortBy parameter to the views of a RecyclerView.
  */
 class SortByAdapter<T: FieldWithName>(enumInstance: T): ParameterAdapter<T, SortByViewHolder<T>>() {
 
