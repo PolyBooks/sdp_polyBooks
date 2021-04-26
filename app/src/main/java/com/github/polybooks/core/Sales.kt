@@ -14,7 +14,7 @@ import java.util.*
  * @property seller The ID of the seller
  * @property price The price in CHF at which the book is being sold
  * @property condition The condition of the book (see {@link BookCondition})
- * @property publicationDate The date on which the Sale has been issued/published
+ * @property date The date on which the Sale has been issued/published
  * @property state The state of the Sale (see {@link SaleState})
  * */
 
@@ -50,7 +50,7 @@ enum class SaleState {
  * Allows access to the name of a field
  */
 enum class SaleFields(val fieldName: String) {
-    BOOK("book"),
+    BOOK_ISBN("book_isbn"),
     CONDITION("condition"),
     PRICE("price"),
     PUBLICATION_DATE("date"),

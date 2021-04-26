@@ -8,7 +8,6 @@ import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.core.database.LocalUserException
-import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,8 +34,10 @@ class SaleDatabaseTest {
 
     private val dummySale: MutableMap<String, Any> = HashMap()
 
+    private val testBook = Book("9780156881807",null, "Tartuffe, by Moliere", null, null, null, null, null)
+
     init {
-        dummySale[SaleFields.BOOK.fieldName] = anonymousBook("test-book-6Zzn8ZNPeK-cXFEfCvqbs-spf0eCVEqa")
+        dummySale[SaleFields.BOOK_ISBN.fieldName] = "9780156881807"
         dummySale[SaleFields.PRICE.fieldName] = 500f
         dummySale[SaleFields.CONDITION.fieldName] = BookCondition.WORN
         dummySale[SaleFields.STATE.fieldName] = SaleState.ACTIVE
@@ -44,15 +45,8 @@ class SaleDatabaseTest {
         dummySale[SaleFields.SELLER.fieldName] = LoggedUser(301966, "Le givre")
     }
 
-    fun addDummySaleTest(payload: MutableMap<String, Any>? = null) {
-        if (payload != null) {
-            saleRef.document(testSaleName).set(payload)
-        } else {
-
-
-            saleRef.document(testSaleName).set(dummySale)
-        }
-
+    fun addDummySaleTest(payload: MutableMap<String, Any> = dummySale) {
+        saleRef.document(testSaleName).set(payload)
         BaristaSleepInteractions.sleep(250, TimeUnit.MILLISECONDS)
     }
 
@@ -95,9 +89,9 @@ class SaleDatabaseTest {
         listAllSales = db.listAllSales().get()
         assertEquals(expectedSize + 1, listAllSales.size)
 
-        val isolatedAddition = listAllSales.filter { s -> s.book == dummySale[SaleFields.BOOK.fieldName] }
+        val isolatedAddition = listAllSales.filter { s -> s.book.isbn == dummySale[SaleFields.BOOK_ISBN.fieldName] }
         assertEquals(1, isolatedAddition.size)
-        assertEquals(dummySale[SaleFields.BOOK.fieldName], isolatedAddition[0].book)
+        assertEquals(dummySale[SaleFields.BOOK_ISBN.fieldName], isolatedAddition[0].book)
         assertEquals(dummySale[SaleFields.PRICE.fieldName], isolatedAddition[0].price)
         assertEquals(dummySale[SaleFields.CONDITION.fieldName], isolatedAddition[0].condition)
         assertEquals(dummySale[SaleFields.STATE.fieldName], isolatedAddition[0].state)
@@ -107,9 +101,9 @@ class SaleDatabaseTest {
 
     @Test
     fun t_searchByTitle() {
-        val initialCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
+        val initialCount: Int = db.querySales().searchByTitle("Tartuffe, by Moliere").getCount().get()
         addDummySaleTest()
-        val secondCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
+        val secondCount: Int = db.querySales().searchByTitle("Tartuffe, by Moliere").getCount().get()
 
         assertEquals(secondCount, initialCount + 1)
         assertEquals(0, db.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getCount().get())
@@ -241,7 +235,7 @@ class SaleDatabaseTest {
 
     @Test
     fun addAsLocalUser(){
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
+        val saleTest = Sale(testBook,
                 LocalUser, 666f,
                 BookCondition.WORN,
                 Timestamp(format.parse("2016-05-05")!!),
@@ -257,7 +251,7 @@ class SaleDatabaseTest {
 
     @Test
     fun deleteAsLocalUser(){
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
+        val saleTest = Sale(testBook,
                 LocalUser, 666f,
                 BookCondition.WORN,
                 Timestamp(format.parse("2016-05-05")!!),
@@ -273,7 +267,7 @@ class SaleDatabaseTest {
 
     @Test
     fun addDelete(){
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
+        val saleTest = Sale(testBook,
             LoggedUser(301943, "The best"), 666f,
             BookCondition.WORN,
             Timestamp(format.parse("2016-05-05")!!),
@@ -354,56 +348,5 @@ class SaleDatabaseTest {
 
         )
     }
-
-    @Ignore
-    @Test
-    fun Delete(){
-        //Used to manually delete sales
-        val saleTest = Sale(anonymousBook("test1"),
-                LoggedUser(301943, "The best"),
-                666f,
-                BookCondition.WORN,
-                Timestamp(format.parse("2016-05-05")!!),
-                SaleState.RETRACTED, null )
-        db.deleteSale(saleTest)
-    }
-    @Ignore
-    @Test
-    fun See(){
-        fun snapshotToBook(map: HashMap<String,Any>): Book {
-            return Book(
-                    map[BookFields.ISBN.fieldName] as String,
-                    map[BookFields.AUTHORS.fieldName] as List<String>?,
-                    map[BookFields.TITLE.fieldName] as String,
-                    map[BookFields.EDITION.fieldName] as String?,
-                    map[BookFields.LANGUAGE.fieldName] as String?,
-                    map[BookFields.PUBLISHER.fieldName] as String?,
-                    map[BookFields.PUBLISHDATE.fieldName] as Timestamp?,
-                    map[BookFields.FORMAT.fieldName] as String?
-            )
-
-        }
-        saleRef.whereEqualTo("book.title", "test1").get().addOnSuccessListener { documents ->
-            val book = documents.map { document ->
-                document.get(SaleFields.BOOK.fieldName) as HashMap<String, Any>//as Book
-            }
-            
-            println(book)
-        }
-    }
-
-    @Ignore
-    @Test
-    fun Add(){
-        //Used to manually insert sales
-        val saleTest = Sale(anonymousBook("Phisics for dummies"),
-                LoggedUser(301966, "La chevre"),
-                49.5f,
-                BookCondition.NEW,
-                Timestamp(format.parse("2022-01-01")!!),
-                SaleState.ACTIVE, null )
-        db.addSale(saleTest)
-    }
-
 
 }

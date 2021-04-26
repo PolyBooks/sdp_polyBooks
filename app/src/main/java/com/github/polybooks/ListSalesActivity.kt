@@ -1,19 +1,15 @@
 package com.github.polybooks
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.core.*
+import com.github.polybooks.core.Sale
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.implementation.format
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.core.database.interfaces.SaleSettings
-import com.github.polybooks.utils.anonymousBook
-import com.google.firebase.Timestamp
 
 /**
  * Activity to list all active sales
