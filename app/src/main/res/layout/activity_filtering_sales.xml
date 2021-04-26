@@ -148,7 +148,7 @@
                     android:textSize="20sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sort_by"
+                    android:id="@+id/sale_sort_parameter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
@@ -170,36 +170,11 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_state_parameter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/state_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/state_active"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/state_active" />
-
-                        <CheckBox
-                            android:id="@+id/state_retracted"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/state_retracted" />
-
-                        <CheckBox
-                            android:id="@+id/state_concluded"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/state_concluded" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
@@ -217,36 +192,11 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_book_condition_parameter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/condition_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/condition_new"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/condition_new" />
-
-                        <CheckBox
-                            android:id="@+id/condition_good"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/condition_good" />
-
-                        <CheckBox
-                            android:id="@+id/condition_worn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/condition_worn" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 

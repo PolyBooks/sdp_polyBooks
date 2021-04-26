@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -15,7 +17,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.adapter.ParameterViewHolder
+import com.github.polybooks.core.BookCondition
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.utils.FieldWithName
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -59,14 +64,18 @@ class FilteringSalesTest {
     }
 
     @Test
-    fun sortByItemsAreDisplayed() {
-        for (order in SaleOrdering.values().drop(1)) {
-            onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.scrollTo<ParameterViewHolder<SaleOrdering>>(
-                    hasDescendant(withText(order.fieldName(targetContext)))
-                )
-            )
-        }
+    fun sortingItemsAreDisplayed() {
+        performOnParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter)
+    }
+
+    @Test
+    fun stateItemsAreDisplayed() {
+        performOnParameter(SaleState.ACTIVE, R.id.sale_state_parameter)
+    }
+
+    @Test
+    fun bookConditionItemsAreDisplayed() {
+        performOnParameter(BookCondition.NEW, R.id.sale_book_condition_parameter)
     }
 
     @Test
@@ -86,10 +95,22 @@ class FilteringSalesTest {
     }
 
     @Test
-    fun reclickingOnAParamButtonClearsIt() {
-        onView(withId(R.id.state_active)).perform(scrollTo(), click())
-        onView(withId(R.id.state_active)).perform(click())
-        onView(withId(R.id.state_active)).check(matches(isNotChecked()))
+    fun orderingItemsAreMutuallyExclusive() {
+        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click())
+        perform(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, click())
+
+        check(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, matches(isChecked()))
+        check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
+    }
+
+    @Test
+    fun clickingThreeTimesOnOrderingItemWorks() {
+        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
+        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now not checked
+        check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
+        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
+        check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isChecked()))
+
     }
 
     @Test
@@ -114,7 +135,6 @@ class FilteringSalesTest {
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.price_max)).perform(scrollTo(), clearText(), typeText(RANDOM_NUMBER))
         Espresso.closeSoftKeyboard()
-
     }
 
     private fun checkTextEditsAreEmpty() {
@@ -129,43 +149,72 @@ class FilteringSalesTest {
     }
 
     private fun clickOnAllParamButtons() {
-        for (order in SaleOrdering.values().drop(1)) {
-            onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.scrollTo<ParameterViewHolder<SaleOrdering>>(
-                    hasDescendant(withText(order.fieldName(targetContext)))
-                ), click()
-            )
-        }
-
-        onView(withId(R.id.state_active)).perform(scrollTo(), click())
-        onView(withId(R.id.state_retracted)).perform(scrollTo(), click())
-        onView(withId(R.id.state_concluded)).perform(scrollTo(), click())
-
-        onView(withId(R.id.condition_new)).perform(scrollTo(), click())
-        onView(withId(R.id.condition_good)).perform(scrollTo(), click())
-        onView(withId(R.id.condition_worn)).perform(scrollTo(), click())
+        performOnParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter, click())
+        performOnParameter(SaleState.ACTIVE, R.id.sale_state_parameter, click())
+        performOnParameter(BookCondition.NEW, R.id.sale_book_condition_parameter, click())
     }
 
     private fun checkAllParamButtons(isChecked: Boolean) {
         val checkFun = if (isChecked) isChecked() else isNotChecked()
 
         if (!isChecked) {
-            for (order in SaleOrdering.values().drop(1)) {
-                onView(withId(R.id.sort_by)).perform(
-                    RecyclerViewActions.scrollTo<ParameterViewHolder<SaleOrdering>>(
-                        hasDescendant(withText(order.fieldName(targetContext)))
-                    )
-                )
-                onView(withText(order.fieldName(targetContext))).check(matches(checkFun))
-            }
+            performOnParameter(
+                SaleOrdering.DEFAULT,
+                R.id.sale_sort_parameter,
+                null,
+                matches(checkFun)
+            )
         }
 
-        onView(withId(R.id.state_active)).check(matches(checkFun))
-        onView(withId(R.id.state_retracted)).check(matches(checkFun))
-        onView(withId(R.id.state_concluded)).check(matches(checkFun))
+        performOnParameter(
+            SaleState.ACTIVE,
+            R.id.sale_state_parameter,
+            null,
+            matches(checkFun)
+        )
+        performOnParameter(
+            BookCondition.NEW,
+            R.id.sale_book_condition_parameter,
+            null,
+            matches(checkFun)
+        )
+    }
 
-        onView(withId(R.id.condition_new)).check(matches(checkFun))
-        onView(withId(R.id.condition_good)).check(matches(checkFun))
-        onView(withId(R.id.condition_worn)).check(matches(checkFun))
+    private fun <T: FieldWithName> performOnParameter(
+        instance: T,
+        parameterId: Int,
+        action: ViewAction? = null,
+        assertion: ViewAssertion? = null
+    ) {
+        val values = instance.javaClass.enumConstants
+            .drop(if (parameterId == R.id.sale_sort_parameter) 1 else 0)
+
+        for (value in values) {
+            if (action != null) {
+                perform(parameterId, value, action)
+            }
+
+            if (assertion != null) {
+                check(parameterId, value, assertion)
+            }
+        }
+    }
+
+    private fun <T: FieldWithName> scrollToValue(parameterId: Int, value: T) {
+        onView(withId(parameterId)).perform(
+            RecyclerViewActions.scrollTo<ParameterViewHolder<T>>(
+                hasDescendant(withText(value.fieldName(targetContext)))
+            )
+        )
+    }
+
+    private fun <T: FieldWithName> perform(parameterId: Int, value: T, action: ViewAction) {
+        scrollToValue(parameterId, value)
+        onView(withText(value.fieldName(targetContext))).perform(action)
+    }
+
+    private fun <T: FieldWithName> check(parameterId: Int, value: T, assertion: ViewAssertion) {
+        scrollToValue(parameterId, value)
+        onView(withText(value.fieldName(targetContext))).check(assertion)
     }
 }
