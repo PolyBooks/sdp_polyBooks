@@ -14,7 +14,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.adapter.SortingParameterViewHolder
+import com.github.polybooks.adapter.ParameterViewHolder
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -62,7 +62,7 @@ class FilteringSalesTest {
     fun sortByItemsAreDisplayed() {
         for (order in SaleOrdering.values().drop(1)) {
             onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.scrollTo<SortingParameterViewHolder<SaleOrdering>>(
+                RecyclerViewActions.scrollTo<ParameterViewHolder<SaleOrdering>>(
                     hasDescendant(withText(order.fieldName(targetContext)))
                 )
             )
@@ -131,7 +131,7 @@ class FilteringSalesTest {
     private fun clickOnAllParamButtons() {
         for (order in SaleOrdering.values().drop(1)) {
             onView(withId(R.id.sort_by)).perform(
-                RecyclerViewActions.scrollTo<SortingParameterViewHolder<SaleOrdering>>(
+                RecyclerViewActions.scrollTo<ParameterViewHolder<SaleOrdering>>(
                     hasDescendant(withText(order.fieldName(targetContext)))
                 ), click()
             )
@@ -152,7 +152,7 @@ class FilteringSalesTest {
         if (!isChecked) {
             for (order in SaleOrdering.values().drop(1)) {
                 onView(withId(R.id.sort_by)).perform(
-                    RecyclerViewActions.scrollTo<SortingParameterViewHolder<SaleOrdering>>(
+                    RecyclerViewActions.scrollTo<ParameterViewHolder<SaleOrdering>>(
                         hasDescendant(withText(order.fieldName(targetContext)))
                     )
                 )

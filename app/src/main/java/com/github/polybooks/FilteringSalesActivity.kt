@@ -33,9 +33,9 @@ class FilteringSalesActivity: AppCompatActivity() {
      * @param adapter   The adapter that will binds the different values to the recyclerView
      * @see ParameterAdapter
      */
-    inner class FilteringParameter<T, VH: ParameterViewHolder<T>>(
+    inner class FilteringParameter<T>(
         viewId: Int,
-        private val mAdapter: ParameterAdapter<T, VH>
+        private val mAdapter: ParameterAdapter<T>
     ) {
         private val mView: RecyclerView = findViewById(viewId)
         private val mlayoutManager = LinearLayoutManager(
@@ -45,7 +45,6 @@ class FilteringSalesActivity: AppCompatActivity() {
         )
 
         init {
-            mAdapter.setContext(this@FilteringSalesActivity)
             mView.adapter = mAdapter
             mView.layoutManager = mlayoutManager
         }
@@ -72,11 +71,11 @@ class FilteringSalesActivity: AppCompatActivity() {
             return res
         }
 
-        private fun performOnItems(f: (VH) -> Unit) {
+        private fun performOnItems(f: (ParameterViewHolder<T>) -> Unit) {
             for (i in 0 until mAdapter.itemCount) {
                 val holder = mView.findViewHolderForAdapterPosition(i)
                 if (holder != null) {
-                    f(holder as VH)
+                    f(holder as ParameterViewHolder<T>)
                 }
             }
         }
@@ -91,7 +90,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     private lateinit var mPriceMin: EditText
     private lateinit var mPriceMax: EditText
 
-    private lateinit var mSortBy: FilteringParameter<SaleOrdering, SortingParameterViewHolder<SaleOrdering>>
+    private lateinit var mSortBy: FilteringParameter<SaleOrdering>
 
     private lateinit var mStateActive: CheckBox
     private lateinit var mStateRetracted: CheckBox
@@ -110,7 +109,7 @@ class FilteringSalesActivity: AppCompatActivity() {
         mResults = findViewById(R.id.results_button)
 
         mSortBy =
-            FilteringParameter(R.id.sort_by, SortingParameterAdapter(SaleOrdering.DEFAULT))
+            FilteringParameter(R.id.sort_by, ParameterAdapterFactory.createSaleSortingAdapter())
 
         // hardcoded : make it dynamic
         setParametersButtons()
