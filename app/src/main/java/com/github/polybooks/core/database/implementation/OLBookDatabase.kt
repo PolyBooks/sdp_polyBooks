@@ -17,6 +17,7 @@ import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import java.io.FileNotFoundException
 import java.lang.Integer.min
 
 import java.text.SimpleDateFormat
@@ -152,7 +153,10 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
                 .thenApply { parseBook(it) }
                 .thenCompose { updateBookWithAuthorName(it) }
                 .exceptionally { exception ->
-                    if (exception is CompletionException) throw exception.cause!!
+                    if (exception is CompletionException && exception.cause is FileNotFoundException) {
+                        return@exceptionally null
+                    }
+                    else if (exception is CompletionException) throw exception.cause!!
                     else throw exception
                 }
         }
