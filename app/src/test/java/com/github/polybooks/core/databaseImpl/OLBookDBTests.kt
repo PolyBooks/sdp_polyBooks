@@ -21,13 +21,17 @@ class OLBookDBTests {
 
     val urlRegex = """.*openlibrary.org(.*)""".toRegex()
     val url2filename = mapOf(
-        Pair("/authors/OL7511250A.json", "OL7511250A.json"),
-        Pair("/authors/OL7482089A.json", "OL7482089A.json"),
-        Pair("/authors/OL8315711A.json", "OL8315711A.json"),
-        Pair("/authors/OL8315712A.json", "OL8315712A.json"),
-        Pair("/isbn/9782376863069.json", "9782376863069.json"),
-        Pair("/isbn/2376863066.json", "9782376863069.json"),
-        Pair("/isbn/9781985086593.json", "9781985086593.json")
+        "/authors/OL7511250A.json" to "OL7511250A.json",
+        "/authors/OL7482089A.json" to "OL7482089A.json",
+        "/authors/OL8315711A.json" to  "OL8315711A.json",
+        "/authors/OL8315712A.json" to  "OL8315712A.json",
+        "/authors/OL6899222A.json" to "OL6899222A.json",
+        "/authors/OL752714A.json" to "OL752714A.json",
+        "/isbn/9782376863069.json" to "9782376863069.json",
+        "/isbn/2376863066.json" to "9782376863069.json",
+        "/isbn/9781985086593.json" to "9781985086593.json",
+        "/isbn/9780156881807.json" to "9780156881807.json",
+        "/isbn/9781603090476.json" to "9781603090476.json"
     )
     val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
     val url2json = { url : String ->
@@ -54,6 +58,21 @@ class OLBookDBTests {
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
         assertEquals(Timestamp(publishDate), book.publishDate)
+    }
+
+    @Test
+    fun canGetBookByISBN2() {
+        //check for a book that does not have a precise publish date
+        val olDB = OLBookDatabase(url2json)
+        val future = olDB.getBook("9781603090476")
+        val book = future.get() ?: throw AssertionFailedError("Book was not found")
+    }
+
+    @Test
+    fun canGetBookWithNoFieldFullTitle() {
+        val olDB = OLBookDatabase(url2json)
+        val future = olDB.getBook("9780156881807")
+        val book = future.get() ?: throw AssertionFailedError("Book was not found")
     }
 
     @Test
