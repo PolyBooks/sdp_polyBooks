@@ -1,12 +1,13 @@
 package com.github.polybooks.core
 
 
+import android.content.Context
 import android.media.Image
-import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.R
+import com.github.polybooks.utils.FieldWithName
 import com.google.firebase.Timestamp
+import kotlinx.android.synthetic.main.activity_filtering_sales.view.*
 import java.io.Serializable
-
-
 import java.util.*
 
 /**
@@ -20,21 +21,28 @@ import java.util.*
  * */
 
 data class Sale(
-        val book : Book,
-        val seller : User,
-        val price : Float,
-        val condition : BookCondition,
-        val date : Timestamp,
-        val state : SaleState,
-        val image : Image?
-        ) : Serializable
+    val book: Book,
+    val seller: User,
+    val price: Float,
+    val condition: BookCondition,
+    val date: Timestamp,
+    val state: SaleState,
+    val image: Image?
+): Serializable
 
 
 /**
  * The condition of a book (as in "in great condition").
  * */
-enum class BookCondition {
-    NEW, GOOD, WORN
+enum class BookCondition(private val stringId: Int): FieldWithName {
+    // FIXME adapt stringIDs
+    NEW(R.string.condition_new),
+    GOOD(R.string.condition_good),
+    WORN(R.string.condition_worn);
+
+    override fun fieldName(c: Context?): String {
+        return c?.getString(stringId) ?: name
+    }
 }
 
 /**
@@ -43,8 +51,15 @@ enum class BookCondition {
  * Retracted means that the book is no longer on sale because the seller retracted the offer.
  * Concluded means that the book has been sold and is therefore no longer on sale.
  * */
-enum class SaleState {
-    ACTIVE, RETRACTED, CONCLUDED
+enum class SaleState(private val stringId: Int): FieldWithName {
+    // FIXME adapt stringIDs
+    ACTIVE(R.string.state_active),
+    RETRACTED(R.string.state_retracted),
+    CONCLUDED(R.string.state_concluded);
+
+    override fun fieldName(c: Context?): String {
+        return c?.getString(stringId) ?: name
+    }
 }
 
 /**

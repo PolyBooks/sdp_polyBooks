@@ -4,14 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.adapter.*
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
@@ -33,9 +31,9 @@ class FilteringSalesActivity: AppCompatActivity() {
      * @param adapter   The adapter that will binds the different values to the recyclerView
      * @see ParameterAdapter
      */
-    inner class FilteringParameter<T, VH: ParameterViewHolder<T>>(
+    inner class RecyclerViewParameter<T>(
         viewId: Int,
-        private val mAdapter: ParameterAdapter<T, VH>
+        private val mAdapter: ParameterAdapter<T>
     ) {
         private val mView: RecyclerView = findViewById(viewId)
         private val mlayoutManager = LinearLayoutManager(
@@ -45,7 +43,6 @@ class FilteringSalesActivity: AppCompatActivity() {
         )
 
         init {
-            mAdapter.setContext(this@FilteringSalesActivity)
             mView.adapter = mAdapter
             mView.layoutManager = mlayoutManager
         }
@@ -72,11 +69,11 @@ class FilteringSalesActivity: AppCompatActivity() {
             return res
         }
 
-        private fun performOnItems(f: (VH) -> Unit) {
+        private fun performOnItems(f: (ParameterViewHolder<T>) -> Unit) {
             for (i in 0 until mAdapter.itemCount) {
                 val holder = mView.findViewHolderForAdapterPosition(i)
                 if (holder != null) {
-                    f(holder as VH)
+                    f(holder as ParameterViewHolder<T>)
                 }
             }
         }
@@ -91,15 +88,13 @@ class FilteringSalesActivity: AppCompatActivity() {
     private lateinit var mPriceMin: EditText
     private lateinit var mPriceMax: EditText
 
-    private lateinit var mSortBy: FilteringParameter<SaleOrdering, SortingParameterViewHolder<SaleOrdering>>
+    private lateinit var mSortParameter: RecyclerViewParameter<SaleOrdering>
+    private lateinit var mStateParameter: RecyclerViewParameter<SaleState>
+    private lateinit var mBookConditionParameter: RecyclerViewParameter<BookCondition>
 
-    private lateinit var mStateActive: CheckBox
-    private lateinit var mStateRetracted: CheckBox
-    private lateinit var mStateConcluded: CheckBox
-
-    private lateinit var mConditionNew: CheckBox
-    private lateinit var mConditionGood: CheckBox
-    private lateinit var mConditionWorn: CheckBox
+    private lateinit var mCourseParameter: RecyclerViewParameter<Course>
+    private lateinit var mSemesterParameter: RecyclerViewParameter<Semester>
+    private lateinit var mFieldParameter: RecyclerViewParameter<Field>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,48 +104,36 @@ class FilteringSalesActivity: AppCompatActivity() {
         mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
 
-        mSortBy =
-            FilteringParameter(R.id.sort_by, SortingParameterAdapter(SaleOrdering.DEFAULT))
-
-        // hardcoded : make it dynamic
         setParametersButtons()
     }
 
     fun resetParameters(view: View) {
-        mSortBy.resetItemsViews()
-
-        mStateActive.isChecked = false
-        mStateRetracted.isChecked = false
-        mStateConcluded.isChecked = false
-        mConditionNew.isChecked = false
-        mConditionGood.isChecked = false
-        mConditionWorn.isChecked = false
-
         // reset the Edit Text views
         mName.text.clear()
         mISBN.text.clear()
         mPriceMin.text.clear()
         mPriceMax.text.clear()
+
+        mSortParameter.resetItemsViews()
+        mStateParameter.resetItemsViews()
+        mBookConditionParameter.resetItemsViews()
+
+        mCourseParameter.resetItemsViews()
+        mSemesterParameter.resetItemsViews()
+        mFieldParameter.resetItemsViews()
     }
 
     fun getResults(view: View) {
         var query: SaleQuery = DummySalesQuery()
-
-        val ordering: List<SaleOrdering> = mSortBy.getSelectedValues()
-        if (ordering.isNotEmpty())
-            query.withOrdering(ordering[0])
 
         //These 2 in front for dummy sales query
         if (mName.text.isNotEmpty())
             query.searchByTitle(mName.text.toString())
 
         /*
-        TODO With ordering
         if(mISBN.text.isNotEmpty())
             query = query.searchByTitle(mISBN.text.toString())
         */
-        query.searchByState(getStates())
-            .searchByCondition(getCondition())
 
         // price
         val minPrice =
@@ -162,6 +145,9 @@ class FilteringSalesActivity: AppCompatActivity() {
             else Float.MAX_VALUE
 
         query = query.searchByPrice(minPrice, maxPrice)
+
+        resultByParameter(query)
+
         //---
         //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
         val querySettings = query.getSettings()
@@ -171,33 +157,66 @@ class FilteringSalesActivity: AppCompatActivity() {
     }
 
     private fun setParametersButtons() {
+        setTextParameters()
+
+        mSortParameter = RecyclerViewParameter(
+            R.id.sale_sort_parameter,
+            AdapterFactory.saleSortingAdapter()
+        )
+        mStateParameter = RecyclerViewParameter(
+            R.id.sale_state_parameter,
+            AdapterFactory.saleStateAdapter()
+        )
+        mBookConditionParameter = RecyclerViewParameter(
+            R.id.sale_condition_parameter,
+            AdapterFactory.saleBookConditionAdapter()
+        )
+
+        mCourseParameter = RecyclerViewParameter(
+            R.id.sale_course_parameter,
+            AdapterFactory.courseInterestAdapter()
+        )
+
+        mSemesterParameter = RecyclerViewParameter(
+            R.id.sale_semester_parameter,
+            AdapterFactory.semesterInterestAdapter()
+        )
+
+        mFieldParameter = RecyclerViewParameter(
+            R.id.sale_field_parameter,
+            AdapterFactory.fieldInterestAdapter()
+        )
+    }
+
+    private fun setTextParameters() {
         mName = findViewById(R.id.book_name)
         mISBN = findViewById(R.id.book_isbn)
         mPriceMin = findViewById(R.id.price_min)
         mPriceMax = findViewById(R.id.price_max)
-
-        mStateActive = findViewById(R.id.state_active)
-        mStateRetracted = findViewById(R.id.state_retracted)
-        mStateConcluded = findViewById(R.id.state_concluded)
-
-        mConditionNew = findViewById(R.id.condition_new)
-        mConditionGood = findViewById(R.id.condition_good)
-        mConditionWorn = findViewById(R.id.condition_worn)
     }
 
-    private fun getStates(): Set<SaleState> {
-        var state = mutableSetOf<SaleState>()
-        if (mStateActive.isChecked) state.add(SaleState.ACTIVE)
-        if (mStateConcluded.isChecked) state.add(SaleState.CONCLUDED)
-        if (mStateRetracted.isChecked) state.add(SaleState.RETRACTED)
-        return if (state.isEmpty()) SaleState.values().toSet() else state.toSet()
+    private fun resultByParameter(query: SaleQuery) {
+        resultByParameter(query, mSortParameter) { q, orderings ->
+            q.withOrdering(orderings[0])
+        }
+        resultByParameter(query, mStateParameter) { q, states ->
+            q.searchByState(states.toSet())
+        }
+        resultByParameter(query, mBookConditionParameter) { q, conditions ->
+            q.searchByCondition(conditions.toSet())
+        }
+        resultByParameter(query, mCourseParameter) { q, courses ->
+            q.onlyIncludeInterests(courses.toSet())
+        }
     }
 
-    private fun getCondition(): Set<BookCondition> {
-        var condition = mutableSetOf<BookCondition>()
-        if (mConditionGood.isChecked) condition.add(BookCondition.GOOD)
-        if (mConditionNew.isChecked) condition.add(BookCondition.NEW)
-        if (mConditionWorn.isChecked) condition.add(BookCondition.WORN)
-        return if (condition.isEmpty()) BookCondition.values().toSet() else condition.toSet()
+    private fun <T> resultByParameter(
+        query: SaleQuery,
+        parameter: RecyclerViewParameter<T>,
+        f: (SaleQuery, List<T>) -> Unit
+    ) {
+        val values: List<T> = parameter.getSelectedValues()
+        if (values.isNotEmpty())
+            f(query, values)
     }
 }
