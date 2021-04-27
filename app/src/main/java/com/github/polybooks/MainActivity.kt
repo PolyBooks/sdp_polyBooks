@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -29,6 +30,30 @@ class MainActivity : AppCompatActivity() {
             val i : Intent = Intent(this, FilteringSalesActivity::class.java)
 
             startActivity(i)
+        }
+
+        val navBar = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        navBar.selectedItemId = R.id.home
+        navBar.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.user_sales ->{
+                    // TODO: user sales
+                    true
+                }
+                R.id.sales ->{
+                    startActivity(Intent(this, FilteringSalesActivity::class.java))
+                    true
+                }
+                R.id.books ->{
+                    startActivity(Intent(this, FilteringBooksActivity::class.java))
+                    true
+                }
+                R.id.user_profile ->{
+                    // TODO: user sales
+                    true
+                }
+                else -> true
+            }
         }
 
     }

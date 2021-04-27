@@ -3,22 +3,27 @@
     <item
         android:id="@+id/user_sales"
         android:enabled="true"
-        android:title="$"/>
+        android:icon="@drawable/dollar"
+        android:title="user sale"/>
     <item
         android:id="@+id/sales"
         android:enabled="true"
+        android:icon="@drawable/panier_achat"
         android:title="sale"/>
     <item
         android:id="@+id/home"
         android:enabled="true"
-        android:title="home"/>
+        android:icon="@drawable/home"
+        android:title="home" />
     <item
         android:id="@+id/books"
         android:enabled="true"
+        android:icon="@drawable/bibliotheque_avec_books"
         android:title="books"/>
     <item
         android:id="@+id/user_profile"
         android:enabled="true"
+        android:icon="@drawable/profil"
         android:title="profile"/>
-    <!--android:icon="@drawable/icon_2"-->
+
 </menu>
