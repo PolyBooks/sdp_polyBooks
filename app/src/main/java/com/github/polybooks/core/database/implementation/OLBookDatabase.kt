@@ -2,7 +2,6 @@ package com.github.polybooks.core.database.implementation
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
@@ -17,7 +16,6 @@ import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import java.io.FileNotFoundException
 import java.lang.Integer.min
 
 import java.text.SimpleDateFormat
@@ -25,8 +23,8 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 
-// TODO maybe accept both title and full_title if there were a real reason to use full_title in the first place
-// TODO for instance book 9780345432360 has title, authors, isbn_10, publishers and publish_date but no name, physical format, isbn_13
+
+// TODO add to/create listOf as we discover new fields
 private val TITLE_FIELD_NAMES = listOf("title", "full_title")
 private const val AUTHORS_FIELD_NAME = "authors"
 private const val FORMAT_FIELD_NAME = "physical_format"
@@ -101,9 +99,9 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getAll(): CompletableFuture<List<Book>> {
-            return if (empty) CompletableFuture.completedFuture(Collections.emptyList())
-            else {
-                assert(isbns != null)
+            return if (empty || isbns == null) {
+                CompletableFuture.completedFuture(Collections.emptyList())
+            } else {
                 val futures = isbns!!.map{getBookByISBN(it)}
                 listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
             }
@@ -148,19 +146,19 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     private val errorMessage = "Cannot parse OpenLibrary book because : "
 
     private fun getBookByISBN(isbn : String) : CompletableFuture<Book?> {
-        assert(regulariseISBN(isbn) == isbn)
-        val url = isbn2URL(isbn)
-        return url2json(url)
-            .thenApply { parseBook(it) }
-            .thenCompose { updateBookWithAuthorName(it) }
-            .exceptionally { exception ->
-                // TODO If I understand future handling correctly, I believe there's no cause for converting an exception to a null and actually mess with debugging
-                /*if (exception is CompletionException && exception.cause is FileNotFoundException) {
-                    return@exceptionally null
-                }*/
-                if (exception is CompletionException) throw exception.cause!!
-                else throw exception
-            }
+        if (regulariseISBN(isbn) != isbn) {
+            throw DatabaseException("$errorMessage: isbn wasn't regularised properly")
+        } else {
+            val url = isbn2URL(isbn)
+            return url2json(url)
+                .thenApply { parseBook(it) }
+                .thenCompose { updateBookWithAuthorName(it) }
+                .exceptionally { exception ->
+                    if (exception is CompletionException) throw exception.cause!!
+                    else throw exception
+                }
+        }
+
     }
 
     //takes a book that has the authors in the form /authors/<authorID>
@@ -186,7 +184,6 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseBook(jsonBook: JsonElement): Book {
         val jsonBookObject = asJsonObject(jsonBook)
-        Log.d("DEBUGGING parse jsonobj", jsonBookObject.toString())
         val title = getJsonFields(jsonBookObject, TITLE_FIELD_NAMES)
             .map { parseTitle(it) }
             .orElseThrow(cantParseException(TITLE_FIELD_NAMES[0]))!!
@@ -207,10 +204,8 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             .orElse(null)
         // TODO languages and edition!!!
 
-        val book = Book(isbn13, authors, title, null, null,
+        return Book(isbn13, authors, title, null, null,
             publisher, publishDate, format)
-        Log.d("DEBUGGING parse", book.toString())
-        return book
 
     }
 
@@ -257,10 +252,10 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val dateFormat2 = SimpleDateFormat(DATE_FORMAT2)
         dateFormat1.isLenient = false
         dateFormat2.isLenient = false
-        try {
-            return Timestamp(dateFormat1.parse(dateString)!!)
+        return try {
+            Timestamp(dateFormat1.parse(dateString)!!)
         } catch (e : java.text.ParseException) {
-            return Timestamp(dateFormat2.parse(dateString)!!)
+            Timestamp(dateFormat2.parse(dateString)!!)
         }
     }
 

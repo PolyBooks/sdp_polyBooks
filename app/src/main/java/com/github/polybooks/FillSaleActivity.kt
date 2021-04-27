@@ -29,133 +29,36 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
     private val salesDB = SaleDatabase()
-    val urlRegex = """.*openlibrary.org(.*)""".toRegex()
-    val url2filename = mapOf(
-            Pair("/authors/OL7511250A.json", "OL7511250A.json"),
-            Pair("/authors/OL7482089A.json", "OL7482089A.json"),
-            Pair("/isbn/9782376863069.json", "9782376863069.json"),
-            Pair("/isbn/2376863069.json", "9782376863069.json")
-    )
-    /*
-    com\github\polybooks\core\databaseImpl\9782376863069.json
-    app/src/test/java/com/github/polybooks/core/databaseImpl/9782376863069.json
-    src\test\java\com\github\polybooks\core\databaseImpl\9782376863069.json
-    */
-    val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
-    /*val url2json = { url : String ->
-        CompletableFuture.supplyAsync {
-            val regexMatch = urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
-            val address = regexMatch.groups[1]?.value ?: throw Error("The regex is wrong")
-            val filename = url2filename[address] ?: throw FileNotFoundException("File Not Found : $url")
-            val file = File("$baseDir/$filename")
-            val stream = file.inputStream()
-            JsonParser.parseReader(InputStreamReader(stream))
-        }
-    }*/
     private val bookDB = OLBookDatabase { string -> url2json(string) }
 
-
     private lateinit var bookFuture: CompletableFuture<Book?>
-    private lateinit var dateFromBookToSale: Timestamp
     private var bookConditionSelected: BookCondition? = null
+    private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_sale_fancy)
 
-
-        val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
-
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
 
-        // Check if ISBN in our database: (could check ISBN validity before)
+        // Retrieve book data and display it if possible, else redirect with error toast
         if(!stringISBN.isNullOrEmpty()) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
                 val book = bookFuture.get()
                 if (book != null) {
-                    findViewById<TextView>(R.id.filled_authors).apply {
-                        text = listAuthorsToString(book.authors)
-                    }
-                    findViewById<TextView>(R.id.filled_title).apply { text = book.title }
-                    findViewById<TextView>(R.id.filled_edition).apply { text = book.edition ?: "" }
-                    // TODO language is ideally not converted to a string but to a flag
-                    // findViewById<TextView>(R.id.filled_language).apply { text = book.language ?: "" }
-                    findViewById<TextView>(R.id.filled_publisher).apply { text = book.publisher ?: ""}
-                    findViewById<TextView>(R.id.filled_publish_date).apply {
-                        text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
-                    }
-                    // TODO whole lines could be removed when argument is null instead of placeholding with default value
-                    findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: ""}
-
-                    dateFromBookToSale = book.publishDate!!
+                    fillBookData(book)
                 } else {
-                    Log.w("BookFuture", "Book matching the ISBN could not be found")
-                    Toast.makeText(
-                        this,
-                        "Book matching the ISBN could not be found",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    redirectToAddSaleWithToast("Book matching the ISBN could not be found")
                 }
             } catch (e: Exception) {
-                Log.w("BookFuture", "Book matching the ISBN could not be found")
-                Toast.makeText(
-                    this,
-                    "An error occurred, please try again",
-                    Toast.LENGTH_LONG
-                ).show()
+                redirectToAddSaleWithToast("An error occurred, please try again")
             }
-
-            //Log.d("DEBUGGING", future.toString())
-
-            /*book.thenApply { book ->
-                {
-                    Log.d("DEBUGGING", "Hello thenApply")
-                    Log.d("DEBUGGING", book.toString())
-                    if (book != null) {
-                        findViewById<TextView>(R.id.filled_authors)         .apply { text = listAuthorsToString(book.authors) }
-                        findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
-                        findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
-                        findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
-                        findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
-                        findViewById<TextView>(R.id.filled_publish_date)    .apply { text = dateFormat.format(book.publishDate!!.toDate()) }
-                        findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
-
-                        dateFromBookToSale = book.publishDate!!
-                    } else {
-                        Log.w("BookFuture", "Book matching the ISBN could not be found")
-                        Toast.makeText(
-                                this,
-                                "Book matching the ISBN could not be found",
-                                Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }
-                    .exceptionally { exception ->
-                        // TODO make sure that the user have to go back and try again!
-                        {
-                            Log.w("BookFuture", "Book matching the ISBN could not be found through exception")
-                            Toast.makeText(
-                                    this,
-                                    "Book matching the ISBN could not be found through exception",
-                                    Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }*/
         } else {
-            Toast.makeText(
-                    this,
-                    "Please provide an ISBN",
-                    Toast.LENGTH_LONG
-            ).show()
-            /*
-            TODO Enable only on not production build
-            val intent = Intent(this, AddSaleActivity::class.java)
-            startActivity(intent)
-            */
+            redirectToAddSaleWithToast("Please provide an ISBN")
         }
+
 
         // Drop-down menu for condition
         val spinner: Spinner = findViewById(R.id.filled_condition)
@@ -172,17 +75,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         }
         spinner.onItemSelectedListener = this
 
-
-        // Disable confirm button until filled
-        disableButton(findViewById(R.id.confirm_sale_button))
-
+        // Fill-in text for book price
         findViewById<EditText>(R.id.filled_price).addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
-                    enableButton(findViewById(R.id.confirm_sale_button))
-                } else {
-                    disableButton(findViewById(R.id.confirm_sale_button))
-                }
+                handleButton()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -190,50 +86,52 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             }
         })
 
+        // Disable confirm button until filled
+        disableButton(findViewById(R.id.confirm_sale_button))
+    }
 
-        /* Other spinner implementation
-        spinner.onItemSelectedListener = object :
-            AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>,
-                                        view: View, position: Int, id: Long) {
-                Toast.makeText(this@MainActivity,
-                    getString(R.string.selected_item) + " " +
-                            "" + languages[position], Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // write code to perform some action
-            }
-        }*/
-
-        /*
-        // Old version of doing the future, can handle errors, but probably not compatible with Firebase, and I think the interface is handling the
-        // case when our DB does not have the book already.
-
-        val book: CompletableFuture<Book> = bookDB.getBook(stringISBN)
-        book.handle { (book, err) ->
-        {
-            if (err == null) {
-    // Yes: Retrieve from our database data about the book
-                findViewById<TextView>(R.id.filled_authors)         .apply { text = book.authors }
-                findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
-                findViewById<TextView>(R.id.filled_edition)         .apply { text = book.edition }
-                findViewById<TextView>(R.id.filled_language)        .apply { text = book.language }
-                findViewById<TextView>(R.id.filled_publisher)       .apply { text = book.publisher }
-                findViewById<TextView>(R.id.filled_publish_date)    .apply { text = book.publishDate }
-                findViewById<TextView>(R.id.filled_format)          .apply { text = book.format }
-            } else {
-    // No: Use Google Books to convert stringISBN to JSON with relevant data, and also add to our database
-                // If Google Books fails to find the ISBN, pop-out an error message about invalid ISBN and go back to AddSale page
-            }
+    /**
+     * Fill the UI with the data about a book
+     */
+    private fun fillBookData(book: Book) {
+        findViewById<TextView>(R.id.filled_authors).apply {
+            text = listAuthorsToString(book.authors)
         }
-         */
+        findViewById<TextView>(R.id.filled_title).apply { text = book.title }
+        findViewById<TextView>(R.id.filled_edition).apply { text = book.edition ?: "" }
+        // TODO language is ideally not converted to a string but to a flag
+        // findViewById<TextView>(R.id.filled_language).apply { text = book.language ?: "" }
+        findViewById<TextView>(R.id.filled_publisher).apply { text = book.publisher ?: "" }
+        findViewById<TextView>(R.id.filled_publish_date).apply {
+            text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
+        }
+        // TODO whole lines could be removed from UI when argument is null instead of placeholding with default value
+        findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }
+    }
+
+    /**
+     * Called when an issue happen to convert the issue to a nicer UX flow than crashing
+     * Showing a message about the error and redirecting to a previous activity
+     */
+    private fun redirectToAddSaleWithToast(message: String) {
+        Log.w("BookFuture", message)
+        Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_LONG
+        ).show()
+        val intent = Intent(this, AddSaleActivity::class.java)
+        startActivity(intent)
     }
 
 
     // TODO all the picture stuff.
 
 
+    /**
+     * Create a sale in the database with the relevant data from the activity
+     * (i.e. book, condition, user, price, date)
+     */
     fun confirmSale(view: View) {
         // store Sale in our database
         val sale = Sale(
@@ -242,10 +140,11 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             // Should never be null as the button is not enabled otherwise
             bookConditionSelected!!,
-            dateFromBookToSale,
+            Timestamp.now(),
             SaleState.ACTIVE,
             null
         )
+
         salesDB.addSale(sale)
 
         // TODO determine to which activity we land, but probably not MainActivity but rather a confirmation page
@@ -253,6 +152,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         startActivity(intent)
     }
 
+    /**
+     * disableButton allows a button to not be clickable and change its appearance to grey
+     * To be called whenever fields are missing
+     */
     fun disableButton(button: Button) {
         button.isEnabled = false
         button.isClickable = false
@@ -260,6 +163,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         button.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.grey))
     }
 
+    /**
+     * enableButton allows a button to be clickable and change its appearance to active
+     * To be called once all the fields have been set
+     */
     fun enableButton(button: Button) {
         button.isEnabled = true
         button.isClickable = true
@@ -303,6 +210,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 ).show()
             }
         }
+        handleButton()
+    }
+
+    private fun handleButton() {
         if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
             enableButton(findViewById(R.id.confirm_sale_button))
         } else {
