@@ -35,6 +35,7 @@ private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
 private const val AUTHOR_NAME_FIELD_NAME = "name"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
+private const val DATE_FORMAT2 = "yyyy"
 private const val ISBN13_FORMAT = """[0-9]{13}"""
 private const val ISBN10_FORMAT = """[0-9]{9}[0-9X]"""
 private const val ISBN_FORMAT = """($ISBN10_FORMAT)|($ISBN13_FORMAT)"""
@@ -246,9 +247,15 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     @SuppressLint("SimpleDateFormat")
     private fun parsePublishDate(jsonPublishDate: JsonElement): Timestamp {
         val dateString = asString(jsonPublishDate)
-        val dateFormat = SimpleDateFormat(DATE_FORMAT)
-        dateFormat.isLenient = false
-        return Timestamp(dateFormat.parse(dateString)!!)
+        val dateFormat1 = SimpleDateFormat(DATE_FORMAT)
+        val dateFormat2 = SimpleDateFormat(DATE_FORMAT2)
+        dateFormat1.isLenient = false
+        dateFormat2.isLenient = false
+        try {
+            return Timestamp(dateFormat1.parse(dateString)!!)
+        } catch (e : java.text.ParseException) {
+            return Timestamp(dateFormat2.parse(dateString)!!)
+        }
     }
 
     private fun asJsonObject(jsonElement: JsonElement): JsonObject {
