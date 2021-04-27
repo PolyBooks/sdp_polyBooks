@@ -271,7 +271,6 @@ class SaleDatabaseTest {
         }
     }
 
-    @Ignore
     @Test
     fun addDelete(){
         val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
