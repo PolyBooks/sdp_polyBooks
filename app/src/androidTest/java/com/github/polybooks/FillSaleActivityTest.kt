@@ -20,8 +20,6 @@ class FillSaleActivityTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(FillSaleActivity::class.java)
 
-
-
     @Before
     fun before() {
         Intents.init()
@@ -32,7 +30,7 @@ class FillSaleActivityTest {
         Intents.release()
     }
 
-    @Ignore
+    @Ignore("Will be relevant for next PR adding this feature")
     @Test
     fun addPictureRedirects() {
         // TODO this test is currently not needed and useless
@@ -81,7 +79,7 @@ class FillSaleActivityTest {
         onView(withId(R.id.confirm_sale_button)).check(matches(not(isEnabled())))
     }
 
-    @Ignore
+    @Ignore("Would cause sends to Firebase at each PR push")
     @Test
     fun confirmSaleRedirects() {
         // TODO the destination in the intent will probably be changed in the future

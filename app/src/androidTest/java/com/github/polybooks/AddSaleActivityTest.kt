@@ -1,15 +1,17 @@
 package com.github.polybooks
 
-import android.widget.EditText
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.*
+import org.hamcrest.CoreMatchers.not
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers
@@ -25,7 +27,6 @@ class AddSaleActivityTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(AddSaleActivity::class.java)
-
 
     @Before
     fun before() {
@@ -44,48 +45,39 @@ class AddSaleActivityTest {
     }
 
     @Test
-    fun passEmptyISBN() {
-        val extraKey = "com.github.polybooks.ISBN"
-        val stringISBN = ""
-        onView(withId(R.id.pass_isbn_button)).perform(click())
-        // TODO could check that we come back here with intending ? maybe... seems tricky
-        intended(hasComponent(FillSaleActivity::class.java.name))
-        intended(
-            Matchers.allOf(
-                hasComponent(ListSalesActivity::class.java.name),
-                IntentMatchers.hasExtra(extraKey, stringISBN)
-            )
-        )
+    fun passISBNInitiallyDisabled() {
+        onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
+    }
+
+    private fun inputISBN(isbn: String) {
+        onView(withId(R.id.fill_in_ISBN)).perform(ViewActions.clearText(), ViewActions.typeText(isbn))
+        Espresso.closeSoftKeyboard()
     }
 
     @Test
-    fun passInvalidISBN() {
-        val extraKey = "com.github.polybooks.ISBN"
-        val stringISBN = "0"
-        onView(withId(R.id.fill_in_ISBN)).perform(ViewActions.clearText(), ViewActions.typeText("0"))
-        Espresso.closeSoftKeyboard()
-        onView(withId(R.id.pass_isbn_button)).perform(click())
-        // TODO could check that we come back here with intending ? maybe... seems tricky
-        intended(hasComponent(FillSaleActivity::class.java.name))
-        intended(
-            Matchers.allOf(
-                hasComponent(ListSalesActivity::class.java.name),
-                IntentMatchers.hasExtra(extraKey, stringISBN)
-            )
-        )
+    fun passISBNEnabling() {
+        onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
+        inputISBN("0")
+        onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
+        inputISBN("abc")
+        onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
+        inputISBN("9780345432360")
+        onView(withId(R.id.pass_isbn_button)).check(matches((isEnabled())))
+        inputISBN("1")
+        onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
+        inputISBN("")
+        onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
     }
 
     @Test
     fun passValidISBN() {
         val extraKey = "com.github.polybooks.ISBN"
         val stringISBN = "9780345432360"
-        onView(withId(R.id.fill_in_ISBN)).perform(ViewActions.clearText(), ViewActions.typeText(stringISBN))
-        Espresso.closeSoftKeyboard()
+        inputISBN(stringISBN)
         onView(withId(R.id.pass_isbn_button)).perform(click())
-        intended(hasComponent(FillSaleActivity::class.java.name))
         intended(
             Matchers.allOf(
-                hasComponent(ListSalesActivity::class.java.name),
+                hasComponent(FillSaleActivity::class.java.name),
                 IntentMatchers.hasExtra(extraKey, stringISBN)
             )
         )
