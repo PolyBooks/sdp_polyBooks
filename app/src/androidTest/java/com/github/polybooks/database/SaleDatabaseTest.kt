@@ -14,9 +14,11 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
+import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.rules.ExpectedException
+import java.lang.IllegalArgumentException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.concurrent.CompletableFuture
@@ -261,15 +263,41 @@ class SaleDatabaseTest {
     }
 
     @Test
+    fun deleteSaleFromLocalUser() {
+        try {
+            db.deleteSale(
+                Sale(
+                    testBook,
+                    LocalUser,
+                    666f,
+                    BookCondition.WORN,
+                    Timestamp.now(),
+                    SaleState.RETRACTED,
+                    null
+                )
+            ).get()
+        } catch (e: Throwable) {
+            val exception = unwrapException(e)
+            when (exception) {
+                is IllegalArgumentException -> return
+                else -> throw AssertionFailedError("Wrong exception type thrown")
+            }
+        }
+        throw AssertionFailedError("Exception expected to be thrown but wasn't")
+    }
+
+    @Test
     fun settingsModifiesStateOfQuery() {
         val settings = SaleSettings(
                 SaleOrdering.DEFAULT, null,null, null,
                 setOf(SaleState.RETRACTED), null, null,null
         )
+        val sale = db.addSale("9780156881807", testUser, 666f, BookCondition.WORN, SaleState.RETRACTED, null).get()
         assertNotEquals(
-                db.querySales().fromSettings(settings).getCount().get(),
+                db.querySales().searchByState(setOf(SaleState.ACTIVE)).fromSettings(settings).getCount().get(),
                 db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
         )
+        db.deleteSale(sale).get()
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.github.polybooks.core.database.implementation
 
-import android.util.Log
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.LocalUserException
@@ -14,10 +13,12 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.Query
 import java.util.concurrent.CompletableFuture
 
+private const val COLLECTION_NAME = "sale2"
+
 class SaleDatabase : SaleDatabase {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val saleRef: CollectionReference = db.collection(getCollectionName())
+    private val saleRef: CollectionReference = db.collection(COLLECTION_NAME)
     private val bookDB: BookDatabase = FBBookDatabase(db, OLBookDatabase{ url2json(it) })
 
     inner class SalesQuery : SaleQuery {
@@ -308,6 +309,9 @@ class SaleDatabase : SaleDatabase {
     }
 
     override fun deleteSale(sale: Sale) : CompletableFuture<Boolean> {
+        if (sale.seller == LocalUser) {
+            throw IllegalArgumentException("A sale by the LocalUser is invalid")
+        }
         val future = CompletableFuture<Boolean>()
         getReferenceID(sale).addOnSuccessListener { toDelete ->
             if (toDelete == null) future.complete(false)

@@ -9,8 +9,6 @@ import java.util.concurrent.CompletableFuture
  * */
 interface SaleDatabase {
 
-    fun getCollectionName(): String = "sale"
-
     /**
      * Create a new query for Sales. It originally matches all sales.
      * */
