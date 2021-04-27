@@ -35,10 +35,9 @@
         style="@style/Button"/>
 
     <!--    Lists of parameters -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/results_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -100,41 +99,36 @@
             </LinearLayout>
 
             <!-- Set range of price  -->
-            <HorizontalScrollView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/price_view"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:focusableInTouchMode="true">
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:id="@+id/price_view"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:text="@string/price_min_max"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/price_min_max"
-                        android:textAllCaps="false"
-                        android:textSize="20sp" />
+                <EditText
+                    android:id="@+id/price_min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_min_price"
+                    android:maxLength="4"
+                    android:inputType="numberDecimal" />
 
-                    <EditText
-                        android:id="@+id/price_min"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_min_price"
-                        android:inputType="numberDecimal" />
+                <EditText
+                    android:id="@+id/price_max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_max_price"
+                    android:maxLength="4"
+                    android:inputType="numberDecimal" />
 
-                    <EditText
-                        android:id="@+id/price_max"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_max_price"
-                        android:inputType="numberDecimal" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
+            </LinearLayout>
 
 
             <!-- Sort by parameter -->
@@ -153,7 +147,6 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/sale_sort_parameter"
                     android:nestedScrollingEnabled="false"
-                    android:focusableInTouchMode="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
@@ -178,7 +171,6 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/sale_state_parameter"
                     android:nestedScrollingEnabled="false"
-                    android:focusableInTouchMode="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
@@ -202,7 +194,6 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/sale_condition_parameter"
                     android:nestedScrollingEnabled="false"
-                    android:focusableInTouchMode="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
@@ -228,7 +219,6 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/sale_semester_parameter"
                     android:nestedScrollingEnabled="false"
-                    android:focusableInTouchMode="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
@@ -251,7 +241,6 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/sale_course_parameter"
                     android:nestedScrollingEnabled="false"
-                    android:focusableInTouchMode="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
@@ -274,7 +263,6 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/sale_field_parameter"
                     android:nestedScrollingEnabled="false"
-                    android:focusableInTouchMode="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
@@ -282,6 +270,6 @@
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>View
+    </ScrollView>View
 
 </androidx.constraintlayout.widget.ConstraintLayout>
