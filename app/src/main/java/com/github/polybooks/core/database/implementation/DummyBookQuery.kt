@@ -1,8 +1,6 @@
 package com.github.polybooks.core.database.implementation
 
-import android.os.Build
 import android.os.SystemClock
-import androidx.annotation.RequiresApi
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery

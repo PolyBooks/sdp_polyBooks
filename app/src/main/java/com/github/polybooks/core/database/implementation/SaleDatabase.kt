@@ -219,21 +219,21 @@ class SaleDatabase : SaleDatabase {
         return SalesQuery()
     }
 
-    private fun snapshotToBook(map: HashMap<String,Any>): Book {
+    private fun snapshotToBook(map: HashMap<String, Any>): Book {
         return Book(
-                map[BookFields.ISBN.fieldName] as String,
-                map[BookFields.AUTHORS.fieldName] as List<String>?,
-                map[BookFields.TITLE.fieldName] as String,
-                map[BookFields.EDITION.fieldName] as String?,
-                map[BookFields.LANGUAGE.fieldName] as String?,
-                map[BookFields.PUBLISHER.fieldName] as String?,
-                map[BookFields.PUBLISHDATE.fieldName] as com.google.firebase.Timestamp?,
-                map[BookFields.FORMAT.fieldName] as String?
+            map[BookFields.ISBN.fieldName] as String,
+            map[BookFields.AUTHORS.fieldName] as List<String>?,
+            map[BookFields.TITLE.fieldName] as String,
+            map[BookFields.EDITION.fieldName] as String?,
+            map[BookFields.LANGUAGE.fieldName] as String?,
+            map[BookFields.PUBLISHER.fieldName] as String?,
+            map[BookFields.PUBLISHDATE.fieldName] as Timestamp?,
+            map[BookFields.FORMAT.fieldName] as String?
         )
 
     }
 
-    private fun snapshotToUser(map: HashMap<String,Any>): User {
+    private fun snapshotToUser(map: HashMap<String, Any>): User {
         val uid = (map[UserFields.UID.fieldName] as Long).toInt()
         val pseudo = map[UserFields.PSEUDO.fieldName] as String
 
@@ -241,27 +241,26 @@ class SaleDatabase : SaleDatabase {
     }
 
     private fun snapshotToSale(snapshot: DocumentSnapshot): Sale {
-
         return Sale(
-                snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
-                snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
-                snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
-                BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-                Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
-                SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
-                null
+            snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
+            snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
+            snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
+            BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
+            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
+            SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
+            null
         )
     }
 
     private fun saleToDocument(sale: Sale): Any {
         return hashMapOf(
-                SaleFields.BOOK.fieldName to sale.book,
-                SaleFields.SELLER.fieldName to sale.seller,
-                SaleFields.PRICE.fieldName to sale.price,
-                SaleFields.CONDITION.fieldName to sale.condition,
-                SaleFields.PUBLICATION_DATE.fieldName to sale.date,
-                SaleFields.STATE.fieldName to sale.state,
-                SaleFields.IMAGE.fieldName to null //TODO change this, image goes elsewhere
+            SaleFields.BOOK.fieldName to sale.book,
+            SaleFields.SELLER.fieldName to sale.seller,
+            SaleFields.PRICE.fieldName to sale.price,
+            SaleFields.CONDITION.fieldName to sale.condition,
+            SaleFields.PUBLICATION_DATE.fieldName to sale.date,
+            SaleFields.STATE.fieldName to sale.state,
+            SaleFields.IMAGE.fieldName to null //TODO change this, image goes elsewhere
         )
     }
 
@@ -270,10 +269,10 @@ class SaleDatabase : SaleDatabase {
             throw LocalUserException("Cannot add sale as LocalUser")
         saleRef.add(saleToDocument(sale))
                 .addOnSuccessListener { documentReference ->
-                        Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
+                    Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
                 .addOnFailureListener {
-                        // TODO: Change this to maybe only log the error
-                        throw DatabaseException("Failed to insert $sale into Database")
+                    // TODO: Change this to maybe only log the error
+                    throw DatabaseException("Failed to insert $sale into Database")
                 }
     }
 
