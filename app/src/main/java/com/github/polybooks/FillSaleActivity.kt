@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
+import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
@@ -43,7 +44,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val stringISBN = intent.getStringExtra(ISBN)
 
         // Retrieve book data and display it if possible, else redirect with error toast
-        if(!stringISBN.isNullOrEmpty()) {
+        if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
                 val book = bookFuture.get()

@@ -11,6 +11,7 @@ import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.core.database.interfaces.BookSettings
+import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
@@ -35,9 +36,6 @@ private const val AUTHOR_NAME_FIELD_NAME = "name"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
 private const val DATE_FORMAT2 = "yyyy"
-private const val ISBN13_FORMAT = """[0-9]{13}"""
-private const val ISBN10_FORMAT = """[0-9]{9}[0-9X]"""
-private const val ISBN_FORMAT = """($ISBN10_FORMAT)|($ISBN13_FORMAT)"""
 
 private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
@@ -134,8 +132,8 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     //takes a string and try to interpret it as an isbn
     private fun regulariseISBN(userISBN : String) : String? {
         val regularised = userISBN.replace("[- ]".toRegex(), "")
-        return if (!regularised.matches(Regex(ISBN_FORMAT))) null
-        else regularised
+        return if (isbnHasCorrectFormat(regularised)) regularised
+        else null
     }
 
     //makes an URL to the OpenLibrary page out of an isbn

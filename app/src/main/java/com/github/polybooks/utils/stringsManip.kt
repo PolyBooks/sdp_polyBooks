@@ -6,6 +6,10 @@ import java.lang.StringBuilder
  * A utility object class for all manner of strings manipulation
  */
 object StringsManip {
+    private const val ISBN13_FORMAT = """[0-9]{13}"""
+    private const val ISBN10_FORMAT = """[0-9]{9}[0-9X]"""
+    private const val ISBN_FORMAT = """($ISBN10_FORMAT)|($ISBN13_FORMAT)"""
+
     /**
      * listAuthorsToString takes a nullable list of Strings as parameters
      * and return a single string formatted under the concatenation of all strings of the list
@@ -29,5 +33,9 @@ object StringsManip {
             }
             return sb.toString()
         }
+    }
+
+    fun isbnHasCorrectFormat(isbn: String): Boolean {
+        return isbn.matches(Regex(ISBN_FORMAT))
     }
 }
