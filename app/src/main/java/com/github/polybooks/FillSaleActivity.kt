@@ -77,6 +77,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // Check if ISBN in our database: (could check ISBN validity before)
         if(!stringISBN.isNullOrEmpty()) {
             book = bookDB.getBook(stringISBN)
+            val future = book.get()
 
             book.thenApply { book ->
                 {
