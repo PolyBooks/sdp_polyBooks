@@ -65,7 +65,7 @@ class FilteringSalesTest {
     }
 
     @Ignore
-    @Tes t
+    @Test
     fun allParameterItemsAreDisplayed() {
         performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter)
         performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter)
