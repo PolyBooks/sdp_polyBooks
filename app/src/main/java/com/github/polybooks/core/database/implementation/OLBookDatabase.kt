@@ -190,7 +190,6 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val title = getJsonFields(jsonBookObject, TITLE_FIELD_NAMES)
             .map { parseTitle(it) }
             .orElseThrow(cantParseException(TITLE_FIELD_NAMES[0]))!!
-        Log.d("DEBUGGING", "Hello parsing3")
         val isbn13 = getJsonFields(jsonBookObject, ISBN_FIELD_NAMES)
             .map { parseISBN13(it) }
             .orElseThrow(cantParseException(ISBN_FIELD_NAMES[0]))!!
@@ -206,6 +205,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val publishDate = getJsonField(jsonBookObject, PUBLISH_DATE_FIELD_NAME)
             .map { parsePublishDate(it) }
             .orElse(null)
+        // TODO languages and edition!!!
 
         val book = Book(isbn13, authors, title, null, null,
             publisher, publishDate, format)
@@ -298,7 +298,6 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     //try to access a field of a json object and return an optional instead of a nullable
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getJsonFields(jsonObject: JsonObject, fieldNames: List<String>): Optional<JsonElement> {
-        Log.d("DEBUGGING", "getJsonFields")
         for (field in fieldNames) {
             if (jsonObject.get(field) != null) {
                 return Optional.ofNullable(jsonObject.get(field))

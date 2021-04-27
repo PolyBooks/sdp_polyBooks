@@ -15,10 +15,7 @@ import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
-import com.google.gson.JsonParser
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.InputStreamReader
+import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 
@@ -58,7 +55,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private val bookDB = OLBookDatabase { string -> url2json(string) }
 
 
-    private lateinit var book: CompletableFuture<Book?>
+    private lateinit var bookFuture: CompletableFuture<Book?>
     private lateinit var dateFromBookToSale: Timestamp
     private var bookConditionSelected: BookCondition? = null
 
@@ -71,16 +68,51 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
-        // TODO for testing purpose, the ISBN will temporarily be displayed in the publisher field
-        findViewById<TextView>(R.id.filled_publisher)         .apply { text = stringISBN }
 
         // Check if ISBN in our database: (could check ISBN validity before)
         if(!stringISBN.isNullOrEmpty()) {
-            book = bookDB.getBook(stringISBN)
-            val future = book.get()
+            try {
+                bookFuture = bookDB.getBook(stringISBN)
+                val book = bookFuture.get()
+                if (book != null) {
+                    findViewById<TextView>(R.id.filled_authors).apply {
+                        text = listAuthorsToString(book.authors)
+                    }
+                    findViewById<TextView>(R.id.filled_title).apply { text = book.title }
+                    findViewById<TextView>(R.id.filled_edition).apply { text = book.edition ?: "" }
+                    // TODO language is ideally not converted to a string but to a flag
+                    // findViewById<TextView>(R.id.filled_language).apply { text = book.language ?: "" }
+                    findViewById<TextView>(R.id.filled_publisher).apply { text = book.publisher ?: ""}
+                    findViewById<TextView>(R.id.filled_publish_date).apply {
+                        text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
+                    }
+                    // TODO whole lines could be removed when argument is null instead of placeholding with default value
+                    findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: ""}
 
-            book.thenApply { book ->
+                    dateFromBookToSale = book.publishDate!!
+                } else {
+                    Log.w("BookFuture", "Book matching the ISBN could not be found")
+                    Toast.makeText(
+                        this,
+                        "Book matching the ISBN could not be found",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Log.w("BookFuture", "Book matching the ISBN could not be found")
+                Toast.makeText(
+                    this,
+                    "An error occurred, please try again",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            //Log.d("DEBUGGING", future.toString())
+
+            /*book.thenApply { book ->
                 {
+                    Log.d("DEBUGGING", "Hello thenApply")
+                    Log.d("DEBUGGING", book.toString())
                     if (book != null) {
                         findViewById<TextView>(R.id.filled_authors)         .apply { text = listAuthorsToString(book.authors) }
                         findViewById<TextView>(R.id.filled_title)           .apply { text = book.title }
@@ -111,7 +143,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                                     Toast.LENGTH_LONG
                             ).show()
                         }
-                    }
+                    }*/
         } else {
             Toast.makeText(
                     this,
@@ -205,7 +237,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     fun confirmSale(view: View) {
         // store Sale in our database
         val sale = Sale(
-            book.get()!!, // TODO maybe ensure above that the button is disabled if book is null
+            bookFuture.get()!!, // TODO maybe ensure above that the button is disabled if book is null
             LocalUser, // TODO user
             findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             // Should never be null as the button is not enabled otherwise
