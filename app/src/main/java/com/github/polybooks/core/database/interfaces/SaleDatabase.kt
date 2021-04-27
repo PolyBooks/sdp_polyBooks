@@ -32,7 +32,12 @@ interface SaleDatabase {
 
     /**
      * Add the given sale to the database
-     * @param sale The sale to insert
+     * @param book the isbn of the book being sold
+     * @param seller the user selling the book (can't be the local user)
+     * @param price the price of the sale
+     * @param condition the condition of the book
+     * @param state the state of the sale
+     * @param image the image describing the book being sold
      */
     fun addSale(book : ISBN,
                 seller : User,
@@ -44,8 +49,9 @@ interface SaleDatabase {
     /**
      * Delete the given sale to the database
      * @param sale The sale to delete
+     * @return A completable future of whether a sale was deleted (i.e. if it existed)
      */
-    fun deleteSale(sale: Sale) : CompletableFuture<Unit>
+    fun deleteSale(sale: Sale) : CompletableFuture<Boolean>
 }
 
 /**

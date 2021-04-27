@@ -307,16 +307,14 @@ class SaleDatabase : SaleDatabase {
 
     }
 
-    override fun deleteSale(sale: Sale) : CompletableFuture<Unit> {
-        if(sale.seller == LocalUser)
-            throw LocalUserException("Cannot add sale as LocalUser")
-        val future = CompletableFuture<Unit>()
+    override fun deleteSale(sale: Sale) : CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
         getReferenceID(sale).addOnSuccessListener { toDelete ->
-            if (toDelete == null) future.complete(Unit)
+            if (toDelete == null) future.complete(false)
             else {
                 saleRef.document(toDelete.id).delete()
                     .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete $toDelete")) }
-                    .addOnSuccessListener { future.complete(Unit) }
+                    .addOnSuccessListener { future.complete(true) }
             }
         }
         return future
