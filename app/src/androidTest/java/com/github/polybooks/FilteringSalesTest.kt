@@ -11,6 +11,9 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -20,6 +23,7 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummyInterestDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.utils.FieldWithName
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.*
 import org.junit.runner.RunWith
 
@@ -54,17 +58,17 @@ class FilteringSalesTest {
 //    @Ignore
     @Test
     fun intentIsFiredWhenClickingOnResults() {
-//        onView(withId(R.id.results_button)).perform(click())
-//
-//        intended(
-//            allOf(
-//                hasComponent(ListSalesActivity::class.java.name),
-//                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)
-//            )
-//        )
+        onView(withId(R.id.results_button)).perform(click())
+
+        intended(
+            allOf(
+                hasComponent(ListSalesActivity::class.java.name),
+                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)
+            )
+        )
     }
 
-    @Ignore
+//    @Ignore
     @Test
     fun allParameterItemsAreDisplayed() {
         performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter)
@@ -72,10 +76,10 @@ class FilteringSalesTest {
         performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter)
         performOnInterestParameter<Semester>(SEMESTER, R.id.sale_semester_parameter)
         performOnInterestParameter<Course>(COURSE, R.id.sale_course_parameter)
-//        performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter)
+        performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter)
     }
 
-    @Ignore
+//    @Ignore
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
         clickOnAllParamButtons()
@@ -93,7 +97,7 @@ class FilteringSalesTest {
 //        onView(withId(R.id.book_name)).check(matches(withText(RANDOM_STRING)))
     }
 
-    @Ignore
+//    @Ignore
     @Test
     fun orderingItemsAreMutuallyExclusive() {
         perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click())
@@ -103,7 +107,7 @@ class FilteringSalesTest {
         check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
     }
 
-    @Ignore
+//    @Ignore
     @Test
     fun clickingThreeTimesOnOrderingItemWorks() {
         perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
@@ -113,7 +117,7 @@ class FilteringSalesTest {
         check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isChecked()))
     }
 
-    @Ignore
+//    @Ignore
     @Test
     fun clickingOnResetClearsEverything() {
         writeInTextEdits()
@@ -156,8 +160,8 @@ class FilteringSalesTest {
         performOnInterestParameter<Semester>(SEMESTER, R.id.sale_semester_parameter, click())
 
         //  TODO outside the view
-//        performOnInterestParameter<Course>(COURSE, R.id.sale_course_parameter, click())
-//        performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter, click())
+        performOnInterestParameter<Course>(COURSE, R.id.sale_course_parameter, click())
+        performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter, click())
     }
 
     private fun checkAllParamButtons(isChecked: Boolean) {
@@ -180,12 +184,12 @@ class FilteringSalesTest {
                 SEMESTER, R.id.sale_semester_parameter, null, matches(checkFun)
             )
         }
-//        performOnInterestParameter<Course>(
-//            COURSE, R.id.sale_course_parameter, null, matches(checkFun)
-//        )
-//        performOnInterestParameter<Field>(
-//            FIELD, R.id.sale_field_parameter, null, matches(checkFun)
-//        )
+        performOnInterestParameter<Course>(
+            COURSE, R.id.sale_course_parameter, null, matches(checkFun)
+        )
+        performOnInterestParameter<Field>(
+            FIELD, R.id.sale_field_parameter, null, matches(checkFun)
+        )
     }
 
     private fun <T: FieldWithName> performOnEnumParameter(
