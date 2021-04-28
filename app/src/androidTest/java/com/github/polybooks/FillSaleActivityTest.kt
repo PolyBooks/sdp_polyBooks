@@ -30,12 +30,11 @@ class FillSaleActivityTest {
         Intents.release()
     }
 
-    @Ignore("Will be relevant for next PR adding this feature")
+
     @Test
     fun addPictureRedirects() {
-        // TODO this test is currently not needed and useless
-        onView(withId(R.id.add_picture)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
+        onView(withId(R.id.add_picture)).perform(click())
+        onView(withId(R.id.fragment_take_picture)).check(matches(isDisplayed()))
     }
 
     @Test
