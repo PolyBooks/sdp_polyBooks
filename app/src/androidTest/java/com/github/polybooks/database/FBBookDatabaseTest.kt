@@ -207,4 +207,10 @@ class FBBookDatabaseTest {
         assertEquals(2, books.size)
     }
 
+    @Test
+    fun searchByInterestDoesntCrash() {
+        val future = fbBookDB.queryBooks().onlyIncludeInterests(setOf(Field("Test"))).getAll()
+        val book = future.get()
+    }
+
 }

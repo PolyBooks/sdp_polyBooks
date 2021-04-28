@@ -46,7 +46,8 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
                 interests != null -> {
-                    TODO("Not yet implemented")
+                    //TODO a real implementation
+                    return CompletableFuture.completedFuture(listOf<Book>())
                 }
                 title != null -> {
                     val future = CompletableFuture<List<Book>>()
