@@ -3,6 +3,7 @@ package com.github.polybooks
 import android.R
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -34,11 +35,11 @@ class LoginGoogleTest {
 
     @Test
     fun signInButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(click())
+        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(scrollTo(), click())
     }
 
     @Test
     fun signOutButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.tequila_log_button)).perform(click())
+        onView(withId(com.github.polybooks.R.id.tequila_log_button)).perform(scrollTo(), click())
     }
 }

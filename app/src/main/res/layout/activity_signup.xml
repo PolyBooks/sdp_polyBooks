@@ -33,7 +33,7 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo2"
+        app:layout_constraintTop_toBottomOf="@+id/password_text"
         android:autofillHints="Password"
         android:hint="@string/password" />
 
@@ -47,10 +47,10 @@
         android:layout_marginBottom="3dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/textInfo2"
+        app:layout_constraintBottom_toTopOf="@+id/password_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInfo1"
+        app:layout_constraintTop_toBottomOf="@+id/enter_mail_text"
         android:hint="@string/email"
         android:autofillHints="" />
 
@@ -118,7 +118,7 @@
         android:layout_height="1dp"
         android:layout_marginBottom="101dp"
         android:background="?attr/colorPrimaryVariant"
-        app:layout_constraintBottom_toTopOf="@+id/textInfo1"
+        app:layout_constraintBottom_toTopOf="@+id/enter_mail_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mini_logo" />
@@ -135,7 +135,7 @@
         app:layout_constraintTop_toBottomOf="@+id/log_button" />
 
     <TextView
-        android:id="@+id/textInfo1"
+        android:id="@+id/enter_mail_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="102dp"
@@ -147,7 +147,7 @@
         app:layout_constraintTop_toBottomOf="@+id/top_line" />
 
     <TextView
-        android:id="@+id/textInfo2"
+        android:id="@+id/password_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="102dp"
