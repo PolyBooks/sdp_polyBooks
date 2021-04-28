@@ -145,7 +145,6 @@ class FBBookDatabaseTest {
         assertEquals(0, books.size)
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069")).getN(1,0)
@@ -162,7 +161,6 @@ class FBBookDatabaseTest {
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks2() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,1)
@@ -179,7 +177,6 @@ class FBBookDatabaseTest {
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks3() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,0)
@@ -189,7 +186,6 @@ class FBBookDatabaseTest {
         assertEquals("9781985086593", book.isbn)
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks4() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4,0)
