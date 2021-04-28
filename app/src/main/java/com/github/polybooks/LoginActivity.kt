@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -49,6 +50,32 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         auth = Firebase.auth
+
+        setupNavbar(findViewById(R.id.bottom_navigation))
+    }
+
+    private fun setupNavbar(navBar: BottomNavigationView){
+        navBar.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.home -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    true
+                }
+                R.id.books ->{
+                    startActivity(Intent(this, FilteringBooksActivity::class.java))
+                    true
+                }
+                R.id.sales ->{
+                    startActivity(Intent(this, FilteringSalesActivity::class.java))
+                    true
+                }
+                R.id.user_profile ->{
+                    // TODO: user sales
+                    false
+                }
+                else -> true
+            }
+        }
     }
 
     override fun onStart() {
@@ -90,6 +117,7 @@ class LoginActivity : AppCompatActivity() {
                 }
     }
 
+    //TODO : what is this?
     private fun updateUI(user: FirebaseUser?) {
     }
 

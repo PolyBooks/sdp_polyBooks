@@ -6,21 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".AddSaleActivity">
 
-    <EditText
-        android:id="@+id/navBarPlaceholder"
-        android:layout_width="376dp"
-        android:layout_height="34dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/maybe_navbar_here_if_yes_design_once_for_all_activities"
-        android:textSize="14sp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:importantForAutofill="no"
-        tools:ignore="LabelFor" />
-
     <Button
         android:id="@+id/scan_button"
         style="@style/Button"
@@ -50,7 +35,7 @@
         android:layout_height="wrap_content"
         android:text="@string/or"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -68,4 +53,12 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         android:importantForAutofill="no" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_navigation_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="labeled"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
