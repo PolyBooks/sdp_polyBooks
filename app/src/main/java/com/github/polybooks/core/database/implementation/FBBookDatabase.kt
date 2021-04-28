@@ -32,7 +32,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
     [x] optimise the search by ISBN
     [x] allow search by title
     [ ] allow search by interest
-    [ ] implement getN and count
+    [x] implement getN and count
     */
 
     private val bookRef = firebase.collection(COLLECTION_NAME)
