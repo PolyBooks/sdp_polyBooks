@@ -1,29 +1,28 @@
 package com.github.polybooks
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.Manifest
-import android.content.pm.PackageManager
-import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import com.github.polybooks.FillSaleActivity.Companion.pictureBundleK
 import kotlinx.android.synthetic.main.activity_take_book_picture.*
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class TakeBookPictureFragment : Fragment() {
 
     private var imageCapture: ImageCapture? = null
+
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -36,8 +35,10 @@ class TakeBookPictureFragment : Fragment() {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.take_book_picture_fragment, container, false)
     }
 
@@ -71,7 +72,8 @@ class TakeBookPictureFragment : Fragment() {
         // Set up image capture listener, which is triggered after photo has
         // been taken
         imageCapture.takePicture(
-            ContextCompat.getMainExecutor(activity), object : ImageCapture.OnImageCapturedCallback() {
+            ContextCompat.getMainExecutor(activity),
+            object: ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
@@ -82,9 +84,12 @@ class TakeBookPictureFragment : Fragment() {
                     val msg = "Photo capture succeeded"
                     Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+                    val bundle = Bundle()
+                    bundle.putParcelable(pictureBundleK, image) // TODO convert to parcellable, but also as needed by DB
+                    // TODO Option 2: abandon this because apparently big sizes are hard to transfer and instead save to cache or user storage and retrieve in next step?
                     parentFragmentManager.setFragmentResult(
                         FillSaleActivity.requestK,
-                        image // TODO convert to bundle, but also as needed by DB
+                        bundle
                     )
                 }
             })
@@ -115,9 +120,10 @@ class TakeBookPictureFragment : Fragment() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, preview
+                )
 
-            } catch(exc: Exception) {
+            } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
@@ -126,20 +132,24 @@ class TakeBookPictureFragment : Fragment() {
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            requireActivity(), it) == PackageManager.PERMISSION_GRANTED
+            requireActivity(), it
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray) {
+        IntArray
+    ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
                 // TODO also improve UX here
-                Toast.makeText(activity,
+                Toast.makeText(
+                    activity,
                     "You must grant camera permissions to take a picture.",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
                 // Close the fragment
                 parentFragmentManager.commit {
                     setReorderingAllowed(true)

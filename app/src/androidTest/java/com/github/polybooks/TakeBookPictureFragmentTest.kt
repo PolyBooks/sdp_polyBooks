@@ -18,7 +18,7 @@ class TakeBookPictureFragmentTest {
     fun takePictureButtonWorks() {
         val scenario = launchFragmentInContainer<TakeBookPictureFragment>()
         onView(withId(R.id.camera_capture_button)).perform(click())
-        // Assert some expected behavior
+        // Assert expected behavior
     }
 
     @Test

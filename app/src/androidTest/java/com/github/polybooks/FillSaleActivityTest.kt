@@ -35,6 +35,7 @@ class FillSaleActivityTest {
     fun addPictureRedirects() {
         onView(withId(R.id.add_picture)).perform(click())
         onView(withId(R.id.fragment_take_picture)).check(matches(isDisplayed()))
+        // TODO could even test the button from here so that I can assert on the returning bundle?
     }
 
     @Test

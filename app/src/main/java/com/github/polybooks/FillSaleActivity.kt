@@ -49,6 +49,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     companion object {
         val requestK = "pictureTaken"
+        val pictureBundleK = "pictureBundle"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
