@@ -1,6 +1,5 @@
 package com.github.polybooks.database
 
-import android.util.Log
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
@@ -318,10 +317,15 @@ class SaleDatabaseTest {
                 SaleOrdering.DEFAULT, null,null, null,
                 setOf(SaleState.RETRACTED), null, null,null
         )
+
+        addDummySaleTest()
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
         assertNotEquals(
-                db.querySales().fromSettings(settings).getCount().get(),
+                db.querySales().searchByState(setOf(SaleState.ACTIVE)).fromSettings(settings).getCount().get(),
                 db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
         )
+        deleteDummySaleTest()
+        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
     }
 
     @Test
@@ -379,7 +383,7 @@ class SaleDatabaseTest {
                     map[BookFields.EDITION.fieldName] as String?,
                     map[BookFields.LANGUAGE.fieldName] as String?,
                     map[BookFields.PUBLISHER.fieldName] as String?,
-                    map[BookFields.PUBLISHDATE.fieldName] as java.sql.Timestamp?,
+                    map[BookFields.PUBLISHDATE.fieldName] as Timestamp?,
                     map[BookFields.FORMAT.fieldName] as String?
             )
 
