@@ -32,14 +32,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
 
-        val navBar = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        setupNavbar(findViewById(R.id.bottom_navigation))
+    }
+
+    private fun setupNavbar(navBar: BottomNavigationView){
         navBar.selectedItemId = R.id.home
         navBar.setOnNavigationItemSelectedListener { item ->
             when(item.itemId){
-                R.id.user_sales ->{
-                    // TODO: user sales
-                    true
-                }
                 R.id.sales ->{
                     startActivity(Intent(this, FilteringSalesActivity::class.java))
                     true
@@ -50,12 +49,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.user_profile ->{
                     // TODO: user sales
-                    true
+                    false
                 }
                 else -> true
             }
         }
-
     }
 
     fun signup(view: View) {

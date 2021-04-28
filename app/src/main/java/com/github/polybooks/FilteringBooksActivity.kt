@@ -16,6 +16,7 @@ import com.github.polybooks.core.database.implementation.DummyBookQuery
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
@@ -62,6 +63,28 @@ class FilteringBooksActivity : AppCompatActivity() {
 
         // --- TODO hardcoded : make it dynamic
         setParametersButtons()
+        setupNavbar(findViewById(R.id.bottom_navigation))
+    }
+
+    private fun setupNavbar(navBar: BottomNavigationView){
+        navBar.selectedItemId = R.id.books
+        navBar.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.home ->{
+                    startActivity(Intent(this, MainActivity::class.java))
+                    true
+                }
+                R.id.sales ->{
+                    startActivity(Intent(this, FilteringSalesActivity::class.java))
+                    true
+                }
+                R.id.user_profile ->{
+                    // TODO: user sales
+                    false
+                }
+                else -> true
+            }
+        }
     }
 
     fun resetParameters(view: View) {

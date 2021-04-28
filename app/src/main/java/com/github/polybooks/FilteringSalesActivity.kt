@@ -8,6 +8,7 @@ import android.widget.*
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class FilteringSalesActivity : AppCompatActivity() {
@@ -53,6 +54,8 @@ class FilteringSalesActivity : AppCompatActivity() {
         // hardcoded : make it dynamic
         setParametersButtons()
         // setParametersListener()
+
+        setupNavbar(findViewById(R.id.bottom_navigation))
     }
 
     private fun setResetButtonBehaviour() {
@@ -109,6 +112,27 @@ class FilteringSalesActivity : AppCompatActivity() {
             val intent : Intent = Intent(this, ListSalesActivity::class.java)
             intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
             startActivity(intent)
+        }
+    }
+
+    private fun setupNavbar(navBar: BottomNavigationView){
+        navBar.selectedItemId = R.id.sales
+        navBar.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.home ->{
+                    startActivity(Intent(this, MainActivity::class.java))
+                    true
+                }
+                R.id.books ->{
+                    startActivity(Intent(this, FilteringBooksActivity::class.java))
+                    true
+                }
+                R.id.user_profile ->{
+                    // TODO: user sales
+                    false
+                }
+                else -> true
+            }
         }
     }
 
