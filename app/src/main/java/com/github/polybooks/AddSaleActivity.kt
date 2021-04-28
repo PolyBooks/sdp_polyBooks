@@ -25,6 +25,7 @@ class AddSaleActivity : AppCompatActivity() {
     }
 
     private fun setupNavbar(navBar: BottomNavigationView){
+        navBar.selectedItemId = R.id.default_selected
         navBar.setOnNavigationItemSelectedListener { item ->
             when(item.itemId){
                 R.id.home -> {

@@ -25,6 +25,15 @@
         android:icon="@drawable/profil"
         android:title="profile"/>
 
+    <!-- Our invisible item, taken from
+    https://stackoverflow.com/questions/44498537/set-no-item-pre-selected-in-bottom-navigation-view
+    -->
+
+    <item
+        android:id="@+id/default_selected"
+        android:visible="false"
+        />
+
     <!--
     <item
         android:id="@+id/user_sales"
