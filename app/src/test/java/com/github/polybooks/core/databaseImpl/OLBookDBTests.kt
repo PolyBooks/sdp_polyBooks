@@ -29,7 +29,7 @@ class OLBookDBTests {
         "/authors/OL6899222A.json" to "OL6899222A.json",
         "/authors/OL752714A.json" to "OL752714A.json",
         "/isbn/9782376863069.json" to "9782376863069.json",
-        "/isbn/2376863069.json" to "9782376863069.json",
+        "/isbn/2376863066.json" to "9782376863069.json",
         "/isbn/9781985086593.json" to "9781985086593.json",
         "/isbn/9780156881807.json" to "9780156881807.json",
         "/isbn/9781603090476.json" to "9781603090476.json"
@@ -94,7 +94,7 @@ class OLBookDBTests {
     @Test
     fun isbn10alsoWorks() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.getBook("2376863069")
+        val future = olDB.getBook("2376863066")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
         assertEquals("Liavek", book.title)
         assertEquals("9782376863069", book.isbn)
