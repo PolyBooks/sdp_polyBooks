@@ -1,5 +1,6 @@
 package com.github.polybooks
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import com.github.polybooks.core.database.implementation.format
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.anonymousBook
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Timestamp
 
 /**
@@ -19,7 +21,7 @@ import com.google.firebase.Timestamp
  * @property saleQuery the query listing what is to be shown
  */
 // TODO enlever parametre
-class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : AppCompatActivity() {
+class ListSalesActivity() : AppCompatActivity() {
 
     companion object {
         val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
@@ -54,6 +56,33 @@ class ListSalesActivity(private val saleQuery: SaleQuery = DummySalesQuery()) : 
         saleQuery1.getAll().thenAccept{ list ->
 
             this.updateAdapter(list)
+        }
+
+        setupNavbar(findViewById(R.id.bottom_navigation))
+    }
+
+    private fun setupNavbar(navBar: BottomNavigationView){
+        navBar.selectedItemId = R.id.default_selected
+        navBar.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.home -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    true
+                }
+                R.id.books ->{
+                    startActivity(Intent(this, FilteringBooksActivity::class.java))
+                    true
+                }
+                R.id.sales ->{
+                    startActivity(Intent(this, FilteringSalesActivity::class.java))
+                    true
+                }
+                R.id.user_profile ->{
+                    // TODO: user sales
+                    false
+                }
+                else -> true
+            }
         }
     }
 
