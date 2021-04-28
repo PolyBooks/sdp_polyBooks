@@ -55,7 +55,7 @@
         android:hint="@string/default_price_hint"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_sale"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_sale_button"
         app:layout_constraintEnd_toStartOf="@+id/fill_chf" />
 
     <TextView
@@ -79,7 +79,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/confirm_sale"
+        android:id="@+id/confirm_sale_button"
         style="@style/SmallButton"
         android:layout_marginBottom="32dp"
         android:onClick="confirmSale"

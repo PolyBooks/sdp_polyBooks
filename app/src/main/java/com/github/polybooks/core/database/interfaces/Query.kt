@@ -1,5 +1,6 @@
 package com.github.polybooks.core.database.interfaces
 
+import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -21,5 +22,4 @@ interface Query<T> {
      * Get how many entries match this query
      * */
     fun getCount() : CompletableFuture<Int>
-
 }

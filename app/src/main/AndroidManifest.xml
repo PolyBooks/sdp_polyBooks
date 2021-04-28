@@ -37,9 +37,11 @@
         <activity android:name=".AddSaleActivity"
             android:parentActivityName=".MainActivity"/>
 
+
+        <activity android:name=".FilteringSalesActivity" />
         <activity
             android:name=".ListSalesActivity"
-            android:parentActivityName=".FilteringBooksActivity" />
+            android:parentActivityName=".FilteringSalesActivity" />
         <activity
             android:name=".FilteringBooksActivity"
             android:parentActivityName=".MainActivity"/>

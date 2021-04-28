@@ -44,11 +44,16 @@
     <string name="book_language">Book language</string>
     <string name="your_picture_of_your_book_condition">Your picture of your book condition</string>
     <string-array name="condition_options_array">
+        <item>Select</item>
         <item>New</item>
         <item>Good</item>
         <item>Worn</item>
     </string-array>
     <string name="email">Email</string>
+    <string name="image_of_the_sale">Image of the sale</string>
+    <string name="etat">Etat</string>
+    <string name="currency">CHF</string>
+    <string name="value_by">by</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

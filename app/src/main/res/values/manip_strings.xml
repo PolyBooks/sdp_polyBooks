@@ -5,6 +5,6 @@
     <string name="sort_by">Sort by</string>
     <string name="enter_book_name">Enter book name</string>
     <string name="enter_book_isbn">Enter book ISBN</string>
-    <string name="enter_min_price">min price</string>
-    <string name="enter_max_price">max price</string>
+    <string name="enter_min_price">min   </string>
+    <string name="enter_max_price">max   </string>
 </resources>
