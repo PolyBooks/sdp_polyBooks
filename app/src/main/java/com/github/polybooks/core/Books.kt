@@ -27,7 +27,8 @@ data class Book(
     val language : String?,
     val publisher : String?,
     val publishDate : Timestamp?,
-    val format : String?
+    val format : String?,
+    val pictureFileName : String?
 ) : Serializable
 
 /**

@@ -1,6 +1,7 @@
 package com.github.polybooks
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,15 +9,11 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction.*
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
-import androidx.core.content.ContextCompat
-import androidx.core.util.Preconditions
-import androidx.core.widget.addTextChangedListener
-import com.github.polybooks.core.Book
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
@@ -24,12 +21,8 @@ import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
-import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
-import androidx.fragment.app.FragmentTransaction.*
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
 
 
 /**
@@ -48,8 +41,8 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
     companion object {
-        val requestK = "pictureTaken"
-        val pictureBundleK = "pictureBundle"
+        const val requestK = "pictureTaken"
+        const val pictureBundleK = "pictureBundle"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,12 +86,14 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         spinner.onItemSelectedListener = this
 
         // Listener on fill-in book price to trigger confirm button
-        findViewById<EditText>(R.id.filled_price).addTextChangedListener(object : TextWatcher {
+        findViewById<EditText>(R.id.filled_price).addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 handleConfirmButton()
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
@@ -152,6 +147,11 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
                     if (requestKey == requestK) {
                         // process image
+                        val bitmap = BitmapFactory.decodeStream(this.openFileInput(bundle.getString(
+                            pictureBundleK)))
+                        // TODO display image here
+
+                        // TODO ensure the file string (or image) is kept for when addSale is called
 
                         // delete fragment
                         supportFragmentManager.commit {
