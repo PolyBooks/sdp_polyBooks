@@ -52,8 +52,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         if (sale.book.edition != null) holder.viewEdition.text = sale.book.edition
         else holder.viewEdition.setVisibility(View.GONE)
 
-        // FIXME should not be nullable! If no authors, then empty list. @Joshua
-        if (sale.book.authors!!.isEmpty()) {
+        if (sale.book.authors?.isEmpty() != false) {
             holder.viewBy.setVisibility(View.GONE)
             holder.viewAuthor.setVisibility(View.GONE)
         } else {

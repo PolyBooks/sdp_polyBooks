@@ -23,14 +23,8 @@ private const val DATE_FORMAT = "yyyy MM dd"
 class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) : BookDatabase {
 
     /*TODO:
-    [x] proxy search by isbn to OLBookDatabase
-    [x] save books from OL to Firebase
-    [x] use firebase as cache
     [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
-    [x] optimise the search by ISBN
-    [x] allow search by title
-    [ ] allow search by interest
-    [ ] implement getN and count
+    [ ] implement search by interest
     */
 
     private val bookRef = firebase.collection(COLLECTION_NAME)
@@ -44,7 +38,8 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
                 interests != null -> {
-                    TODO("Not yet implemented")
+                    //TODO a real implementation
+                    return CompletableFuture.completedFuture(listOf<Book>())
                 }
                 title != null -> {
                     val future = CompletableFuture<List<Book>>()
@@ -83,11 +78,21 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
         }
 
         override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            TODO("Not yet implemented")
+            if (n <= 0 || page < 0) {
+                throw IllegalArgumentException(
+                    if (n <= 0) "Cannot return a negative/null ($n) number of results"
+                    else "Cannot return a negative ($page) page number"
+                )
+            }
+            return getAll().thenApply { list ->
+                val lowRange = Integer.min(n * page, list.size)
+                val highRange = Integer.min(n * page + n, list.size)
+                list.subList(lowRange, highRange)
+            }
         }
 
         override fun getCount(): CompletableFuture<Int> {
-            TODO("Not yet implemented")
+            return getAll().thenApply { it.size }
         }
 
         private fun bookToDocument(book : Book) : Any {

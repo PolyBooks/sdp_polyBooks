@@ -2,5 +2,16 @@
 <resources>
     <style name="Button" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="android:layout_width">256dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_marginStart">32dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
+    </style>
+
+    <style name="SmallButton" parent="Button">
+        <item name="android:layout_width">152dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginStart">32dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
     </style>
 </resources>

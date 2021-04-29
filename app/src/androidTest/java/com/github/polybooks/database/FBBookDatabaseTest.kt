@@ -3,9 +3,13 @@ package com.github.polybooks.database
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
+import com.github.polybooks.core.*
+import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.utils.url2json
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import junit.framework.AssertionFailedError
 import org.junit.*
@@ -23,8 +27,7 @@ class FBBookDatabaseTest {
 
     //the OL book database wont return any useful information. will need to use firebase :)
     private val fbWithoutOL = FBBookDatabase(firebase, OLBookDatabase{
-            CompletableFuture.supplyAsync{throw FileNotFoundException()
-        }
+            CompletableFuture.supplyAsync{ throw FileNotFoundException() }
     })
 
     @Before
@@ -99,6 +102,24 @@ class FBBookDatabaseTest {
         val book = future.get() ?: throw AssertionFailedError("Book was not cached")
     }
 
+    @Test
+    fun usesOpenLibraryWhenBookNotStored() {
+
+        fun deleteBook(isbn : String) : CompletableFuture<Unit> {
+            val future = CompletableFuture<Unit>()
+            firebase.collection("book")
+                .document(isbn).delete()
+                .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete $isbn")) }
+                .addOnSuccessListener { future.complete(Unit) }
+            return future
+        }
+
+        deleteBook("9782376863069").get()
+        val future = fbBookDB.getBook("9782376863069")
+        val book = future.get() ?: throw AssertionFailedError("Book was not fetched from OpenLibrary")
+
+    }
+
     @Ignore
     @Test
     fun isbn10alsoWorksWithoutOL() {
@@ -124,7 +145,6 @@ class FBBookDatabaseTest {
         assertEquals(0, books.size)
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069")).getN(1,0)
@@ -141,7 +161,6 @@ class FBBookDatabaseTest {
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks2() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,1)
@@ -158,7 +177,6 @@ class FBBookDatabaseTest {
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks3() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,0)
@@ -168,7 +186,6 @@ class FBBookDatabaseTest {
         assertEquals("9781985086593", book.isbn)
     }
 
-    @Ignore
     @Test
     fun getNalsoWorks4() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4,0)
@@ -188,6 +205,12 @@ class FBBookDatabaseTest {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593", "1234567890666")).getAll()
         val books = future.get()
         assertEquals(2, books.size)
+    }
+
+    @Test
+    fun searchByInterestDoesntCrash() {
+        val future = fbBookDB.queryBooks().onlyIncludeInterests(setOf(Field("Test"))).getAll()
+        val book = future.get()
     }
 
 }
