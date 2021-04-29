@@ -6,7 +6,9 @@ This week I greatly advanced the Firebase Book database, and I was able to merge
 ---
 ## Joshua
 
+This week I was able to completely implement the navigation bar and incorporate it into all pre-existing activities. I was able to see the progress we made since the beginning since I revisited a lot of old work.
 
+Next week I hope I'll be able to work on something new
 
 ---
 
