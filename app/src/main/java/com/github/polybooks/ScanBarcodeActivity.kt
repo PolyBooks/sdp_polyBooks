@@ -15,6 +15,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -160,7 +161,8 @@ class ScanBarcodeActivity : AppCompatActivity() {
                             when (barcode.valueType) {
                                 Barcode.TYPE_ISBN -> {
                                     val displayValue = barcode.displayValue
-                                    if (displayValue != null) {
+                                    // TODO could potentially split the NotCorrectFormat case to display a toast?
+                                    if (!displayValue.isNullOrEmpty() && isbnHasCorrectFormat(displayValue)) {
                                         // Needs to shutdown and close here to avoid starting the next activity several times!
                                         cameraExecutor.shutdown()
                                         scanner.close()

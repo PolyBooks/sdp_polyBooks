@@ -9,28 +9,24 @@
     <Button
         android:id="@+id/scan_button"
         style="@style/Button"
-        android:layout_width="258dp"
-        android:layout_height="71dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:onClick="scanBook"
         android:text="@string/scan_book"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@id/or"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/pass_isbn_button"
-        android:layout_width="258dp"
-        android:layout_height="71dp"
+        style="@style/Button"
         android:onClick="passISBN"
         android:text="@string/input_isbn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filling_ISBN"
-        style="@style/Button" />
+        app:layout_constraintTop_toBottomOf="@id/fill_in_ISBN" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/or"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/or"
@@ -41,8 +37,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/filling_ISBN"
-        android:layout_width="257dp"
+        android:id="@+id/fill_in_ISBN"
+        android:layout_width="256dp"
         android:layout_height="48dp"
         android:layout_marginTop="0dp"
         android:ems="10"
@@ -50,7 +46,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@id/or"
         android:importantForAutofill="no" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
