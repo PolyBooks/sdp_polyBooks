@@ -43,8 +43,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
-        // TODO for testing purpose, the ISBN will temporarily be displayed in the publisher field
-        findViewById<TextView>(R.id.filled_publisher)         .apply { text = stringISBN }
 
         // Check if ISBN in our database: (could check ISBN validity before)
 
