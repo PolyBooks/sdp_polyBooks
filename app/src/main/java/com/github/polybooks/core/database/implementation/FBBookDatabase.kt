@@ -25,14 +25,8 @@ private const val DATE_FORMAT = "yyyy MM dd"
 class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) : BookDatabase {
 
     /*TODO:
-    [x] proxy search by isbn to OLBookDatabase
-    [x] save books from OL to Firebase
-    [x] use firebase as cache
     [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
-    [x] optimise the search by ISBN
-    [x] allow search by title
-    [ ] allow search by interest
-    [x] implement getN and count
+    [ ] implement search by interest
     */
 
     private val bookRef = firebase.collection(COLLECTION_NAME)
