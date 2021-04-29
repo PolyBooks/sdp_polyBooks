@@ -12,7 +12,7 @@ Next week I hope I'll be able to work on something new
 
 ---
 
-## Nicolas 
+## Nicolas
 
 
 
@@ -29,7 +29,8 @@ Next week I hope I'll be able to work on something new
 
 ## Sophie
 
-
+This week I almost finished to make the Sale filtering activity dynamic. I worked on something that would scale very easily if at some point the different filtering/sorting parameters would change, and hopefully it will be very easy next week to integrate those changes in Book filtering activity.
+I have currently problem to test the activity, because it uses recyclerViews that are nested into a scrollview, and it seems that espresso doesn't support this kind of scrolling. 
 
 ---
 
@@ -42,4 +43,3 @@ This week I finished the registration by email and password and I have done some
 ---
 
 ## Overall team
-
