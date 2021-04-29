@@ -241,7 +241,6 @@ class SaleDatabase : SaleDatabase {
     }
 
     private fun snapshotToSale(snapshot: DocumentSnapshot): Sale {
-
         return Sale(
             snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
             snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
