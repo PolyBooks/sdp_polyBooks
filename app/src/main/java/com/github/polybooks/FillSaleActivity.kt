@@ -17,6 +17,7 @@ import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
@@ -30,8 +31,9 @@ import java.util.concurrent.CompletableFuture
 class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
-    private val salesDB = SaleDatabase()
+    private val firestore = FirebaseFirestore.getInstance()
     private val bookDB = OLBookDatabase { string -> url2json(string) }
+    private val salesDB = SaleDatabase(firestore, bookDB)
 
     private lateinit var bookFuture: CompletableFuture<Book?>
     private var bookConditionSelected: BookCondition? = null

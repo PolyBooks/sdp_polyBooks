@@ -15,11 +15,9 @@ import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "sale2"
 
-class SaleDatabase : SaleDatabase {
+class SaleDatabase(firestore: FirebaseFirestore, val bookDB: BookDatabase) : SaleDatabase {
 
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val saleRef: CollectionReference = db.collection(COLLECTION_NAME)
-    private val bookDB: BookDatabase = FBBookDatabase(db, OLBookDatabase{ url2json(it) })
+    private val saleRef: CollectionReference = firestore.collection(COLLECTION_NAME)
 
     inner class SalesQuery : SaleQuery {
 
@@ -33,7 +31,7 @@ class SaleDatabase : SaleDatabase {
         private var minPrice: Float? = null
         private var maxPrice: Float? = null
 
-        private var ordering : SaleOrdering = DEFAULT
+        private var ordering: SaleOrdering = DEFAULT
 
         override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
             if (interests.isNotEmpty()) this.interests = interests
