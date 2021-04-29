@@ -43,12 +43,18 @@
     <string name="published_on_the">Published on the</string>
     <string name="book_language">Book language</string>
     <string name="your_picture_of_your_book_condition">Your picture of your book condition</string>
-    <string name="email">Email</string>
-    <string name="textview">TextView</string>
+    <string-array name="condition_options_array">
+        <item>Select</item>
+        <item>New</item>
+        <item>Good</item>
+        <item>Worn</item>
+    </string-array>
     <string name="user_picture">user_picture</string>
     <string name="my_book_sales">My book sales</string>
     <string name="sell_a_book">Sell a book</string>
     <string name="disconnect">Disconnect</string>
+    <string name="textview">TextView</string>
+    <string name="email">Email</string>
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
