@@ -85,8 +85,63 @@ class TakeBookPictureFragment : Fragment() {
                     Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                     val bundle = Bundle()
-                    bundle.putParcelable(pictureBundleK, image) // TODO convert to parcellable, but also as needed by DB
+                    //bundle.putParcelable(pictureBundleK, image) // TODO convert to parcellable, but also as needed by DB
                     // TODO Option 2: abandon this because apparently big sizes are hard to transfer and instead save to cache or user storage and retrieve in next step?
+                    // https://stackoverflow.com/questions/4352172/how-do-you-pass-images-bitmaps-between-android-activities-using-bundles
+                    // https://stackoverflow.com/questions/2459524/how-can-i-pass-a-bitmap-object-from-one-activity-to-another
+                    /*
+                                Saved the bitmap in internal storage as:
+            public String saveBitmap(Bitmap bitmap) {
+                    String fileName = "ImageName";//no .png or .jpg needed
+                    try {
+                        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                        FileOutputStream fo = openFileOutput(fileName, Context.MODE_PRIVATE);
+                        fo.write(bytes.toByteArray());
+                        // remember close file output
+                        fo.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        fileName = null;
+                    }
+                    return fileName;
+                }
+            and send in putExtra(String) as
+            Intent intent = new Intent(ActivitySketcher.this,ActivityEditor.class);
+            intent.putExtra("KEY", saveBitmap(bmp));
+            startActivity(intent);
+            and Receive it in other activity as:
+            if(getIntent() != null){
+              try {
+                       src = BitmapFactory.decodeStream(openFileInput("myImage"));
+                   } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                  }
+
+             }
+                     */
+                    // ---------------------------
+                    /*
+                                public String createImageFromBitmap(Bitmap bitmap) {
+                String fileName = "myImage";//no .png or .jpg needed
+                try {
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                    FileOutputStream fo = openFileOutput(fileName, Context.MODE_PRIVATE);
+                    fo.write(bytes.toByteArray());
+                    // remember close file output
+                    fo.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    fileName = null;
+                }
+                return fileName;
+            }
+            Then in the next activity you can decode this file myImage to a bitmap using following code:
+
+            //here context can be anything like getActivity() for fragment, this or MainActivity.this
+            Bitmap bitmap = BitmapFactory.decodeStream(context.openFileInput("myImage"));
+                     */
                     parentFragmentManager.setFragmentResult(
                         FillSaleActivity.requestK,
                         bundle
