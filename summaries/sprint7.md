@@ -14,7 +14,9 @@ Next week I hope I'll be able to work on something new
 
 ## Nicolas
 
+This week I was tasked with two diametrically opposed tasks: the first one was setting up a way to store/retrieve images using firebase. We had already created a "test" during a previous week and determined that images could be stored quite easily. However, it turns out this is not exactly right; we are dealing with a permission error (java.nio not being able to open the file). Thus will probably keep me busy longer than expected. For the second task, I had to design an activity showing the details of a particular sale. This is 90% and will most likely be up for review very soon.
 
+Next week, I would like to be on point with the "estimated number of hours" for a task (because even though I created shorter tasks, I am still over the limit due to unforseen complications)
 
 ---
 
