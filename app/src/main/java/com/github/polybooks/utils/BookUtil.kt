@@ -13,6 +13,6 @@ fun anonymousBook(title: String): Book =
 //takes a string and try to interpret it as an isbn
 fun regulariseISBN(userISBN : String) : String? {
         val regularised = userISBN.replace("[- ]".toRegex(), "")
-        return if (isbnHasCorrectFormat(userISBN)) regularised
+        return if (isbnHasCorrectFormat(regularised)) regularised
         else null
 }
