@@ -1,21 +1,15 @@
 package com.github.polybooks
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.implementation.format
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.core.database.interfaces.SaleSettings
-import com.github.polybooks.utils.anonymousBook
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.Timestamp
+import com.github.polybooks.utils.setupNavbar
 
 /**
  * Activity to list all active sales
@@ -54,34 +48,9 @@ class ListSalesActivity : AppCompatActivity() {
                 ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
         saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
 
-        setupNavbar(findViewById(R.id.bottom_navigation))
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
-    private fun setupNavbar(navBar: BottomNavigationView){
-        navBar.selectedItemId = R.id.default_selected
-        navBar.setOnNavigationItemSelectedListener { item ->
-            when(item.itemId){
-                R.id.home -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    true
-                }
-                R.id.books ->{
-                    startActivity(Intent(this, FilteringBooksActivity::class.java))
-                    true
-                }
-                R.id.sales ->{
-                    startActivity(Intent(this, FilteringSalesActivity::class.java))
-                    true
-                }
-                R.id.user_profile ->{
-                    // TODO: user sales
-                    false
-                }
-                else -> true
-            }
-        }
-
-    }
 
     private fun updateAdapter(sales : List<Sale>){
         runOnUiThread {

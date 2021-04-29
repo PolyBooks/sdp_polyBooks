@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.core.Book
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.util.concurrent.CompletableFuture
+import com.github.polybooks.utils.setupNavbar
 
 /**
  * This activity receives the ISBN, either manually inputted from AddSale or deduced from the scanned barcode,
@@ -52,32 +50,7 @@ class FillSaleActivity : AppCompatActivity() {
 
          */
 
-        setupNavbar(findViewById(R.id.bottom_navigation))
-    }
-
-    private fun setupNavbar(navBar: BottomNavigationView){
-        navBar.selectedItemId = R.id.default_selected
-        navBar.setOnNavigationItemSelectedListener { item ->
-            when(item.itemId){
-                R.id.home -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    true
-                }
-                R.id.books ->{
-                    startActivity(Intent(this, FilteringBooksActivity::class.java))
-                    true
-                }
-                R.id.sales ->{
-                    startActivity(Intent(this, FilteringSalesActivity::class.java))
-                    true
-                }
-                R.id.user_profile ->{
-                    // TODO: user sales
-                    false
-                }
-                else -> true
-            }
-        }
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
     fun confirmSale(view: View) {
