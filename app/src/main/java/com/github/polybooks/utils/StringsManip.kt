@@ -1,6 +1,6 @@
 package com.github.polybooks.utils
 
-import java.lang.StringBuilder
+import java.util.*
 
 /**
  * A utility object class for all manner of strings manipulation
@@ -13,25 +13,19 @@ object StringsManip {
     /**
      * listAuthorsToString takes a nullable list of Strings as parameters
      * and return a single string formatted under the concatenation of all strings of the list
-     * separated by ", " except for the last one separated by " and "
+     * separated by ", " except for the last one separated by ", and " (Oxford comma)
      * Empty strings are returned if the list is null or empty
      */
-    fun listAuthorsToString(authors: List<String>?): String {
-        if(authors == null) {
-            return ""
-        } else {
-            val sb = StringBuilder()
-            for(i in authors.indices) {
-                sb.append(authors[i])
-                if (authors.size != 1) {
-                    if (i == authors.size - 2) {
-                        sb.append(" and ")
-                    } else if(i != authors.size - 1) {
-                        sb.append(", ")
-                    }
-                }
-            }
-            return sb.toString()
+    fun listAuthorsToString(list: List<String>?): String {
+        fun authorsFromListRec(acc: StringJoiner, list: List<String>): String {
+            return if (list.size == 1) acc.add("and ${list[0]}").toString()
+            else authorsFromListRec(acc.add(list[0]), list.drop(1))
+        }
+
+        return when {
+            (list == null || list.isEmpty()) -> ""
+            (list.size == 1) -> list[0]
+            else -> authorsFromListRec(StringJoiner(", "), list)
         }
     }
 
