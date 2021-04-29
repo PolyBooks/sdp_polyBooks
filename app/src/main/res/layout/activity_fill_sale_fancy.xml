@@ -55,7 +55,7 @@
         android:hint="@string/default_price_hint"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_sale"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_sale_button"
         app:layout_constraintEnd_toStartOf="@+id/fill_chf" />
 
     <TextView
@@ -70,11 +70,7 @@
 
     <Button
         android:id="@+id/add_picture"
-        style="@style/Button"
-        android:layout_width="137dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        style="@style/SmallButton"
         android:layout_marginBottom="16dp"
         android:text="@string/add_picture"
         app:layout_constraintBottom_toTopOf="@+id/filled_condition"
@@ -82,12 +78,8 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/confirm_sale"
-        style="@style/Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:id="@+id/confirm_sale_button"
+        style="@style/SmallButton"
         android:layout_marginBottom="32dp"
         android:onClick="confirmSale"
         android:text="@string/confirm_sale"
