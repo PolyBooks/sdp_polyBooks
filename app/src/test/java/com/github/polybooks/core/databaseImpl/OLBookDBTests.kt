@@ -4,17 +4,13 @@ package com.github.polybooks.core.databaseImpl
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookSettings
-import com.google.firebase.Timestamp
 import com.google.gson.JsonParser
 import junit.framework.AssertionFailedError
-import org.junit.Test
-
 import org.junit.Assert.*
+import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -58,7 +54,7 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -88,7 +84,7 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -103,7 +99,7 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -148,7 +144,7 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -166,7 +162,7 @@ class OLBookDBTests {
         assertNotNull(book.publishDate)
         //This hurts, but otherwise we have problems with CEST and CET
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test

@@ -23,7 +23,7 @@ import java.lang.Integer.min
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionException
+import com.github.polybooks.utils.unwrapException
 
 
 // TODO add to/create listOf as we discover new fields
@@ -46,61 +46,13 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>) : BookDatabase {
 
     override fun queryBooks(): BookQuery = OLBookQuery()
-    private inner class OLBookQuery : BookQuery {
 
-        private var ordering = DEFAULT
-        private var empty: Boolean = true
-        private var title: String? = null
-        private var isbns: List<String>? = null
-
-        override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
-            System.err.println("Warning: onlyIncludeInterest not fully implemented for OLBookQuery")
-            this.empty = true
-            return this
-        }
-
-        override fun searchByTitle(title: String): BookQuery {
-            System.err.println("Warning: search by title not fully implemented for OLBookQuery")
-            this.empty = true
-            return this
-        }
-
-        override fun searchByISBN(isbns: Set<String>): BookQuery {
-            val regularised = isbns.map{regulariseISBN(it) ?: throw IllegalArgumentException("ISBN \"$it\" is not valid")}
-            this.empty = false
-            this.title = null
-            this.isbns = regularised
-            return this
-        }
-
-        override fun withOrdering(ordering: BookOrdering): BookQuery {
-            this.ordering = ordering
-            return this
-        }
-
-        override fun getSettings(): BookSettings {
-            return BookSettings(ordering, isbns,title,null)
-        }
-
-        override fun fromSettings(settings: BookSettings): BookQuery {
-            this.withOrdering(settings.ordering)
-
-            if (settings.isbns != null) this.searchByISBN(settings.isbns.toSet())
-            else isbns = null
-
-            this.title = settings.title
-
-            if(settings.interests != null) {
-                System.err.println("Warning: queries by interests not fully implemented for OLBookQuery")
-            }
-            return this
-        }
+    private inner class OLBookQuery() : AbstractBookQuery() {
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getAll(): CompletableFuture<List<Book>> {
-            return if (empty || isbns == null) {
-                CompletableFuture.completedFuture(Collections.emptyList())
-            } else {
+            return if (isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
+            else {
                 val futures = isbns!!.map{getBookByISBN(it)}
                 listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
             }
@@ -128,15 +80,6 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
     }
 
-
-
-    //takes a string and try to interpret it as an isbn
-    private fun regulariseISBN(userISBN : String) : String? {
-        val regularised = userISBN.replace("[- ]".toRegex(), "")
-        return if (isbnHasCorrectFormat(regularised)) regularised
-        else null
-    }
-
     //makes an URL to the OpenLibrary page out of an isbn
     private fun isbn2URL(isbn: String): String {
         return "$OL_BASE_ADDR/isbn/$isbn.json"
@@ -145,24 +88,19 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     private val errorMessage = "Cannot parse OpenLibrary book because : "
 
     private fun getBookByISBN(isbn : String) : CompletableFuture<Book?> {
-        if (regulariseISBN(isbn) != isbn) {
-            throw DatabaseException("$errorMessage: isbn wasn't regularised properly")
-        } else {
-            val url = isbn2URL(isbn)
-            return url2json(url)
-                .thenApply { parseBook(it) }
-                .thenCompose { updateBookWithAuthorName(it) }
-                .exceptionally { exception ->
-                    // TODO I would love if we could stop transforming this exception into null
-                    if (exception is CompletionException && exception.cause is FileNotFoundException) {
-                        return@exceptionally null
-                    }
-                    else if (exception is CompletionException) throw exception.cause!!
-                    else throw exception
+        val url = isbn2URL(isbn)
+        return url2json(url)
+            .thenApply { parseBook(it) }
+            .thenCompose { updateBookWithAuthorName(it) }
+            .exceptionally { exception ->
+                val unwraped = unwrapException(exception)
+                if (unwraped is FileNotFoundException) {
+                    return@exceptionally null
                 }
-        }
-
+                else throw unwraped
+            }
     }
+
 
     //takes a book that has the authors in the form /authors/<authorID>
     //and fetches the actual name of the author
