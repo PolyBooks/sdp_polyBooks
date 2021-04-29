@@ -32,6 +32,7 @@
     <item
         android:id="@+id/default_selected"
         android:visible="false"
+        android:enabled="false"
         />
 
     <!--
