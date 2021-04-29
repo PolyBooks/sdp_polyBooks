@@ -36,7 +36,7 @@ fun setupNavbar(navBar: BottomNavigationView, origin: Context, selectedItem: Int
     }
 
     selectedListener?.run {
-        navBar.setOnNavigationItemSelectedListener(selectedListener )
+        navBar.setOnNavigationItemSelectedListener(selectedListener)
         } ?: run {
         navBar.setOnNavigationItemSelectedListener { item ->
             when(item.itemId){
