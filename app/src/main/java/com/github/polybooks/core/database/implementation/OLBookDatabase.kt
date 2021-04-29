@@ -103,12 +103,11 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
                 .thenApply { parseBook(it) }
                 .thenCompose { updateBookWithAuthorName(it) }
                 .exceptionally { exception ->
-                    // TODO I would love if we could stop transforming this exception into null
-                    if (exception is CompletionException && exception.cause is FileNotFoundException) {
+                    val unwraped = unwrapException(exception)
+                    if (unwraped is FileNotFoundException) {
                         return@exceptionally null
                     }
-                    else if (exception is CompletionException) throw exception.cause!!
-                    else throw exception
+                    else throw unwraped
                 }
         }
     }
