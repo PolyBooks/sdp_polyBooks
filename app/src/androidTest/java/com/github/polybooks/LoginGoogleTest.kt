@@ -36,9 +36,4 @@ class LoginGoogleTest {
     fun signInButtonGoogle() {
         onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(click())
     }
-
-    @Test
-    fun signOutButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.tequila_log_button)).perform(click())
-    }
 }
