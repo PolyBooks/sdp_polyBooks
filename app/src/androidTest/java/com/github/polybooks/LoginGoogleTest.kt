@@ -43,7 +43,7 @@ class LoginGoogleTest {
 
     @Test
     fun signOutButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.tequila_log_button)).perform(scrollTo(), click())
+        onView(withId(com.github.polybooks.R.id.register_button)).perform(scrollTo(), click())
     }
 
     @Test
