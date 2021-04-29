@@ -11,6 +11,7 @@ import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookOrdering.*
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.core.database.interfaces.BookSettings
+import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
@@ -25,20 +26,17 @@ import java.util.concurrent.CompletableFuture
 import com.github.polybooks.utils.unwrapException
 
 
-private const val TITLE_FIELD_NAME1 = "full_title"
-private const val TITLE_FIELD_NAME2 = "title"
+// TODO add to/create listOf as we discover new fields
+private val TITLE_FIELD_NAMES = listOf("title", "full_title")
 private const val AUTHORS_FIELD_NAME = "authors"
 private const val FORMAT_FIELD_NAME = "physical_format"
-private const val ISBN13_FIELD_NAME = "isbn_13"
+private val ISBN_FIELD_NAMES = listOf("isbn_13", "isbn_10")
 private const val PUBLISHER_FIELD_NAME = "publishers"
 private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
 private const val AUTHOR_NAME_FIELD_NAME = "name"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
 private const val DATE_FORMAT2 = "yyyy"
-private const val ISBN13_FORMAT = """[0-9]{13}"""
-private const val ISBN10_FORMAT = """[0-9]{9}[0-9X]"""
-private const val ISBN_FORMAT = """($ISBN10_FORMAT)|($ISBN13_FORMAT)"""
 
 private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
@@ -103,6 +101,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             }
     }
 
+
     //takes a book that has the authors in the form /authors/<authorID>
     //and fetches the actual name of the author
     @RequiresApi(Build.VERSION_CODES.N)
@@ -125,30 +124,29 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
      * */
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseBook(jsonBook: JsonElement): Book {
-        val jsonBookObject = asJsonObject(jsonBook);
-        val title = getJsonField(jsonBookObject, TITLE_FIELD_NAME1)
-                .map { Optional.of(it) }
-                .orElseGet { getJsonField(jsonBookObject, TITLE_FIELD_NAME2) }
-                .map { parseTitle(it) }
-                .orElseThrow(cantParseException("$TITLE_FIELD_NAME1 or $TITLE_FIELD_NAME2"))!!
-        val isbn13 = getJsonField(jsonBookObject, ISBN13_FIELD_NAME)
-                .map { parseISBN13(it) }
-                .orElseThrow(cantParseException(ISBN13_FIELD_NAME))!!
+        val jsonBookObject = asJsonObject(jsonBook)
+        val title = getJsonFields(jsonBookObject, TITLE_FIELD_NAMES)
+            .map { parseTitle(it) }
+            .orElseThrow(cantParseException(TITLE_FIELD_NAMES[0]))!!
+        val isbn13 = getJsonFields(jsonBookObject, ISBN_FIELD_NAMES)
+            .map { parseISBN13(it) }
+            .orElseThrow(cantParseException(ISBN_FIELD_NAMES[0]))!!
         val authors = getJsonField(jsonBookObject, AUTHORS_FIELD_NAME)
-                .map { parseAuthors(it) }
-                .orElse(null)
+            .map { parseAuthors(it) }
+            .orElse(null)
         val format = getJsonField(jsonBookObject, FORMAT_FIELD_NAME)
-                .map { parseFormat(it) }
-                .orElse(null)
+            .map { parseFormat(it) }
+            .orElse(null)
         val publisher = getJsonField(jsonBookObject, PUBLISHER_FIELD_NAME)
-                .map { parsePublisher(it) }
-                .orElse(null)
+            .map { parsePublisher(it) }
+            .orElse(null)
         val publishDate = getJsonField(jsonBookObject, PUBLISH_DATE_FIELD_NAME)
-                .map { parsePublishDate(it) }
-                .orElse(null)
+            .map { parsePublishDate(it) }
+            .orElse(null)
+        // TODO languages and edition!!!
 
         return Book(isbn13, authors, title, null, null,
-                publisher, publishDate, format)
+            publisher, publishDate, format)
 
     }
 
@@ -162,20 +160,22 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
     private fun parseISBN13(jsonISBN13: JsonElement): String {
         val first: JsonElement? = asJsonArray(jsonISBN13).firstOrNull()
-        if (first == null) throw cantParseException("$ISBN13_FIELD_NAME[0]")()
+        if (first == null) {
+            throw cantParseException(ISBN_FIELD_NAMES[0])()
+        }
         else return asString(first)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseAuthors(jsonAuthors: JsonElement): List<String> {
         return asJsonArray(jsonAuthors)
-                .iterator().asSequence()
-                .map {
-                    val authorOption = getJsonField(asJsonObject(it), "key")
-                    val authorJson = authorOption.orElseThrow(cantParseException("$AUTHORS_FIELD_NAME[n].key"))
-                    asString(authorJson)
-                }
-                .toList()
+            .iterator().asSequence()
+            .map {
+                val authorOption = getJsonField(asJsonObject(it), "key")
+                val authorJson = authorOption.orElseThrow(cantParseException("$AUTHORS_FIELD_NAME[n].key"))
+                asString(authorJson)
+            }
+            .toList()
     }
 
     private fun parseFormat(jsonFormat: JsonElement): String = asString(jsonFormat)
@@ -193,10 +193,10 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val dateFormat2 = SimpleDateFormat(DATE_FORMAT2)
         dateFormat1.isLenient = false
         dateFormat2.isLenient = false
-        try {
-            return Timestamp(dateFormat1.parse(dateString)!!)
+        return try {
+            Timestamp(dateFormat1.parse(dateString)!!)
         } catch (e : java.text.ParseException) {
-            return Timestamp(dateFormat2.parse(dateString)!!)
+            Timestamp(dateFormat2.parse(dateString)!!)
         }
     }
 
@@ -229,6 +229,17 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getJsonField(jsonObject: JsonObject, fieldName: String): Optional<JsonElement> {
         return Optional.ofNullable(jsonObject.get(fieldName))
+    }
+
+    //try to access a field of a json object and return an optional instead of a nullable
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getJsonFields(jsonObject: JsonObject, fieldNames: List<String>): Optional<JsonElement> {
+        for (field in fieldNames) {
+            if (jsonObject.get(field) != null) {
+                return Optional.ofNullable(jsonObject.get(field))
+            }
+        }
+        return Optional.empty()
     }
 
     private fun cantParseException(fieldName: String): () -> Exception {
