@@ -56,7 +56,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="0dp"
         android:ems="10"
-        android:hint="@string/isbn"
+        android:hint="@string/book_isbn"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
