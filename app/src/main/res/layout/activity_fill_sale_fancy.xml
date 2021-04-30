@@ -6,214 +6,244 @@
     android:layout_height="match_parent"
     tools:context=".FillSaleActivity">
 
-    <TextView
-        android:id="@+id/filled_format"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/should_appear_automatically"
-        app:layout_constraintBottom_toBottomOf="@+id/in"
-        app:layout_constraintStart_toEndOf="@+id/in"
-        app:layout_constraintTop_toTopOf="@+id/in" />
-
-    <TextView
-        android:id="@+id/fill_sale_condition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="@string/sale_book_condition"
-        app:layout_constraintBottom_toBottomOf="@+id/filled_condition"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/filled_condition" />
-
-    <Spinner
-        android:id="@+id/filled_condition"
-        android:layout_width="203dp"
-        android:layout_height="22dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/filled_price"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/fill_sale_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="@string/sale_price"
-        app:layout_constraintBottom_toBottomOf="@+id/filled_price"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/filled_price" />
-
-    <EditText
-        android:id="@+id/filled_price"
-        android:layout_width="108dp"
-        android:layout_height="43dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:hint="@string/default_price_hint"
-        android:importantForAutofill="no"
-        android:inputType="numberDecimal"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_sale_button"
-        app:layout_constraintEnd_toStartOf="@+id/fill_chf" />
-
-    <TextView
-        android:id="@+id/fill_chf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:text="@string/chf"
-        app:layout_constraintBottom_toBottomOf="@+id/filled_price"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/filled_price" />
-
-    <Button
-        android:id="@+id/add_picture"
-        style="@style/SmallButton"
-        android:layout_marginBottom="16dp"
-        android:text="@string/add_picture"
-        app:layout_constraintBottom_toTopOf="@+id/filled_condition"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/confirm_sale_button"
-        style="@style/SmallButton"
-        android:layout_marginBottom="32dp"
-        android:onClick="confirmSale"
-        android:text="@string/confirm_sale"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/filled_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="@string/placeholder_title"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/by1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/by"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filled_edition" />
-
-    <TextView
-        android:id="@+id/by2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/by"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fill_sale_publish_date" />
-
-    <TextView
-        android:id="@+id/filled_authors"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:fontFamily="@font/roboto_mono_bold"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/by1"
-        app:layout_constraintStart_toEndOf="@+id/by1"
-        app:layout_constraintTop_toTopOf="@+id/by1"
-        tools:text="@tools:sample/full_names" />
-
-    <TextView
-        android:id="@+id/filled_edition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="@string/placeholder_edition"
-        android:textSize="12sp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filled_title" />
-
-    <ImageView
-        android:id="@+id/countryFlag"
-        android:layout_width="34dp"
-        android:layout_height="31dp"
-        app:layout_constraintBottom_toBottomOf="@+id/by1"
-        app:layout_constraintEnd_toEndOf="@+id/filled_title"
-        tools:srcCompat="@android:drawable/ic_menu_mapmode"
-        android:contentDescription="@string/book_language" />
-
-    <TextView
-        android:id="@+id/fill_sale_publish_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/published_on_the"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/by1" />
-
-    <TextView
-        android:id="@+id/in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/in"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/by2" />
-
-    <TextView
-        android:id="@+id/fill_sale_format"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/format"
-        app:layout_constraintBottom_toBottomOf="@+id/in"
-        app:layout_constraintStart_toEndOf="@+id/filled_format"
-        app:layout_constraintTop_toTopOf="@+id/in" />
-
-    <TextView
-        android:id="@+id/filled_publish_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/fill_sale_publish_date"
-        app:layout_constraintStart_toEndOf="@+id/fill_sale_publish_date"
-        app:layout_constraintTop_toTopOf="@+id/fill_sale_publish_date"
-        tools:text="@tools:sample/date/ddmmyy" />
-
-    <TextView
-        android:id="@+id/filled_publisher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/should_appear_automatically"
-        app:layout_constraintBottom_toBottomOf="@+id/by2"
-        app:layout_constraintStart_toEndOf="@+id/by2"
-        app:layout_constraintTop_toTopOf="@+id/by2" />
-
-    <ImageView
-        android:id="@+id/proof_picture"
-        android:layout_width="323dp"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_picture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/in"
-        app:srcCompat="@android:drawable/ic_menu_mapmode"
-        tools:srcCompat="@tools:sample/backgrounds/scenic"
-        android:contentDescription="@string/your_picture_of_your_book_condition" />
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/filled_format"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/should_appear_automatically"
+                app:layout_constraintBottom_toBottomOf="@id/in"
+                app:layout_constraintStart_toEndOf="@id/in"
+                app:layout_constraintTop_toTopOf="@id/in" />
+
+            <TextView
+                android:id="@+id/fill_sale_condition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/sale_book_condition"
+                app:layout_constraintBottom_toBottomOf="@id/filled_condition"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/filled_condition" />
+
+            <Spinner
+                android:id="@+id/filled_condition"
+                android:layout_width="203dp"
+                android:layout_height="22dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toTopOf="@id/filled_price"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/fill_sale_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/sale_price"
+                app:layout_constraintBottom_toBottomOf="@id/filled_price"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/filled_price" />
+
+            <EditText
+                android:id="@+id/filled_price"
+                android:layout_width="108dp"
+                android:layout_height="43dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:ems="10"
+                android:hint="@string/default_price_hint"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                app:layout_constraintBottom_toTopOf="@id/confirm_sale_button"
+                app:layout_constraintEnd_toStartOf="@id/fill_chf" />
+
+            <TextView
+                android:id="@+id/fill_chf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:text="@string/chf"
+                app:layout_constraintBottom_toBottomOf="@id/filled_price"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/filled_price" />
+
+            <Button
+                android:id="@+id/add_picture"
+                style="@style/SmallButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/add_picture"
+                app:layout_constraintTop_toBottomOf="@id/proof_picture"
+                app:layout_constraintBottom_toTopOf="@id/filled_condition"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/confirm_sale_button"
+                style="@style/SmallButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp"
+                android:onClick="confirmSale"
+                android:text="@string/confirm_sale"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/filled_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/placeholder_title"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/by1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/by"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filled_edition" />
+
+            <TextView
+                android:id="@+id/by2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/by"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fill_sale_publish_date" />
+
+            <TextView
+                android:id="@+id/filled_authors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/roboto_mono_bold"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/by1"
+                app:layout_constraintStart_toEndOf="@id/by1"
+                app:layout_constraintTop_toTopOf="@id/by1"
+                tools:text="@tools:sample/full_names" />
+
+            <TextView
+                android:id="@+id/filled_edition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/placeholder_edition"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filled_title" />
+
+            <ImageView
+                android:id="@+id/countryFlag"
+                android:layout_width="34dp"
+                android:layout_height="31dp"
+                app:layout_constraintBottom_toBottomOf="@+id/by1"
+                app:layout_constraintEnd_toEndOf="@id/filled_title"
+                tools:srcCompat="@android:drawable/ic_menu_mapmode"
+                android:contentDescription="@string/book_language" />
+
+            <TextView
+                android:id="@+id/fill_sale_publish_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/published_on_the"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/by1" />
+
+            <TextView
+                android:id="@+id/in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/in"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/by2" />
+
+            <TextView
+                android:id="@+id/fill_sale_format"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/format"
+                app:layout_constraintBottom_toBottomOf="@id/in"
+                app:layout_constraintStart_toEndOf="@id/filled_format"
+                app:layout_constraintTop_toTopOf="@id/in" />
+
+            <TextView
+                android:id="@+id/filled_publish_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@id/fill_sale_publish_date"
+                app:layout_constraintStart_toEndOf="@id/fill_sale_publish_date"
+                app:layout_constraintTop_toTopOf="@id/fill_sale_publish_date"
+                tools:text="@tools:sample/date/ddmmyy" />
+
+            <TextView
+                android:id="@+id/filled_publisher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/should_appear_automatically"
+                app:layout_constraintBottom_toBottomOf="@id/by2"
+                app:layout_constraintStart_toEndOf="@id/by2"
+                app:layout_constraintTop_toTopOf="@id/by2" />
+
+            <ImageView
+                android:id="@+id/proof_picture"
+                android:layout_width="323dp"
+                android:layout_height="250dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toTopOf="@id/add_picture"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/in"
+                app:srcCompat="@android:drawable/ic_menu_mapmode"
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                android:contentDescription="@string/your_picture_of_your_book_condition" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

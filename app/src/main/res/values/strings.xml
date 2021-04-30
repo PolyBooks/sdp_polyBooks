@@ -103,9 +103,13 @@
     <string name="or">Or</string>
     <string name="in">in</string>
     <string name="by">by</string>
+    <string name="value_by">by</string>
 
     <!-- Others -->
-    <string name="value_by">by</string>
+    <string name="home">home</string>
+    <string name="books">books</string>
+    <string name="sale">sale</string>
+    <string name="profile">profile</string>
     <string name="my_book_sales">My book sales</string>
     <string name="title">Title:</string>
     <string name="edition">Edition:</string>
@@ -139,6 +143,7 @@
     <string name="your_picture_of_your_book_condition">Your picture of your book condition</string>
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
+    <string name="currency">CHF</string>
 
     <string name="sale_ordering_popularity">Popularity</string>
     <string name="sale_ordering_title_inc">Title (ascending)</string>
