@@ -59,4 +59,8 @@
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
     <string name="value_by">by</string>
+    <string name="home">home</string>
+    <string name="books">books</string>
+    <string name="sale">sale</string>
+    <string name="profile">profile</string>
 </resources>
