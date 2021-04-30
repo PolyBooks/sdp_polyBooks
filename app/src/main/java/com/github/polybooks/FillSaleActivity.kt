@@ -54,7 +54,6 @@ class FillSaleActivity : AppCompatActivity() {
 
     }
 
-
     fun confirmSale(view: View) {
         // TODO determine to which activity we land, but probably not MainActivity but rather a confirmation page
         // store Sale in our database

@@ -59,7 +59,6 @@ class FilteringSalesTest {
     @Test
     fun intentIsFiredWhenClickingOnResults() {
         onView(withId(R.id.results_button)).perform(click())
-
         intended(
             allOf(
                 hasComponent(ListSalesActivity::class.java.name),
@@ -71,9 +70,12 @@ class FilteringSalesTest {
 //    @Ignore
     @Test
     fun allParameterItemsAreDisplayed() {
+        swdo()
         performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter)
         performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter)
         performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter)
+
+        swup()
         performOnInterestParameter<Semester>(SEMESTER, R.id.sale_semester_parameter)
         performOnInterestParameter<Course>(COURSE, R.id.sale_course_parameter)
         performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter)
@@ -154,12 +156,13 @@ class FilteringSalesTest {
     }
 
     private fun clickOnAllParamButtons() {
+        swdo()
         performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter, click())
         performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter, click())
         performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter, click())
-        performOnInterestParameter<Semester>(SEMESTER, R.id.sale_semester_parameter, click())
 
-        //  TODO outside the view
+        swup()
+        performOnInterestParameter<Semester>(SEMESTER, R.id.sale_semester_parameter, click())
         performOnInterestParameter<Course>(COURSE, R.id.sale_course_parameter, click())
         performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter, click())
     }
@@ -167,6 +170,7 @@ class FilteringSalesTest {
     private fun checkAllParamButtons(isChecked: Boolean) {
         val checkFun = if (isChecked) isChecked() else isNotChecked()
 
+        swdo()
         if (!isChecked) {
             performOnEnumParameter(
                 SaleOrdering.DEFAULT, R.id.sale_sort_parameter, null, matches(checkFun)
@@ -178,12 +182,11 @@ class FilteringSalesTest {
         performOnEnumParameter(
             BookCondition.NEW, R.id.sale_condition_parameter, null, matches(checkFun)
         )
-        //TODO perform only if isChecked otherwise tests don't pass
-        if(isChecked) {
-            performOnInterestParameter<Semester>(
-                SEMESTER, R.id.sale_semester_parameter, null, matches(checkFun)
-            )
-        }
+
+        swup()
+        performOnInterestParameter<Semester>(
+            SEMESTER, R.id.sale_semester_parameter, null, matches(checkFun)
+        )
         performOnInterestParameter<Course>(
             COURSE, R.id.sale_course_parameter, null, matches(checkFun)
         )
@@ -273,5 +276,21 @@ class FilteringSalesTest {
             }
             else -> error("unsupported type")
         }
+    }
+
+    private fun swup() {
+        onView(withId(R.id.main_scroll)).perform(swipeUp());
+    }
+
+    private fun swdo() {
+        onView(withId(R.id.main_scroll)).perform(swipeDown());
+    }
+
+    private fun pause() {
+        SystemClock.sleep(3000)
+    }
+
+    private fun pausel() {
+        SystemClock.sleep(10000)
     }
 }
