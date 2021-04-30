@@ -260,7 +260,7 @@ class SaleDatabase : SaleDatabase {
             SaleFields.CONDITION.fieldName to sale.condition,
             SaleFields.PUBLICATION_DATE.fieldName to sale.date,
             SaleFields.STATE.fieldName to sale.state,
-            SaleFields.IMAGE.fieldName to null //TODO change this, image goes elsewhere
+            SaleFields.IMAGE.fieldName to null 
         )
     }
 
