@@ -121,6 +121,12 @@
     <string name="should_appear_automatically">Should appear automatically</string>
     <string name="default_price_hint">0.00</string>
     <string name="published_on_the">Published on the</string>
+    <string-array name="condition_options_array">
+        <item>Select</item>
+        <item>New</item>
+        <item>Good</item>
+        <item>Worn</item>
+    </string-array>
 
     <!-- ====================================================================== -->
 
