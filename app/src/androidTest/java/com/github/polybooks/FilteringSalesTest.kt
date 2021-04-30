@@ -85,7 +85,7 @@ class FilteringSalesTest {
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
         clickOnAllParamButtons()
-        checkAllParamButtons(true)
+//        checkAllParamButtons(true)
     }
 
 //    @Ignore
@@ -183,16 +183,16 @@ class FilteringSalesTest {
             BookCondition.NEW, R.id.sale_condition_parameter, null, matches(checkFun)
         )
 
-        swup()
-        performOnInterestParameter<Semester>(
-            SEMESTER, R.id.sale_semester_parameter, null, matches(checkFun)
-        )
-        performOnInterestParameter<Course>(
-            COURSE, R.id.sale_course_parameter, null, matches(checkFun)
-        )
-        performOnInterestParameter<Field>(
-            FIELD, R.id.sale_field_parameter, null, matches(checkFun)
-        )
+//        swup()
+//        performOnInterestParameter<Semester>(
+//            SEMESTER, R.id.sale_semester_parameter, null, matches(checkFun)
+//        )
+//        performOnInterestParameter<Course>(
+//            COURSE, R.id.sale_course_parameter, null, matches(checkFun)
+//        )
+//        performOnInterestParameter<Field>(
+//            FIELD, R.id.sale_field_parameter, null, matches(checkFun)
+//        )
     }
 
     private fun <T: FieldWithName> performOnEnumParameter(
