@@ -39,7 +39,7 @@ class FBBookDatabase(private val firebase: FirebaseFirestore, private val isbnDB
             when {
                 interests != null -> {
                     //TODO a real implementation
-                    return CompletableFuture.completedFuture(listOf<Book>())
+                    return CompletableFuture.completedFuture(listOf())
                 }
                 title != null -> {
                     val future = CompletableFuture<List<Book>>()

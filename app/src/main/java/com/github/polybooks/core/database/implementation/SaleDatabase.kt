@@ -297,7 +297,7 @@ class SaleDatabase: SaleDatabase {
             result.forEach { document ->
                 saleRef.document(document.id).delete()
                     .addOnFailureListener { throw DatabaseException("Could not delete $document") }
-                    .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: ${document}") }
+                    .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: $document") }
             }
         }
     }

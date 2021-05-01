@@ -19,8 +19,8 @@ import com.github.polybooks.utils.setupNavbar
 class ListSalesActivity: AppCompatActivity() {
 
     companion object {
-        val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
-        val EXTRA_BOOKS_QUERY_SETTINGS: String = "bookQuerySettings"
+        const val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
+        const val EXTRA_BOOKS_QUERY_SETTINGS: String = "bookQuerySettings"
     }
 
     private lateinit var mRecycler: RecyclerView

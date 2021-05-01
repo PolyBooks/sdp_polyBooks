@@ -20,15 +20,15 @@ import org.junit.Test
  */
 class DummySalesQueryTest {
 
-    val query: SaleQuery = DummySalesQuery()
+    private val query: SaleQuery = DummySalesQuery()
 
-    val default_sale: List<Sale> = listOf(
+    private val defaultSale: List<Sale> = listOf(
         Sale(
             anonymousBook("Book1"),
             LocalUser,
             23.00f,
             BookCondition.GOOD,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.ACTIVE,
@@ -39,7 +39,7 @@ class DummySalesQueryTest {
             LocalUser,
             24.55f,
             BookCondition.GOOD,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.ACTIVE,
@@ -50,7 +50,7 @@ class DummySalesQueryTest {
             LocalUser,
             25.00f,
             BookCondition.NEW,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.ACTIVE,
@@ -61,7 +61,7 @@ class DummySalesQueryTest {
             LocalUser,
             26.00f,
             BookCondition.GOOD,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.ACTIVE,
@@ -72,7 +72,7 @@ class DummySalesQueryTest {
             LocalUser,
             21.00f,
             BookCondition.WORN,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.CONCLUDED,
@@ -83,7 +83,7 @@ class DummySalesQueryTest {
             LocalUser,
             29.00f,
             BookCondition.GOOD,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.ACTIVE,
@@ -94,7 +94,7 @@ class DummySalesQueryTest {
             LocalUser,
             23.00f,
             BookCondition.GOOD,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.ACTIVE,
@@ -105,7 +105,7 @@ class DummySalesQueryTest {
             LocalUser,
             23.66f,
             BookCondition.NEW,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.ACTIVE,
@@ -116,7 +116,7 @@ class DummySalesQueryTest {
             LocalUser,
             25.00f,
             BookCondition.GOOD,
-            com.google.firebase.Timestamp(
+            Timestamp(
                 com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!
             ),
             SaleState.RETRACTED,
@@ -130,9 +130,9 @@ class DummySalesQueryTest {
         val q1 = query.getCount()
         val q2 = query.getN(0, 0)
         val q3 = query.getAll()
-        assertEquals(default_sale.size, q1.get())
-        assertEquals(default_sale, q2.get())
-        assertEquals(default_sale, q3.get())
+        assertEquals(defaultSale.size, q1.get())
+        assertEquals(defaultSale, q2.get())
+        assertEquals(defaultSale, q3.get())
     }
 
     @Test
@@ -141,9 +141,9 @@ class DummySalesQueryTest {
         val q2 = query.searchByTitle("").getAll()
         val q3 = query.searchByISBN("").getAll()
 
-        assertEquals(default_sale, q1.get())
-        assertEquals(default_sale, q2.get())
-        assertEquals(default_sale, q3.get())
+        assertEquals(defaultSale, q1.get())
+        assertEquals(defaultSale, q2.get())
+        assertEquals(defaultSale, q3.get())
     }
 
     @Test

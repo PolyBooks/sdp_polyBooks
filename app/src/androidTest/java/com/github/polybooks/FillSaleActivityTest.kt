@@ -2,7 +2,6 @@ package com.github.polybooks
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -34,7 +33,7 @@ class FillSaleActivityTest {
     @Test
     fun addPictureRedirects() {
         // TODO this test is currently not needed and useless
-        onView(withId(R.id.add_picture)).perform(ViewActions.click())
+        onView(withId(R.id.add_picture)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 

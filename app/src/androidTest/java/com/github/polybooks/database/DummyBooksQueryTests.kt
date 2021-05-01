@@ -13,7 +13,7 @@ class DummyBooksQueryTests {
 
     private val query: BookQuery = DummyBookQuery()
 
-    val default_books: List<Book> = listOf(
+    private val defaultBooks: List<Book> = listOf(
         Book(
             "Book1",
             listOf("Tolkien"),
@@ -49,7 +49,7 @@ class DummyBooksQueryTests {
     @Test
     fun getAllWorks() {
         val q1 = query.getAll()
-        assertEquals(default_books, q1.get())
+        assertEquals(defaultBooks, q1.get())
     }
 
     @Test(expected = NotImplementedError::class)
@@ -69,10 +69,10 @@ class DummyBooksQueryTests {
         val q3 = query.searchByISBN(setOf("blabla")).getAll()
         val q4 = query.searchByISBN(setOf("hello")).withOrdering(BookOrdering.TITLE_DEC).getAll()
 
-        assertEquals(default_books, q1.get())
-        assertEquals(default_books, q2.get())
-        assertEquals(default_books, q3.get())
-        assertEquals(default_books, q4.get())
+        assertEquals(defaultBooks, q1.get())
+        assertEquals(defaultBooks, q2.get())
+        assertEquals(defaultBooks, q3.get())
+        assertEquals(defaultBooks, q4.get())
     }
 
     @Test

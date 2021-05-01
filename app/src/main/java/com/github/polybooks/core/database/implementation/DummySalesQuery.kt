@@ -16,7 +16,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.concurrent.CompletableFuture
 
-val formatString = "yyyy-mm-dd"
+const val formatString = "yyyy-mm-dd"
 val format: DateFormat = SimpleDateFormat(formatString)
 
 @RequiresApi(Build.VERSION_CODES.O)

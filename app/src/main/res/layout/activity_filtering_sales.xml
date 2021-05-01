@@ -45,7 +45,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Search a book name and or isbn -->
@@ -67,7 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_book_name"
-                    android:inputType="textFilter" />
+                    android:inputType="textFilter"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -90,7 +91,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_book_isbn"
-                    android:inputType="textFilter" />
+                    android:inputType="textFilter"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -117,14 +119,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:hint="@string/enter_min_price"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:autofillHints="" />
 
                     <EditText
                         android:id="@+id/price_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:hint="@string/enter_max_price"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:autofillHints="" />
 
                 </LinearLayout>
             </HorizontalScrollView>
@@ -302,7 +306,8 @@
                         android:id="@+id/semester_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"></LinearLayout>
+                        android:orientation="horizontal">
+                    </LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
 
@@ -328,7 +333,8 @@
                         android:id="@+id/courseGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"></LinearLayout>
+                        android:orientation="horizontal">
+                    </LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
             <!-- Field parameter (eg. Computer Science, Biology) -->
@@ -353,7 +359,8 @@
                         android:id="@+id/fieldGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"></LinearLayout>
+                        android:orientation="horizontal">
+                    </LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
 

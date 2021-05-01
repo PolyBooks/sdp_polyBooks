@@ -128,7 +128,7 @@ class FilteringSalesActivity: AppCompatActivity() {
             //---
             //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
             val querySettings = query.getSettings()
-            val intent: Intent = Intent(this, ListSalesActivity::class.java)
+            val intent = Intent(this, ListSalesActivity::class.java)
             intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
             startActivity(intent)
         }
@@ -157,7 +157,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     }
 
     private fun getStates(): Set<SaleState> {
-        var state = mutableSetOf<SaleState>()
+        val state = mutableSetOf<SaleState>()
         if (mStateActive.isChecked) state.add(SaleState.ACTIVE)
         if (mStateConcluded.isChecked) state.add(SaleState.CONCLUDED)
         if (mStateRetracted.isChecked) state.add(SaleState.RETRACTED)
@@ -165,7 +165,7 @@ class FilteringSalesActivity: AppCompatActivity() {
     }
 
     private fun getCondition(): Set<BookCondition> {
-        var condition = mutableSetOf<BookCondition>()
+        val condition = mutableSetOf<BookCondition>()
         if (mConditionGood.isChecked) condition.add(BookCondition.GOOD)
         if (mConditionNew.isChecked) condition.add(BookCondition.NEW)
         if (mConditionWorn.isChecked) condition.add(BookCondition.WORN)

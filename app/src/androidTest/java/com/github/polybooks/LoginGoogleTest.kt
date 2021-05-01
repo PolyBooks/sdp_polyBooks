@@ -36,43 +36,43 @@ class LoginGoogleTest {
 
     @Test
     fun signInButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(scrollTo(), click())
+        onView(withId(R.id.sign_in_button)).perform(scrollTo(), click())
     }
 
     @Test
     fun signOutButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.register_button)).perform(scrollTo(), click())
+        onView(withId(R.id.register_button)).perform(scrollTo(), click())
     }
 
     @Test
     fun navBarSales() {
-        onView(withId(com.github.polybooks.R.id.sales)).perform(click())
+        onView(withId(R.id.sales)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
-        onView(withId(com.github.polybooks.R.id.user_profile)).perform(click())
-        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(scrollTo())
+        onView(withId(R.id.user_profile)).perform(click())
+        onView(withId(R.id.sign_in_button)).perform(scrollTo())
             .check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
     fun navBarBooks() {
-        onView(withId(com.github.polybooks.R.id.books)).perform(click())
+        onView(withId(R.id.books)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
     }
 
     @Test
     fun navBarDefault() {
-        onView(withId(com.github.polybooks.R.id.default_selected)).check(
+        onView(withId(R.id.default_selected)).check(
             ViewAssertions.matches(
                 withEffectiveVisibility(
                     Visibility.GONE
                 )
             )
         )
-        onView(withId(com.github.polybooks.R.id.default_selected)).check(
+        onView(withId(R.id.default_selected)).check(
             ViewAssertions.matches(
                 Matchers.not(isEnabled())
             )
@@ -81,7 +81,7 @@ class LoginGoogleTest {
 
     @Test
     fun navBarSelected() {
-        onView(withId(com.github.polybooks.R.id.default_selected)).check(
+        onView(withId(R.id.default_selected)).check(
             ViewAssertions.matches(
                 isSelected()
             )
@@ -90,7 +90,7 @@ class LoginGoogleTest {
 
     @Test
     fun navBarHome() {
-        onView(withId(com.github.polybooks.R.id.home)).perform(click())
+        onView(withId(R.id.home)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 }

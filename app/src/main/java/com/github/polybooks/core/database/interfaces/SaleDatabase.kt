@@ -40,13 +40,13 @@ interface SaleDatabase {
      * Add the given sale to the database
      * @param sale The sale to insert
      */
-    fun addSale(sale: Sale): Unit
+    fun addSale(sale: Sale)
 
     /**
      * Delete the given sale to the database
      * @param sale The sale to delete
      */
-    fun deleteSale(sale: Sale): Unit
+    fun deleteSale(sale: Sale)
 }
 
 /**

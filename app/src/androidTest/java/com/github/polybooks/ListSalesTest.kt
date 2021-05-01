@@ -43,7 +43,7 @@ class ListSalesTest {
 
     @Ignore
     @Test
-    fun ItemsAreCorrect() {
+    fun itemsAreCorrect() {
         assertDisplayed("Book1")
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_title, "Book1")
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_price, "23.00")

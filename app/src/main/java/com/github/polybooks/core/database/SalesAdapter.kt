@@ -12,7 +12,7 @@ import com.github.polybooks.core.Sale
  * Adapter for listing Sale via RecyclerView
  * @property salesList List of sales
  */
-class SalesAdapter(var salesList: List<Sale>):
+class SalesAdapter(private var salesList: List<Sale>):
     RecyclerView.Adapter<SalesAdapter.SalesViewHolder>() {
     class SalesViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val viewTitle: TextView = itemView.findViewById(R.id.text_view_title)

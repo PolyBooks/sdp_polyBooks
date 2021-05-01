@@ -44,7 +44,7 @@ class SaleDatabaseTest {
         dummySale[SaleFields.SELLER.fieldName] = LoggedUser(301966, "Le givre")
     }
 
-    fun addDummySaleTest(payload: MutableMap<String, Any>? = null) {
+    private fun addDummySaleTest(payload: MutableMap<String, Any>? = null) {
         if (payload != null) {
             saleRef.document(testSaleName).set(payload)
         } else {
@@ -56,7 +56,7 @@ class SaleDatabaseTest {
         BaristaSleepInteractions.sleep(250, TimeUnit.MILLISECONDS)
     }
 
-    fun deleteDummySaleTest() {
+    private fun deleteDummySaleTest() {
         saleRef.document(testSaleName).delete()
         BaristaSleepInteractions.sleep(250, TimeUnit.MILLISECONDS)
     }
@@ -215,7 +215,7 @@ class SaleDatabaseTest {
         )
     }
 
-    fun <T> customAssertFutureThrows(future: CompletableFuture<T>, n: Int, page: Int) {
+    private fun <T> customAssertFutureThrows(future: CompletableFuture<T>, n: Int, page: Int) {
         try {
             future.get()
             fail("Future should not succeed")
@@ -377,7 +377,7 @@ class SaleDatabaseTest {
         val minPrice = 0.0f
         val maxPrice = 10.0f
 
-        var settings = SaleSettings(
+        val settings = SaleSettings(
             SaleOrdering.DEFAULT, null, null, interests, null
             , null, minPrice, maxPrice
         )
@@ -392,7 +392,7 @@ class SaleDatabaseTest {
 
     @Ignore
     @Test
-    fun Delete() {
+    fun delete() {
         //Used to manually delete sales
         val saleTest = Sale(
             anonymousBook("test1"),
@@ -407,7 +407,7 @@ class SaleDatabaseTest {
 
     @Ignore
     @Test
-    fun See() {
+    fun see() {
         fun snapshotToBook(map: HashMap<String, Any>): Book {
             return Book(
                 map[BookFields.ISBN.fieldName] as String,
@@ -432,7 +432,7 @@ class SaleDatabaseTest {
 
     @Ignore
     @Test
-    fun Add() {
+    fun add() {
         //Used to manually insert sales
         val saleTest = Sale(
             anonymousBook("Phisics for dummies"),

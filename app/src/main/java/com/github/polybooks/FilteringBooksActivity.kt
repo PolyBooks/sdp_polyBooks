@@ -99,12 +99,12 @@ class FilteringBooksActivity: AppCompatActivity() {
     }
 
     fun getResults(view: View) {
-        var query: BookQuery = DummyBookQuery()
+        val query: BookQuery = DummyBookQuery()
             .onlyIncludeInterests(getInterests())
             .withOrdering(getOrdering())
 
         val querySettings = query.getSettings()
-        val intent: Intent = Intent(this, ListSalesActivity::class.java)
+        val intent = Intent(this, ListSalesActivity::class.java)
         intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
@@ -132,8 +132,8 @@ class FilteringBooksActivity: AppCompatActivity() {
     private fun getOrdering(): BookOrdering {
         if (mSortPopularity.isChecked) return BookOrdering.DEFAULT //add it when available
         if (mSortTitleDec.isChecked) return BookOrdering.TITLE_DEC //add it when available
-        if (mSortTitleInc.isChecked) return BookOrdering.TITLE_INC //add it when available
-        else return BookOrdering.DEFAULT
+        return if (mSortTitleInc.isChecked) BookOrdering.TITLE_INC //add it when available
+        else BookOrdering.DEFAULT
     }
 
     private fun getInterests(): Set<Interest> {

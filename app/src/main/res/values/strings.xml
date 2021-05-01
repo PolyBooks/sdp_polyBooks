@@ -179,5 +179,8 @@
     <string name="com480">COM-480</string>
 
     <string name="textview">TextView</string>
+    <string name="image_of_a_star_favorite_icon">Image of a star (favorite icon)</string>
+    <string name="image_of_a_coin_purse">Image of a coin purse</string>
+    <string name="value_filter">Filter</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.utils
 
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import org.junit.Assert.assertEquals

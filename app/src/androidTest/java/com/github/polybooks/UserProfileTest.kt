@@ -34,34 +34,34 @@ class UserProfileTest {
 
     @Test
     fun buttonsViews() {
-        onView(withId(com.github.polybooks.R.id.button_disco)).check(
+        onView(withId(R.id.button_disco)).check(
             ViewAssertions.matches(
                 isDisplayed()
             )
         )
-        onView(withId(com.github.polybooks.R.id.button_disco)).check(
+        onView(withId(R.id.button_disco)).check(
             ViewAssertions.matches(
                 isClickable()
             )
         )
 
-        onView(withId(com.github.polybooks.R.id.sell_book_button)).check(
+        onView(withId(R.id.sell_book_button)).check(
             ViewAssertions.matches(
                 isDisplayed()
             )
         )
-        onView(withId(com.github.polybooks.R.id.sell_book_button)).check(
+        onView(withId(R.id.sell_book_button)).check(
             ViewAssertions.matches(
                 isClickable()
             )
         )
 
-        onView(withId(com.github.polybooks.R.id.my_sales_button)).check(
+        onView(withId(R.id.my_sales_button)).check(
             ViewAssertions.matches(
                 isDisplayed()
             )
         )
-        onView(withId(com.github.polybooks.R.id.my_sales_button)).check(
+        onView(withId(R.id.my_sales_button)).check(
             ViewAssertions.matches(
                 isClickable()
             )
@@ -70,13 +70,13 @@ class UserProfileTest {
 
     @Test
     fun disconnectButton() {
-        onView(withId(com.github.polybooks.R.id.button_disco)).perform(click())
+        onView(withId(R.id.button_disco)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun sellButton() {
-        onView(withId(com.github.polybooks.R.id.sell_book_button)).perform(click())
+        onView(withId(R.id.sell_book_button)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
     }
 

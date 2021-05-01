@@ -3,11 +3,9 @@ package com.github.polybooks
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -193,41 +191,41 @@ class FilteringSalesTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        onView(withId(R.id.results_button)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.results_button)).check(matches(isDisplayed()))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.results_button)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.results_button)).check(matches(isDisplayed()))
     }
 
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        intended(hasComponent(FilteringBooksActivity::class.java.name))
     }
 
     @Test
     fun navBarDefault() {
         onView(withId(R.id.default_selected)).check(
-            ViewAssertions.matches(
+            matches(
                 withEffectiveVisibility(
                     Visibility.GONE
                 )
             )
         )
-        onView(withId(R.id.default_selected)).check(ViewAssertions.matches(Matchers.not(isEnabled())))
+        onView(withId(R.id.default_selected)).check(matches(Matchers.not(isEnabled())))
     }
 
     @Test
     fun navBarSelected() {
-        onView(withId(R.id.sales)).check(ViewAssertions.matches(isSelected()))
+        onView(withId(R.id.sales)).check(matches(isSelected()))
     }
 
     @Test
     fun navBarHome() {
         onView(withId(R.id.home)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
+        intended(hasComponent(MainActivity::class.java.name))
     }
 }
