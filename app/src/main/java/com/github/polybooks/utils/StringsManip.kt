@@ -25,6 +25,7 @@ object StringsManip {
         return when {
             (list == null || list.isEmpty()) -> ""
             (list.size == 1) -> list[0]
+            (list.size == 2) -> "${list[0]} and ${list[1]}"
             else -> authorsFromListRec(StringJoiner(", "), list)
         }
     }
