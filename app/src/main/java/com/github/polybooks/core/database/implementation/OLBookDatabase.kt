@@ -42,7 +42,7 @@ class OLBookDatabase(private val url2json: (String) -> CompletableFuture<JsonEle
 
     override fun queryBooks(): BookQuery = OLBookQuery()
 
-    private inner class OLBookQuery(): AbstractBookQuery() {
+    private inner class OLBookQuery: AbstractBookQuery() {
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getAll(): CompletableFuture<List<Book>> {

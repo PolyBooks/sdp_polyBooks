@@ -12,10 +12,10 @@ class UserProfileActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
 
-        val username = intent.getStringExtra(EXTRA_MESSAGE);
+        val username = intent.getStringExtra(EXTRA_MESSAGE)
         val welcomeText = "Hello $username !"
 
-        val textMessageView = findViewById<TextView>(R.id.welcome_text);
+        val textMessageView = findViewById<TextView>(R.id.welcome_text)
         textMessageView.apply { text = welcomeText }
 
         val buttonSellBook: Button = findViewById(R.id.sell_book_button)

@@ -33,7 +33,7 @@ class FBBookDatabase(private val firebase: FirebaseFirestore, private val isbnDB
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    private inner class FBBookQuery(): AbstractBookQuery() {
+    private inner class FBBookQuery: AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             when {

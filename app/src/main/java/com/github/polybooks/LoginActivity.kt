@@ -17,7 +17,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME";
+const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME"
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
@@ -111,7 +111,7 @@ class LoginActivity: AppCompatActivity() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
-    public fun signOut() {
+    fun signOut() {
         if (Firebase.auth != null) {
             Firebase.auth.signOut()
             Log.d(TAG, "signed out")

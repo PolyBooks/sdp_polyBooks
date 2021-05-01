@@ -14,7 +14,7 @@ internal abstract class AbstractBookQuery: BookQuery {
     protected var interests: Collection<Interest>? = null
     protected var title: String? = null
     protected var isbns: Set<String>? = null
-    protected var ordering: BookOrdering = DEFAULT;
+    protected var ordering: BookOrdering = DEFAULT
 
     override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
         title = null
