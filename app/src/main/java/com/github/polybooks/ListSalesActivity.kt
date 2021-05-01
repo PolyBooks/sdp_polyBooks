@@ -27,7 +27,8 @@ class ListSalesActivity : AppCompatActivity() {
     private lateinit var mRecycler: RecyclerView
     private lateinit var mAdapter: SalesAdapter
     private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
-    private val initialBooks: List<Sale> = emptyList()
+    // private val initialBooks: List<Sale> = emptyList() // FIXME remove comment once we have sales in db
+    private val initialBooks: List<Sale> = listOf(Sale(Book("isbn102", listOf("Molière"), "Le Tartuffe", "Edition pré-censurée", "French", "Editions De l'Aire", null, "pocket format"), LocalUser, 33.5f, BookCondition.GOOD, null, SaleState.ACTIVE, null))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +48,7 @@ class ListSalesActivity : AppCompatActivity() {
                     SaleDatabase().querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
                 }
                 ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
-        saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
+        // saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) } // FIXME uncomment once we have sales in db
     }
 
     private fun updateAdapter(sales : List<Sale>){

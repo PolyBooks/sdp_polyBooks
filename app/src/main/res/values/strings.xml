@@ -59,4 +59,6 @@
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
     <string name="value_by">by</string>
+    <string name="value_buy">buy</string>
+    <string name="value_in">in</string>
 </resources>
