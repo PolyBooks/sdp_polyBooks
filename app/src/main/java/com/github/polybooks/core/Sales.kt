@@ -16,7 +16,7 @@ import java.util.*
  * @property seller The ID of the seller
  * @property price The price in CHF at which the book is being sold
  * @property condition The condition of the book (see {@link BookCondition})
- * @property publicationDate The date on which the Sale has been issued/published
+ * @property date The date on which the Sale has been issued/published
  * @property state The state of the Sale (see {@link SaleState})
  * */
 
@@ -34,14 +34,14 @@ data class Sale(
 /**
  * The condition of a book (as in "in great condition").
  * */
-enum class BookCondition(private val stringId: Int): FieldWithName {
-    // FIXME adapt stringIDs
-    NEW(R.string.condition_new),
-    GOOD(R.string.condition_good),
-    WORN(R.string.condition_worn);
+enum class BookCondition: FieldWithName {
+    NEW,
+    GOOD,
+    WORN;
 
     override fun fieldName(c: Context?): String {
-        return c?.getString(stringId) ?: name
+        return c?.resources?.getStringArray(R.array.sale_book_conditions_array)?.get(ordinal)
+               ?: name
     }
 }
 
@@ -51,14 +51,14 @@ enum class BookCondition(private val stringId: Int): FieldWithName {
  * Retracted means that the book is no longer on sale because the seller retracted the offer.
  * Concluded means that the book has been sold and is therefore no longer on sale.
  * */
-enum class SaleState(private val stringId: Int): FieldWithName {
-    // FIXME adapt stringIDs
-    ACTIVE(R.string.state_active),
-    RETRACTED(R.string.state_retracted),
-    CONCLUDED(R.string.state_concluded);
+enum class SaleState: FieldWithName {
+    ACTIVE,
+    RETRACTED,
+    CONCLUDED;
 
     override fun fieldName(c: Context?): String {
-        return c?.getString(stringId) ?: name
+        return c?.resources?.getStringArray(R.array.sale_states_array)?.get(ordinal)
+               ?: name
     }
 }
 

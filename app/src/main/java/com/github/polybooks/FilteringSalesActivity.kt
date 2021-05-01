@@ -13,6 +13,8 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.utils.setupNavbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 /**
@@ -105,6 +107,26 @@ class FilteringSalesActivity: AppCompatActivity() {
         mResults = findViewById(R.id.results_button)
 
         setParametersButtons()
+
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        true
+                    }
+                    R.id.books -> {
+                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        true
+                    }
+                    R.id.user_profile -> {
+                        // TODO: user sales
+                        false
+                    }
+                    else -> true
+                }
+            }
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
 
     fun resetParameters(view: View) {
@@ -148,13 +170,12 @@ class FilteringSalesActivity: AppCompatActivity() {
 
         resultByParameter(query)
 
-        //---
-        //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
         val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java)
         intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
+
 
     private fun setParametersButtons() {
         setTextParameters()
@@ -171,17 +192,14 @@ class FilteringSalesActivity: AppCompatActivity() {
             R.id.sale_condition_parameter,
             AdapterFactory.saleBookConditionAdapter()
         )
-
         mCourseParameter = RecyclerViewParameter(
             R.id.sale_course_parameter,
             AdapterFactory.courseInterestAdapter()
         )
-
         mSemesterParameter = RecyclerViewParameter(
             R.id.sale_semester_parameter,
             AdapterFactory.semesterInterestAdapter()
         )
-
         mFieldParameter = RecyclerViewParameter(
             R.id.sale_field_parameter,
             AdapterFactory.fieldInterestAdapter()

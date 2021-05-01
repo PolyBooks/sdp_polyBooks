@@ -10,7 +10,7 @@ import com.github.polybooks.utils.FieldWithName
  * @param enumInstance any instance of class T (needed to be able to use methods of T)
  * @see   ParameterAdapter
  */
-class StaticValuesFilteringParameterAdapter<T: FieldWithName>(itemViewId: Int, enumInstance: T):
+class FiniteValuesParameterAdapter<T: FieldWithName>(itemViewId: Int, enumInstance: T):
     ParameterAdapter<T>(
         itemViewId,
         enumInstance.javaClass.enumConstants.asList()

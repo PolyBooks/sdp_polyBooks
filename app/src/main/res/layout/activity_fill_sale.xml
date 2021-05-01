@@ -164,7 +164,7 @@
         android:id="@+id/fill_sale_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/condition"
+        android:text="@string/sale_book_condition"
         app:layout_constraintBottom_toBottomOf="@+id/filled_condition"
         app:layout_constraintEnd_toStartOf="@+id/filled_condition"
         app:layout_constraintHorizontal_bias="0.5"
@@ -186,7 +186,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:text="@string/price"
+        android:text="@string/sale_price"
         app:layout_constraintBottom_toBottomOf="@+id/filled_price"
         app:layout_constraintEnd_toStartOf="@+id/filled_price"
         app:layout_constraintHorizontal_bias="0.5"
@@ -212,7 +212,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:text="@string/chf"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_sale"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_sale_button"
         app:layout_constraintStart_toEndOf="@+id/filled_price" />
 
     <Button
@@ -221,13 +221,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:text="@string/add_picture"
-        app:layout_constraintBottom_toBottomOf="@+id/confirm_sale"
+        app:layout_constraintBottom_toBottomOf="@+id/confirm_sale_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/confirm_sale"
+        app:layout_constraintTop_toTopOf="@+id/confirm_sale_button"
         style="@style/Button" />
 
     <Button
-        android:id="@+id/confirm_sale"
+        android:id="@+id/confirm_sale_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"

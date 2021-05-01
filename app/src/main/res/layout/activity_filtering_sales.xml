@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/Button"/>
@@ -63,7 +63,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/book_name"
+                    android:text="@string/name"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -86,7 +86,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/isbn"
+                    android:text="@string/book_isbn"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -109,7 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/price_min_max"
+                    android:text="@string/sale_price"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -165,7 +165,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/state"
+                    android:text="@string/sale_state"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -188,7 +188,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/condition"
+                    android:text="@string/sale_book_condition"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -199,8 +199,6 @@
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
-
-
 
             <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
 
@@ -213,7 +211,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/semester"
+                    android:text="@string/interest_semester"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -235,7 +233,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/course"
+                    android:text="@string/interest_course"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -257,7 +255,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/field"
+                    android:text="@string/interest_field"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -271,6 +269,14 @@
 
         </LinearLayout>
 
-    </ScrollView>View
+    </ScrollView>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_navigation_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="labeled"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

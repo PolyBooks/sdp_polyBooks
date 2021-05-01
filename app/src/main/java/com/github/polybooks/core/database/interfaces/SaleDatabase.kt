@@ -144,17 +144,17 @@ data class SaleSettings(
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.
  * */
-enum class SaleOrdering(private val stringId: Int): FieldWithName {
-    // FIXME adapt stringIDs
-    DEFAULT(R.string.reset),
-    TITLE_INC(R.string.title_inc),
-    TITLE_DEC(R.string.title_dec),
-    PRICE_INC(R.string.price_inc),
-    PRICE_DEC(R.string.price_dec),
-    PUBLISH_DATE_INC(R.string.publish_date_inc),
-    PUBLISH_DATE_DEC(R.string.publish_date_dec);
+enum class SaleOrdering: FieldWithName {
+    DEFAULT,
+    TITLE_INC,
+    TITLE_DEC,
+    PRICE_INC,
+    PRICE_DEC,
+    PUBLISH_DATE_INC,
+    PUBLISH_DATE_DEC;
 
     override fun fieldName(c: Context?): String {
-        return c?.getString(stringId) ?: name
+        return c?.resources?.getStringArray(R.array.sale_orderings_array)?.get(ordinal)
+               ?: name
     }
 }

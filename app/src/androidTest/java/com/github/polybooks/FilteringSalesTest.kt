@@ -3,28 +3,37 @@ package com.github.polybooks
 import android.content.Context
 import android.os.SystemClock
 import androidx.test.core.app.ApplicationProvider
+
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+
 import com.github.polybooks.adapter.InterestsParameterAdapter
 import com.github.polybooks.adapter.ParameterViewHolder
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummyInterestDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.utils.FieldWithName
+
 import org.hamcrest.CoreMatchers.allOf
-import org.junit.*
+import org.hamcrest.Matchers
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
@@ -43,7 +52,7 @@ class FilteringSalesTest {
     val activityRule: ActivityScenarioRule<FilteringSalesActivity> =
         ActivityScenarioRule(FilteringSalesActivity::class.java)
 
-    private val targetContext: Context = ApplicationProvider.getApplicationContext();
+    private val targetContext: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun before() {
@@ -55,7 +64,9 @@ class FilteringSalesTest {
         Intents.release()
     }
 
-//    @Ignore
+    //======================================================================
+    //                            Tests Filtering
+    //======================================================================
     @Test
     fun intentIsFiredWhenClickingOnResults() {
         onView(withId(R.id.results_button)).perform(click())
@@ -67,7 +78,6 @@ class FilteringSalesTest {
         )
     }
 
-//    @Ignore
     @Test
     fun allParameterItemsAreDisplayed() {
         swdo()
@@ -81,14 +91,13 @@ class FilteringSalesTest {
         performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter)
     }
 
-//    @Ignore
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
         clickOnAllParamButtons()
-//        checkAllParamButtons(true)
+        // cannot test because nested recyclerview
+//         checkAllParamButtons(true)
     }
 
-//    @Ignore
     @Test
     fun canWriteInTexts() {
         writeInTextEdits()
@@ -99,7 +108,6 @@ class FilteringSalesTest {
 //        onView(withId(R.id.book_name)).check(matches(withText(RANDOM_STRING)))
     }
 
-//    @Ignore
     @Test
     fun orderingItemsAreMutuallyExclusive() {
         perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click())
@@ -109,7 +117,6 @@ class FilteringSalesTest {
         check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
     }
 
-//    @Ignore
     @Test
     fun clickingThreeTimesOnOrderingItemWorks() {
         perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
@@ -119,7 +126,6 @@ class FilteringSalesTest {
         check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isChecked()))
     }
 
-//    @Ignore
     @Test
     fun clickingOnResetClearsEverything() {
         writeInTextEdits()
@@ -132,6 +138,7 @@ class FilteringSalesTest {
 
         checkAllParamButtons(false)
     }
+
 
     private fun writeInTextEdits() {
         onView(withId(R.id.book_name)).perform(scrollTo(), clearText(), typeText(RANDOM_STRING))
@@ -183,6 +190,7 @@ class FilteringSalesTest {
             BookCondition.NEW, R.id.sale_condition_parameter, null, matches(checkFun)
         )
 
+        // Cannot test because recyclerView
 //        swup()
 //        performOnInterestParameter<Semester>(
 //            SEMESTER, R.id.sale_semester_parameter, null, matches(checkFun)
@@ -279,18 +287,63 @@ class FilteringSalesTest {
     }
 
     private fun swup() {
-        onView(withId(R.id.main_scroll)).perform(swipeUp());
+        onView(withId(R.id.main_scroll)).perform(swipeUp())
     }
 
     private fun swdo() {
-        onView(withId(R.id.main_scroll)).perform(swipeDown());
+        onView(withId(R.id.main_scroll)).perform(swipeDown())
+    }
+
+    //======================================================================
+    //                            Tests NavBar
+    //======================================================================
+
+    @Test
+    fun navBarSales() {
+        onView(withId(R.id.sales)).perform(click())
+        onView(withId(R.id.results_button)).check(ViewAssertions.matches(isDisplayed()))
+    }
+
+    @Test
+    fun navBarProfile() {
+        onView(withId(R.id.user_profile)).perform(click())
+        onView(withId(R.id.results_button)).check(ViewAssertions.matches(isDisplayed()))
+    }
+
+    @Test
+    fun navBarBooks() {
+        onView(withId(R.id.books)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+    }
+
+    @Test
+    fun navBarDefault() {
+        onView(withId(R.id.default_selected)).check(
+            ViewAssertions.matches(
+                withEffectiveVisibility(
+                    Visibility.GONE
+                )
+            )
+        )
+        onView(withId(R.id.default_selected)).check(ViewAssertions.matches(Matchers.not(isEnabled())))
+    }
+
+    @Test
+    fun navBarSelected() {
+        onView(withId(R.id.sales)).check(ViewAssertions.matches(isSelected()))
+    }
+
+    @Test
+    fun navBarHome() {
+        onView(withId(R.id.home)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 
     private fun pause() {
         SystemClock.sleep(3000)
     }
 
-    private fun pausel() {
+    private fun pauselong() {
         SystemClock.sleep(10000)
     }
 }

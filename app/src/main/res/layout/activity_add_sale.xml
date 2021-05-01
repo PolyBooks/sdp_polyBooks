@@ -6,66 +6,55 @@
     android:layout_height="match_parent"
     tools:context=".AddSaleActivity">
 
-    <EditText
-        android:id="@+id/navBarPlaceholder"
-        android:layout_width="376dp"
-        android:layout_height="34dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/maybe_navbar_here_if_yes_design_once_for_all_activities"
-        android:textSize="14sp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:importantForAutofill="no"
-        tools:ignore="LabelFor" />
-
     <Button
         android:id="@+id/scan_button"
         style="@style/Button"
-        android:layout_width="258dp"
-        android:layout_height="71dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:onClick="scanBook"
         android:text="@string/scan_book"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@id/or"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/pass_isbn_button"
-        android:layout_width="258dp"
-        android:layout_height="71dp"
+        style="@style/Button"
         android:onClick="passISBN"
         android:text="@string/input_isbn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filling_ISBN"
-        style="@style/Button" />
+        app:layout_constraintTop_toBottomOf="@id/fill_in_ISBN" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/or"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/or"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/filling_ISBN"
-        android:layout_width="257dp"
+        android:id="@+id/fill_in_ISBN"
+        android:layout_width="256dp"
         android:layout_height="48dp"
         android:layout_marginTop="0dp"
         android:ems="10"
-        android:hint="@string/isbn"
+        android:hint="@string/book_isbn"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@id/or"
         android:importantForAutofill="no" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_navigation_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="labeled"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

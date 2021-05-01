@@ -25,7 +25,7 @@ object AdapterFactory {
      * @see SaleQuery.searchByState
      */
     fun saleStateAdapter(): ParameterAdapter<SaleState> {
-        return StaticValuesFilteringParameterAdapter(VALUE_BUTTON, SaleState.ACTIVE)
+        return FiniteValuesParameterAdapter(VALUE_BUTTON, SaleState.ACTIVE)
     }
 
     /**
@@ -34,7 +34,7 @@ object AdapterFactory {
      * @see SaleQuery.searchByCondition
      */
     fun saleBookConditionAdapter(): ParameterAdapter<BookCondition> {
-        return StaticValuesFilteringParameterAdapter(VALUE_BUTTON, BookCondition.NEW)
+        return FiniteValuesParameterAdapter(VALUE_BUTTON, BookCondition.NEW)
     }
 
     /**
