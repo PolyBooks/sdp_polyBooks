@@ -5,27 +5,24 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.LocalUserException
 import com.github.polybooks.core.database.interfaces.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
-
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.*
-
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
 
-class SaleDatabase : SaleDatabase {
+class SaleDatabase: SaleDatabase {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val saleRef: CollectionReference = db.collection(getCollectionName())
 
-    inner class SalesQuery : SaleQuery {
+    inner class SalesQuery: SaleQuery {
 
         private var isbn13: String? = null
         private var title: String? = null
@@ -80,22 +77,33 @@ class SaleDatabase : SaleDatabase {
             return this
         }
 
-        private fun getQuery() : Query {
+        private fun getQuery(): Query {
             var query: Query = saleRef
 
             // TODO: add these when necessary
             // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
             // TODO: fix this for title
             // FieldPath.of(SaleFields.BOOK.fieldName, BookFields.TITLE.fieldName)
-            title?.let { query = query.whereEqualTo(SaleFields.BOOK.fieldName + "." + BookFields.TITLE.fieldName, title) }//SaleFields.BOOK.fieldName[BookFields.TITLE.fieldName]
+            title?.let {
+                query = query.whereEqualTo(
+                    SaleFields.BOOK.fieldName + "." + BookFields.TITLE.fieldName,
+                    title
+                )
+            }//SaleFields.BOOK.fieldName[BookFields.TITLE.fieldName]
             // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
             states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
             // TODO: fix this with whereIN
             // https://stackoverflow.com/questions/45419272/firebase-how-to-structure-for-multiple-where-in-query
             // Or find a way to this in client
-            conditions?.let { query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList()) }
-            minPrice?.let { query = query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!) }
-            maxPrice?.let { query = query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!) }
+            conditions?.let {
+                query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList())
+            }
+            minPrice?.let {
+                query = query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!)
+            }
+            maxPrice?.let {
+                query = query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!)
+            }
 
             return query
         }
@@ -104,7 +112,7 @@ class SaleDatabase : SaleDatabase {
             val query = querySales()
                 .searchByTitle(sale.book.title)
                 .searchByState(setOf(sale.state))
-                .searchByPrice(sale.price,sale.price) as SalesQuery
+                .searchByPrice(sale.price, sale.price) as SalesQuery
             return query.getQuery().get()
 
         }
@@ -171,7 +179,7 @@ class SaleDatabase : SaleDatabase {
             getQuery()
                 .get()
                 .addOnSuccessListener { documents ->
-                    future.complete(documents.fold(0){ acc, _ -> acc + 1 })
+                    future.complete(documents.fold(0) { acc, _ -> acc + 1 })
                 }
                 .addOnFailureListener {
                     future.completeExceptionally(
@@ -184,14 +192,14 @@ class SaleDatabase : SaleDatabase {
 
         override fun getSettings(): SaleSettings {
             return SaleSettings(
-                    SaleOrdering.DEFAULT, //TODO change when ordering implemented
-                    isbn13,
-                    title,
-                    interests,
-                    states,
-                    conditions,
-                    minPrice,
-                    maxPrice
+                SaleOrdering.DEFAULT, //TODO change when ordering implemented
+                isbn13,
+                title,
+                interests,
+                states,
+                conditions,
+                minPrice,
+                maxPrice
             )
         }
 
@@ -199,13 +207,13 @@ class SaleDatabase : SaleDatabase {
             isbn13 = settings.isbn
             title = settings.title
 
-            if(settings.interests == null) interests == null
+            if (settings.interests == null) interests == null
             else onlyIncludeInterests(settings.interests)
 
-            if(settings.states == null) states == null
+            if (settings.states == null) states == null
             else searchByState(settings.states)
 
-            if(settings.conditions == null) conditions
+            if (settings.conditions == null) conditions
             else searchByCondition(settings.conditions)
 
             minPrice = settings.minPrice
@@ -265,24 +273,25 @@ class SaleDatabase : SaleDatabase {
     }
 
     override fun addSale(sale: Sale) {
-        if(sale.seller == LocalUser)
+        if (sale.seller == LocalUser)
             throw LocalUserException("Cannot add sale as LocalUser")
         saleRef.add(saleToDocument(sale))
-                .addOnSuccessListener { documentReference ->
-                    Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")}
-                .addOnFailureListener {
-                    // TODO: Change this to maybe only log the error
-                    throw DatabaseException("Failed to insert $sale into Database")
-                }
+            .addOnSuccessListener { documentReference ->
+                Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener {
+                // TODO: Change this to maybe only log the error
+                throw DatabaseException("Failed to insert $sale into Database")
+            }
     }
 
     override fun deleteSale(sale: Sale) {
-        if(sale.seller == LocalUser)
+        if (sale.seller == LocalUser)
             throw LocalUserException("Cannot add sale as LocalUser")
         SalesQuery().getReferenceID(sale).continueWith { task ->
             val result = task.result.documents.filter { document ->
                 val s = snapshotToSale(document)
-                s.condition == sale.condition /*&& s.seller == sale.seller */&& s.date == sale.date
+                s.condition == sale.condition /*&& s.seller == sale.seller */ && s.date == sale.date
             }
 
             result.forEach { document ->

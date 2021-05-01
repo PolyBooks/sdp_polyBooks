@@ -6,8 +6,8 @@ package com.github.polybooks.core
  * or a logged in user.
  * */
 sealed class User
-data class LoggedUser(val uid : Int, val pseudo : String) : User()
-object LocalUser : User()
+data class LoggedUser(val uid: Int, val pseudo: String): User()
+object LocalUser: User()
 
 /**
  * Allows access to the name of a field

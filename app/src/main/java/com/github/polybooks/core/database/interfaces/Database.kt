@@ -8,17 +8,17 @@ interface Database {
     /**
      * The instance of a Book Database associated with this Database
      * */
-    val bookDatabase : BookDatabase
+    val bookDatabase: BookDatabase
 
     /**
      * The instance of a Sale Database associated with this Database
      * */
-    val saleDatabase : SaleDatabase
+    val saleDatabase: SaleDatabase
 
     /**
      * The instance of a Interest Database associated with this Database
      * */
-    val interestDatabase : InterestDatabase
+    val interestDatabase: InterestDatabase
 
 }
 

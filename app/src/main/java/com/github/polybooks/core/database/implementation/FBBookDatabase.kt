@@ -2,12 +2,9 @@ package com.github.polybooks.core.database.implementation
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
-import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.interfaces.BookDatabase
-import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.regulariseISBN
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
@@ -22,7 +19,8 @@ private const val DATE_FORMAT = "yyyy MM dd"
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
  * */
-class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) : BookDatabase {
+class FBBookDatabase(private val firebase: FirebaseFirestore, private val isbnDB: BookDatabase):
+    BookDatabase {
 
     /*TODO:
     [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
@@ -35,7 +33,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    private inner class FBBookQuery() : AbstractBookQuery() {
+    private inner class FBBookQuery(): AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
@@ -62,7 +60,8 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                     return booksFromFBFuture.thenCompose { booksFromFB ->
                         val isbnsFound = booksFromFB.map { it.isbn }
                         val remainingISBNs = isbns.minus(isbnsFound)
-                        val booksFromOLFuture = isbnDB.queryBooks().searchByISBN(remainingISBNs).getAll()
+                        val booksFromOLFuture =
+                            isbnDB.queryBooks().searchByISBN(remainingISBNs).getAll()
                         val allBooksFuture = booksFromOLFuture.thenApply { booksFromOL ->
                             booksFromOL + booksFromFB
                         }
@@ -97,8 +96,8 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             return getAll().thenApply { it.size }
         }
 
-        private fun bookToDocument(book : Book) : Any {
-            val publishDate : String? = book.publishDate?.let {
+        private fun bookToDocument(book: Book): Any {
+            val publishDate: String? = book.publishDate?.let {
                 dateFormater.format(it.toDate())
             }
             return hashMapOf(
@@ -113,14 +112,14 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             )
         }
 
-        private fun assembleBookEntry(bookDocument : Any) : Any {
+        private fun assembleBookEntry(bookDocument: Any): Any {
             return hashMapOf(
                 "book" to bookDocument,
                 "interests" to listOf<Any>()
             )
         }
 
-        private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
+        private fun snapshotBookToBook(map: HashMap<String, Any>): Book {
             val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
                 Timestamp(dateFormater.parse(it)!!)
             }
@@ -136,12 +135,12 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             )
         }
 
-        private fun snapshotEntryToBook(snapshot : DocumentSnapshot) : Book {
+        private fun snapshotEntryToBook(snapshot: DocumentSnapshot): Book {
             val bookDocument = snapshot.get("book") as HashMap<String, Any>
             return snapshotBookToBook(bookDocument)
         }
 
-        private fun addBookToFirebase(book : Book) : CompletableFuture<Unit> {
+        private fun addBookToFirebase(book: Book): CompletableFuture<Unit> {
             val future = CompletableFuture<Unit>()
             val bookEntry = assembleBookEntry(bookToDocument(book))
             bookRef.document(book.isbn).set(bookEntry)
@@ -153,7 +152,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             return future
         }
 
-        private fun getBooksByISBNFromFirebase(isbns : List<String>) : CompletableFuture<List<Book>> {
+        private fun getBooksByISBNFromFirebase(isbns: List<String>): CompletableFuture<List<Book>> {
             val future = CompletableFuture<List<Book>>()
             bookRef.whereIn(FieldPath.documentId(), isbns)
                 .get().addOnSuccessListener { bookEntries ->

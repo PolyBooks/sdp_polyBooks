@@ -9,7 +9,7 @@
     <!--    Reset default filtering values-->
     <Button
         android:id="@+id/reset_button"
-        android:text= "@string/reset"
+        android:text="@string/reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
@@ -17,7 +17,7 @@
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/Button"/>
+        style="@style/Button" />
 
     <!--    Go to results -->
     <Button
@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        style="@style/Button"/>
+        style="@style/Button" />
 
     <!--    Lists of parameters -->
     <ScrollView
@@ -185,7 +185,6 @@
             </LinearLayout>
 
 
-
             <!-- State (eg. active, concluded) -->
             <LinearLayout
                 android:id="@+id/state_view"
@@ -280,7 +279,6 @@
             </LinearLayout>
 
 
-
             <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
 
             <LinearLayout
@@ -299,12 +297,12 @@
                 <HorizontalScrollView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:id="@+id/semester_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
+                        android:orientation="horizontal"></LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
 
@@ -325,12 +323,12 @@
                 <HorizontalScrollView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:id="@+id/courseGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
+                        android:orientation="horizontal"></LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
             <!-- Field parameter (eg. Computer Science, Biology) -->
@@ -350,24 +348,24 @@
                 <HorizontalScrollView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:id="@+id/fieldGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
+                        android:orientation="horizontal"></LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_navigation_menu"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:labelVisibilityMode="labeled"
-        />
+        app:labelVisibilityMode="labeled" />
 </androidx.constraintlayout.widget.ConstraintLayout>

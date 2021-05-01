@@ -1,8 +1,8 @@
 package com.github.polybooks.utils
 
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class HTTP2JSONTests {
 
@@ -17,19 +17,19 @@ class HTTP2JSONTests {
     @Test
     fun url2jsonDontCrash2() {
         val json = url2json("this isn't even an url")
-                .handle { json, exception ->
-                    assertNull(json)
-                    assertNotNull(exception)
-                }.get()
+            .handle { json, exception ->
+                assertNull(json)
+                assertNotNull(exception)
+            }.get()
     }
 
     @Test
     fun url2jsonDontCrash3() {
         val json = url2json("https://fsf.org") //have you heard the good news?
-                .handle { json, exception ->
-                    assertNull(json)
-                    assertNotNull(exception) // should throw an exception because it's not json
-                }.get()
+            .handle { json, exception ->
+                assertNull(json)
+                assertNotNull(exception) // should throw an exception because it's not json
+            }.get()
     }
 
 }

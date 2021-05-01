@@ -1,8 +1,8 @@
 package com.github.polybooks
 
-import org.junit.Test
-import org.junit.Assert.*
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class FillSaleActivityUnitTests {
     @Test

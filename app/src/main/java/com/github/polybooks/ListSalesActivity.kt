@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.core.*
+import com.github.polybooks.core.Sale
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.SalesAdapter
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleQuery
@@ -15,7 +16,7 @@ import com.github.polybooks.utils.setupNavbar
  * Activity to list all active sales
  */
 
-class ListSalesActivity : AppCompatActivity() {
+class ListSalesActivity: AppCompatActivity() {
 
     companion object {
         val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
@@ -42,20 +43,21 @@ class ListSalesActivity : AppCompatActivity() {
 
 
         val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
-                ?.let {
-                    SaleDatabase().querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
-                }
-                ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
+            ?.let {
+                SaleDatabase().querySales()
+                    .fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
+            }
+            ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
         saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
 
         setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
 
-    private fun updateAdapter(sales : List<Sale>){
+    private fun updateAdapter(sales: List<Sale>) {
         runOnUiThread {
             mAdapter = SalesAdapter(sales)
-            mRecycler.adapter= mAdapter
+            mRecycler.adapter = mAdapter
         }
     }
 }

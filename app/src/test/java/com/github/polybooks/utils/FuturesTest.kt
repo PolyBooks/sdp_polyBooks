@@ -1,9 +1,8 @@
 package com.github.polybooks.utils
 
 import junit.framework.AssertionFailedError
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
-import java.lang.Exception
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 
@@ -17,21 +16,25 @@ class FuturesTest {
 
     @Test
     fun noFail2NoFail() {
-        val list = listOf(1,2,3,4).map {CompletableFuture.completedFuture(it)}
+        val list = listOf(1, 2, 3, 4).map { CompletableFuture.completedFuture(it) }
         val future = listOfFuture2FutureOfList(list)
-        assertEquals(listOf(1,2,3,4), future.get())
+        assertEquals(listOf(1, 2, 3, 4), future.get())
     }
 
     @Test
     fun oneFail2Fail() {
         val failed = CompletableFuture<Int>()
         failed.completeExceptionally(Exception())
-        val list = listOf(1,2,3,4).map {
+        val list = listOf(1, 2, 3, 4).map {
             if (it == 3) failed
             else CompletableFuture.completedFuture(it)
         }
         val future = listOfFuture2FutureOfList(list)
-        try {future.join()} catch (e : CompletionException) {return}
+        try {
+            future.join()
+        } catch (e: CompletionException) {
+            return
+        }
         throw AssertionFailedError("Expected future to be completed exceptionally")
     }
 

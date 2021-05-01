@@ -13,18 +13,18 @@ interface BookDatabase {
     /**
      * Creates a new query for Books. It originally matches all books.
      * */
-    fun queryBooks() : BookQuery
+    fun queryBooks(): BookQuery
 
     /**
      * Get all the books in the database
      * */
-    fun listAllBooks() : CompletableFuture<List<Book>> = queryBooks().getAll()
+    fun listAllBooks(): CompletableFuture<List<Book>> = queryBooks().getAll()
 
     /**
      * Get data about a Book from the database given it's ISBN
      * */
-    fun getBook(isbn : String) : CompletableFuture<Book?>
-            = queryBooks().searchByISBN(setOf(isbn)).getAll().thenApply { it.firstOrNull() }
+    fun getBook(isbn: String): CompletableFuture<Book?> =
+        queryBooks().searchByISBN(setOf(isbn)).getAll().thenApply { it.firstOrNull() }
 
     /**
      * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
@@ -32,48 +32,51 @@ interface BookDatabase {
      * @param page The index of the page
      * @param ordering The ordering for the pages and books within the pages (see {@link BookOrdering})
      * */
-    fun getNBooks(numberOfBooks : Int, page : Int, ordering : BookOrdering) : CompletableFuture<List<Book>>
-            = queryBooks().withOrdering(ordering).getN(numberOfBooks, page)
+    fun getNBooks(
+        numberOfBooks: Int,
+        page: Int,
+        ordering: BookOrdering
+    ): CompletableFuture<List<Book>> = queryBooks().withOrdering(ordering).getN(numberOfBooks, page)
 }
 
 /**
  * A BookQuery is a builder for a query to the database that will yield Books.
  * Most methods return themselves for function chaining.
  * */
-interface BookQuery : Query<Book> {
+interface BookQuery: Query<Book> {
 
     /**
      * Set this query to only include books that satisfy the given interests.
      * */
-    fun onlyIncludeInterests(interests: Collection<Interest>) : BookQuery
+    fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery
 
     /**
      * Set this query to only search for books with title that are like the given one.
      * (ignoring other filters)
      * */
-    fun searchByTitle(title : String) : BookQuery
+    fun searchByTitle(title: String): BookQuery
 
     /**
      * Set this query to get the books associated with the given ISBNs, if they exist.
      * (ignoring other filters)
      * */
-    fun searchByISBN(isbns : Set<String>) : BookQuery
+    fun searchByISBN(isbns: Set<String>): BookQuery
 
     /**
      * Set this query to order books with the given ordering.
      * (see {@link BookOrdering})
      * */
-    fun withOrdering(ordering : BookOrdering) : BookQuery
+    fun withOrdering(ordering: BookOrdering): BookQuery
 
     /**
      * Get Settings of the BookQuery at current state
      **/
-    fun getSettings() : BookSettings
+    fun getSettings(): BookSettings
 
     /**
      * Reset this query using the given settings
      */
-    fun fromSettings(settings : BookSettings) : BookQuery
+    fun fromSettings(settings: BookSettings): BookQuery
 
 }
 
@@ -86,11 +89,11 @@ interface BookQuery : Query<Book> {
  * calling other methods (ig. searchByTitle)
  */
 data class BookSettings(
-        val ordering: BookOrdering,
-        val isbns : List<String>?,
-        val title : String?,
-        val interests : Set<Interest>?
-) : Serializable
+    val ordering: BookOrdering,
+    val isbns: List<String>?,
+    val title: String?,
+    val interests: Set<Interest>?
+): Serializable
 
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.

@@ -20,15 +20,15 @@ import java.io.Serializable
  * @property format The format of the book (Hard cover, pocket book, magazine, ...)
  * */
 data class Book(
-    val isbn : String,
-    val authors : List<String>?,
-    val title : String,
-    val edition : String?,
-    val language : String?,
-    val publisher : String?,
-    val publishDate : Timestamp?,
-    val format : String?
-) : Serializable
+    val isbn: String,
+    val authors: List<String>?,
+    val title: String,
+    val edition: String?,
+    val language: String?,
+    val publisher: String?,
+    val publishDate: Timestamp?,
+    val format: String?
+): Serializable
 
 /**
  * Allows access to the name of a field

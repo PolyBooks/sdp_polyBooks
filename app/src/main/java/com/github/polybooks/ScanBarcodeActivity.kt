@@ -28,7 +28,7 @@ import java.util.concurrent.Executors
  * This activity opens the camera (ask permission for it if not already given) and tries to detect a barcode.
  * When it does it scans it, retrieve the ISBN and automatically moves to the FillSale activity passing the ISBN as intent.
  */
-class ScanBarcodeActivity : AppCompatActivity() {
+class ScanBarcodeActivity: AppCompatActivity() {
 
     // TODO next step: Maybe refactor the inner class and/or the CameraX related code, but it causes issues with access rights...
 
@@ -43,7 +43,8 @@ class ScanBarcodeActivity : AppCompatActivity() {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+            )
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -58,9 +59,11 @@ class ScanBarcodeActivity : AppCompatActivity() {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
-                Toast.makeText(this,
+                Toast.makeText(
+                    this,
                     "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
             }
         }
@@ -70,7 +73,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
-        cameraProviderFuture.addListener( {
+        cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
@@ -99,9 +102,10 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageAnalyzer)
+                    this, cameraSelector, preview, imageAnalyzer
+                )
 
-            } catch(exc: Exception) {
+            } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
@@ -110,7 +114,8 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
+            baseContext, it
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     companion object {
@@ -127,7 +132,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
 
-    private inner class BarcodeAnalyzer : ImageAnalysis.Analyzer {
+    private inner class BarcodeAnalyzer: ImageAnalysis.Analyzer {
 
         // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
         @SuppressLint("UnsafeExperimentalUsageError")
@@ -135,14 +140,15 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
-                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+                val image =
+                    InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
 
                 // [START set_detector_options]
                 // ISBNs are represented on EAN-13 barcodes only.
                 val options = BarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(Barcode.FORMAT_EAN_13)
-                        .build()
+                    .setBarcodeFormats(Barcode.FORMAT_EAN_13)
+                    .build()
                 // [END set_detector_options]
 
                 // [START get_detector]
@@ -162,7 +168,10 @@ class ScanBarcodeActivity : AppCompatActivity() {
                                 Barcode.TYPE_ISBN -> {
                                     val displayValue = barcode.displayValue
                                     // TODO could potentially split the NotCorrectFormat case to display a toast?
-                                    if (!displayValue.isNullOrEmpty() && isbnHasCorrectFormat(displayValue)) {
+                                    if (!displayValue.isNullOrEmpty() && isbnHasCorrectFormat(
+                                            displayValue
+                                        )
+                                    ) {
                                         // Needs to shutdown and close here to avoid starting the next activity several times!
                                         cameraExecutor.shutdown()
                                         scanner.close()

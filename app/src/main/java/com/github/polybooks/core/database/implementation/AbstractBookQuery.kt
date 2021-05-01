@@ -2,7 +2,7 @@ package com.github.polybooks.core.database.implementation
 
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.interfaces.BookOrdering
-import com.github.polybooks.core.database.interfaces.BookOrdering.*
+import com.github.polybooks.core.database.interfaces.BookOrdering.DEFAULT
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.utils.regulariseISBN
@@ -10,11 +10,11 @@ import com.github.polybooks.utils.regulariseISBN
 /**
  * Aggregates common code for all BookQueries.
  * */
-internal abstract class AbstractBookQuery : BookQuery {
-    protected var interests : Collection<Interest>? = null
-    protected var title : String? = null
-    protected var isbns : Set<String>? = null
-    protected var ordering : BookOrdering = DEFAULT;
+internal abstract class AbstractBookQuery: BookQuery {
+    protected var interests: Collection<Interest>? = null
+    protected var title: String? = null
+    protected var isbns: Set<String>? = null
+    protected var ordering: BookOrdering = DEFAULT;
 
     override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
         title = null
@@ -31,7 +31,9 @@ internal abstract class AbstractBookQuery : BookQuery {
     }
 
     override fun searchByISBN(isbns: Set<String>): BookQuery {
-        val regularised = isbns.map { regulariseISBN(it) ?: throw IllegalArgumentException("ISBN \"$it\" is not valid") }
+        val regularised = isbns.map {
+            regulariseISBN(it) ?: throw IllegalArgumentException("ISBN \"$it\" is not valid")
+        }
         title = null
         interests = null
         this.isbns = regularised.toSet()

@@ -1,43 +1,43 @@
 package com.github.polybooks
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
-import com.github.polybooks.core.*
+import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.core.BookCondition
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-class FilteringSalesActivity : AppCompatActivity() {
+class FilteringSalesActivity: AppCompatActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
-    private lateinit var mReset : Button
-    private lateinit var mResults : Button
+    private lateinit var mReset: Button
+    private lateinit var mResults: Button
 
     //--- hardcoded parameters: make it dynamic
-    private lateinit var mName : EditText
-    private lateinit var mISBN : EditText
-    private lateinit var mPriceMin : EditText
-    private lateinit var mPriceMax : EditText
+    private lateinit var mName: EditText
+    private lateinit var mISBN: EditText
+    private lateinit var mPriceMin: EditText
+    private lateinit var mPriceMax: EditText
 
-    private lateinit var mSortGroup : RadioGroup
-    private lateinit var mSortTitleInc : RadioButton
-    private lateinit var mSortTitleDec : RadioButton
-    private lateinit var mSortPriceInc : RadioButton
-    private lateinit var mSortPriceDec : RadioButton
+    private lateinit var mSortGroup: RadioGroup
+    private lateinit var mSortTitleInc: RadioButton
+    private lateinit var mSortTitleDec: RadioButton
+    private lateinit var mSortPriceInc: RadioButton
+    private lateinit var mSortPriceDec: RadioButton
 
-    private lateinit var mStateActive : CheckBox
-    private lateinit var mStateRetracted : CheckBox
-    private lateinit var mStateConcluded : CheckBox
+    private lateinit var mStateActive: CheckBox
+    private lateinit var mStateRetracted: CheckBox
+    private lateinit var mStateConcluded: CheckBox
 
 
-    private lateinit var mConditionNew : CheckBox
-    private lateinit var mConditionGood : CheckBox
-    private lateinit var mConditionWorn : CheckBox
+    private lateinit var mConditionNew: CheckBox
+    private lateinit var mConditionGood: CheckBox
+    private lateinit var mConditionWorn: CheckBox
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,18 +56,18 @@ class FilteringSalesActivity : AppCompatActivity() {
         setParametersButtons()
         // setParametersListener()
 
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.home ->{
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
-                    R.id.books ->{
+                    R.id.books -> {
                         startActivity(Intent(this, FilteringBooksActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
+                    R.id.user_profile -> {
                         // TODO: user sales
                         false
                     }
@@ -100,10 +100,10 @@ class FilteringSalesActivity : AppCompatActivity() {
     private fun setResultsButtonBehaviour() {
         mResults.setOnClickListener {
 
-            var query : SaleQuery = DummySalesQuery()
+            var query: SaleQuery = DummySalesQuery()
 
             //These 2 in front for dummy sales query
-            if(mName.text.isNotEmpty())
+            if (mName.text.isNotEmpty())
                 query = query.searchByTitle(mName.text.toString())
 
             /*
@@ -112,23 +112,23 @@ class FilteringSalesActivity : AppCompatActivity() {
                 query = query.searchByTitle(mISBN.text.toString())
             */
             query = query.searchByState(getStates())
-                    .searchByCondition(getCondition())
+                .searchByCondition(getCondition())
 
 
             // price
             val minPrice =
-                    if(mPriceMin.text.isNotEmpty()) mPriceMin.text.toString().toFloat()
-                    else 0.0f
+                if (mPriceMin.text.isNotEmpty()) mPriceMin.text.toString().toFloat()
+                else 0.0f
 
             val maxPrice =
-                    if(mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
-                    else Float.MAX_VALUE
+                if (mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
+                else Float.MAX_VALUE
 
-            query = query.searchByPrice(minPrice,maxPrice)
+            query = query.searchByPrice(minPrice, maxPrice)
             //---
             //DEBUG query.getAll().thenAccept { list -> Log.d(TAG,list.toString())}
             val querySettings = query.getSettings()
-            val intent : Intent = Intent(this, ListSalesActivity::class.java)
+            val intent: Intent = Intent(this, ListSalesActivity::class.java)
             intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
             startActivity(intent)
         }
@@ -156,20 +156,20 @@ class FilteringSalesActivity : AppCompatActivity() {
         mConditionWorn = findViewById(R.id.condition_worn)
     }
 
-    private fun getStates() : Set<SaleState> {
+    private fun getStates(): Set<SaleState> {
         var state = mutableSetOf<SaleState>()
-        if(mStateActive.isChecked) state.add(SaleState.ACTIVE)
-        if(mStateConcluded.isChecked) state.add(SaleState.CONCLUDED)
-        if(mStateRetracted.isChecked) state.add(SaleState.RETRACTED)
-        return if(state.isEmpty()) SaleState.values().toSet() else state.toSet()
+        if (mStateActive.isChecked) state.add(SaleState.ACTIVE)
+        if (mStateConcluded.isChecked) state.add(SaleState.CONCLUDED)
+        if (mStateRetracted.isChecked) state.add(SaleState.RETRACTED)
+        return if (state.isEmpty()) SaleState.values().toSet() else state.toSet()
     }
 
-    private fun getCondition() : Set<BookCondition> {
+    private fun getCondition(): Set<BookCondition> {
         var condition = mutableSetOf<BookCondition>()
-        if(mConditionGood.isChecked) condition.add(BookCondition.GOOD)
-        if(mConditionNew.isChecked) condition.add(BookCondition.NEW)
-        if(mConditionWorn.isChecked) condition.add(BookCondition.WORN)
-        return if(condition.isEmpty()) BookCondition.values().toSet() else condition.toSet()
+        if (mConditionGood.isChecked) condition.add(BookCondition.GOOD)
+        if (mConditionNew.isChecked) condition.add(BookCondition.NEW)
+        if (mConditionWorn.isChecked) condition.add(BookCondition.WORN)
+        return if (condition.isEmpty()) BookCondition.values().toSet() else condition.toSet()
     }
 
 }

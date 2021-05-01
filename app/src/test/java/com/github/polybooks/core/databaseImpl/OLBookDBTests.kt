@@ -20,8 +20,8 @@ class OLBookDBTests {
     val url2filename = mapOf(
         "/authors/OL7511250A.json" to "OL7511250A.json",
         "/authors/OL7482089A.json" to "OL7482089A.json",
-        "/authors/OL8315711A.json" to  "OL8315711A.json",
-        "/authors/OL8315712A.json" to  "OL8315712A.json",
+        "/authors/OL8315711A.json" to "OL8315711A.json",
+        "/authors/OL8315712A.json" to "OL8315712A.json",
         "/authors/OL6899222A.json" to "OL6899222A.json",
         "/authors/OL752714A.json" to "OL752714A.json",
         "/isbn/9782376863069.json" to "9782376863069.json",
@@ -31,11 +31,13 @@ class OLBookDBTests {
         "/isbn/9781603090476.json" to "9781603090476.json"
     )
     val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
-    val url2json = { url : String ->
+    val url2json = { url: String ->
         CompletableFuture.supplyAsync {
-            val regexMatch = urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
+            val regexMatch =
+                urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")
             val address = regexMatch.groups[1]?.value ?: throw Error("The regex is wrong")
-            val filename = url2filename[address] ?: throw FileNotFoundException("File Not Found : $url")
+            val filename =
+                url2filename[address] ?: throw FileNotFoundException("File Not Found : $url")
             val file = File("$baseDir/$filename")
             val stream = file.inputStream()
             JsonParser.parseReader(InputStreamReader(stream))
@@ -53,7 +55,7 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
+        val publishDate = Date(2020 - 1900, 6, 3)
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
@@ -83,7 +85,7 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
+        val publishDate = Date(2020 - 1900, 6, 3)
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
@@ -98,7 +100,7 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
+        val publishDate = Date(2020 - 1900, 6, 3)
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
@@ -133,7 +135,7 @@ class OLBookDBTests {
     @Test
     fun getNalsoWorks() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.queryBooks().searchByISBN(setOf("9782376863069")).getN(1,0)
+        val future = olDB.queryBooks().searchByISBN(setOf("9782376863069")).getN(1, 0)
         val books = future.get()
         assertEquals(1, books.size)
         val book = books[0]
@@ -143,14 +145,15 @@ class OLBookDBTests {
         assertNotNull(book.authors)
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
+        val publishDate = Date(2020 - 1900, 6, 3)
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
     fun getNalsoWorks2() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,1)
+        val future =
+            olDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1, 1)
         val books = future.get()
         assertEquals(1, books.size)
         val book = books[0]
@@ -161,14 +164,15 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         //This hurts, but otherwise we have problems with CEST and CET
-        val publishDate = Date(2020 -1900,6,3)
+        val publishDate = Date(2020 - 1900, 6, 3)
         assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
     fun getNalsoWorks3() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,0)
+        val future =
+            olDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1, 0)
         val books = future.get()
         assertEquals(1, books.size)
         val book = books[0]
@@ -178,7 +182,8 @@ class OLBookDBTests {
     @Test
     fun getNalsoWorks4() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4,0)
+        val future =
+            olDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4, 0)
         val books = future.get()
         assertEquals(2, books.size)
     }
@@ -186,7 +191,8 @@ class OLBookDBTests {
     @Test
     fun getMultipleBooksWorks() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getAll()
+        val future =
+            olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getAll()
         val books = future.get()
         assertEquals(2, books.size)
     }
@@ -194,7 +200,9 @@ class OLBookDBTests {
     @Test
     fun getMultipleBooksWorks2() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593", "1234567890666")).getAll()
+        val future =
+            olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593", "1234567890666"))
+                .getAll()
         val books = future.get()
         assertEquals(2, books.size)
     }
@@ -205,10 +213,10 @@ class OLBookDBTests {
         val olDB = OLBookDatabase(url2json)
         try {
             olDB.queryBooks().searchByISBN(setOf("this is no ISBN"))
-        } catch (e : IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             //success !
             return
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             throw AssertionFailedError("Expected IllegalArgumentException, got ${e.javaClass}")
         }
         throw AssertionFailedError("Expected IllegalArgumentException, got nothing")
@@ -219,10 +227,10 @@ class OLBookDBTests {
         val olDB = OLBookDatabase(url2json)
         try {
             olDB.queryBooks().searchByISBN(setOf("1234"))
-        } catch (e : IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             //success !
             return
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             throw AssertionFailedError("Expected IllegalArgumentException, got ${e.javaClass}")
         }
         throw AssertionFailedError("Expected IllegalArgumentException, got nothing")
@@ -233,10 +241,10 @@ class OLBookDBTests {
         val olDB = OLBookDatabase(url2json)
         try {
             olDB.queryBooks().getN(-4, 0)
-        } catch (e : IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             //success !
             return
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             throw AssertionFailedError("Expected IllegalArgumentException, got ${e.javaClass}")
         }
         throw AssertionFailedError("Expected IllegalArgumentException, got nothing")
@@ -247,10 +255,10 @@ class OLBookDBTests {
         val olDB = OLBookDatabase(url2json)
         try {
             olDB.queryBooks().getN(1, -4)
-        } catch (e : IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             //success !
             return
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             throw AssertionFailedError("Expected IllegalArgumentException, got ${e.javaClass}")
         }
         throw AssertionFailedError("Expected IllegalArgumentException, got nothing")
@@ -267,14 +275,14 @@ class OLBookDBTests {
     fun getSettingsAndFromSettingsMatch() {
         val olDB = OLBookDatabase(url2json)
         val settings = BookSettings(
-                BookOrdering.DEFAULT,
-                listOf("9782376863069", "1234567890666"),
-                "A Book",
-                null // TODO update when interests are ready
+            BookOrdering.DEFAULT,
+            listOf("9782376863069", "1234567890666"),
+            "A Book",
+            null // TODO update when interests are ready
         )
         assertEquals(
-                settings,
-                olDB.queryBooks().fromSettings(settings).getSettings()
+            settings,
+            olDB.queryBooks().fromSettings(settings).getSettings()
         )
     }
 
@@ -282,12 +290,12 @@ class OLBookDBTests {
     fun settingsModifiesStateOfQuery() {
         val olDB = OLBookDatabase(url2json)
         val settings = BookSettings(
-                BookOrdering.DEFAULT,
-                listOf("9782376863069", "1234567890666"),null, null
+            BookOrdering.DEFAULT,
+            listOf("9782376863069", "1234567890666"), null, null
         )
         assertNotEquals(
-                olDB.queryBooks().fromSettings(settings).getCount().get(),
-                olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getCount().get()
+            olDB.queryBooks().fromSettings(settings).getCount().get(),
+            olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getCount().get()
         )
     }
 
@@ -295,13 +303,13 @@ class OLBookDBTests {
     fun settingsQueriesTheSameWayAsSearchByISBN() {
         val olDB = OLBookDatabase(url2json)
         val settings = BookSettings(
-                BookOrdering.DEFAULT,
-                listOf("9782376863069", "9781985086593"),null, null
+            BookOrdering.DEFAULT,
+            listOf("9782376863069", "9781985086593"), null, null
         )
 
         assertEquals(
-                olDB.queryBooks().fromSettings(settings).getCount().get(),
-                olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getCount().get()
+            olDB.queryBooks().fromSettings(settings).getCount().get(),
+            olDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getCount().get()
         )
     }
 

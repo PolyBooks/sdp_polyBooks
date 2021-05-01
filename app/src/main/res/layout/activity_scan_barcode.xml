@@ -1,44 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     tools:context=".ScanBarcodeActivity">
 
-<!--    <Button
-        android:id="@+id/temporary_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="50dp"
-        android:elevation="2dp"
-        android:onClick="passISBN"
-        android:scaleType="fitCenter"
-        android:text="Pass ISBN"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />-->
+    <!--    <Button
+            android:id="@+id/temporary_button"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="50dp"
+            android:elevation="2dp"
+            android:onClick="passISBN"
+            android:scaleType="fitCenter"
+            android:text="Pass ISBN"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />-->
 
-<androidx.camera.view.PreviewView
-    android:id="@+id/viewFinder"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-<!--<com.google.mlkit.md.camera.CameraSourcePreview
-    android:id="@+id/camera_preview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <!--<com.google.mlkit.md.camera.CameraSourcePreview
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <include layout="@layout/camera_preview_overlay"/>
+        <include layout="@layout/camera_preview_overlay"/>
 
-</com.google.mlkit.md.camera.CameraSourcePreview>
+    </com.google.mlkit.md.camera.CameraSourcePreview>
 
-<include
-    layout="@layout/top_action_bar_in_live_camera"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="top"/>-->
+    <include
+        layout="@layout/top_action_bar_in_live_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

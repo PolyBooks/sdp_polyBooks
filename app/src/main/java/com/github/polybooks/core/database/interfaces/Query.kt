@@ -1,6 +1,5 @@
 package com.github.polybooks.core.database.interfaces
 
-import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -11,15 +10,15 @@ interface Query<T> {
     /**
      * Execute the query and return all the results in a Future.
      * */
-    fun getAll() : CompletableFuture<List<T>>
+    fun getAll(): CompletableFuture<List<T>>
 
     /**
      * Get the results in batches of at most n books.
      * */
-    fun getN(n : Int, page : Int) : CompletableFuture<List<T>>
+    fun getN(n: Int, page: Int): CompletableFuture<List<T>>
 
     /**
      * Get how many entries match this query
      * */
-    fun getCount() : CompletableFuture<Int>
+    fun getCount(): CompletableFuture<Int>
 }

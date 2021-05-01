@@ -41,7 +41,9 @@ class FillSaleTest {
         Espresso.onView(ViewMatchers.withId(R.id.user_profile)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.add_picture)).perform(scrollTo()).check(
             ViewAssertions.matches(
-                ViewMatchers.isDisplayed()))
+                ViewMatchers.isDisplayed()
+            )
+        )
     }
 
     @Test

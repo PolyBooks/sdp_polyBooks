@@ -13,12 +13,10 @@ import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import com.github.polybooks.core.database.implementation.DummyBookQuery
-import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * This activity let the users to select the sorting and filtering parameters
@@ -28,29 +26,29 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * Note : should implement a dynamic version of it soon
  */
-class FilteringBooksActivity : AppCompatActivity() {
+class FilteringBooksActivity: AppCompatActivity() {
 
-    private lateinit var mResetParameters : Button
-    private lateinit var mResults : Button
+    private lateinit var mResetParameters: Button
+    private lateinit var mResults: Button
 
     //--- TODO hardcoded parameters: make it dynamic
-    private lateinit var mSortGroup : RadioGroup
-    private lateinit var mSortPopularity : RadioButton
-    private lateinit var mSortTitleInc : RadioButton
-    private lateinit var mSortTitleDec : RadioButton
+    private lateinit var mSortGroup: RadioGroup
+    private lateinit var mSortPopularity: RadioButton
+    private lateinit var mSortTitleInc: RadioButton
+    private lateinit var mSortTitleDec: RadioButton
 
-    private lateinit var mFieldCS : CheckBox
-    private lateinit var mFieldBio : CheckBox
-    private lateinit var mFieldArchi : CheckBox
+    private lateinit var mFieldCS: CheckBox
+    private lateinit var mFieldBio: CheckBox
+    private lateinit var mFieldArchi: CheckBox
 
-    private lateinit var mSemBa1 : CheckBox
-    private lateinit var mSemBa2 : CheckBox
-    private lateinit var mSemBa3 : CheckBox
-    private lateinit var mSemMa1 : CheckBox
-    private lateinit var mSemMa2 : CheckBox
+    private lateinit var mSemBa1: CheckBox
+    private lateinit var mSemBa2: CheckBox
+    private lateinit var mSemBa3: CheckBox
+    private lateinit var mSemMa1: CheckBox
+    private lateinit var mSemMa2: CheckBox
 
-    private lateinit var mCourseCS306 : CheckBox
-    private lateinit var mCourseCOM480 : CheckBox
+    private lateinit var mCourseCS306: CheckBox
+    private lateinit var mCourseCOM480: CheckBox
 
     //------
 
@@ -64,24 +62,24 @@ class FilteringBooksActivity : AppCompatActivity() {
 
         // --- TODO hardcoded : make it dynamic
         setParametersButtons()
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.home ->{
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
-                    R.id.sales ->{
+                    R.id.sales -> {
                         startActivity(Intent(this, FilteringSalesActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
+                    R.id.user_profile -> {
                         // TODO: user sales
                         false
                     }
                     else -> true
                 }
-        }
+            }
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
     }
 
@@ -101,12 +99,12 @@ class FilteringBooksActivity : AppCompatActivity() {
     }
 
     fun getResults(view: View) {
-        var query : BookQuery = DummyBookQuery()
-                .onlyIncludeInterests(getInterests())
-                .withOrdering(getOrdering())
+        var query: BookQuery = DummyBookQuery()
+            .onlyIncludeInterests(getInterests())
+            .withOrdering(getOrdering())
 
         val querySettings = query.getSettings()
-        val intent : Intent = Intent(this, ListSalesActivity::class.java)
+        val intent: Intent = Intent(this, ListSalesActivity::class.java)
         intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
@@ -131,14 +129,14 @@ class FilteringBooksActivity : AppCompatActivity() {
         mCourseCOM480 = findViewById(R.id.COM480)
     }
 
-    private fun getOrdering() : BookOrdering {
+    private fun getOrdering(): BookOrdering {
         if (mSortPopularity.isChecked) return BookOrdering.DEFAULT //add it when available
         if (mSortTitleDec.isChecked) return BookOrdering.TITLE_DEC //add it when available
         if (mSortTitleInc.isChecked) return BookOrdering.TITLE_INC //add it when available
         else return BookOrdering.DEFAULT
     }
 
-    private fun getInterests() : Set<Interest> {
+    private fun getInterests(): Set<Interest> {
         val interests = mutableSetOf<Interest>()
         if (mFieldCS.isChecked) interests.add(Field(mFieldCS.text.toString()))
         if (mFieldBio.isChecked) interests.add(Field(mFieldBio.text.toString()))

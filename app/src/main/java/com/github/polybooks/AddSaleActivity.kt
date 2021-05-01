@@ -7,10 +7,10 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
+import com.github.polybooks.utils.setupNavbar
 
 
 const val ISBN = "com.github.polybooks.ISBN"
@@ -21,7 +21,7 @@ const val ISBN = "com.github.polybooks.ISBN"
  * It gives the option between scanning the book barcode or manually inputting the ISBN.
  * Both options reach the same end result, the FillSale activity, but through different steps.
  */
-class AddSaleActivity : AppCompatActivity() {
+class AddSaleActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,16 +30,18 @@ class AddSaleActivity : AppCompatActivity() {
 
 
         // Listener on fill-in ISBN to trigger pass ISBN button
-        findViewById<EditText>(R.id.fill_in_ISBN).addTextChangedListener(object : TextWatcher {
+        findViewById<EditText>(R.id.fill_in_ISBN).addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if(!s.isNullOrEmpty() && isbnHasCorrectFormat(s.toString())) {
+                if (!s.isNullOrEmpty() && isbnHasCorrectFormat(s.toString())) {
                     enableButton(findViewById(R.id.pass_isbn_button), applicationContext)
                 } else {
                     disableButton(findViewById(R.id.pass_isbn_button), applicationContext)
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })

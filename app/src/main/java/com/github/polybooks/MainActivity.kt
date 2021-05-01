@@ -10,7 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,23 +28,23 @@ class MainActivity : AppCompatActivity() {
         dbButton.setOnClickListener {
 //            val i : Intent = Intent(this, ListSalesActivity::class.java)
 //            val i : Intent = Intent(this, FilteringBooksActivity::class.java)
-            val i : Intent = Intent(this, FilteringSalesActivity::class.java)
+            val i: Intent = Intent(this, FilteringSalesActivity::class.java)
 
             startActivity(i)
         }
 
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.books ->{
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.books -> {
                         startActivity(Intent(this, FilteringBooksActivity::class.java))
                         true
                     }
-                    R.id.sales ->{
+                    R.id.sales -> {
                         startActivity(Intent(this, FilteringSalesActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
+                    R.id.user_profile -> {
                         // TODO: user sales
                         false
                     }

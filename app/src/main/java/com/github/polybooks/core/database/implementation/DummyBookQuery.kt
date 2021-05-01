@@ -1,7 +1,8 @@
 package com.github.polybooks.core.database.implementation
 
 import android.os.SystemClock
-import com.github.polybooks.core.*
+import com.github.polybooks.core.Book
+import com.github.polybooks.core.Interest
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.core.database.interfaces.BookSettings
@@ -9,19 +10,46 @@ import com.google.firebase.Timestamp
 import java.util.concurrent.CompletableFuture
 
 val default_books: List<Book> = listOf(
-        Book("Book1", listOf("Tolkien"), "Lord of the Rings", "?", "?", "?", Timestamp(format.parse("2016-05-05")!!), "?"),
-        Book("Book2", listOf("Hugo"), "Les Miserables", "?", "?", "?", Timestamp(format.parse("2016-05-05")!!), "?"),
-        Book("Book3", listOf("Baudelaire"), "Les fleurs du mal", "?", "?", "?", Timestamp(format.parse("2016-05-05")!!), "?")
+    Book(
+        "Book1",
+        listOf("Tolkien"),
+        "Lord of the Rings",
+        "?",
+        "?",
+        "?",
+        Timestamp(format.parse("2016-05-05")!!),
+        "?"
+    ),
+    Book(
+        "Book2",
+        listOf("Hugo"),
+        "Les Miserables",
+        "?",
+        "?",
+        "?",
+        Timestamp(format.parse("2016-05-05")!!),
+        "?"
+    ),
+    Book(
+        "Book3",
+        listOf("Baudelaire"),
+        "Les fleurs du mal",
+        "?",
+        "?",
+        "?",
+        Timestamp(format.parse("2016-05-05")!!),
+        "?"
+    )
 )
 
-class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery{
+class DummyBookQuery(private val books: List<Book> = default_books): BookQuery {
 
-    override fun onlyIncludeInterests(interests: Collection<Interest>) : BookQuery {
-       return DummyBookQuery()
+    override fun onlyIncludeInterests(interests: Collection<Interest>): BookQuery {
+        return DummyBookQuery()
     }
 
-    override fun searchByTitle(title : String) : BookQuery {
-       return DummyBookQuery()
+    override fun searchByTitle(title: String): BookQuery {
+        return DummyBookQuery()
     }
 
     override fun searchByISBN(isbns: Set<String>): BookQuery {
@@ -29,7 +57,7 @@ class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery
     }
 
 
-    override fun withOrdering(ordering : BookOrdering) : BookQuery {
+    override fun withOrdering(ordering: BookOrdering): BookQuery {
         return DummyBookQuery()
     }
 
@@ -48,7 +76,7 @@ class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery
         TODO("Not yet implemented")
     }
 
-    override fun getSettings() : BookSettings {
+    override fun getSettings(): BookSettings {
         return BookSettings(BookOrdering.DEFAULT, null, null, null)
     }
 

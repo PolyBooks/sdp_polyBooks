@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.polybooks">
     <!--
     Should we only allow for back-cameras? If yes, keep this line commented out
@@ -17,8 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyBooks">
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
-        <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -26,25 +29,30 @@
         <activity
             android:name=".ScanBarcodeActivity"
             android:parentActivityName=".AddSaleActivity" />
-        <activity android:name=".FillSaleActivity"
-            android:parentActivityName=".AddSaleActivity"/>
-        <activity android:name=".AddSaleActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".FillSaleActivity"
+            android:parentActivityName=".AddSaleActivity" />
+        <activity
+            android:name=".AddSaleActivity"
+            android:parentActivityName=".MainActivity" />
 
-        <activity android:name=".LoginActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".LoginActivity"
+            android:parentActivityName=".MainActivity" />
 
-        <activity android:name=".UserProfileActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".UserProfileActivity"
+            android:parentActivityName=".MainActivity" />
 
-        <activity android:name=".FilteringSalesActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".FilteringSalesActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ListSalesActivity"
             android:parentActivityName=".FilteringSalesActivity" />
         <activity
             android:name=".FilteringBooksActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -1,6 +1,5 @@
 package com.github.polybooks
 
-import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -9,22 +8,25 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.*
-import org.junit.*
-
+import org.hamcrest.Matchers.allOf
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
 class FilteringSalesTest {
     @get:Rule
-    val activityRule: ActivityScenarioRule<FilteringSalesActivity>
-        = ActivityScenarioRule(FilteringSalesActivity::class.java)
+    val activityRule: ActivityScenarioRule<FilteringSalesActivity> =
+        ActivityScenarioRule(FilteringSalesActivity::class.java)
 
     private val RANDOM_STRING = "BL1Abl6-a"
     private val RANDOM_NUMBER = "42"
@@ -44,9 +46,12 @@ class FilteringSalesTest {
 
         onView(withId(R.id.results_button)).perform(click())
 
-        intended(allOf(
+        intended(
+            allOf(
                 hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)))
+                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)
+            )
+        )
     }
 
     @Test
@@ -108,13 +113,13 @@ class FilteringSalesTest {
     }
 
     private fun checkTextEditsAreEmpty() {
-        onView(withId(R.id.book_name)).perform(scrollTo(),click())
+        onView(withId(R.id.book_name)).perform(scrollTo(), click())
         onView(withId(R.id.book_name)).check(matches(withText("")))
-        onView(withId(R.id.book_isbn)).perform(scrollTo(),click())
+        onView(withId(R.id.book_isbn)).perform(scrollTo(), click())
         onView(withId(R.id.book_isbn)).check(matches(withText("")))
-        onView(withId(R.id.price_min)).perform(scrollTo(),click())
+        onView(withId(R.id.price_min)).perform(scrollTo(), click())
         onView(withId(R.id.price_min)).check(matches(withText("")))
-        onView(withId(R.id.price_max)).perform(scrollTo(),click())
+        onView(withId(R.id.price_max)).perform(scrollTo(), click())
         onView(withId(R.id.price_max)).check(matches(withText("")))
     }
 
@@ -149,10 +154,10 @@ class FilteringSalesTest {
         onView(withId(R.id.condition_worn)).perform(scrollTo(), click())
     }
 
-    private fun checkAllParamButtons(isChecked : Boolean) {
-        val checkFun = if(isChecked) isChecked() else isNotChecked()
+    private fun checkAllParamButtons(isChecked: Boolean) {
+        val checkFun = if (isChecked) isChecked() else isNotChecked()
 
-        if(!isChecked) {
+        if (!isChecked) {
             onView(withId(R.id.title_inc_sort)).check(matches(checkFun))
             onView(withId(R.id.title_dec_sort)).check(matches(checkFun))
             onView(withId(R.id.price_inc_sort)).check(matches(checkFun))
@@ -162,20 +167,20 @@ class FilteringSalesTest {
             onView(withId(R.id.publish_date_dec_sort)).check(matches(checkFun))
             */
         }
-    /*
-        onView(withId(R.id.CS)).check(matches(checkFun))
-        onView(withId(R.id.Biology)).check(matches(checkFun))
-        onView(withId(R.id.Archi)).check(matches(checkFun))
-
-        onView(withId(R.id.ic_ba1)).check(matches(checkFun))
-        onView(withId(R.id.ma_ba2)).check(matches(checkFun))
-        onView(withId(R.id.sv_ba3)).check(matches(checkFun))
-        onView(withId(R.id.gc_ma1)).check(matches(checkFun))
-        onView(withId(R.id.mt_ma2)).check(matches(checkFun))
-
-        onView(withId(R.id.CS306)).check(matches(checkFun))
-        onView(withId(R.id.COM480)).check(matches(checkFun))
-*/
+        /*
+            onView(withId(R.id.CS)).check(matches(checkFun))
+            onView(withId(R.id.Biology)).check(matches(checkFun))
+            onView(withId(R.id.Archi)).check(matches(checkFun))
+    
+            onView(withId(R.id.ic_ba1)).check(matches(checkFun))
+            onView(withId(R.id.ma_ba2)).check(matches(checkFun))
+            onView(withId(R.id.sv_ba3)).check(matches(checkFun))
+            onView(withId(R.id.gc_ma1)).check(matches(checkFun))
+            onView(withId(R.id.mt_ma2)).check(matches(checkFun))
+    
+            onView(withId(R.id.CS306)).check(matches(checkFun))
+            onView(withId(R.id.COM480)).check(matches(checkFun))
+    */
         onView(withId(R.id.state_active)).check(matches(checkFun))
         onView(withId(R.id.state_retracted)).check(matches(checkFun))
         onView(withId(R.id.state_concluded)).check(matches(checkFun))

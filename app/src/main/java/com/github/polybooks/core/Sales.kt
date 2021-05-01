@@ -5,9 +5,6 @@ import android.media.Image
 import com.google.firebase.Timestamp
 import java.io.Serializable
 
-
-import java.util.*
-
 /**
  * The Sale class contains all the information about a book on sale.
  * @property book The isbn13 of the book that is being sold
@@ -19,14 +16,14 @@ import java.util.*
  * */
 
 data class Sale(
-        val book : Book,
-        val seller : User,
-        val price : Float,
-        val condition : BookCondition,
-        val date : Timestamp,
-        val state : SaleState,
-        val image : Image?
-        ) : Serializable
+    val book: Book,
+    val seller: User,
+    val price: Float,
+    val condition: BookCondition,
+    val date: Timestamp,
+    val state: SaleState,
+    val image: Image?
+): Serializable
 
 
 /**

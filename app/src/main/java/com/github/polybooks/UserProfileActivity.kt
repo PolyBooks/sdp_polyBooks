@@ -5,9 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseUser
 
-class UserProfileActivity : AppCompatActivity() {
+class UserProfileActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +16,7 @@ class UserProfileActivity : AppCompatActivity() {
         val welcomeText = "Hello $username !"
 
         val textMessageView = findViewById<TextView>(R.id.welcome_text);
-        textMessageView.apply {text = welcomeText}
+        textMessageView.apply { text = welcomeText }
 
         val buttonSellBook: Button = findViewById(R.id.sell_book_button)
         buttonSellBook.setOnClickListener {

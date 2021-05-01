@@ -3,8 +3,6 @@ package com.github.polybooks
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.utils.setupNavbar
@@ -20,10 +18,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME";
+
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
-class LoginActivity : AppCompatActivity() {
+class LoginActivity: AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
@@ -34,14 +33,14 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
         val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.setOnClickListener{
+        signInButton.setOnClickListener {
             signIn()
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
@@ -64,11 +63,19 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                Toast.makeText(this@LoginActivity, "Hey "+ account.displayName + "! You are connected :)", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Hey " + account.displayName + "! You are connected :)",
+                    Toast.LENGTH_LONG
+                ).show()
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 Log.w(TAG, "Google sign in failed", e)
-                Toast.makeText(this@LoginActivity, "Sorry... Something went wrong", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Sorry... Something went wrong",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -76,22 +83,22 @@ class LoginActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "signInWithCredential:success")
-                        val user = auth.currentUser
-                        updateUI(user)
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.exception)
-                        updateUI(null)
-                    }
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "signInWithCredential:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    updateUI(null)
                 }
+            }
     }
 
     //TODO : what is this?
     private fun updateUI(user: FirebaseUser?) {
-        if(user != null) {
+        if (user != null) {
             val intent = Intent(this, UserProfileActivity::class.java).apply {
                 putExtra(EXTRA_MESSAGE, user.displayName)
             }
@@ -105,7 +112,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     public fun signOut() {
-        if(Firebase.auth != null) {
+        if (Firebase.auth != null) {
             Firebase.auth.signOut()
             Log.d(TAG, "signed out")
         }

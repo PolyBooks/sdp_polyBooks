@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
@@ -16,9 +15,9 @@ import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
+import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
-import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 
@@ -27,7 +26,7 @@ import java.util.concurrent.CompletableFuture
  * shows the retrieved data, but does not allow modification of it, only confirmation,
  * and offers some additional manual fields such as price, condition, etc.
  */
-class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class FillSaleActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
     private val salesDB = SaleDatabase()
@@ -47,7 +46,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // Check if ISBN in our database: (could check ISBN validity before)
 
         // Retrieve book data and display it if possible, else redirect with error toast
-        if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN)) {
+        if (!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
                 val book = bookFuture.get()
@@ -80,12 +79,14 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         spinner.onItemSelectedListener = this
 
         // Listener on fill-in book price to trigger confirm button
-        findViewById<EditText>(R.id.filled_price).addTextChangedListener(object : TextWatcher {
+        findViewById<EditText>(R.id.filled_price).addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 handleConfirmButton()
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
@@ -161,7 +162,9 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     private fun handleConfirmButton() {
-        if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
+        if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString()
+                .isNotEmpty()
+        ) {
             enableButton(findViewById(R.id.confirm_sale_button), applicationContext)
         } else {
             disableButton(findViewById(R.id.confirm_sale_button), applicationContext)

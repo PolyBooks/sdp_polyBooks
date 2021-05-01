@@ -1,14 +1,11 @@
 package com.github.polybooks
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers
@@ -26,8 +23,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FilteringBooksTest {
     @get:Rule
-    val activityRule : ActivityScenarioRule<FilteringBooksActivity>
-            = ActivityScenarioRule(FilteringBooksActivity::class.java)
+    val activityRule: ActivityScenarioRule<FilteringBooksActivity> =
+        ActivityScenarioRule(FilteringBooksActivity::class.java)
 
     @Before
     fun before() {
@@ -44,9 +41,12 @@ class FilteringBooksTest {
         onView(withId(R.id.results_button)).perform(click())
         intended(hasComponent(ListSalesActivity::class.java.name))
 
-        intended(allOf(
+        intended(
+            allOf(
                 hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS)))
+                hasExtraWithKey(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS)
+            )
+        )
     }
 
     @Test
@@ -103,10 +103,10 @@ class FilteringBooksTest {
         onView(withId(R.id.COM480)).perform(scrollTo(), click())
     }
 
-    private fun checkAllParamButtons(isChecked : Boolean) {
-        val checkFun = if(isChecked) ViewMatchers.isChecked() else ViewMatchers.isNotChecked()
+    private fun checkAllParamButtons(isChecked: Boolean) {
+        val checkFun = if (isChecked) ViewMatchers.isChecked() else ViewMatchers.isNotChecked()
 
-        if(!isChecked) {
+        if (!isChecked) {
             onView(withId(R.id.popularity_sort)).check(ViewAssertions.matches(checkFun))
             onView(withId(R.id.title_inc_sort)).check(ViewAssertions.matches(checkFun))
             onView(withId(R.id.title_dec_sort)).check(ViewAssertions.matches(checkFun))
