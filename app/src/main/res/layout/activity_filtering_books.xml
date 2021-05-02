@@ -15,11 +15,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="9dp"
-
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    style="@style/Button" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/Button" />
 
 
     <!--    Go to results -->
@@ -33,6 +32,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textAllCaps="false"
         style="@style/Button" />
 
     <!--    Lists of parameters -->

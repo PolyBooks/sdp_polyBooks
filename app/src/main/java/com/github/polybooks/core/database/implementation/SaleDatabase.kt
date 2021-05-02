@@ -207,13 +207,13 @@ class SaleDatabase: SaleDatabase {
             isbn13 = settings.isbn
             title = settings.title
 
-            if (settings.interests == null) interests == null
+            if (settings.interests == null) interests = null
             else onlyIncludeInterests(settings.interests)
 
-            if (settings.states == null) states == null
+            if (settings.states == null) states = null
             else searchByState(settings.states)
 
-            if (settings.conditions == null) conditions
+            if (settings.conditions == null) conditions = null
             else searchByCondition(settings.conditions)
 
             minPrice = settings.minPrice
