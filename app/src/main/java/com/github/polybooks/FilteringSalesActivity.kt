@@ -18,7 +18,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 /**
- * Activity to filter the sales existing in the database given different parameters
+ * This activity let the users selecting the sorting and filtering the sales by clicking
+ * on the corresponding values for each parameter (eg. "Architecture" button for
+ * parameter "Field"). If no value is selected for a given parameter, then the
+ * query won't be filtered on this parameter
  */
 class FilteringSalesActivity: AppCompatActivity() {
 
