@@ -18,6 +18,7 @@ import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
@@ -30,8 +31,9 @@ import java.util.concurrent.CompletableFuture
 class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
-    private val salesDB = SaleDatabase()
+    private val firestore = FirebaseFirestore.getInstance()
     private val bookDB = OLBookDatabase { string -> url2json(string) }
+    private val salesDB = SaleDatabase(firestore, bookDB)
 
     private lateinit var bookFuture: CompletableFuture<Book?>
     private var bookConditionSelected: BookCondition? = null
@@ -141,19 +143,15 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
      * (i.e. book, condition, user, price, date)
      */
     fun confirmSale(view: View) {
-        // store Sale in our database
-        val sale = Sale(
-            bookFuture.get()!!, // TODO maybe ensure above that the button is disabled if book is null
-            LocalUser, // TODO user
-            findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
-            // Should never be null as the button is not enabled otherwise
-            bookConditionSelected!!,
-            Timestamp.now(),
-            SaleState.ACTIVE,
-            null
+        salesDB.addSale(
+            bookISBN = bookFuture.get()!!.isbn,
+            seller = LoggedUser(123456, "Alice"), //TODO handle real User
+            price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
+            condition = bookConditionSelected!!,
+            state = SaleState.ACTIVE,
+            image = null
         )
-
-        salesDB.addSale(sale)
+        //TODO handle success or failure of the addSale
 
         // TODO determine to which activity we land, but probably not MainActivity but rather a confirmation page
         val intent = Intent(this, MainActivity::class.java)
