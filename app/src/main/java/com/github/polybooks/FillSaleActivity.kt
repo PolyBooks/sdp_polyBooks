@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
@@ -21,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
-
 
 /**
  * This activity receives the ISBN, either manually inputted from AddSale or deduced from the scanned barcode,
@@ -45,6 +45,8 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
+
+        // Check if ISBN in our database: (could check ISBN validity before)
 
         // Retrieve book data and display it if possible, else redirect with error toast
         if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN)) {
@@ -92,6 +94,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         // Disable confirm button until filled
         disableButton(findViewById(R.id.confirm_sale_button), applicationContext)
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
     /**

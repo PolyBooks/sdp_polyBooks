@@ -37,7 +37,8 @@
         <activity android:name=".UserProfileActivity"
             android:parentActivityName=".MainActivity"/>
 
-        <activity android:name=".FilteringSalesActivity" />
+        <activity android:name=".FilteringSalesActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".ListSalesActivity"
             android:parentActivityName=".FilteringSalesActivity" />

@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.setupNavbar
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -45,6 +46,8 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         auth = Firebase.auth
+
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
     override fun onStart() {
@@ -86,6 +89,7 @@ class LoginActivity : AppCompatActivity() {
                 }
     }
 
+    //TODO : what is this?
     private fun updateUI(user: FirebaseUser?) {
         if(user != null) {
             val intent = Intent(this, UserProfileActivity::class.java).apply {

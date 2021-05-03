@@ -29,13 +29,14 @@ interface SaleDatabase {
             = querySales().withOrdering(ordering).getN(numberOfSales, page)
 
     /**
-     * Add the given sale to the database
+     * Add the sale defined by the given parameters to the database
      * @param book the isbn of the book being sold
      * @param seller the user selling the book (can't be the local user)
      * @param price the price of the sale
      * @param condition the condition of the book
      * @param state the state of the sale
      * @param image the image describing the book being sold
+     * @return a future containing the sale created and added to the database
      */
     fun addSale(book : ISBN,
                 seller : User,
@@ -43,6 +44,14 @@ interface SaleDatabase {
                 condition : BookCondition,
                 state : SaleState,
                 image : Image?) : CompletableFuture<Sale>
+
+    /**
+     * Add a sale defined by the attributes of the given sale.
+     * @param sale the sale defining the new sale.
+     * @return a future containing the sale created and added to the database.
+     * */
+    fun addSale(sale: Sale) : CompletableFuture<Sale> =
+        addSale(sale.book.isbn, sale.seller, sale.price, sale.condition, sale.state, sale.image)
 
     /**
      * Delete the given sale to the database

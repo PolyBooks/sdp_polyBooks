@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/Button" />
@@ -76,13 +76,13 @@
 
                         <RadioButton
                             android:id="@+id/popularity_sort"
-                            android:text="@string/popularity"
+                            android:text="@string/book_ordering_popularity"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent" />
 
                         <RadioButton
                             android:id="@+id/title_inc_sort"
-                            android:text="@string/title_inc"
+                            android:text="@string/book_ordering_title_inc"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent" />
 
@@ -90,7 +90,7 @@
                             android:id="@+id/title_dec_sort"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="@string/title_dec" />
+                            android:text="@string/book_ordering_title_dec" />
 
                     </RadioGroup>
                 </HorizontalScrollView>
@@ -105,7 +105,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:text="@string/field"
+                    android:text="@string/interest_field"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAllCaps="false"
@@ -151,7 +151,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:text="@string/semester"
+                    android:text="@string/interest_semester"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAllCaps="false"
@@ -210,7 +210,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:text="@string/course"
+                    android:text="@string/interest_course"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAllCaps="false"
@@ -244,6 +244,15 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_navigation_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="labeled"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

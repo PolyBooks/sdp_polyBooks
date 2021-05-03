@@ -1,9 +1,9 @@
 package com.github.polybooks
 
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import org.hamcrest.CoreMatchers.not
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -50,8 +50,8 @@ class AddSaleActivityTest {
     }
 
     private fun inputISBN(isbn: String) {
-        onView(withId(R.id.fill_in_ISBN)).perform(ViewActions.clearText(), ViewActions.typeText(isbn))
-        Espresso.closeSoftKeyboard()
+        onView(withId(R.id.fill_in_ISBN)).perform(clearText(), typeText(isbn))
+        closeSoftKeyboard()
     }
 
     @Test
@@ -81,5 +81,46 @@ class AddSaleActivityTest {
                 IntentMatchers.hasExtra(extraKey, stringISBN)
             )
         )
+    }
+
+    @Test
+    fun navBarSales() {
+        onView(withId(R.id.sales)).perform(click())
+        intended(hasComponent(FilteringSalesActivity::class.java.name))
+    }
+
+    @Test
+    fun navBarProfile() {
+        onView(withId(R.id.user_profile)).perform(click())
+        onView(withId(R.id.pass_isbn_button)).check(ViewAssertions.matches(isDisplayed()))
+    }
+
+    @Test
+    fun navBarBooks() {
+        onView(withId(R.id.books)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+    }
+
+    @Test
+    fun navBarDefault() {
+        onView(withId(R.id.default_selected)).check(
+            ViewAssertions.matches(
+                withEffectiveVisibility(
+                    Visibility.GONE
+                )
+            )
+        )
+        onView(withId(R.id.default_selected)).check(ViewAssertions.matches(Matchers.not(isEnabled())))
+    }
+
+    @Test
+    fun navBarSelected() {
+        onView(withId(R.id.default_selected)).check(ViewAssertions.matches(isSelected()))
+    }
+
+    @Test
+    fun navBarHome() {
+        onView(withId(R.id.home)).perform(click())
+        intended(hasComponent(MainActivity::class.java.name))
     }
 }

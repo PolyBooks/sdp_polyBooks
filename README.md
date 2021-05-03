@@ -2,3 +2,4 @@
 
 # sdp_polyBooks
 
+Menu icons made by Freepik from www.flaticon.com
