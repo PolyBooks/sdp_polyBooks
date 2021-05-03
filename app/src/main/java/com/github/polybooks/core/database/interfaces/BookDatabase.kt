@@ -1,6 +1,7 @@
 package com.github.polybooks.core.database.interfaces
 
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
@@ -23,7 +24,7 @@ interface BookDatabase {
     /**
      * Get data about a Book from the database given it's ISBN
      * */
-    fun getBook(isbn : String) : CompletableFuture<Book?>
+    fun getBook(isbn : ISBN) : CompletableFuture<Book?>
             = queryBooks().searchByISBN(setOf(isbn)).getAll().thenApply { it.firstOrNull() }
 
     /**
@@ -57,7 +58,7 @@ interface BookQuery : Query<Book> {
      * Set this query to get the books associated with the given ISBNs, if they exist.
      * (ignoring other filters)
      * */
-    fun searchByISBN(isbns : Set<String>) : BookQuery
+    fun searchByISBN(isbns : Set<ISBN>) : BookQuery
 
     /**
      * Set this query to order books with the given ordering.
@@ -87,7 +88,7 @@ interface BookQuery : Query<Book> {
  */
 data class BookSettings(
         val ordering: BookOrdering,
-        val isbns : List<String>?,
+        val isbns : List<ISBN>?,
         val title : String?,
         val interests : Set<Interest>?
 ) : Serializable
