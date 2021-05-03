@@ -1,9 +1,6 @@
 package com.github.polybooks.core.database.interfaces
 
-import com.github.polybooks.core.BookCondition
-import com.github.polybooks.core.Interest
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
@@ -11,8 +8,6 @@ import java.util.concurrent.CompletableFuture
  * Provides the API for accessing sales in a Database.
  * */
 interface SaleDatabase {
-
-    fun getCollectionName(): String = "sale"
 
     /**
      * Create a new query for Sales. It originally matches all sales.
@@ -37,16 +32,36 @@ interface SaleDatabase {
     ): CompletableFuture<List<Sale>> = querySales().withOrdering(ordering).getN(numberOfSales, page)
 
     /**
-     * Add the given sale to the database
-     * @param sale The sale to insert
+     * Add the sale defined by the given parameters to the database
+     * @param book the isbn of the book being sold
+     * @param seller the user selling the book (can't be the local user)
+     * @param price the price of the sale
+     * @param condition the condition of the book
+     * @param state the state of the sale
+     * @param image the image describing the book being sold
+     * @return a future containing the sale created and added to the database
      */
-    fun addSale(sale: Sale)
+    fun addSale(book : ISBN,
+                seller : User,
+                price : Float,
+                condition : BookCondition,
+                state : SaleState,
+                image : Image?) : CompletableFuture<Sale>
+
+    /**
+     * Add a sale defined by the attributes of the given sale.
+     * @param sale the sale defining the new sale.
+     * @return a future containing the sale created and added to the database.
+     * */
+    fun addSale(sale: Sale) : CompletableFuture<Sale> =
+        addSale(sale.book.isbn, sale.seller, sale.price, sale.condition, sale.state, sale.image)
 
     /**
      * Delete the given sale to the database
      * @param sale The sale to delete
+     * @return A completable future of whether a sale was deleted (i.e. if it existed)
      */
-    fun deleteSale(sale: Sale)
+    fun deleteSale(sale: Sale) : CompletableFuture<Boolean>
 }
 
 /**

@@ -1,30 +1,28 @@
 package com.github.polybooks.core.database.implementation
 
-import android.util.Log
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.DatabaseException
 import com.github.polybooks.core.database.LocalUserException
+import com.github.polybooks.core.database.interfaces.*
 import com.github.polybooks.core.database.interfaces.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.github.polybooks.core.database.interfaces.SaleSettings
+import com.github.polybooks.core.database.interfaces.SaleOrdering.*
+import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import java.util.concurrent.CompletableFuture
 
-class SaleDatabase: SaleDatabase {
+private const val COLLECTION_NAME = "sale2"
 
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val saleRef: CollectionReference = db.collection(getCollectionName())
+class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabase) : SaleDatabase {
 
-    inner class SalesQuery: SaleQuery {
+    private val saleRef: CollectionReference = firestore.collection(COLLECTION_NAME)
 
-        private var isbn13: String? = null
+    private inner class SalesQuery : SaleQuery {
+
+        private var isbn: ISBN? = null
         private var title: String? = null
 
         private var interests: Set<Interest>? = null
@@ -34,8 +32,11 @@ class SaleDatabase: SaleDatabase {
         private var minPrice: Float? = null
         private var maxPrice: Float? = null
 
+        private var ordering: SaleOrdering = DEFAULT
+
         override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
             if (interests.isNotEmpty()) this.interests = interests
+            else this.interests = null
             return this
         }
 
@@ -46,11 +47,13 @@ class SaleDatabase: SaleDatabase {
 
         override fun searchByState(state: Set<SaleState>): SaleQuery {
             if (state.isNotEmpty()) this.states = state
+            else this.states = null
             return this
         }
 
         override fun searchByCondition(condition: Set<BookCondition>): SaleQuery {
             if (condition.isNotEmpty()) this.conditions = condition
+            else this.conditions = null
             return this
         }
 
@@ -69,71 +72,81 @@ class SaleDatabase: SaleDatabase {
         }
 
         override fun withOrdering(ordering: SaleOrdering): SaleQuery {
-            TODO("Not yet implemented")
-        }
-
-        override fun searchByISBN(isbn13: String): SaleQuery {
-            this.isbn13 = isbn13
+            this.ordering = ordering
             return this
         }
 
-        private fun getQuery(): Query {
-            var query: Query = saleRef
+        override fun searchByISBN(isbn: ISBN): SaleQuery {
+            this.isbn = isbn
+            return this
+        }
 
-            // TODO: add these when necessary
-            // isbn13?.let { query = query.whereEqualTo("isbn", isbn13) }
-            // TODO: fix this for title
-            // FieldPath.of(SaleFields.BOOK.fieldName, BookFields.TITLE.fieldName)
-            title?.let {
-                query = query.whereEqualTo(
-                    SaleFields.BOOK.fieldName + "." + BookFields.TITLE.fieldName,
-                    title
-                )
-            }//SaleFields.BOOK.fieldName[BookFields.TITLE.fieldName]
-            // interests?.let { query = query.whereIn("interests", interests!!.toList()) }
-            states?.let { query = query.whereIn(SaleFields.STATE.fieldName, states!!.toList()) }
-            // TODO: fix this with whereIN
-            // https://stackoverflow.com/questions/45419272/firebase-how-to-structure-for-multiple-where-in-query
-            // Or find a way to this in client
+        //This functions computes the set of queries to execute in order to get the desired Sales.
+        //We need to return a set of queries because Firebase doesn't allow for more than one IN clause.
+        //Ergo, we need to do multiple queries.
+        private fun filterQuery(q: Query) : List<Query> {
+            var queries = listOf(q)
+
+            minPrice?.let { queries = queries.map{it.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!)} }
+            maxPrice?.let { queries = queries.map{it.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!)} }
+            states?.let {
+                queries = queries.flatMap { query ->
+                    states!!.map{ state -> query.whereEqualTo(SaleFields.STATE.fieldName, state) }
+                }
+            }
             conditions?.let {
-                query = query.whereIn(SaleFields.CONDITION.fieldName, conditions!!.toList())
-            }
-            minPrice?.let {
-                query = query.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!)
-            }
-            maxPrice?.let {
-                query = query.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!)
+                queries = queries.flatMap{ query ->
+                    conditions!!.map{ condition -> query.whereEqualTo(SaleFields.CONDITION.fieldName, condition) }
+                }
             }
 
-            return query
+            return queries
         }
 
-        internal fun getReferenceID(sale: Sale): Task<QuerySnapshot> {
-            val query = querySales()
-                .searchByTitle(sale.book.title)
-                .searchByState(setOf(sale.state))
-                .searchByPrice(sale.price, sale.price) as SalesQuery
-            return query.getQuery().get()
-
+        //FIXME make pages work
+        private fun paginateQuery(query: Query, n: Int, page: Int) : Query {
+            return query.limit(n.toLong())
         }
 
-        override fun getAll(): CompletableFuture<List<Sale>> {
-            val future: CompletableFuture<List<Sale>> = CompletableFuture()
-
-            getQuery()
-                .get()
+        private fun doQuery(query : Query) : CompletableFuture<Iterable<DocumentSnapshot>> {
+            val future = CompletableFuture<Iterable<DocumentSnapshot>>()
+            query.get()
                 .addOnSuccessListener { documents ->
-                    future.complete(documents.map { document ->
-                        snapshotToSale(document)
-                    })
+                    future.complete(documents)
                 }
                 .addOnFailureListener {
                     future.completeExceptionally(
-                        DatabaseException("Query could not be completed")
+                        DatabaseException("Query could not be completed: $it")
                     )
                 }
-
             return future
+        }
+
+        private fun doQueries(queries : List<Query>) : CompletableFuture<Iterable<DocumentSnapshot>> {
+            return listOfFuture2FutureOfList(queries.map { doQuery(it) }.toList()).thenApply { it.flatten() }
+        }
+
+
+        private fun getBookQuery() : BookQuery {
+            var bookQuery = bookDB.queryBooks()
+            if (interests != null) bookQuery.onlyIncludeInterests(interests!!)
+            if (title != null) bookQuery.searchByTitle(title!!)
+            if (isbn != null) bookQuery.searchByISBN(setOf(isbn!!))
+            return bookQuery
+        }
+
+        override fun getAll(): CompletableFuture<List<Sale>> {
+            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                return doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
+            } else {
+                val booksFuture = getBookQuery().getAll()
+                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                    val isbns = books.map {it.isbn}
+                    val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
+                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    doQueries(filterQuery(saleQuery)).thenCompose { snapshotsToSales(it,isbnToBook) }
+                }
+            }
         }
 
         override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
@@ -155,45 +168,37 @@ class SaleDatabase: SaleDatabase {
                 return future
             }
 
-            // FIXME ignoring page number for now
-            getQuery()
-                .limit(n.toLong())
-                .get()
-                .addOnSuccessListener { documents ->
-                    future.complete(documents.map { document ->
-                        snapshotToSale(document)
-                    })
+            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                return doQueries(filterQuery(paginateQuery(saleRef, n, page))).thenCompose { snapshotsToSales(it) }
+            } else {
+                val booksFuture = getBookQuery().getAll()
+                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                    val isbns = books.map {it.isbn}
+                    val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
+                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    doQueries(filterQuery(paginateQuery(saleQuery, n, page))).thenCompose { snapshotsToSales(it,isbnToBook) }
                 }
-                .addOnFailureListener {
-                    future.completeExceptionally(
-                        DatabaseException("Query could not be completed")
-                    )
-                }
-
-            return future
+            }
         }
 
         override fun getCount(): CompletableFuture<Int> {
-            val future: CompletableFuture<Int> = CompletableFuture()
-
-            getQuery()
-                .get()
-                .addOnSuccessListener { documents ->
-                    future.complete(documents.fold(0) { acc, _ -> acc + 1 })
+            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                return doQueries(filterQuery(saleRef)).thenApply { it.count() }
+            } else {
+                val booksFuture = getBookQuery().getAll()
+                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                    if (books.isEmpty()) return@thenCompose CompletableFuture.completedFuture(0)
+                    val isbns = books.map {it.isbn}
+                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    doQueries(filterQuery(saleQuery)).thenApply { it.count() }
                 }
-                .addOnFailureListener {
-                    future.completeExceptionally(
-                        DatabaseException("Query count could not be completed")
-                    )
-                }
-
-            return future
+            }
         }
 
         override fun getSettings(): SaleSettings {
             return SaleSettings(
-                SaleOrdering.DEFAULT, //TODO change when ordering implemented
-                isbn13,
+                ordering,
+                isbn,
                 title,
                 interests,
                 states,
@@ -204,41 +209,21 @@ class SaleDatabase: SaleDatabase {
         }
 
         override fun fromSettings(settings: SaleSettings): SaleQuery {
-            isbn13 = settings.isbn
+            isbn = settings.isbn
             title = settings.title
-
-            if (settings.interests == null) interests = null
-            else onlyIncludeInterests(settings.interests)
-
-            if (settings.states == null) states = null
-            else searchByState(settings.states)
-
-            if (settings.conditions == null) conditions = null
-            else searchByCondition(settings.conditions)
-
+            interests = settings.interests
+            states = settings.states
+            conditions = settings.conditions
             minPrice = settings.minPrice
             maxPrice = settings.maxPrice
+            ordering = settings.ordering
 
             return this
         }
     }
 
-    override fun querySales(): SalesQuery {
+    override fun querySales(): SaleQuery {
         return SalesQuery()
-    }
-
-    private fun snapshotToBook(map: HashMap<String, Any>): Book {
-        return Book(
-            map[BookFields.ISBN.fieldName] as String,
-            map[BookFields.AUTHORS.fieldName] as List<String>?,
-            map[BookFields.TITLE.fieldName] as String,
-            map[BookFields.EDITION.fieldName] as String?,
-            map[BookFields.LANGUAGE.fieldName] as String?,
-            map[BookFields.PUBLISHER.fieldName] as String?,
-            map[BookFields.PUBLISHDATE.fieldName] as Timestamp?,
-            map[BookFields.FORMAT.fieldName] as String?
-        )
-
     }
 
     private fun snapshotToUser(map: HashMap<String, Any>): User {
@@ -248,9 +233,10 @@ class SaleDatabase: SaleDatabase {
         return LoggedUser(uid, pseudo)
     }
 
-    private fun snapshotToSale(snapshot: DocumentSnapshot): Sale {
+    private fun snapshotToSale(snapshot: DocumentSnapshot, bookCache : Map<ISBN, Book>): Sale {
+        val isbn = snapshot[SaleFields.BOOK_ISBN.fieldName] as ISBN
         return Sale(
-            snapshotToBook(snapshot.get(SaleFields.BOOK.fieldName)!! as HashMap<String, Any>),
+            bookCache[isbn]!!, // The cache should contain the book, otherwise the call to this function is illegal
             snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
             snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
             BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
@@ -260,9 +246,30 @@ class SaleDatabase: SaleDatabase {
         )
     }
 
+    private fun snapshotsToSales(snapshots : Iterable<DocumentSnapshot>, bookCache: Map<ISBN, Book> = mapOf()) : CompletableFuture<List<Sale>> {
+        val missingBooks = snapshots.map { doc -> doc[SaleFields.BOOK_ISBN.fieldName] as ISBN }.toSet().minus(bookCache.keys)
+        if (missingBooks.isEmpty()) {
+            val sales = snapshots.map { doc ->
+                snapshotToSale(doc, bookCache)
+            }
+            return CompletableFuture.completedFuture(sales)
+        } else {
+            val booksFuture = bookDB
+                .queryBooks()
+                .searchByISBN(missingBooks.toSet())
+                .getAll()
+            return booksFuture.thenApply { books ->
+                val biggerBookCache = bookCache + books.associateBy { it.isbn }
+                snapshots.map { doc ->
+                    snapshotToSale(doc, biggerBookCache)
+                }
+            }
+        }
+    }
+
     private fun saleToDocument(sale: Sale): Any {
         return hashMapOf(
-            SaleFields.BOOK.fieldName to sale.book,
+            SaleFields.BOOK_ISBN.fieldName to sale.book.isbn,
             SaleFields.SELLER.fieldName to sale.seller,
             SaleFields.PRICE.fieldName to sale.price,
             SaleFields.CONDITION.fieldName to sale.condition,
@@ -272,34 +279,62 @@ class SaleDatabase: SaleDatabase {
         )
     }
 
-    override fun addSale(sale: Sale) {
-        if (sale.seller == LocalUser)
-            throw LocalUserException("Cannot add sale as LocalUser")
-        saleRef.add(saleToDocument(sale))
-            .addOnSuccessListener { documentReference ->
-                Log.d("SaleDataBase", "DocumentSnapshot written with ID: ${documentReference.id}")
+    override fun addSale(bookISBN : ISBN,
+                         seller : User,
+                         price : Float,
+                         condition : BookCondition,
+                         state : SaleState,
+                         image : Image?) : CompletableFuture<Sale> {
+
+        if(seller == LocalUser) {
+            val future = CompletableFuture<Sale>()
+            future.completeExceptionally(LocalUserException("Cannot add sale as LocalUser"))
+            return future
+        }
+        val bookFuture = bookDB.getBook(bookISBN)
+        return bookFuture.thenCompose { book ->
+            val future = CompletableFuture<Sale>()
+            if (book == null) {
+                future.completeExceptionally(DatabaseException("Could not find book associated with sale : isbn = $bookISBN"))
+
+            } else {
+                val sale = Sale(book, seller, price, condition, Timestamp.now(), state, image)
+                saleRef.add(saleToDocument(sale))
+                    .addOnSuccessListener {
+                        future.complete(sale)
+                    }
+                    .addOnFailureListener {
+                        future.completeExceptionally(DatabaseException("Failed to insert $sale into Database because of : $it"))
+                    }
             }
-            .addOnFailureListener {
-                // TODO: Change this to maybe only log the error
-                throw DatabaseException("Failed to insert $sale into Database")
-            }
+            future
+        }
     }
 
-    override fun deleteSale(sale: Sale) {
-        if (sale.seller == LocalUser)
-            throw LocalUserException("Cannot add sale as LocalUser")
-        SalesQuery().getReferenceID(sale).continueWith { task ->
-            val result = task.result.documents.filter { document ->
-                val s = snapshotToSale(document)
-                s.condition == sale.condition /*&& s.seller == sale.seller */ && s.date == sale.date
-            }
+    //find the ID of a sale based on the ISBN of the book being sold, the time of the publication and the UID of the seller
+    private fun getReferenceID(sale: Sale): Task<DocumentSnapshot?> {
+        var query = saleRef
+            .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
+            .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
+            .whereEqualTo(SaleFields.SELLER.fieldName +"."+UserFields.UID.fieldName, (sale.seller as LoggedUser).uid)
+        return query.get().continueWith { task -> task.result.documents.firstOrNull() }
 
-            result.forEach { document ->
-                saleRef.document(document.id).delete()
-                    .addOnFailureListener { throw DatabaseException("Could not delete $document") }
-                    .addOnSuccessListener { Log.d("SaleDataBase", "Deleted: $document") }
+    }
+
+    override fun deleteSale(sale: Sale) : CompletableFuture<Boolean> {
+        if (sale.seller == LocalUser) {
+            throw IllegalArgumentException("A sale by the LocalUser is invalid")
+        }
+        val future = CompletableFuture<Boolean>()
+        getReferenceID(sale).addOnSuccessListener { toDelete ->
+            if (toDelete == null) future.complete(false)
+            else {
+                saleRef.document(toDelete.id).delete()
+                    .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete $toDelete")) }
+                    .addOnSuccessListener { future.complete(true) }
             }
         }
+        return future
     }
 }
 
