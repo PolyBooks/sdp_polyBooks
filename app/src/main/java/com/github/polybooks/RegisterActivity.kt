@@ -29,16 +29,16 @@ class RegisterActivity : AppCompatActivity() {
         val registerButton = findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener{
 
-            val usernameField = findViewById<TextInputEditText>(R.id.username_field)
+            val usernameField = findViewById<EditText>(R.id.username_field)
             val username = usernameField.text.toString()
 
             val emailField = findViewById<EditText>(R.id.email_field)
             val email = emailField.text.toString()
 
-            val password1Field = findViewById<EditText>(R.id.password_field)
+            val password1Field = findViewById<EditText>(R.id.password1_field)
             val password1 = password1Field.text.toString()
 
-            val password2Field = findViewById<EditText>(R.id.password_field2)
+            val password2Field = findViewById<EditText>(R.id.password2_field)
             val password2 = password2Field.text.toString()
 
             if(password1 == password2)

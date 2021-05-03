@@ -179,5 +179,6 @@
     <string name="com480">COM-480</string>
 
     <string name="textview">TextView</string>
+    <string name="username">Username</string>
 
 </resources>
