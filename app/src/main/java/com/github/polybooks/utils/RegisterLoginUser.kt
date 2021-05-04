@@ -20,14 +20,16 @@ fun updateUI(user: FirebaseUser?, origin: Context) {
     }
 }
 
-fun failedUser(user: FirebaseUser?, origin: Context) {
-    Toast.makeText(origin, "Authentication failed.",
+fun tellTheUser(message: String, user: FirebaseUser?, origin: Context){
+    Toast.makeText(origin, message,
         Toast.LENGTH_SHORT).show()
     updateUI(user, origin)
 }
 
+fun failedUser(user: FirebaseUser?, origin: Context) {
+    tellTheUser("Authentication failed.", user, origin)
+}
+
 fun successUser(user: FirebaseUser?, origin: Context){
-    Toast.makeText(origin, "Successful authentication.",
-        Toast.LENGTH_SHORT).show()
-    updateUI(user, origin)
+    tellTheUser("Successful authentication.", user, origin)
 }

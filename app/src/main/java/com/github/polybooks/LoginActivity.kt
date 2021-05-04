@@ -17,6 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -92,12 +94,8 @@ class LoginActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        successUser(auth.currentUser, this)
-                    } else {
-                        failedUser(auth.currentUser, this)
-                    }
+                .addOnCompleteListener(this) { taskGoogle ->
+                    checkUser(taskGoogle)
                 }
     }
 
@@ -108,13 +106,17 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signInEmailPass(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    successUser(auth.currentUser, this)
-                } else {
-                    failedUser(auth.currentUser, this)
-                }
+            .addOnCompleteListener(this) { taskEmailPass ->
+                checkUser(taskEmailPass)
             }
+    }
+
+    private fun checkUser(task: Task<AuthResult>){
+        if (task.isSuccessful) {
+            successUser(auth.currentUser, this)
+        } else {
+            failedUser(auth.currentUser, this)
+        }
     }
 
     public fun signOut() {
