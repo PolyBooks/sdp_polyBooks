@@ -82,6 +82,9 @@
     <string name="disconnect">Disconnect</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="textview">TextView</string>
+    <string name="username">Username</string>
+    <string name="OU">OR</string>
 
     <!-- User Interaction (could be further organized) -->
     <string name="sort_by">Sort by</string>
@@ -177,8 +180,5 @@
 
     <string name="cs306">CS-306</string>
     <string name="com480">COM-480</string>
-
-    <string name="textview">TextView</string>
-    <string name="username">Username</string>
 
 </resources>

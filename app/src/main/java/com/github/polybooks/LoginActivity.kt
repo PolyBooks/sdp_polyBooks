@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,11 +32,23 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_login)
-        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.setOnClickListener{
+
+        val signInGoogleButton = findViewById<SignInButton>(R.id.sign_in_button)
+        signInGoogleButton.setOnClickListener{
             signIn()
+        }
+
+        val signInEmailButton = findViewById<Button>(R.id.log_button)
+        signInEmailButton.setOnClickListener{
+
+            val emailField = findViewById<EditText>(R.id.email_field)
+            val email = emailField.text.toString()
+
+            val passwordField = findViewById<EditText>(R.id.password_field)
+            val password = passwordField.text.toString()
+
+            signInEmailPass(email, password)
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -102,6 +115,22 @@ class LoginActivity : AppCompatActivity() {
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    private fun signInEmailPass(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "signInWithEmail:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                    updateUI(null)
+                }
+            }
     }
 
     public fun signOut() {

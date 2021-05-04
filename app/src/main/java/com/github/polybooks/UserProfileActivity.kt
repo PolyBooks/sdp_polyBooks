@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.setupNavbar
 import com.google.firebase.auth.FirebaseUser
 
 class UserProfileActivity : AppCompatActivity() {
@@ -31,6 +32,5 @@ class UserProfileActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-
     }
 }

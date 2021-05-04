@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -26,7 +27,7 @@ class RegisterActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        val registerButton = findViewById<Button>(R.id.register_button)
+        val registerButton = findViewById<Button>(R.id.button_reg)
         registerButton.setOnClickListener{
 
             val usernameField = findViewById<EditText>(R.id.username_field)
@@ -48,8 +49,6 @@ class RegisterActivity : AppCompatActivity() {
                         Toast.LENGTH_LONG).show()
 
         }
-
-
     }
 
     public override fun onStart() {

@@ -97,42 +97,7 @@ class MainTest {
     @Test
     fun signUpButton() {
         onView(withId(R.id.signup_button)).perform(click())
-        onView(withId(R.id.register_button)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-    }
-
-    @Test
-    fun navBarSales() {
-        onView(withId(R.id.sales)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
-    }
-
-    @Test
-    fun navBarProfile() {
-        onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun navBarBooks() {
-        onView(withId(R.id.books)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
-    }
-
-    @Test
-    fun navBarDefault() {
-        onView(withId(R.id.default_selected)).check(matches(withEffectiveVisibility(Visibility.GONE)))
-        onView(withId(R.id.default_selected)).check(matches(not(isEnabled())))
-    }
-
-    @Test
-    fun navBarSelected() {
-        onView(withId(R.id.home)).check(matches(isSelected()))
-    }
-
-    @Test
-    fun navBarHome() {
-        onView(withId(R.id.home)).perform(click())
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
+        Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
     }
 
 }
