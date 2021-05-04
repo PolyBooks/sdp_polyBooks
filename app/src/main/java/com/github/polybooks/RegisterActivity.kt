@@ -8,7 +8,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.updateUI
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -55,7 +57,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onStart()
         val currentUser = auth.currentUser
         if(currentUser != null){
-            updateUI(currentUser)
+            updateUI(currentUser, this)
         }
     }
 
@@ -70,28 +72,16 @@ class RegisterActivity : AppCompatActivity() {
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         Log.d(TAG, "User profile updated.")
-                                        updateUI(user)
+                                        updateUI(user, this)
                                     }
                                 }
                     } else {
-                        Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(baseContext, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show()
-                        updateUI(null)
+                        failedUser(auth.currentUser, this)
                     }
                 }
     }
 
-    private fun updateUI(user: FirebaseUser?) {
-        if(user != null) {
-            val intent = Intent(this, UserProfileActivity::class.java).apply {
-                putExtra(EXTRA_MESSAGE, user.displayName)
-            }
-            startActivity(intent)
-        }
-    }
-
     companion object {
-        private const val TAG = "EmailPassword"
+        public const val TAG = "EmailPassword"
     }
 }

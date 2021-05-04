@@ -8,7 +8,9 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.updateUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -66,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
-        updateUI(currentUser)
+        updateUI(currentUser, this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -93,23 +95,11 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         Log.d(TAG, "signInWithCredential:success")
                         val user = auth.currentUser
-                        updateUI(user)
+                        updateUI(user, this)
                     } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.exception)
-                        updateUI(null)
+                        failedUser(auth.currentUser, this)
                     }
                 }
-    }
-
-    //TODO : what is this?
-    private fun updateUI(user: FirebaseUser?) {
-        if(user != null) {
-            val intent = Intent(this, UserProfileActivity::class.java).apply {
-                putExtra(EXTRA_MESSAGE, user.displayName)
-            }
-            startActivity(intent)
-        }
     }
 
     private fun signIn() {
@@ -123,12 +113,9 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithEmail:success")
                     val user = auth.currentUser
-                    updateUI(user)
+                    updateUI(user, this)
                 } else {
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    updateUI(null)
+                    failedUser(auth.currentUser, this)
                 }
             }
     }
