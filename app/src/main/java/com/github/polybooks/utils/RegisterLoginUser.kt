@@ -25,3 +25,9 @@ fun failedUser(user: FirebaseUser?, origin: Context) {
         Toast.LENGTH_SHORT).show()
     updateUI(user, origin)
 }
+
+fun successUser(user: FirebaseUser?, origin: Context){
+    Toast.makeText(origin, "Successful authentication.",
+        Toast.LENGTH_SHORT).show()
+    updateUI(user, origin)
+}

@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.successUser
 import com.github.polybooks.utils.updateUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -93,9 +94,7 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Log.d(TAG, "signInWithCredential:success")
-                        val user = auth.currentUser
-                        updateUI(user, this)
+                        successUser(auth.currentUser, this)
                     } else {
                         failedUser(auth.currentUser, this)
                     }
@@ -111,9 +110,7 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.currentUser
-                    updateUI(user, this)
+                    successUser(auth.currentUser, this)
                 } else {
                     failedUser(auth.currentUser, this)
                 }
