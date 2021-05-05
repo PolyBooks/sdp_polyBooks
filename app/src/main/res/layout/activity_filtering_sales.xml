@@ -40,17 +40,17 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/results_button"
+        app:layout_constraintTop_toBottomOf="@+id/reset_button"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reset_button"
         app:layout_constraintVertical_bias="1.0"
         app:layout_goneMarginBottom="9dp"
         android:padding="9dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Search a book name and or isbn -->
@@ -72,6 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_book_name"
+                    android:importantForAutofill="no"
                     android:inputType="textFilter" />
 
             </LinearLayout>
@@ -95,8 +96,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_book_isbn"
+                    android:importantForAutofill="no"
                     android:inputType="textFilter" />
-
             </LinearLayout>
 
             <!-- Set range of price  -->
@@ -118,6 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_min_price"
+                    android:importantForAutofill="no"
                     android:maxLength="4"
                     android:inputType="numberDecimal" />
 
@@ -126,6 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_max_price"
+                    android:importantForAutofill="no"
                     android:maxLength="4"
                     android:inputType="numberDecimal" />
 
@@ -139,9 +142,9 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:text="@string/sort_by"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sort_by"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
@@ -200,8 +203,30 @@
                 </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
-            <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
 
+            <!-- Field parameter (eg. Computer Science, Biology) -->
+            <LinearLayout
+                android:id="@+id/field_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/interest_field"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/field_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+
+            <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
             <LinearLayout
                 android:id="@+id/semester_view"
                 android:layout_width="match_parent"
@@ -216,7 +241,7 @@
                     android:textSize="20sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sale_semester_parameter"
+                    android:id="@+id/semester_parameter"
                     android:nestedScrollingEnabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -238,29 +263,7 @@
                     android:textSize="20sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sale_course_parameter"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </androidx.recyclerview.widget.RecyclerView>
-            </LinearLayout>
-
-            <!-- Field parameter (eg. Computer Science, Biology) -->
-            <LinearLayout
-                android:id="@+id/field_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/interest_field"
-                    android:textAllCaps="false"
-                    android:textSize="20sp" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sale_field_parameter"
+                    android:id="@+id/course_parameter"
                     android:nestedScrollingEnabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">

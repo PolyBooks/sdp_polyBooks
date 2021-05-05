@@ -1,7 +1,10 @@
 package com.github.polybooks.core.database.interfaces
 
+import android.content.Context
+import com.github.polybooks.R
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Interest
+import com.github.polybooks.utils.FieldWithName
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
@@ -95,6 +98,13 @@ data class BookSettings(
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.
  * */
-enum class BookOrdering {
-    DEFAULT, TITLE_INC, TITLE_DEC,
+enum class BookOrdering: FieldWithName {
+    DEFAULT,
+    TITLE_INC,
+    TITLE_DEC;
+
+    override fun fieldName(c: Context?): String {
+        return c?.resources?.getStringArray(R.array.book_orderings_array)?.get(ordinal)
+               ?: name
+    }
 }

@@ -4,21 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.EditText
+import com.github.polybooks.adapter.AdapterFactory
+import com.github.polybooks.com.github.polybooks.FilteringActivity
 import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import com.github.polybooks.core.database.implementation.DummyBookQuery
-import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * This activity let the users to select the sorting and filtering parameters
@@ -28,29 +25,21 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * Note : should implement a dynamic version of it soon
  */
-class FilteringBooksActivity : AppCompatActivity() {
+class FilteringBooksActivity: FilteringActivity() {
 
-    private lateinit var mResetParameters : Button
-    private lateinit var mResults : Button
+    private val TAG: String = "FilteringBooksActivity"
 
-    //--- TODO hardcoded parameters: make it dynamic
-    private lateinit var mSortGroup : RadioGroup
-    private lateinit var mSortPopularity : RadioButton
-    private lateinit var mSortTitleInc : RadioButton
-    private lateinit var mSortTitleDec : RadioButton
+    private lateinit var mReset: Button
+    private lateinit var mResults: Button
 
-    private lateinit var mFieldCS : CheckBox
-    private lateinit var mFieldBio : CheckBox
-    private lateinit var mFieldArchi : CheckBox
+    private lateinit var mName: EditText
+    private lateinit var mISBN: EditText
 
-    private lateinit var mSemBa1 : CheckBox
-    private lateinit var mSemBa2 : CheckBox
-    private lateinit var mSemBa3 : CheckBox
-    private lateinit var mSemMa1 : CheckBox
-    private lateinit var mSemMa2 : CheckBox
+    private lateinit var mSortParameter: Parameter<BookOrdering>
 
-    private lateinit var mCourseCS306 : CheckBox
-    private lateinit var mCourseCOM480 : CheckBox
+    private lateinit var mFieldParameter: Parameter<Field>
+    private lateinit var mCourseParameter: Parameter<Course>
+    private lateinit var mSemesterParameter: Parameter<Semester>
 
     //------
 
@@ -59,100 +48,95 @@ class FilteringBooksActivity : AppCompatActivity() {
         setContentView(R.layout.activity_filtering_books)
 
         // Get a reference to the UI parameters
-        mResetParameters = findViewById(R.id.reset_button)
+        mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
 
-        // --- TODO hardcoded : make it dynamic
         setParametersButtons()
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.home ->{
+
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
-                    R.id.sales ->{
+                    R.id.sales -> {
                         startActivity(Intent(this, FilteringSalesActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
+                    R.id.user_profile -> {
                         // TODO: user sales
                         false
                     }
                     else -> true
                 }
-        }
+            }
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
     }
 
     fun resetParameters(view: View) {
-        mSortGroup.clearCheck()
+        mName.text.clear()
+        mISBN.text.clear()
 
-        mFieldCS.isChecked = false
-        mFieldBio.isChecked = false
-        mFieldArchi.isChecked = false
-        mSemBa1.isChecked = false
-        mSemBa2.isChecked = false
-        mSemBa3.isChecked = false
-        mSemMa1.isChecked = false
-        mSemMa2.isChecked = false
-        mCourseCS306.isChecked = false
-        mCourseCOM480.isChecked = false
+        mSortParameter.resetItemsViews()
+
+        mCourseParameter.resetItemsViews()
+        mSemesterParameter.resetItemsViews()
+        mFieldParameter.resetItemsViews()
     }
 
     fun getResults(view: View) {
-        var query : BookQuery = DummyBookQuery()
-                .onlyIncludeInterests(getInterests())
-                .withOrdering(getOrdering())
+        var query: BookQuery = DummyBookQuery()
 
+        //These 2 in front for dummy books query
+        if (mName.text.isNotEmpty())
+            query.searchByTitle(mName.text.toString())
+
+        resultByParameter(query)
+
+        // pass query to new activity
         val querySettings = query.getSettings()
-        val intent : Intent = Intent(this, ListSalesActivity::class.java)
+        val intent = Intent(this, ListSalesActivity::class.java) //TODO list books activity
         intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 
     private fun setParametersButtons() {
-        mSortGroup = findViewById(R.id.sort_group)
-        mSortPopularity = findViewById(R.id.popularity_sort)
-        mSortTitleInc = findViewById(R.id.title_inc_sort)
-        mSortTitleDec = findViewById(R.id.title_dec_sort)
+        setTextParameters()
 
-        mFieldCS = findViewById(R.id.CS)
-        mFieldBio = findViewById(R.id.Biology)
-        mFieldArchi = findViewById(R.id.Archi)
+        mSortParameter = Parameter(
+            R.id.book_sort_parameter,
+            AdapterFactory.bookSortingAdapter()
+        )
 
-        mSemBa1 = findViewById(R.id.ic_ba1)
-        mSemBa2 = findViewById(R.id.ma_ba2)
-        mSemBa3 = findViewById(R.id.sv_ba3)
-        mSemMa1 = findViewById(R.id.gc_ma1)
-        mSemMa2 = findViewById(R.id.mt_ma2)
-
-        mCourseCS306 = findViewById(R.id.CS306)
-        mCourseCOM480 = findViewById(R.id.COM480)
+        mFieldParameter = Parameter(
+            R.id.field_parameter,
+            AdapterFactory.fieldInterestAdapter()
+        )
+        mSemesterParameter = Parameter(
+            R.id.semester_parameter,
+            AdapterFactory.semesterInterestAdapter()
+        )
+        mCourseParameter = Parameter(
+            R.id.course_parameter,
+            AdapterFactory.courseInterestAdapter()
+        )
     }
 
-    private fun getOrdering() : BookOrdering {
-        if (mSortPopularity.isChecked) return BookOrdering.DEFAULT //add it when available
-        if (mSortTitleDec.isChecked) return BookOrdering.TITLE_DEC //add it when available
-        if (mSortTitleInc.isChecked) return BookOrdering.TITLE_INC //add it when available
-        else return BookOrdering.DEFAULT
+    private fun setTextParameters() {
+        mName = findViewById(R.id.book_name)
+        mISBN = findViewById(R.id.book_isbn)
     }
 
-    private fun getInterests() : Set<Interest> {
-        val interests = mutableSetOf<Interest>()
-        if (mFieldCS.isChecked) interests.add(Field(mFieldCS.text.toString()))
-        if (mFieldBio.isChecked) interests.add(Field(mFieldBio.text.toString()))
-        if (mFieldArchi.isChecked) interests.add(Field(mFieldArchi.text.toString()))
+    private fun resultByParameter(query: BookQuery) {
+        val sortingValues = mSortParameter.getSelectedValues()
+        if (sortingValues.isNotEmpty()) {
+            query.withOrdering(sortingValues[0])
+        }
 
-        if (mCourseCOM480.isChecked) interests.add(Course(mCourseCOM480.text.toString()))
-        if (mCourseCS306.isChecked) interests.add(Course(mCourseCS306.text.toString()))
-
-        if (mSemBa1.isChecked) interests.add(Semester(mSemBa1.text.toString(), "?"))
-        if (mSemBa2.isChecked) interests.add(Semester(mSemBa2.text.toString(), "?"))
-        if (mSemBa3.isChecked) interests.add(Semester(mSemBa3.text.toString(), "?"))
-        if (mSemMa1.isChecked) interests.add(Semester(mSemMa1.text.toString(), "?"))
-        if (mSemMa2.isChecked) interests.add(Semester(mSemMa2.text.toString(), "?"))
-
-        return interests.toSet()
+        val interests: MutableSet<Interest> = mutableSetOf()
+        interests.addAll(mFieldParameter.getSelectedValues())
+        interests.addAll(mSemesterParameter.getSelectedValues())
+        interests.addAll(mCourseParameter.getSelectedValues())
     }
 }

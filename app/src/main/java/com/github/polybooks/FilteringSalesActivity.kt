@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.adapter.*
+import com.github.polybooks.adapter.AdapterFactory
+import com.github.polybooks.com.github.polybooks.FilteringActivity
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.interfaces.SaleOrdering
@@ -23,83 +21,27 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  * parameter "Field"). If no value is selected for a given parameter, then the
  * query won't be filtered on this parameter
  */
-class FilteringSalesActivity: AppCompatActivity() {
+class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
-
-    /**
-     * A parameter with a set of different values to filter the Sales
-     *
-     * @param <VH>      A viewHolder holding the individual value items of the
-     *                  parameter, need to implement ParameterViewHolder
-     * @param viewId    The view id of the RecyclerView holding the values of that parameter
-     * @param adapter   The adapter that will binds the different values to the recyclerView
-     * @see ParameterAdapter
-     */
-    inner class RecyclerViewParameter<T>(
-        viewId: Int,
-        private val mAdapter: ParameterAdapter<T>
-    ) {
-        private val mView: RecyclerView = findViewById(viewId)
-        private val mlayoutManager = LinearLayoutManager(
-            this@FilteringSalesActivity,
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
-
-        init {
-            mView.adapter = mAdapter
-            mView.layoutManager = mlayoutManager
-        }
-
-        /**
-         * Reset the views of all the values items of the parameter
-         */
-        fun resetItemsViews() {
-            performOnItems { viewHolder -> viewHolder.resetItemView() }
-        }
-
-        /**
-         * Get the list of selected values
-         */
-        fun getSelectedValues(): List<T> {
-            val res = mutableListOf<T>()
-            performOnItems { viewHolder ->
-                val item = viewHolder.getValueIfSelected()
-                if (item != null) {
-                    res.add(item)
-                }
-            }
-
-            return res
-        }
-
-        private fun performOnItems(f: (ParameterViewHolder<T>) -> Unit) {
-            for (i in 0 until mAdapter.itemCount) {
-                val holder = mView.findViewHolderForAdapterPosition(i)
-                if (holder != null) {
-                    f(holder as ParameterViewHolder<T>)
-                }
-            }
-        }
-    }
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
 
-    //--- hardcoded parameters: make it dynamic
     private lateinit var mName: EditText
     private lateinit var mISBN: EditText
     private lateinit var mPriceMin: EditText
     private lateinit var mPriceMax: EditText
 
-    private lateinit var mSortParameter: RecyclerViewParameter<SaleOrdering>
-    private lateinit var mStateParameter: RecyclerViewParameter<SaleState>
-    private lateinit var mBookConditionParameter: RecyclerViewParameter<BookCondition>
+    private lateinit var mSortParameter: Parameter<SaleOrdering>
+    private lateinit var mStateParameter: Parameter<SaleState>
+    private lateinit var mBookConditionParameter: Parameter<BookCondition>
 
-    private lateinit var mCourseParameter: RecyclerViewParameter<Course>
-    private lateinit var mSemesterParameter: RecyclerViewParameter<Semester>
-    private lateinit var mFieldParameter: RecyclerViewParameter<Field>
+    private lateinit var mFieldParameter: Parameter<Field>
+    private lateinit var mSemesterParameter: Parameter<Semester>
+    private lateinit var mCourseParameter: Parameter<Course>
+
+    // --------
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,9 +85,9 @@ class FilteringSalesActivity: AppCompatActivity() {
         mStateParameter.resetItemsViews()
         mBookConditionParameter.resetItemsViews()
 
-        mCourseParameter.resetItemsViews()
-        mSemesterParameter.resetItemsViews()
         mFieldParameter.resetItemsViews()
+        mSemesterParameter.resetItemsViews()
+        mCourseParameter.resetItemsViews()
     }
 
     fun getResults(view: View) {
@@ -183,29 +125,29 @@ class FilteringSalesActivity: AppCompatActivity() {
     private fun setParametersButtons() {
         setTextParameters()
 
-        mSortParameter = RecyclerViewParameter(
+        mSortParameter = Parameter(
             R.id.sale_sort_parameter,
             AdapterFactory.saleSortingAdapter()
         )
-        mStateParameter = RecyclerViewParameter(
+        mStateParameter = Parameter(
             R.id.sale_state_parameter,
             AdapterFactory.saleStateAdapter()
         )
-        mBookConditionParameter = RecyclerViewParameter(
+        mBookConditionParameter = Parameter(
             R.id.sale_condition_parameter,
             AdapterFactory.saleBookConditionAdapter()
         )
-        mCourseParameter = RecyclerViewParameter(
-            R.id.sale_course_parameter,
-            AdapterFactory.courseInterestAdapter()
+        mFieldParameter = Parameter(
+            R.id.field_parameter,
+            AdapterFactory.fieldInterestAdapter()
         )
-        mSemesterParameter = RecyclerViewParameter(
-            R.id.sale_semester_parameter,
+        mSemesterParameter = Parameter(
+            R.id.semester_parameter,
             AdapterFactory.semesterInterestAdapter()
         )
-        mFieldParameter = RecyclerViewParameter(
-            R.id.sale_field_parameter,
-            AdapterFactory.fieldInterestAdapter()
+        mCourseParameter = Parameter(
+            R.id.course_parameter,
+            AdapterFactory.courseInterestAdapter()
         )
     }
 
@@ -226,14 +168,16 @@ class FilteringSalesActivity: AppCompatActivity() {
         resultByParameter(query, mBookConditionParameter) { q, conditions ->
             q.searchByCondition(conditions.toSet())
         }
-        resultByParameter(query, mCourseParameter) { q, courses ->
-            q.onlyIncludeInterests(courses.toSet())
-        }
+
+        val interests: MutableSet<Interest> = mutableSetOf()
+        interests.addAll(mFieldParameter.getSelectedValues())
+        interests.addAll(mSemesterParameter.getSelectedValues())
+        interests.addAll(mCourseParameter.getSelectedValues())
     }
 
     private fun <T> resultByParameter(
         query: SaleQuery,
-        parameter: RecyclerViewParameter<T>,
+        parameter: Parameter<T>,
         f: (SaleQuery, List<T>) -> Unit
     ) {
         val values: List<T> = parameter.getSelectedValues()

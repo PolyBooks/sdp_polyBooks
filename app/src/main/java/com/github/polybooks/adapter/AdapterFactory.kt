@@ -2,6 +2,7 @@ package com.github.polybooks.adapter
 
 import com.github.polybooks.R
 import com.github.polybooks.core.*
+import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
@@ -35,6 +36,15 @@ object AdapterFactory {
      */
     fun saleBookConditionAdapter(): ParameterAdapter<BookCondition> {
         return FiniteValuesParameterAdapter(VALUE_BUTTON, BookCondition.NEW)
+    }
+
+    /**
+     * Create and instantiate an adapter for the SaleOrdering sorting parameter
+     *
+     * @see BookQuery.withOrdering
+     */
+    fun bookSortingAdapter(): ParameterAdapter<BookOrdering> {
+        return SortingParameterAdapter(VALUE_BUTTON, BookOrdering.DEFAULT)
     }
 
     /**

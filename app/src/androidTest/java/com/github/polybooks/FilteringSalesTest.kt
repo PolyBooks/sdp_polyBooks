@@ -1,17 +1,11 @@
 package com.github.polybooks
 
-import android.content.Context
-import android.os.SystemClock
 import androidx.test.core.app.ApplicationProvider
-
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -20,14 +14,10 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
 import com.github.polybooks.adapter.InterestsParameterAdapter
-import com.github.polybooks.adapter.ParameterViewHolder
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.implementation.DummyInterestDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.utils.FieldWithName
-
+import com.github.polybooks.utils.FilteringTestUtils
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers
 import org.junit.After
@@ -44,15 +34,15 @@ class FilteringSalesTest {
         val SEMESTER = InterestsParameterAdapter.Interest.SEMESTER
         val FIELD = InterestsParameterAdapter.Interest.FIELD
 
-        private const val RANDOM_STRING = "BL1Abl6-a"
-        private const val RANDOM_NUMBER = "42"
+        const val RANDOM_STRING = "BL1Abl6-a"
+        const val RANDOM_NUMBER = "42"
     }
 
     @get:Rule
     val activityRule: ActivityScenarioRule<FilteringSalesActivity> =
         ActivityScenarioRule(FilteringSalesActivity::class.java)
 
-    private val targetContext: Context = ApplicationProvider.getApplicationContext()
+    private val utils = FilteringTestUtils(ApplicationProvider.getApplicationContext())
 
     @Before
     fun before() {
@@ -80,15 +70,15 @@ class FilteringSalesTest {
 
     @Test
     fun allParameterItemsAreDisplayed() {
-        swdo()
-        performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter)
-        performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter)
-        performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter)
+        utils.swdo()
+        utils.performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter)
+        utils.performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter)
+        utils.performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter)
 
-        swup()
-        performOnInterestParameter<Semester>(SEMESTER, R.id.sale_semester_parameter)
-        performOnInterestParameter<Course>(COURSE, R.id.sale_course_parameter)
-        performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter)
+        utils.swup()
+        utils.performOnInterestParameter<Field>(FIELD, R.id.field_parameter)
+        utils.performOnInterestParameter<Semester>(SEMESTER, R.id.semester_parameter)
+        utils.performOnInterestParameter<Course>(COURSE, R.id.course_parameter)
     }
 
     @Test
@@ -110,20 +100,24 @@ class FilteringSalesTest {
 
     @Test
     fun orderingItemsAreMutuallyExclusive() {
-        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click())
-        perform(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, click())
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click())
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, click())
 
-        check(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, matches(isChecked()))
-        check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, matches(isChecked()))
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
     }
 
     @Test
     fun clickingThreeTimesOnOrderingItemWorks() {
-        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
-        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now not checked
-        check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
-        perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
-        check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isChecked()))
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
+        utils.perform(
+            R.id.sale_sort_parameter,
+            SaleOrdering.TITLE_INC,
+            click()
+        ) // is now not checked
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isChecked()))
     }
 
     @Test
@@ -163,135 +157,44 @@ class FilteringSalesTest {
     }
 
     private fun clickOnAllParamButtons() {
-        swdo()
-        performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter, click())
-        performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter, click())
-        performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter, click())
+        utils.swdo()
+        utils.performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter, click())
+        utils.performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter, click())
+        utils.performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter, click())
 
-        swup()
-        performOnInterestParameter<Semester>(SEMESTER, R.id.sale_semester_parameter, click())
-        performOnInterestParameter<Course>(COURSE, R.id.sale_course_parameter, click())
-        performOnInterestParameter<Field>(FIELD, R.id.sale_field_parameter, click())
+        utils.swup()
+        utils.performOnInterestParameter<Field>(FIELD, R.id.field_parameter, click())
+        utils.performOnInterestParameter<Semester>(SEMESTER, R.id.semester_parameter, click())
+        utils.performOnInterestParameter<Course>(COURSE, R.id.course_parameter, click())
     }
 
     private fun checkAllParamButtons(isChecked: Boolean) {
         val checkFun = if (isChecked) isChecked() else isNotChecked()
 
-        swdo()
+        utils.swdo()
         if (!isChecked) {
-            performOnEnumParameter(
+            utils.performOnEnumParameter(
                 SaleOrdering.DEFAULT, R.id.sale_sort_parameter, null, matches(checkFun)
             )
         }
-        performOnEnumParameter(
+        utils.performOnEnumParameter(
             SaleState.ACTIVE, R.id.sale_state_parameter, null, matches(checkFun)
         )
-        performOnEnumParameter(
+        utils.performOnEnumParameter(
             BookCondition.NEW, R.id.sale_condition_parameter, null, matches(checkFun)
         )
 
         // Cannot test because recyclerView
 //        swup()
+//        performOnInterestParameter<Field>(
+//            FIELD, R.id.parameter, null, matches(checkFun)
+//        )
 //        performOnInterestParameter<Semester>(
-//            SEMESTER, R.id.sale_semester_parameter, null, matches(checkFun)
+//            SEMESTER, R.id.semester_parameter, null, matches(checkFun)
 //        )
 //        performOnInterestParameter<Course>(
-//            COURSE, R.id.sale_course_parameter, null, matches(checkFun)
+//            COURSE, R.id.course_parameter, null, matches(checkFun)
 //        )
-//        performOnInterestParameter<Field>(
-//            FIELD, R.id.sale_field_parameter, null, matches(checkFun)
-//        )
-    }
-
-    private fun <T: FieldWithName> performOnEnumParameter(
-        instance: T,
-        parameterId: Int,
-        action: ViewAction? = null,
-        assertion: ViewAssertion? = null
-    ) {
-        val values = instance.javaClass.enumConstants
-            .drop(if (parameterId == R.id.sale_sort_parameter) 1 else 0)
-
-        performOnParameterList(parameterId, values, action, assertion)
-    }
-
-    private fun <T: Interest> performOnInterestParameter(
-        interestType: InterestsParameterAdapter.Interest,
-        parameterId: Int,
-        action: ViewAction? = null,
-        assertion: ViewAssertion? = null
-    ) {
-        val values = when (interestType) {
-            COURSE -> DummyInterestDatabase.mockCourses
-            SEMESTER -> {
-                if (assertion == null)
-                    DummyInterestDatabase.mockSemesters
-                else //TODO otherwise test don't pass
-                    listOf(DummyInterestDatabase.mockSemesters[0])
-            }
-            FIELD -> DummyInterestDatabase.mockFields
-            else -> error("Interest type does not exist")
-        }
-
-        performOnParameterList(parameterId, values, action, assertion)
-    }
-
-    private fun <T> performOnParameterList(
-        parameterId: Int,
-        values: List<T>,
-        action: ViewAction? = null,
-        assertion: ViewAssertion? = null
-    ) {
-        for (value in values) {
-            scrollToValue(parameterId, value)
-
-            if (assertion != null) {
-                check(parameterId, value, assertion)
-            }
-
-            if (action != null) {
-                perform(parameterId, value, action)
-            }
-        }
-    }
-
-    private fun <T> scrollToValue(parameterId: Int, value: T) {
-        onView(withId(parameterId)).perform(
-            RecyclerViewActions.scrollTo<ParameterViewHolder<T>>(
-                hasDescendant(withText(getName(value)))
-            )
-        )
-    }
-
-    private fun <T> perform(parameterId: Int, value: T, action: ViewAction) {
-        scrollToValue(parameterId, value)
-        onView(withText(getName(value))).perform(action)
-    }
-
-    private fun <T> check(parameterId: Int, value: T, assertion: ViewAssertion) {
-        scrollToValue(parameterId, value)
-        onView(withText(getName(value))).check(assertion)
-    }
-
-    private fun <T> getName(value: T): String {
-        return when (value) {
-            is FieldWithName -> (value as FieldWithName).fieldName(targetContext)
-            is Course -> (value as Course).courseName
-            is Field -> (value as Field).fieldName
-            is Semester -> {
-                val v = value as Semester
-                v.section + "-" + v.semester
-            }
-            else -> error("unsupported type")
-        }
-    }
-
-    private fun swup() {
-        onView(withId(R.id.main_scroll)).perform(swipeUp())
-    }
-
-    private fun swdo() {
-        onView(withId(R.id.main_scroll)).perform(swipeDown())
     }
 
     //======================================================================
@@ -337,13 +240,5 @@ class FilteringSalesTest {
     fun navBarHome() {
         onView(withId(R.id.home)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
-    }
-
-    private fun pause() {
-        SystemClock.sleep(3000)
-    }
-
-    private fun pauselong() {
-        SystemClock.sleep(10000)
     }
 }
