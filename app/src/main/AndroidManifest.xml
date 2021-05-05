@@ -48,6 +48,9 @@
         <activity
             android:name=".FilteringBooksActivity"
             android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".GPSActivity"
+            android:parentActivityName=".MainActivity"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>
