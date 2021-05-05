@@ -6,7 +6,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -99,11 +99,11 @@ class FilteringBooksTest {
 
         utils.check(
             R.id.book_sort_parameter, BookOrdering.TITLE_DEC,
-            ViewAssertions.matches(ViewMatchers.isChecked())
+            matches(ViewMatchers.isChecked())
         )
         utils.check(
             R.id.book_sort_parameter, BookOrdering.TITLE_INC,
-            ViewAssertions.matches(ViewMatchers.isNotChecked())
+            matches(ViewMatchers.isNotChecked())
         )
     }
 
@@ -117,12 +117,12 @@ class FilteringBooksTest {
         ) // is now not checked
         utils.check(
             R.id.book_sort_parameter, BookOrdering.TITLE_INC,
-            ViewAssertions.matches(ViewMatchers.isNotChecked())
+            matches(ViewMatchers.isNotChecked())
         )
         utils.perform(R.id.book_sort_parameter, BookOrdering.TITLE_INC, click()) // is now checked
         utils.check(
             R.id.book_sort_parameter, BookOrdering.TITLE_INC,
-            ViewAssertions.matches(ViewMatchers.isChecked())
+            matches(ViewMatchers.isChecked())
         )
     }
 
@@ -156,9 +156,9 @@ class FilteringBooksTest {
 
     private fun checkTextEditsAreEmpty() {
         onView(withId(R.id.book_name)).perform(scrollTo(), click())
-        onView(withId(R.id.book_name)).check(ViewAssertions.matches(ViewMatchers.withText("")))
+        onView(withId(R.id.book_name)).check(matches(ViewMatchers.withText("")))
         onView(withId(R.id.book_isbn)).perform(scrollTo(), click())
-        onView(withId(R.id.book_isbn)).check(ViewAssertions.matches(ViewMatchers.withText("")))
+        onView(withId(R.id.book_isbn)).check(matches(ViewMatchers.withText("")))
     }
 
     private fun clickOnAllParamButtons() {
@@ -190,7 +190,7 @@ class FilteringBooksTest {
         if (!isChecked) {
             utils.performOnEnumParameter(
                 BookOrdering.DEFAULT, R.id.book_sort_parameter, null,
-                ViewAssertions.matches(checkFun)
+                matches(checkFun)
             )
         }
 
@@ -220,32 +220,32 @@ class FilteringBooksTest {
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.results_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.results_button)).check(matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        onView(withId(R.id.results_button)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.results_button)).check(matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
     fun navBarDefault() {
         onView(withId(R.id.default_selected)).check(
-            ViewAssertions.matches(
+            matches(
                 ViewMatchers.withEffectiveVisibility(
                     ViewMatchers.Visibility.GONE
                 )
             )
         )
         onView(withId(R.id.default_selected))
-            .check(ViewAssertions.matches(Matchers.not(ViewMatchers.isEnabled())))
+            .check(matches(Matchers.not(ViewMatchers.isEnabled())))
     }
 
     @Test
     fun navBarSelected() {
         onView(withId(R.id.books))
-            .check(ViewAssertions.matches(ViewMatchers.isSelected()))
+            .check(matches(ViewMatchers.isSelected()))
     }
 
     @Test
