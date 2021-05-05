@@ -1,14 +1,10 @@
 package com.github.polybooks.core
 
-
-import android.content.Context
-import android.media.Image
-import com.github.polybooks.R
-import com.github.polybooks.utils.FieldWithName
 import com.google.firebase.Timestamp
 import kotlinx.android.synthetic.main.activity_filtering_sales.view.*
 import java.io.Serializable
-import java.util.*
+
+typealias Image = android.media.Image
 
 /**
  * The Sale class contains all the information about a book on sale.
@@ -66,7 +62,7 @@ enum class SaleState: FieldWithName {
  * Allows access to the name of a field
  */
 enum class SaleFields(val fieldName: String) {
-    BOOK("book"),
+    BOOK_ISBN("book_isbn"),
     CONDITION("condition"),
     PRICE("price"),
     PUBLICATION_DATE("date"),
