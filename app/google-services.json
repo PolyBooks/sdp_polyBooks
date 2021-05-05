@@ -6,7 +6,7 @@
     "storage_bucket": "polybooks-ac2f5.appspot.com"
   },
   "client": [
-    {
+      {
       "client_info": {
         "mobilesdk_app_id": "1:735038661915:android:5ad9e7404d514a8cb11fbe",
         "android_client_info": {
