@@ -64,25 +64,8 @@ class FilteringBooksActivity : AppCompatActivity() {
 
         // --- TODO hardcoded : make it dynamic
         setParametersButtons()
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.home ->{
-                        startActivity(Intent(this, MainActivity::class.java))
-                        true
-                    }
-                    R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
-                        true
-                    }
-                    R.id.user_profile ->{
-                        // TODO: user sales
-                        false
-                    }
-                    else -> true
-                }
-        }
-        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
+
+        setNavBar()
     }
 
     fun resetParameters(view: View) {
@@ -129,6 +112,28 @@ class FilteringBooksActivity : AppCompatActivity() {
 
         mCourseCS306 = findViewById(R.id.CS306)
         mCourseCOM480 = findViewById(R.id.COM480)
+    }
+
+    private fun setNavBar(){
+        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+                when(item.itemId){
+                    R.id.home ->{
+                        startActivity(Intent(this, MainActivity::class.java))
+                        true
+                    }
+                    R.id.sales ->{
+                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        true
+                    }
+                    R.id.user_profile ->{
+                        // TODO: user sales
+                        false
+                    }
+                    else -> true
+                }
+            }
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
     }
 
     private fun getOrdering() : BookOrdering {
