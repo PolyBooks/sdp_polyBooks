@@ -6,8 +6,10 @@ import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
 
 object GlobalConstants {
-    val firestore = FirebaseFirestore.getInstance()
+    fun firestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
     val OLbookDB = OLBookDatabase { string -> url2json(string) }
-    val salesDB = SaleDatabase(firestore, OLbookDB)
-    val bookDB = FBBookDatabase(firestore, OLBookDB)
+    val salesDB = SaleDatabase(OLbookDB)
+    val bookDB = FBBookDatabase(OLBookDB)
 }

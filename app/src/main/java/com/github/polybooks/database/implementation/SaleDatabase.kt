@@ -15,9 +15,9 @@ import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "sale2"
 
-class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabase) : SaleDatabase {
+class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
 
-    private val saleRef: CollectionReference = firestore.collection(COLLECTION_NAME)
+    private val saleRef: CollectionReference = FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
 
     private inner class SalesQuery :
         SaleQuery {
