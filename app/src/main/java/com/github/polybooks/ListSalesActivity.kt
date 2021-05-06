@@ -5,14 +5,15 @@ import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.polybooks.GlobalConstants.salesDB
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.github.polybooks.core.database.interfaces.SaleSettings
+import com.github.polybooks.database.SalesAdapter
+import com.github.polybooks.database.implementation.FBBookDatabase
+import com.github.polybooks.database.implementation.OLBookDatabase
+import com.github.polybooks.database.implementation.SaleDatabase
+import com.github.polybooks.database.interfaces.SaleQuery
+import com.github.polybooks.database.interfaces.SaleSettings
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,10 +34,6 @@ class ListSalesActivity : AppCompatActivity() {
     private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
     private val initialBooks: List<Sale> = emptyList()
 
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val salesDB = SaleDatabase(firestore, bookDB)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

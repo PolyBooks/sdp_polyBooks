@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.database
 
 /**
  * Exception made for when a user attemps something that he needs to be logged in to do

@@ -1,9 +1,9 @@
 package com.github.polybooks.core.databaseImpl
 
 
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.interfaces.BookOrdering
-import com.github.polybooks.core.database.interfaces.BookSettings
+import com.github.polybooks.database.implementation.OLBookDatabase
+import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookSettings
 import com.google.gson.JsonParser
 import junit.framework.AssertionFailedError
 import org.junit.Assert.*

@@ -14,7 +14,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.adapter.InterestsParameterAdapter
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.database.interfaces.SaleOrdering
 import com.github.polybooks.utils.FilteringTestUtils
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers

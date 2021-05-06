@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database.interfaces
+package com.github.polybooks.database.interfaces
 
 import android.content.Context
 import com.github.polybooks.R
@@ -90,10 +90,10 @@ interface BookQuery : Query<Book> {
  * calling other methods (ig. searchByTitle)
  */
 data class BookSettings(
-        val ordering: BookOrdering,
-        val isbns : List<ISBN>?,
-        val title : String?,
-        val interests : Set<Interest>?
+    val ordering: BookOrdering,
+    val isbns : List<ISBN>?,
+    val title : String?,
+    val interests : Set<Interest>?
 ) : Serializable
 
 /**

@@ -8,7 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.GlobalConstants.bookDB
+import com.github.polybooks.GlobalConstants.OLbookDB
 import com.github.polybooks.GlobalConstants.salesDB
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
@@ -45,7 +45,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // Retrieve book data and display it if possible, else redirect with error toast
         if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
-                bookFuture = bookDB.getBook(stringISBN)
+                bookFuture = OLbookDB.getBook(stringISBN)
                 val book = bookFuture.get()
                 if (book != null) {
                     fillBookData(book)

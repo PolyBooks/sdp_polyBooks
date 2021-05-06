@@ -18,7 +18,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Semester
-import com.github.polybooks.core.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookOrdering
 import com.github.polybooks.utils.FilteringTestUtils
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf

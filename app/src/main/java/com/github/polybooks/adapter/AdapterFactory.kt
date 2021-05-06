@@ -2,10 +2,10 @@ package com.github.polybooks.adapter
 
 import com.github.polybooks.R
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.interfaces.BookOrdering
-import com.github.polybooks.core.database.interfaces.BookQuery
-import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookQuery
+import com.github.polybooks.database.interfaces.SaleOrdering
+import com.github.polybooks.database.interfaces.SaleQuery
 
 object AdapterFactory {
 

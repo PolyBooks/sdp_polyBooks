@@ -4,6 +4,9 @@ import androidx.core.os.persistableBundleOf
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.database.implementation.DummyBookQuery
 import com.github.polybooks.core.database.interfaces.*
+import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookQuery
+import com.github.polybooks.database.interfaces.BookSettings
 import com.google.firebase.Timestamp
 import org.junit.Test
 
@@ -51,7 +54,8 @@ class DummyBooksQueryTests {
 
     @Test
     fun settingsTest() {
-        val settingsRes = BookSettings(BookOrdering.DEFAULT,
+        val settingsRes = BookSettings(
+            BookOrdering.DEFAULT,
                 null, null, null)
         val settings = query.withOrdering(BookOrdering.TITLE_DEC).getSettings()
         assertEquals(settingsRes, settings)
@@ -59,7 +63,8 @@ class DummyBooksQueryTests {
 
     @Test
     fun getSettingsAfterFromSettingsShouldCorrespond() {
-        val settingsRes = BookSettings(BookOrdering.DEFAULT,
+        val settingsRes = BookSettings(
+            BookOrdering.DEFAULT,
                 null, null, null)
 
         val settings = query.fromSettings(settingsRes).getSettings()

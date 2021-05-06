@@ -13,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.polybooks.core.Sale
-import com.github.polybooks.core.database.implementation.SaleDatabase
+import com.github.polybooks.database.implementation.SaleDatabase
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions.sleep

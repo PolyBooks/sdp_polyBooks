@@ -5,16 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import com.github.polybooks.GlobalConstants.bookDB
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.com.github.polybooks.FilteringActivity
 import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.interfaces.BookOrdering
-import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.database.implementation.FBBookDatabase
+import com.github.polybooks.database.implementation.OLBookDatabase
+import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookQuery
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -31,11 +32,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 class FilteringBooksActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringBooksActivity"
-
-    // TODO use future global static dbs
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button

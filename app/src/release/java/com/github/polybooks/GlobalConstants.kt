@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 object GlobalConstants {
     val firestore = FirebaseFirestore.getInstance()
-    val bookDB = OLBookDatabase { string -> url2json(string) }
-    val salesDB = SaleDatabase(firestore, bookDB)
+    val OLbookDB = OLBookDatabase { string -> url2json(string) }
+    val salesDB = SaleDatabase(firestore, OLbookDB)
+    val bookDB = FBBookDatabase(firestore, OLBookDB)
 }

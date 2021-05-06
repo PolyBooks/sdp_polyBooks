@@ -1,10 +1,10 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks
 
 import android.os.SystemClock
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.interfaces.BookOrdering
-import com.github.polybooks.core.database.interfaces.BookQuery
-import com.github.polybooks.core.database.interfaces.BookSettings
+import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookQuery
+import com.github.polybooks.database.interfaces.BookSettings
 import com.google.firebase.Timestamp
 import java.util.concurrent.CompletableFuture
 
@@ -14,7 +14,7 @@ val default_books: List<Book> = listOf(
         Book("Book3", listOf("Baudelaire"), "Les fleurs du mal", "?", "?", "?", Timestamp(format.parse("2016-05-05")!!), "?")
 )
 
-class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery{
+class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery {
 
     override fun onlyIncludeInterests(interests: Collection<Interest>) : BookQuery {
        return DummyBookQuery()

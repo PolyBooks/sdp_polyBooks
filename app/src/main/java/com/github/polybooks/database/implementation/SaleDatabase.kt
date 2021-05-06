@@ -1,11 +1,12 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks.database.implementation
 
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.DatabaseException
-import com.github.polybooks.core.database.LocalUserException
+import com.github.polybooks.database.DatabaseException
+import com.github.polybooks.database.LocalUserException
 import com.github.polybooks.core.database.interfaces.*
-import com.github.polybooks.core.database.interfaces.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleOrdering.*
+import com.github.polybooks.database.interfaces.*
+import com.github.polybooks.database.interfaces.SaleDatabase
+import com.github.polybooks.database.interfaces.SaleOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.github.polybooks.utils.url2json
 import com.google.android.gms.tasks.Task
@@ -20,7 +21,8 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
 
     private val saleRef: CollectionReference = firestore.collection(COLLECTION_NAME)
 
-    private inner class SalesQuery : SaleQuery {
+    private inner class SalesQuery :
+        _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
 
         private var isbn: ISBN? = null
         private var title: String? = null
@@ -32,51 +34,51 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
         private var minPrice: Float? = null
         private var maxPrice: Float? = null
 
-        private var ordering: SaleOrdering = DEFAULT
+        private var ordering: _root_ide_package_.com.github.polybooks.database.interfaces.SaleOrdering = DEFAULT
 
-        override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
+        override fun onlyIncludeInterests(interests: Set<Interest>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             if (interests.isNotEmpty()) this.interests = interests
             else this.interests = null
             return this
         }
 
-        override fun searchByTitle(title: String): SaleQuery {
+        override fun searchByTitle(title: String): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             this.title = title
             return this
         }
 
-        override fun searchByState(state: Set<SaleState>): SaleQuery {
+        override fun searchByState(state: Set<SaleState>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             if (state.isNotEmpty()) this.states = state
             else this.states = null
             return this
         }
 
-        override fun searchByCondition(condition: Set<BookCondition>): SaleQuery {
+        override fun searchByCondition(condition: Set<BookCondition>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             if (condition.isNotEmpty()) this.conditions = condition
             else this.conditions = null
             return this
         }
 
-        override fun searchByMinPrice(min: Float): SaleQuery {
+        override fun searchByMinPrice(min: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             this.minPrice = min
             return this
         }
 
-        override fun searchByMaxPrice(max: Float): SaleQuery {
+        override fun searchByMaxPrice(max: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             this.maxPrice = max
             return this
         }
 
-        override fun searchByPrice(min: Float, max: Float): SaleQuery {
+        override fun searchByPrice(min: Float, max: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             return this.searchByMinPrice(min).searchByMaxPrice(max)
         }
 
-        override fun withOrdering(ordering: SaleOrdering): SaleQuery {
+        override fun withOrdering(ordering: _root_ide_package_.com.github.polybooks.database.interfaces.SaleOrdering): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             this.ordering = ordering
             return this
         }
 
-        override fun searchByISBN(isbn: ISBN): SaleQuery {
+        override fun searchByISBN(isbn: ISBN): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             this.isbn = isbn
             return this
         }
@@ -195,8 +197,8 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
             }
         }
 
-        override fun getSettings(): SaleSettings {
-            return SaleSettings(
+        override fun getSettings(): _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings {
+            return _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings(
                 ordering,
                 isbn,
                 title,
@@ -208,7 +210,7 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
             )
         }
 
-        override fun fromSettings(settings: SaleSettings): SaleQuery {
+        override fun fromSettings(settings: _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
             isbn = settings.isbn
             title = settings.title
             interests = settings.interests
@@ -222,7 +224,7 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
         }
     }
 
-    override fun querySales(): SaleQuery {
+    override fun querySales(): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
         return SalesQuery()
     }
 

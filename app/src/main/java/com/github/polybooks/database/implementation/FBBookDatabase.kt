@@ -1,10 +1,10 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks.database.implementation
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.ISBN
-import com.github.polybooks.core.database.interfaces.BookDatabase
-import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.database.interfaces.BookDatabase
+import com.github.polybooks.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -20,7 +20,8 @@ private const val DATE_FORMAT = "yyyy MM dd"
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
  * */
-class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) : BookDatabase {
+class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) :
+    BookDatabase {
 
     /*TODO:
     [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
@@ -29,7 +30,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
     private val bookRef = firebase.collection(COLLECTION_NAME)
 
-    private val dateFormater = SimpleDateFormat(DATE_FORMAT)
+    private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
@@ -97,7 +98,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
         private fun bookToDocument(book : Book) : Any {
             val publishDate : String? = book.publishDate?.let {
-                dateFormater.format(it.toDate())
+                dateFormatter.format(it.toDate())
             }
             return hashMapOf(
                 BookFields.AUTHORS.fieldName to book.authors,
@@ -120,7 +121,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
         private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
             val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
-                Timestamp(dateFormater.parse(it)!!)
+                Timestamp(dateFormatter.parse(it)!!)
             }
             return Book(
                 map[BookFields.ISBN.fieldName] as ISBN,

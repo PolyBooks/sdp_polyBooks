@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks
 
 import android.os.Build
 import android.os.SystemClock
@@ -6,9 +6,9 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.*
 
-import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.github.polybooks.core.database.interfaces.SaleSettings
+import com.github.polybooks.database.interfaces.SaleOrdering
+import com.github.polybooks.database.interfaces.SaleQuery
+import com.github.polybooks.database.interfaces.SaleSettings
 import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
 
@@ -35,7 +35,7 @@ val default_sale: List<Sale> = listOf(
  * Default sales query used for tests
  * @property sale the list of sales you query
  */
-class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
+class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
 
     private val TAG: String = "DummySalesQuery"
     override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
@@ -108,7 +108,8 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery{
     }
 
     override fun getSettings(): SaleSettings {
-        return SaleSettings(SaleOrdering.DEFAULT,
+        return SaleSettings(
+            SaleOrdering.DEFAULT,
                 null, null, null, null, null,null, null)
     }
 
