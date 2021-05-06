@@ -154,7 +154,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
          */
     }
 
-    // TODO all the picture stuff.
     fun takePicture(view: View) {
         val intent = Intent(this, TakeBookPictureActivity::class.java).apply {
             putExtra(EXTRA_ISBN, stringISBN)

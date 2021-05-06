@@ -26,7 +26,6 @@ class TakeBookPictureActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
 
     // I think (hope) that using a single fileName is fine as here we are fine with overwriting it everytime a new picture is taken
-    // might cause issue in between different isbns
     private val pictureFileName = "bookPictureFile"
 
     private lateinit var cameraExecutor: ExecutorService
@@ -52,8 +51,6 @@ class TakeBookPictureActivity : AppCompatActivity() {
     }
 
     fun takePhoto(view: View) {
-        // TODO improve vastly this function (
-        //  automatically go back to FillSaleActivity passing the taken picture as an intent which will be both displayed and saved to DB
         // TODO offer flash option and other quality of life upgrades
 
         // Get a stable reference of the modifiable image capture use case
@@ -70,7 +67,6 @@ class TakeBookPictureActivity : AppCompatActivity() {
                 }
 
                 override fun onCaptureSuccess(image: ImageProxy) {
-                    // TODO The application is responsible for calling ImageProxy.close() to close the image.
                     super.onCaptureSuccess(image)
                     val msg = "Photo capture succeeded"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
@@ -115,7 +111,7 @@ class TakeBookPictureActivity : AppCompatActivity() {
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
-        cameraProviderFuture.addListener(Runnable {
+        cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
@@ -177,7 +173,6 @@ class TakeBookPictureActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "CameraXBasic"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }

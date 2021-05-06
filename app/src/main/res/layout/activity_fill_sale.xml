@@ -247,7 +247,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 
-    <!--    TODO test different height/width/constraints and see what works best -->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
