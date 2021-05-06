@@ -9,10 +9,15 @@ import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.com.github.polybooks.FilteringActivity
 import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.DummySalesQuery
+import com.github.polybooks.core.database.implementation.FBBookDatabase
+import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 /**
@@ -24,6 +29,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
+
+    // TODO use future global static dbs
+    private val firestore = FirebaseFirestore.getInstance()
+    private val olBookDB = OLBookDatabase{ string -> url2json(string) }
+    private val bookDB = FBBookDatabase(firestore, olBookDB)
+    private val saleDB = SaleDatabase(firestore, bookDB)
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
@@ -91,7 +102,8 @@ class FilteringSalesActivity: FilteringActivity() {
     }
 
     fun getResults(view: View) {
-        var query: SaleQuery = DummySalesQuery()
+//        var query: SaleQuery = DummySalesQuery()
+        var query: SaleQuery = saleDB.querySales()
 
         //These 2 in front for dummy sales query
         if (mName.text.isNotEmpty())

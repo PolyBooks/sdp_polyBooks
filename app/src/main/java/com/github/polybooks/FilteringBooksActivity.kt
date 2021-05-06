@@ -12,10 +12,14 @@ import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import com.github.polybooks.core.database.implementation.DummyBookQuery
+import com.github.polybooks.core.database.implementation.FBBookDatabase
+import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * This activity let the users to select the sorting and filtering parameters
@@ -28,6 +32,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class FilteringBooksActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringBooksActivity"
+
+    // TODO use future global static dbs
+    private val firestore = FirebaseFirestore.getInstance()
+    private val olBookDB = OLBookDatabase{ string -> url2json(string)}
+    private val bookDB = FBBookDatabase(firestore, olBookDB)
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
@@ -86,7 +95,8 @@ class FilteringBooksActivity: FilteringActivity() {
     }
 
     fun getResults(view: View) {
-        var query: BookQuery = DummyBookQuery()
+//        var query: BookQuery = DummyBookQuery()
+        var query: BookQuery = bookDB.queryBooks()
 
         //These 2 in front for dummy books query
         if (mName.text.isNotEmpty())
