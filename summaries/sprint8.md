@@ -4,7 +4,9 @@
 
 
 ## Joshua
-
+This week I did some refactoring and started on the gps, and had to go through a lot of documentation to be able to do so.  
+This made me discover the backend a bit more which was interesting.
+Next time I hope to be able to continue working with someone as a pair.
 
 ## Nicolas
 
