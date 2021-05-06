@@ -48,7 +48,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fill_sale_fancy)
+        setContentView(R.layout.activity_fill_sale)
 
         // Get the Intent that started this activity and extract the strings
         val intent = intent
