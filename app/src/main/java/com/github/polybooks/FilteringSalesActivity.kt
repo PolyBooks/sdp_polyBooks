@@ -109,10 +109,8 @@ class FilteringSalesActivity: FilteringActivity() {
         if (mName.text.isNotEmpty())
             query.searchByTitle(mName.text.toString())
 
-        /*
         if(mISBN.text.isNotEmpty())
-            query = query.searchByTitle(mISBN.text.toString())
-        */
+            query = query.searchByISBN(mISBN.text.toString())
 
         // price
         val minPrice =
