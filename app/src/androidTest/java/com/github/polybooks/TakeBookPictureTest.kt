@@ -5,8 +5,14 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -14,18 +20,23 @@ import org.junit.runner.RunWith
 class TakeBookPictureTest {
 
 
-    @Test
-    fun takePictureButtonWorks() {
-        val scenario = launchFragmentInContainer<TakeBookPictureFragment>()
-        onView(withId(R.id.camera_capture_button)).perform(click())
-        // Assert expected behavior
+    @get:Rule
+    val activityRule = ActivityScenarioRule(TakeBookPictureActivity::class.java)
+
+    @Before
+    fun before() {
+        Intents.init()
+    }
+
+    @After
+    fun after() {
+        Intents.release()
     }
 
     @Test
-    fun testStartingState() {
-        val scenario = launchFragmentInContainer<TakeBookPictureFragment>(
-            initialState = Lifecycle.State.STARTED,
-        )
-        scenario.moveToState(Lifecycle.State.RESUMED)
+    fun takePictureButtonWorks() {
+        onView(withId(R.id.camera_capture_button)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(FillSaleTest::class.java.name))
     }
+
 }
