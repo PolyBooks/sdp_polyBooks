@@ -1,6 +1,9 @@
 package com.github.polybooks.core.database.interfaces
 
+import android.content.Context
+import com.github.polybooks.R
 import com.github.polybooks.core.*
+import com.github.polybooks.utils.FieldWithName
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 

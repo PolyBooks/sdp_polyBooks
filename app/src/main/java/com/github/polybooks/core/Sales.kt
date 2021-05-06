@@ -1,7 +1,9 @@
 package com.github.polybooks.core
 
+import android.content.Context
+import com.github.polybooks.R
+import com.github.polybooks.utils.FieldWithName
 import com.google.firebase.Timestamp
-import kotlinx.android.synthetic.main.activity_filtering_sales.view.*
 import java.io.Serializable
 
 typealias Image = android.media.Image
@@ -37,7 +39,7 @@ enum class BookCondition: FieldWithName {
 
     override fun fieldName(c: Context?): String {
         return c?.resources?.getStringArray(R.array.sale_book_conditions_array)?.get(ordinal)
-               ?: name
+            ?: name
     }
 }
 
@@ -54,7 +56,7 @@ enum class SaleState: FieldWithName {
 
     override fun fieldName(c: Context?): String {
         return c?.resources?.getStringArray(R.array.sale_states_array)?.get(ordinal)
-               ?: name
+            ?: name
     }
 }
 
