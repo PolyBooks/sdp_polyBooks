@@ -2,12 +2,10 @@ package com.github.polybooks.core.database.implementation
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
-import com.github.polybooks.core.Interest
+import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.database.interfaces.BookDatabase
-import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.regulariseISBN
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
@@ -125,7 +123,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                 Timestamp(dateFormater.parse(it)!!)
             }
             return Book(
-                map[BookFields.ISBN.fieldName] as String,
+                map[BookFields.ISBN.fieldName] as ISBN,
                 map[BookFields.AUTHORS.fieldName] as List<String>?,
                 map[BookFields.TITLE.fieldName] as String,
                 map[BookFields.EDITION.fieldName] as String?,
@@ -153,7 +151,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             return future
         }
 
-        private fun getBooksByISBNFromFirebase(isbns : List<String>) : CompletableFuture<List<Book>> {
+        private fun getBooksByISBNFromFirebase(isbns : List<ISBN>) : CompletableFuture<List<Book>> {
             val future = CompletableFuture<List<Book>>()
             bookRef.whereIn(FieldPath.documentId(), isbns)
                 .get().addOnSuccessListener { bookEntries ->

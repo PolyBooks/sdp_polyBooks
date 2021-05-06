@@ -4,61 +4,49 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.MainActivity
 import com.github.polybooks.core.*
+import com.github.polybooks.core.BookCondition.*
+import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.core.database.LocalUserException
-import com.github.polybooks.utils.anonymousBook
+import com.github.polybooks.core.database.implementation.FBBookDatabase
+import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.utils.unwrapException
+import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
+import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.rules.ExpectedException
-import java.text.DateFormat
-import java.text.SimpleDateFormat
+import java.lang.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
-import kotlin.collections.HashMap
 
 class SaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
-    private val saleRef: CollectionReference = FirebaseFirestore.getInstance().collection("sale")
-    private val db = SaleDatabase()
+    private val firestore = FirebaseFirestore.getInstance()
+    private val olBookDB = OLBookDatabase { string -> url2json(string) }
+    private val bookDB = FBBookDatabase(firestore, olBookDB)
+    private val saleDB = SaleDatabase(firestore, bookDB)
 
-    private val testSaleName = "test-123456"
+    private val testUser = LoggedUser(301966, "Le givre")
+    private val testBook = Book("9780156881807",null, "Tartuffe, by Moliere", null, null, null, null, null)
 
-    private val format : DateFormat = SimpleDateFormat("yyyy-mm-dd")
+    private val dummySale: Sale = Sale(
+        testBook,
+        testUser,
+        500f,
+        WORN,
+        Timestamp.now(),
+        RETRACTED,
+        null
+    )
 
-    private val dummySale: MutableMap<String, Any> = HashMap()
-
-    init {
-        dummySale[SaleFields.BOOK.fieldName] = anonymousBook("test-book-6Zzn8ZNPeK-cXFEfCvqbs-spf0eCVEqa")
-        dummySale[SaleFields.PRICE.fieldName] = 500f
-        dummySale[SaleFields.CONDITION.fieldName] = BookCondition.WORN
-        dummySale[SaleFields.STATE.fieldName] = SaleState.ACTIVE
-        dummySale[SaleFields.PUBLICATION_DATE.fieldName] = Timestamp(format.parse("2016-05-05")!!)
-        dummySale[SaleFields.SELLER.fieldName] = LoggedUser(301966, "Le givre")
-    }
-
-    fun addDummySaleTest(payload: MutableMap<String, Any>? = null) {
-        if (payload != null) {
-            saleRef.document(testSaleName).set(payload)
-        } else {
-
-
-            saleRef.document(testSaleName).set(dummySale)
-        }
-
-        BaristaSleepInteractions.sleep(250, TimeUnit.MILLISECONDS)
-    }
-
-    fun deleteDummySaleTest() {
-        saleRef.document(testSaleName).delete()
-        BaristaSleepInteractions.sleep(250, TimeUnit.MILLISECONDS)
+    fun addDummySale() : Sale {
+        return saleDB.addSale(dummySale).get()
     }
 
     @Before fun setUp() {
@@ -66,7 +54,8 @@ class SaleDatabaseTest {
     }
 
     @After fun cleanUp() {
-        deleteDummySaleTest()
+        val testSales = saleDB.listAllSales().get().filter { it.seller == testUser }
+        testSales.forEach { saleDB.deleteSale(it).get() }
         Intents.release()
     }
 
@@ -74,93 +63,79 @@ class SaleDatabaseTest {
 
     @Test
     fun t_getCount() {
-        val allSales: CompletableFuture<List<Sale>> = db.querySales().getAll()
-        val count: CompletableFuture<Int> = db.querySales().getCount()
+        val allSales: CompletableFuture<List<Sale>> = saleDB.querySales().getAll()
+        val count: CompletableFuture<Int> = saleDB.querySales().getCount()
 
         assertEquals(allSales.get().size, count.get())
     }
 
     @Test
     fun t_listAllSales() {
-        val allSales: List<Sale> = db.querySales().getAll().get()
-        var listAllSales: List<Sale> = db.listAllSales().get()
+        val allSales: List<Sale> = saleDB.querySales().getAll().get()
+        var listAllSales: List<Sale> = saleDB.listAllSales().get()
 
         val expectedSize: Int = allSales.size
         assertEquals(expectedSize, listAllSales.size)
         assertEquals(allSales, listAllSales)
-
-        // Adding a lonely dummy test sale
-        addDummySaleTest()
-
-        listAllSales = db.listAllSales().get()
-        assertEquals(expectedSize + 1, listAllSales.size)
-
-        val isolatedAddition = listAllSales.filter { s -> s.book == dummySale[SaleFields.BOOK.fieldName] }
-        assertEquals(1, isolatedAddition.size)
-        assertEquals(dummySale[SaleFields.BOOK.fieldName], isolatedAddition[0].book)
-        assertEquals(dummySale[SaleFields.PRICE.fieldName], isolatedAddition[0].price)
-        assertEquals(dummySale[SaleFields.CONDITION.fieldName], isolatedAddition[0].condition)
-        assertEquals(dummySale[SaleFields.STATE.fieldName], isolatedAddition[0].state)
-        assertEquals(dummySale[SaleFields.PUBLICATION_DATE.fieldName], isolatedAddition[0].date)
-        assertEquals(dummySale[SaleFields.SELLER.fieldName], isolatedAddition[0].seller)
     }
 
     @Test
     fun t_searchByTitle() {
-        val initialCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
-        addDummySaleTest()
-        val secondCount: Int = db.querySales().searchByTitle((dummySale[SaleFields.BOOK.fieldName] as Book).title).getCount().get()
+        val initialCount: Int = saleDB.querySales().searchByTitle(dummySale.book.title).getCount().get()
+        val dummySale = addDummySale()
+        val secondCount: Int = saleDB.querySales().searchByTitle(dummySale.book.title).getCount().get()
+        //saleDB.deleteSale(dummySale)
 
-        assertEquals(secondCount, initialCount + 1)
-        assertEquals(0, db.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getCount().get())
+        assertEquals(initialCount + 1, secondCount)
+        assertEquals(0, saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getCount().get())
     }
 
     @Test
     fun t_searchMinPrice() {
         assertEquals(
-                db.listAllSales().get().size,
-                db.querySales().searchByMinPrice(0f).getCount().get()
+                saleDB.listAllSales().get().size,
+                saleDB.querySales().searchByMinPrice(0f).getCount().get()
         )
 
         assertEquals(
-                db.listAllSales().get().filter { s -> s.price >= 10f }.size,
-                db.querySales().searchByMinPrice(10f).getCount().get()
+                saleDB.listAllSales().get().filter { s -> s.price >= 10f }.size,
+                saleDB.querySales().searchByMinPrice(10f).getCount().get()
         )
 
         assertEquals(
-                db.listAllSales().get().filter { s -> s.price >= 150f }.size,
-                db.querySales().searchByMinPrice(150f).getCount().get()
+                saleDB.listAllSales().get().filter { s -> s.price >= 150f }.size,
+                saleDB.querySales().searchByMinPrice(150f).getCount().get()
         )
     }
 
     @Test
     fun t_searchMaxPrice() {
         assertEquals(
-                db.listAllSales().get().filter { s -> s.price == 0f }.size,
-                db.querySales().searchByMaxPrice(0f).getCount().get()
+                saleDB.listAllSales().get().filter { s -> s.price == 0f }.size,
+                saleDB.querySales().searchByMaxPrice(0f).getCount().get()
         )
 
         assertEquals(
-                db.listAllSales().get().filter { s -> s.price <= 10f }.size,
-                db.querySales().searchByMaxPrice(10f).getCount().get()
+                saleDB.listAllSales().get().filter { s -> s.price <= 10f }.size,
+                saleDB.querySales().searchByMaxPrice(10f).getCount().get()
         )
 
         assertEquals(
                 0,
-                db.querySales().searchByMaxPrice(-1f).getCount().get()
+                saleDB.querySales().searchByMaxPrice(-1f).getCount().get()
         )
     }
 
     @Test
     fun t_searchByPrice() {
         assertEquals(
-                db.listAllSales().get().filter { s -> (s.price in 5f..20f) }.size,
-                db.querySales().searchByPrice(5f, 20f).getCount().get()
+                saleDB.listAllSales().get().filter { s -> (s.price in 5f..20f) }.size,
+                saleDB.querySales().searchByPrice(5f, 20f).getCount().get()
         )
 
         assertEquals(
                 0,
-                db.querySales().searchByPrice(5f, 2f).getCount().get()
+                saleDB.querySales().searchByPrice(5f, 2f).getCount().get()
         )
     }
 
@@ -168,23 +143,23 @@ class SaleDatabaseTest {
     fun t_searchByCondition() {
         // empty collection should be ignored
         assertEquals(
-                db.querySales().getCount().get(),
-                db.querySales().searchByCondition(emptySet()).getCount().get()
+                saleDB.querySales().getCount().get(),
+                saleDB.querySales().searchByCondition(emptySet()).getCount().get()
         )
 
         assertEquals(
-                db.listAllSales().get().filter { s -> s.condition == BookCondition.NEW }.size,
-                db.querySales().searchByCondition(setOf(BookCondition.NEW)).getCount().get()
+                saleDB.listAllSales().get().filter { s -> s.condition == NEW }.size,
+                saleDB.querySales().searchByCondition(setOf(NEW)).getCount().get()
         )
 
         assertEquals(
-                db.listAllSales().get().filter { s -> (s.condition == BookCondition.NEW || s.condition == BookCondition.WORN)}.size,
-                db.querySales().searchByCondition(setOf(BookCondition.NEW, BookCondition.WORN)).getCount().get()
+                saleDB.listAllSales().get().filter { s -> (s.condition == NEW || s.condition == WORN)}.size,
+                saleDB.querySales().searchByCondition(setOf(NEW, WORN)).getCount().get()
         )
 
         assertEquals(
-                db.querySales().getCount().get(),
-                db.querySales().searchByCondition(setOf(BookCondition.NEW, BookCondition.GOOD, BookCondition.WORN)).getCount().get()
+                saleDB.querySales().getCount().get(),
+                saleDB.querySales().searchByCondition(setOf(NEW, GOOD, WORN)).getCount().get()
         )
     }
 
@@ -192,13 +167,13 @@ class SaleDatabaseTest {
     fun t_searchByState() {
         // empty collection should be ignored
         assertEquals(
-                db.querySales().getCount().get(),
-                db.querySales().searchByState(emptySet()).getCount().get()
+                saleDB.querySales().getCount().get(),
+                saleDB.querySales().searchByState(emptySet()).getCount().get()
         )
 
         assertEquals(
-                db.listAllSales().get().filter { s -> s.state == SaleState.ACTIVE }.size,
-                db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
+                saleDB.listAllSales().get().filter { s -> s.state == ACTIVE }.size,
+                saleDB.querySales().searchByState(setOf(ACTIVE)).getCount().get()
         )
     }
 
@@ -216,77 +191,54 @@ class SaleDatabaseTest {
 
     @Test
     fun t_getN() {
-        var future: CompletableFuture<List<Sale>> = db.querySales().getN(-1, 10)
+        var future: CompletableFuture<List<Sale>> = saleDB.querySales().getN(-1, 10)
         assertTrue(future.isCompletedExceptionally)
         customAssertFutureThrows(future, -1, 10)
 
-        future = db.querySales().getN(10, -1)
+        future = saleDB.querySales().getN(10, -1)
         assertTrue(future.isCompletedExceptionally)
         customAssertFutureThrows(future, 10, -1)
 
-        future = db.querySales().getN(-1, -1)
+        future = saleDB.querySales().getN(-1, -1)
         assertTrue(future.isCompletedExceptionally)
         customAssertFutureThrows(future, -1, -1)
 
-        future = db.querySales().getN(0, 0)
+        future = saleDB.querySales().getN(0, 0)
         assertEquals(0, future.get().size)
 
-        future = db.querySales().getN(1, 0)
+        future = saleDB.querySales().getN(1, 0)
         assertTrue(future.get().size <= 1)
 
-        addDummySaleTest()
-        future = db.querySales().getN(1, 0)
+        addDummySale()
+        future = saleDB.querySales().getN(1, 0)
         assertTrue(future.get().size <= 1)
     }
 
     @Test
     fun addAsLocalUser(){
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
-                LocalUser, 666f,
-                BookCondition.WORN,
-                Timestamp(format.parse("2016-05-05")!!),
-                SaleState.RETRACTED, null )
         try {
-            db.addSale(saleTest)
-        }catch (e: LocalUserException) {
-           assertEquals("Cannot add sale as LocalUser", e.message)
+            saleDB.addSale(testBook.isbn, LocalUser, 666f, WORN, RETRACTED, null).get()
         } catch (e: Throwable) {
-            fail("Wrong exception type")
+            when (unwrapException(e)) {
+                is LocalUserException -> return
+                else -> fail("Throws wrong exception type: ${unwrapException(e).javaClass}")
+            }
         }
-    }
-
-    @Test
-    fun deleteAsLocalUser(){
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
-                LocalUser, 666f,
-                BookCondition.WORN,
-                Timestamp(format.parse("2016-05-05")!!),
-                SaleState.RETRACTED, null )
-        try {
-            db.deleteSale(saleTest)
-        }catch (e: LocalUserException) {
-            assertEquals("Cannot add sale as LocalUser", e.message)
-        } catch (e: Throwable) {
-            fail("Wrong exception type")
-        }
+        fail("Didn't throw exception")
     }
 
     @Test
     fun addDelete(){
-        val saleTest = Sale(anonymousBook("test-tqwjdhsfalkfdhjasdhlfkahdfjklhdjhfl.adfjasdhflka-adjklshfjklasdhfjklhasd"),
-            LoggedUser(301943, "The best"), 666f,
-            BookCondition.WORN,
-            Timestamp(format.parse("2016-05-05")!!),
-            SaleState.RETRACTED, null )
-        db.deleteSale(saleTest)
-        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
-        assertEquals(0,db.querySales().searchByTitle(saleTest.book.title).getCount().get())
-        db.addSale(saleTest)
-        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
-        assertEquals( listOf(saleTest), db.querySales().searchByTitle(saleTest.book.title).getAll().get())
-        db.deleteSale(saleTest)
-        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
-        assertEquals(0,db.querySales().searchByTitle(saleTest.book.title).getCount().get())
+        fun saleExists(sale : Sale) : Boolean {
+            return saleDB.querySales().searchByISBN(sale.book.isbn).getAll().get().any {
+                it.date == sale.date && it.seller == sale.seller
+            }
+        }
+
+        val sale = saleDB.addSale(testBook.isbn, LoggedUser(300437, "testUser"), 666f, WORN, RETRACTED, null).get()
+        assertTrue(saleExists(sale))
+        saleDB.deleteSale(sale).get()
+        assertFalse(saleExists(sale))
     }
 
     @Test
@@ -299,116 +251,129 @@ class SaleDatabaseTest {
                         Course("COM-301"),
                         Field("Biology"),
                         Semester("IC", "BA3")),
-                setOf(SaleState.RETRACTED),
-                setOf(BookCondition.WORN, BookCondition.NEW),
+                setOf(RETRACTED),
+                setOf(WORN, NEW),
                 3.0f,
                 10.0f
         )
 
         assertEquals(
                 settings,
-                db.querySales().fromSettings(settings).getSettings()
+                saleDB.querySales().fromSettings(settings).getSettings()
         )
+    }
+
+    @Test
+    fun deleteSaleFromLocalUser() {
+        try {
+            saleDB.deleteSale(
+                Sale(
+                    testBook,
+                    LocalUser,
+                    666f,
+                    WORN,
+                    Timestamp.now(),
+                    RETRACTED,
+                    null
+                )
+            ).get()
+        } catch (e: Throwable) {
+            val exception = unwrapException(e)
+            when (exception) {
+                is IllegalArgumentException -> return
+                else -> throw AssertionFailedError("Wrong exception type thrown")
+            }
+        }
+        throw AssertionFailedError("Exception expected to be thrown but wasn't")
     }
 
     @Test
     fun settingsModifiesStateOfQuery() {
         val settings = SaleSettings(
                 SaleOrdering.DEFAULT, null,null, null,
-                setOf(SaleState.RETRACTED), null, null,null
+                setOf(RETRACTED), null, null,null
         )
-
-        addDummySaleTest()
-        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        val sale = saleDB.addSale("9780156881807", testUser, 666f, WORN, RETRACTED, null).get()
         assertNotEquals(
-                db.querySales().searchByState(setOf(SaleState.ACTIVE)).fromSettings(settings).getCount().get(),
-                db.querySales().searchByState(setOf(SaleState.ACTIVE)).getCount().get()
+                saleDB.querySales().searchByState(setOf(ACTIVE)).fromSettings(settings).getCount().get(),
+                saleDB.querySales().searchByState(setOf(ACTIVE)).getCount().get()
         )
-        deleteDummySaleTest()
-        BaristaSleepInteractions.sleep(2000, TimeUnit.MILLISECONDS)
+        saleDB.deleteSale(sale).get()
     }
 
     @Test
     fun settingsQueriesTheSameWayAsOnlyIncludeInterests() {
         val settings = SaleSettings(
-            SaleOrdering.DEFAULT, null,null, setOf(Field("Biology")),
+            SaleOrdering.DEFAULT, null,title = "Tartuffe", null,
             null, null, null,null
         )
 
         assertEquals(
-                db.querySales().fromSettings(settings).getCount().get(),
-                db.querySales().onlyIncludeInterests(setOf(Field("Biology"))).getCount().get()
+                saleDB.querySales().fromSettings(settings).getCount().get(),
+                saleDB.querySales().searchByTitle("Tartuffe").getCount().get()
         )
     }
 
     @Test
     fun settingsQueriesTheSameWayAsQueryFunctions() {
-        val interests = setOf(Field("Biology"), Course("COM-301"))
+        val title = "Tartuffe"
         val minPrice = 0.0f
         val maxPrice = 10.0f
 
-        var settings = SaleSettings(
-                SaleOrdering.DEFAULT, null, null, interests, null
+        val settings = SaleSettings(
+                SaleOrdering.DEFAULT, null, title, null, null
                 ,null, minPrice, maxPrice
         )
         assertEquals(
-                db.querySales().fromSettings(settings).getCount().get(),
-                db.querySales()
-                        .onlyIncludeInterests(interests)
-                        .searchByPrice(minPrice, maxPrice).getCount().get()
+                saleDB.querySales().fromSettings(settings).getCount().get(),
+                saleDB.querySales()
+                    .searchByTitle("Tartuffe")
+                    .searchByPrice(minPrice, maxPrice).getCount().get()
 
         )
     }
 
-    @Ignore
     @Test
-    fun Delete(){
-        //Used to manually delete sales
-        val saleTest = Sale(anonymousBook("test1"),
-                LoggedUser(301943, "The best"),
-                666f,
-                BookCondition.WORN,
-                Timestamp(format.parse("2016-05-05")!!),
-                SaleState.RETRACTED, null )
-        db.deleteSale(saleTest)
-    }
-    @Ignore
-    @Test
-    fun See(){
-        fun snapshotToBook(map: HashMap<String,Any>): Book {
-            return Book(
-                    map[BookFields.ISBN.fieldName] as String,
-                    map[BookFields.AUTHORS.fieldName] as List<String>?,
-                    map[BookFields.TITLE.fieldName] as String,
-                    map[BookFields.EDITION.fieldName] as String?,
-                    map[BookFields.LANGUAGE.fieldName] as String?,
-                    map[BookFields.PUBLISHER.fieldName] as String?,
-                    map[BookFields.PUBLISHDATE.fieldName] as Timestamp?,
-                    map[BookFields.FORMAT.fieldName] as String?
-            )
+    fun canSearchBothByStateAndCondition() {
+        val saleRetractedWorn = saleDB.addSale(dummySale.copy(state = RETRACTED, condition = WORN)).get()
+        val saleRetractedGood = saleDB.addSale(dummySale.copy(state = RETRACTED, condition = GOOD)).get()
+        val saleActiveGood = saleDB.addSale(dummySale.copy(state = ACTIVE, condition = GOOD)).get()
+        val saleActiveWorn = saleDB.addSale(dummySale.copy(state = ACTIVE, condition = WORN)).get()
 
-        }
-        saleRef.whereEqualTo("book.title", "test1").get().addOnSuccessListener { documents ->
-            val book = documents.map { document ->
-                document.get(SaleFields.BOOK.fieldName) as HashMap<String, Any>//as Book
-            }
-            
-            println(book)
-        }
-    }
+        val res1 = saleDB.querySales().searchByCondition(setOf(WORN)).searchByState(setOf(RETRACTED)).getAll().get()
+        assertTrue(res1.contains(saleRetractedWorn))
+        assertFalse(res1.contains(saleRetractedGood))
+        assertFalse(res1.contains(saleActiveGood))
+        assertFalse(res1.contains(saleActiveWorn))
 
-    @Ignore
-    @Test
-    fun Add(){
-        //Used to manually insert sales
-        val saleTest = Sale(anonymousBook("Phisics for dummies"),
-                LoggedUser(301966, "La chevre"),
-                49.5f,
-                BookCondition.NEW,
-                Timestamp(format.parse("2022-01-01")!!),
-                SaleState.ACTIVE, null )
-        db.addSale(saleTest)
-    }
+        val res2 = saleDB.querySales().searchByCondition(setOf(GOOD)).searchByState(setOf(RETRACTED)).getAll().get()
+        assertTrue(res2.contains(saleRetractedGood))
+        assertFalse(res2.contains(saleRetractedWorn))
+        assertFalse(res2.contains(saleActiveWorn))
+        assertFalse(res2.contains(saleActiveGood))
 
+        val res3 = saleDB.querySales().searchByCondition(setOf(GOOD)).searchByState(setOf(ACTIVE)).getAll().get()
+        assertTrue(res3.contains(saleActiveGood))
+        assertFalse(res3.contains(saleActiveWorn))
+        assertFalse(res3.contains(saleRetractedGood))
+        assertFalse(res3.contains(saleRetractedWorn))
+
+        val res4 = saleDB.querySales().searchByISBN(dummySale.book.isbn).searchByCondition(setOf(WORN)).getAll().get()
+        assertTrue(res4.contains(saleActiveWorn))
+        assertTrue(res4.contains(saleRetractedWorn))
+        assertFalse(res4.contains(saleActiveGood))
+        assertFalse(res4.contains(saleRetractedGood))
+
+        val res5 = saleDB.querySales().searchByCondition(setOf(WORN)).searchByState(setOf(ACTIVE, RETRACTED)).getAll().get()
+        assertTrue(res5.contains(saleActiveWorn))
+        assertTrue(res5.contains(saleRetractedWorn))
+        assertFalse(res5.contains(saleActiveGood))
+        assertFalse(res5.contains(saleRetractedGood))
+
+        saleDB.deleteSale(saleRetractedWorn)
+        saleDB.deleteSale(saleRetractedGood)
+        saleDB.deleteSale(saleActiveWorn)
+        saleDB.deleteSale(saleActiveGood)
+    }
 
 }
