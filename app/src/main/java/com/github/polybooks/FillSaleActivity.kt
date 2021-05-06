@@ -9,23 +9,22 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.utils.setupNavbar
-import androidx.fragment.app.FragmentTransaction.*
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import com.github.polybooks.core.*
+import com.github.polybooks.core.Book
+import com.github.polybooks.core.BookCondition
+import com.github.polybooks.core.LoggedUser
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
+import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
+
 
 /**
  * This activity receives the ISBN, either manually inputted from AddSale or deduced from the scanned barcode,
@@ -39,30 +38,30 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private val bookDB = OLBookDatabase { string -> url2json(string) }
     private val salesDB = SaleDatabase(firestore, bookDB)
 
-    private lateinit var bookFuture: CompletableFuture<Book?>
-    private var bookConditionSelected: BookCondition? = null
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
-    companion object {
-        const val requestK = "pictureTaken"
-        const val pictureBundleK = "pictureBundle"
-    }
+    private lateinit var bookFuture: CompletableFuture<Book?>
+    private var stringISBN: String? = null
+    private var pictureFileName: String? = null
+    private var bookConditionSelected: BookCondition? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_sale_fancy)
 
-        supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment_take_picture)!!)
-
-        // Get the Intent that started this activity and extract the string
-        val stringISBN = intent.getStringExtra(ISBN)
+        // Get the Intent that started this activity and extract the strings
+        val intent = intent
+        val extras = intent.extras
+        stringISBN = extras!!.getString(EXTRA_ISBN)
+        pictureFileName = extras.getString(EXTRA_PICTURE_FILE)
 
         // Check if ISBN in our database
 
         // Retrieve book data and display it if possible, else redirect with error toast
-        if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN)) {
+        if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN!!)) {
             try {
-                bookFuture = bookDB.getBook(stringISBN)
+                bookFuture = bookDB.getBook(stringISBN!!)
                 val book = bookFuture.get()
                 if (book != null) {
                     fillBookData(book)
@@ -127,6 +126,12 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         }
         // TODO whole lines could be removed from UI when argument is null instead of placeholding with default value
         findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }
+
+        if (pictureFileName != null) {
+            val bmImg = BitmapFactory.decodeFile("/data/data/com.github.polybooks/files/" + pictureFileName)
+            //TODO The picture gets rotated 90°, could work on fixing this, but not urgent.
+            findViewById<ImageView>(R.id.proof_picture).setImageBitmap(bmImg)
+        }
     }
 
     /**
@@ -147,35 +152,12 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
          */
     }
 
-    // TODO fragment should start only when clicking on add picture
-    // Fragment should close itself after
-    // Fragment should take whole screen
-    //java.lang.IllegalStateException: Could not find method takePhoto(View) in a parent or ancestor Context for android:onClick attribute defined on view class androidx.camera.view.PreviewView with id 'viewFinder'
-
     // TODO all the picture stuff.
     fun takePicture(view: View) {
-        supportFragmentManager
-                .setFragmentResultListener(requestK, this) { requestKey, bundle ->
-
-                    if (requestKey == requestK) {
-                        // process image
-                        val bitmap = BitmapFactory.decodeStream(this.openFileInput(bundle.getString(
-                            pictureBundleK)))
-                        // TODO display image here
-
-                        // TODO ensure the file string (or image) is kept for when addSale is called
-
-                        // delete fragment
-                        supportFragmentManager.commit {
-                            setReorderingAllowed(true)
-                            remove(supportFragmentManager.findFragmentById(R.id.fragment_take_picture)!!)
-                        }
-                    }
-                }
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            add<TakeBookPictureFragment>(R.id.fragment_take_picture)
+        val intent = Intent(this, TakeBookPictureActivity::class.java).apply {
+            putExtra(EXTRA_ISBN, stringISBN)
         }
+        startActivity(intent)
     }
 
 
@@ -190,7 +172,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             condition = bookConditionSelected!!,
             state = SaleState.ACTIVE,
-            image = null
+            image = TODO()
         )
         //TODO handle success or failure of the addSale
 

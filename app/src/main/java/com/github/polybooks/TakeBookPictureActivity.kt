@@ -1,35 +1,42 @@
 package com.github.polybooks
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_take_book_picture.*
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import java.io.ByteArrayOutputStream
+import java.io.FileOutputStream
+import java.nio.ByteBuffer
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class TakeBookPictureActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
 
-    private lateinit var outputDirectory: File
+    // I think (hope) that using a single fileName is fine as here we are fine with overwriting it everytime a new picture is taken
+    // might cause issue in between different isbns
+    private val pictureFileName = "bookPictureFile"
+
     private lateinit var cameraExecutor: ExecutorService
+    private var stringISBN: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_book_picture)
+
+        stringISBN = intent.getStringExtra(EXTRA_ISBN)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -40,46 +47,73 @@ class TakeBookPictureActivity : AppCompatActivity() {
         }
 
         // Set up the listener for take photo button
-        camera_capture_button.setOnClickListener { takePhoto() }
-
-        outputDirectory = getOutputDirectory()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
-    private fun takePhoto() {
+    fun takePhoto(view: View) {
         // TODO improve vastly this function (
-        //  stop saving to file,
         //  automatically go back to FillSaleActivity passing the taken picture as an intent which will be both displayed and saved to DB
-        //  offer flash option)
+        // TODO offer flash option and other quality of life upgrades
 
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-        // Create time-stamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(FILENAME_FORMAT, Locale.UK
-            ).format(System.currentTimeMillis()) + ".jpg")
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
         imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(this), object : ImageCapture.OnImageSavedCallback {
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    // TODO The application is responsible for calling ImageProxy.close() to close the image.
+                    super.onCaptureSuccess(image)
+                    val msg = "Photo capture succeeded"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+                    //bundle.putParcelable(pictureBundleK, image) // TODO convert to parcellable, but also as needed by DB
+                    // TODO Option 2: abandon this because apparently big sizes are hard to transfer and instead save to cache or user storage and retrieve in next step?
+                    // https://stackoverflow.com/questions/4352172/how-do-you-pass-images-bitmaps-between-android-activities-using-bundles
+                    // https://stackoverflow.com/questions/2459524/how-can-i-pass-a-bitmap-object-from-one-activity-to-another
+
+                    val buffer: ByteBuffer = image.planes[0].buffer // TODO or image.image ?
+                    val bytes = ByteArray(buffer.remaining())
+                    buffer.get(bytes)
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
+                    saveBitmap(bitmap)
+
+                    image.close()
+
+                    val intent = Intent(baseContext, FillSaleActivity::class.java).apply {
+                        val extras = Bundle()
+                        extras.putString(EXTRA_ISBN, stringISBN)
+                        extras.putString(EXTRA_PICTURE_FILE, pictureFileName)
+                        putExtras(extras)
+                    }
+                    startActivity(intent)
                 }
             })
+    }
+
+    fun saveBitmap(bitmap: Bitmap): String {
+        try {
+            val bytes = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+            val fo: FileOutputStream = baseContext.openFileOutput(
+                pictureFileName,
+                Context.MODE_PRIVATE
+            )
+            fo.write(bytes.toByteArray())
+            // remember close file output
+            fo.close()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return pictureFileName
     }
 
     private fun startCamera() {
@@ -96,6 +130,8 @@ class TakeBookPictureActivity : AppCompatActivity() {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
+            imageCapture = ImageCapture.Builder().build()
+
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             // TODO Other option:
@@ -107,7 +143,7 @@ class TakeBookPictureActivity : AppCompatActivity() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, preview, imageCapture)
 
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -115,6 +151,7 @@ class TakeBookPictureActivity : AppCompatActivity() {
 
         }, ContextCompat.getMainExecutor(this))
     }
+
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
@@ -124,23 +161,17 @@ class TakeBookPictureActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
         IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
                 Toast.makeText(this,
-                    "Permissions not granted by the user.",
+                    "You must grant camera permissions to take a picture.",
                     Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
-    }
-
-    private fun getOutputDirectory(): File {
-        val mediaDir = externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
-        return if (mediaDir != null && mediaDir.exists())
-            mediaDir else filesDir
     }
 
     override fun onDestroy() {
@@ -154,4 +185,5 @@ class TakeBookPictureActivity : AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
+
 }

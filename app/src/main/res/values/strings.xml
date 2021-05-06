@@ -85,7 +85,7 @@
 
     <!-- User Interaction (could be further organized) -->
     <string name="sort_by">Sort by</string>
-    <string name="add_picture">Add Picture</string>
+    <string name="take_picture">Take Picture</string>
     <string name="scan_book">Scan Book Barcode</string>
     <string name="confirm_sale">Confirm Sale</string>
     <string name="sell_a_book">Sell a book</string>

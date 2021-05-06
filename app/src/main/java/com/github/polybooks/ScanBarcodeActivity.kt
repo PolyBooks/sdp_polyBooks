@@ -54,6 +54,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera()
@@ -121,7 +122,10 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
     private fun passISBN(stringISBN: String) {
         val intent = Intent(this, FillSaleActivity::class.java).apply {
-            putExtra(ISBN, stringISBN)
+            val extras = Bundle()
+            extras.putString(EXTRA_ISBN, stringISBN)
+            extras.putString(EXTRA_PICTURE_FILE, null)
+            putExtras(extras)
         }
         startActivity(intent)
     }

@@ -16,6 +16,7 @@
         android:layout_height="100dp"
         android:layout_marginBottom="50dp"
         android:elevation="2dp"
+        android:onClick="takePhoto"
         android:scaleType="fitCenter"
         app:cornerRadius="1000dp"
         app:layout_constraintBottom_toBottomOf="parent"
