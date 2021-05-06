@@ -17,7 +17,9 @@ private const val COLLECTION_NAME = "sale2"
 
 class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
 
-    private val saleRef: CollectionReference = FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
+    private fun saleRef(): CollectionReference {
+        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
+    }
 
     private inner class SalesQuery :
         SaleQuery {
@@ -136,14 +138,14 @@ class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
         }
 
         override fun getAll(): CompletableFuture<List<Sale>> {
-            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                return doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
+            return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                doQueries(filterQuery(saleRef())).thenCompose { snapshotsToSales(it) }
             } else {
                 val booksFuture = getBookQuery().getAll()
-                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
                     val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
-                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    val saleQuery = saleRef().whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
                     doQueries(filterQuery(saleQuery)).thenCompose { snapshotsToSales(it,isbnToBook) }
                 }
             }
@@ -168,14 +170,14 @@ class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
                 return future
             }
 
-            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                return doQueries(filterQuery(paginateQuery(saleRef, n, page))).thenCompose { snapshotsToSales(it) }
+            return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                doQueries(filterQuery(paginateQuery(saleRef(), n, page))).thenCompose { snapshotsToSales(it) }
             } else {
                 val booksFuture = getBookQuery().getAll()
-                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
                     val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
-                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    val saleQuery = saleRef().whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
                     doQueries(filterQuery(paginateQuery(saleQuery, n, page))).thenCompose { snapshotsToSales(it,isbnToBook) }
                 }
             }
@@ -183,13 +185,13 @@ class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
 
         override fun getCount(): CompletableFuture<Int> {
             if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                return doQueries(filterQuery(saleRef)).thenApply { it.count() }
+                return doQueries(filterQuery(saleRef())).thenApply { it.count() }
             } else {
                 val booksFuture = getBookQuery().getAll()
                 return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     if (books.isEmpty()) return@thenCompose CompletableFuture.completedFuture(0)
                     val isbns = books.map {it.isbn}
-                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                    val saleQuery = saleRef().whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
                     doQueries(filterQuery(saleQuery)).thenApply { it.count() }
                 }
             }
@@ -299,7 +301,7 @@ class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
 
             } else {
                 val sale = Sale(book, seller, price, condition, Timestamp.now(), state, image)
-                saleRef.add(saleToDocument(sale))
+                saleRef().add(saleToDocument(sale))
                     .addOnSuccessListener {
                         future.complete(sale)
                     }
@@ -313,7 +315,7 @@ class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
 
     //find the ID of a sale based on the ISBN of the book being sold, the time of the publication and the UID of the seller
     private fun getReferenceID(sale: Sale): Task<DocumentSnapshot?> {
-        val query = saleRef
+        val query = saleRef()
             .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
             .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
             .whereEqualTo(SaleFields.SELLER.fieldName +"."+UserFields.UID.fieldName, (sale.seller as LoggedUser).uid)
@@ -329,7 +331,7 @@ class SaleDatabase(private val bookDB: BookDatabase) : SaleDatabase {
         getReferenceID(sale).addOnSuccessListener { toDelete ->
             if (toDelete == null) future.complete(false)
             else {
-                saleRef.document(toDelete.id).delete()
+                saleRef().document(toDelete.id).delete()
                     .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete $toDelete")) }
                     .addOnSuccessListener { future.complete(true) }
             }

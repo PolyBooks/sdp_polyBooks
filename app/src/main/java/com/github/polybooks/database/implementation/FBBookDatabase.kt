@@ -7,6 +7,7 @@ import com.github.polybooks.database.interfaces.BookDatabase
 import com.github.polybooks.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,7 +29,9 @@ class FBBookDatabase(private val isbnDB : BookDatabase) :
     [ ] implement search by interest
     */
 
-    private val bookRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
+    private fun bookRef(): CollectionReference {
+        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
+    }
 
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
@@ -44,7 +47,7 @@ class FBBookDatabase(private val isbnDB : BookDatabase) :
                 }
                 title != null -> {
                     val future = CompletableFuture<List<Book>>()
-                    bookRef
+                    bookRef()
                         .whereGreaterThanOrEqualTo("book.title", title!!)
                         .whereLessThanOrEqualTo("book.title", title!! + '\uf88f')
                         .get().addOnSuccessListener { bookEntries ->
@@ -143,7 +146,7 @@ class FBBookDatabase(private val isbnDB : BookDatabase) :
         private fun addBookToFirebase(book : Book) : CompletableFuture<Unit> {
             val future = CompletableFuture<Unit>()
             val bookEntry = assembleBookEntry(bookToDocument(book))
-            bookRef.document(book.isbn).set(bookEntry)
+            bookRef().document(book.isbn).set(bookEntry)
                 .addOnSuccessListener {
                     future.complete(Unit)
                 }.addOnFailureListener {
@@ -154,7 +157,7 @@ class FBBookDatabase(private val isbnDB : BookDatabase) :
 
         private fun getBooksByISBNFromFirebase(isbns : List<ISBN>) : CompletableFuture<List<Book>> {
             val future = CompletableFuture<List<Book>>()
-            bookRef.whereIn(FieldPath.documentId(), isbns)
+            bookRef().whereIn(FieldPath.documentId(), isbns)
                 .get().addOnSuccessListener { bookEntries ->
                     val books = bookEntries.map { bookEntry ->
                         snapshotEntryToBook(bookEntry)
