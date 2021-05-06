@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.setupNavbar
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -17,7 +19,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-
+const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME";
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
@@ -36,11 +38,6 @@ class LoginActivity : AppCompatActivity() {
             signIn()
         }
 
-        val signOutButton = findViewById<Button>(R.id.tequila_log_button)
-        signOutButton.setOnClickListener{
-            signOut()
-        }
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -49,6 +46,8 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         auth = Firebase.auth
+
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
     override fun onStart() {
@@ -90,7 +89,14 @@ class LoginActivity : AppCompatActivity() {
                 }
     }
 
+    //TODO : what is this?
     private fun updateUI(user: FirebaseUser?) {
+        if(user != null) {
+            val intent = Intent(this, UserProfileActivity::class.java).apply {
+                putExtra(EXTRA_MESSAGE, user.displayName)
+            }
+            startActivity(intent)
+        }
     }
 
     private fun signIn() {
@@ -98,9 +104,11 @@ class LoginActivity : AppCompatActivity() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
-    private fun signOut() {
-        Firebase.auth.signOut()
-        Log.d(TAG, "signed out")
+    public fun signOut() {
+        if(Firebase.auth != null) {
+            Firebase.auth.signOut()
+            Log.d(TAG, "signed out")
+        }
     }
 
     companion object {

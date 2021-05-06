@@ -3,7 +3,7 @@ package com.github.polybooks
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -44,12 +44,12 @@ class FillSaleActivityTest {
     }
 
     private fun inputPrice(price: String) {
-        onView(withId(R.id.filled_price)).perform(ViewActions.clearText(), ViewActions.typeText(price))
+        onView(withId(R.id.filled_price)).perform(scrollTo(), clearText(), typeText(price))
         Espresso.closeSoftKeyboard()
     }
 
     private fun selectCondition(condition: String) {
-        onView(withId(R.id.filled_condition)).perform(click())
+        onView(withId(R.id.filled_condition)).perform(scrollTo(), click())
         onView(withText(condition)).perform(click())
     }
 

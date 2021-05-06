@@ -4,17 +4,13 @@ package com.github.polybooks.core.databaseImpl
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookSettings
-import com.google.firebase.Timestamp
 import com.google.gson.JsonParser
 import junit.framework.AssertionFailedError
-import org.junit.Test
-
 import org.junit.Assert.*
+import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
-import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -29,7 +25,7 @@ class OLBookDBTests {
         "/authors/OL6899222A.json" to "OL6899222A.json",
         "/authors/OL752714A.json" to "OL752714A.json",
         "/isbn/9782376863069.json" to "9782376863069.json",
-        "/isbn/2376863069.json" to "9782376863069.json",
+        "/isbn/2376863066.json" to "9782376863069.json",
         "/isbn/9781985086593.json" to "9781985086593.json",
         "/isbn/9780156881807.json" to "9780156881807.json",
         "/isbn/9781603090476.json" to "9781603090476.json"
@@ -58,7 +54,7 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -88,13 +84,13 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
     fun isbn10alsoWorks() {
         val olDB = OLBookDatabase(url2json)
-        val future = olDB.getBook("2376863069")
+        val future = olDB.getBook("2376863066")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
         assertEquals("Liavek", book.title)
         assertEquals("9782376863069", book.isbn)
@@ -103,7 +99,7 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -148,7 +144,7 @@ class OLBookDBTests {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test
@@ -166,7 +162,7 @@ class OLBookDBTests {
         assertNotNull(book.publishDate)
         //This hurts, but otherwise we have problems with CEST and CET
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(Timestamp(publishDate), book.publishDate)
+        assertEquals(publishDate, book.publishDate!!.toDate())
     }
 
     @Test

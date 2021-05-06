@@ -1,24 +1,26 @@
 package com.github.polybooks
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.core.*
+import com.github.polybooks.core.Sale
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.implementation.DummySalesQuery
+import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.implementation.format
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.core.database.interfaces.SaleSettings
-import com.github.polybooks.utils.anonymousBook
-import com.google.firebase.Timestamp
+import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.url2json
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Activity to list all active sales
  */
+
 class ListSalesActivity : AppCompatActivity() {
+
     companion object {
         val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
         val EXTRA_BOOKS_QUERY_SETTINGS: String = "bookQuerySettings"
@@ -28,6 +30,10 @@ class ListSalesActivity : AppCompatActivity() {
     private lateinit var mAdapter: SalesAdapter
     private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
     private val initialBooks: List<Sale> = emptyList()
+
+    private val firestore = FirebaseFirestore.getInstance()
+    private val bookDB = OLBookDatabase { string -> url2json(string) }
+    private val salesDB = SaleDatabase(firestore, bookDB)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,13 +48,17 @@ class ListSalesActivity : AppCompatActivity() {
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = mAdapter
 
+
         val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
                 ?.let {
-                    SaleDatabase().querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
+                    salesDB.querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
                 }
-                ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
+                ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
         saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
+
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
+
 
     private fun updateAdapter(sales : List<Sale>){
         runOnUiThread {

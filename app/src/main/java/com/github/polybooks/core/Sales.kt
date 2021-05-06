@@ -1,12 +1,9 @@
 package com.github.polybooks.core
 
-
-import android.media.Image
 import com.google.firebase.Timestamp
 import java.io.Serializable
 
-
-import java.util.*
+typealias Image = android.media.Image
 
 /**
  * The Sale class contains all the information about a book on sale.
@@ -50,7 +47,7 @@ enum class SaleState {
  * Allows access to the name of a field
  */
 enum class SaleFields(val fieldName: String) {
-    BOOK("book"),
+    BOOK_ISBN("book_isbn"),
     CONDITION("condition"),
     PRICE("price"),
     PUBLICATION_DATE("date"),

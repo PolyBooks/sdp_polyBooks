@@ -37,8 +37,14 @@
         <activity android:name=".AddSaleActivity"
             android:parentActivityName=".MainActivity"/>
 
+        <activity android:name=".LoginActivity"
+            android:parentActivityName=".MainActivity"/>
 
-        <activity android:name=".FilteringSalesActivity" />
+        <activity android:name=".UserProfileActivity"
+            android:parentActivityName=".MainActivity"/>
+
+        <activity android:name=".FilteringSalesActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".ListSalesActivity"
             android:parentActivityName=".FilteringSalesActivity" />
@@ -46,7 +52,6 @@
             android:name=".FilteringBooksActivity"
             android:parentActivityName=".MainActivity"/>
 
-        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
