@@ -19,9 +19,9 @@ class DummyBooksQueryTests {
     private val query : BookQuery = DummyBookQuery()
 
     val default_books: List<Book> = listOf(
-            Book("Book1", listOf("Tolkien"), "Lord of the Rings", "?", "?", "?", Timestamp(com.github.polybooks.database.implementation.format.parse("2016-05-05")!!), "?"),
-            Book("Book2", listOf("Hugo"), "Les Miserables", "?", "?", "?", Timestamp(com.github.polybooks.database.implementation.format.parse("2016-05-05")!!), "?"),
-            Book("Book3", listOf("Baudelaire"), "Les fleurs du mal", "?", "?", "?", Timestamp(com.github.polybooks.database.implementation.format.parse("2016-05-05")!!), "?")
+            Book("Book1", listOf("Tolkien"), "Lord of the Rings", "?", "?", "?", Timestamp(com.github.polybooks.format.parse("2016-05-05")!!), "?"),
+            Book("Book2", listOf("Hugo"), "Les Miserables", "?", "?", "?", Timestamp(com.github.polybooks.format.parse("2016-05-05")!!), "?"),
+            Book("Book3", listOf("Baudelaire"), "Les fleurs du mal", "?", "?", "?", Timestamp(com.github.polybooks.format.parse("2016-05-05")!!), "?")
     )
 
     @Test
