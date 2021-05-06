@@ -1,5 +1,8 @@
 package com.github.polybooks.core
 
+import android.content.Context
+import com.github.polybooks.R
+import com.github.polybooks.utils.FieldWithName
 import com.google.firebase.Timestamp
 import java.io.Serializable
 
@@ -16,21 +19,28 @@ typealias Image = android.media.Image
  * */
 
 data class Sale(
-        val book : Book,
-        val seller : User,
-        val price : Float,
-        val condition : BookCondition,
-        val date : Timestamp,
-        val state : SaleState,
-        val image : Image?
-        ) : Serializable
+    val book: Book,
+    val seller: User,
+    val price: Float,
+    val condition: BookCondition,
+    val date: Timestamp,
+    val state: SaleState,
+    val image: Image?
+): Serializable
 
 
 /**
  * The condition of a book (as in "in great condition").
  * */
-enum class BookCondition {
-    NEW, GOOD, WORN
+enum class BookCondition: FieldWithName {
+    NEW,
+    GOOD,
+    WORN;
+
+    override fun fieldName(c: Context?): String {
+        return c?.resources?.getStringArray(R.array.sale_book_conditions_array)?.get(ordinal)
+            ?: name
+    }
 }
 
 /**
@@ -39,8 +49,15 @@ enum class BookCondition {
  * Retracted means that the book is no longer on sale because the seller retracted the offer.
  * Concluded means that the book has been sold and is therefore no longer on sale.
  * */
-enum class SaleState {
-    ACTIVE, RETRACTED, CONCLUDED
+enum class SaleState: FieldWithName {
+    ACTIVE,
+    RETRACTED,
+    CONCLUDED;
+
+    override fun fieldName(c: Context?): String {
+        return c?.resources?.getStringArray(R.array.sale_states_array)?.get(ordinal)
+            ?: name
+    }
 }
 
 /**
