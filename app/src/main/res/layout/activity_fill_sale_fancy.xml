@@ -88,10 +88,10 @@
                 android:layout_marginBottom="16dp"
                 android:onClick="takePicture"
                 android:text="@string/add_picture"
-                app:layout_constraintTop_toBottomOf="@id/proof_picture"
                 app:layout_constraintBottom_toTopOf="@id/filled_condition"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/proof_picture" />
 
             <Button
                 android:id="@+id/confirm_sale_button"
@@ -248,7 +248,7 @@
         app:menu="@menu/bottom_navigation_menu" />
 
     <!--    TODO test different height/width/constraints and see what works best -->
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_take_picture"
         android:name="com.github.polybooks.TakeBookPictureFragment"
         android:layout_width="wrap_content"
