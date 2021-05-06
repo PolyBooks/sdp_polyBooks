@@ -3,12 +3,10 @@ package com.github.polybooks.database.implementation
 import com.github.polybooks.core.*
 import com.github.polybooks.database.DatabaseException
 import com.github.polybooks.database.LocalUserException
-import com.github.polybooks.core.database.interfaces.*
 import com.github.polybooks.database.interfaces.*
 import com.github.polybooks.database.interfaces.SaleDatabase
 import com.github.polybooks.database.interfaces.SaleOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.url2json
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
@@ -22,7 +20,7 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
     private val saleRef: CollectionReference = firestore.collection(COLLECTION_NAME)
 
     private inner class SalesQuery :
-        _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        SaleQuery {
 
         private var isbn: ISBN? = null
         private var title: String? = null
@@ -34,52 +32,52 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
         private var minPrice: Float? = null
         private var maxPrice: Float? = null
 
-        private var ordering: _root_ide_package_.com.github.polybooks.database.interfaces.SaleOrdering = DEFAULT
+        private var ordering: SaleOrdering = DEFAULT
 
-        override fun onlyIncludeInterests(interests: Set<Interest>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
             if (interests.isNotEmpty()) this.interests = interests
             else this.interests = null
             return this
         }
 
-        override fun searchByTitle(title: String): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun searchByTitle(title: String): SaleQuery {
             this.title = title
             return this
         }
 
-        override fun searchByState(state: Set<SaleState>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun searchByState(state: Set<SaleState>): SaleQuery {
             if (state.isNotEmpty()) this.states = state
             else this.states = null
             return this
         }
 
-        override fun searchByCondition(condition: Set<BookCondition>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun searchByCondition(condition: Set<BookCondition>): SaleQuery {
             if (condition.isNotEmpty()) this.conditions = condition
             else this.conditions = null
             return this
         }
 
-        override fun searchByMinPrice(min: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun searchByMinPrice(min: Float): SaleQuery {
             this.minPrice = min
             return this
         }
 
-        override fun searchByMaxPrice(max: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun searchByMaxPrice(max: Float): SaleQuery {
             this.maxPrice = max
             return this
         }
 
-        override fun searchByPrice(min: Float, max: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun searchByPrice(min: Float, max: Float): SaleQuery {
             return this.searchByMinPrice(min).searchByMaxPrice(max)
         }
 
-        override fun withOrdering(ordering: _root_ide_package_.com.github.polybooks.database.interfaces.SaleOrdering): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun withOrdering(ordering: SaleOrdering): SaleQuery {
             this.ordering = ordering
             return this
         }
 
-        override fun searchByISBN(isbn: ISBN): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
-            this.isbn = isbn
+        override fun searchByISBN(isbn13: ISBN): SaleQuery {
+            this.isbn = isbn13
             return this
         }
 
@@ -130,7 +128,7 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
 
 
         private fun getBookQuery() : BookQuery {
-            var bookQuery = bookDB.queryBooks()
+            val bookQuery = bookDB.queryBooks()
             if (interests != null) bookQuery.onlyIncludeInterests(interests!!)
             if (title != null) bookQuery.searchByTitle(title!!)
             if (isbn != null) bookQuery.searchByISBN(setOf(isbn!!))
@@ -197,8 +195,8 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
             }
         }
 
-        override fun getSettings(): _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings {
-            return _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings(
+        override fun getSettings(): SaleSettings {
+            return SaleSettings(
                 ordering,
                 isbn,
                 title,
@@ -210,7 +208,7 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
             )
         }
 
-        override fun fromSettings(settings: _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+        override fun fromSettings(settings: SaleSettings): SaleQuery {
             isbn = settings.isbn
             title = settings.title
             interests = settings.interests
@@ -224,7 +222,7 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
         }
     }
 
-    override fun querySales(): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery {
+    override fun querySales(): SaleQuery {
         return SalesQuery()
     }
 
@@ -315,7 +313,7 @@ class SaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabas
 
     //find the ID of a sale based on the ISBN of the book being sold, the time of the publication and the UID of the seller
     private fun getReferenceID(sale: Sale): Task<DocumentSnapshot?> {
-        var query = saleRef
+        val query = saleRef
             .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
             .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
             .whereEqualTo(SaleFields.SELLER.fieldName +"."+UserFields.UID.fieldName, (sale.seller as LoggedUser).uid)

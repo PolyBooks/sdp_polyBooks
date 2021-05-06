@@ -15,7 +15,7 @@ interface SaleDatabase {
     /**
      * Create a new query for Sales. It originally matches all sales.
      * */
-    fun querySales(): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun querySales(): SaleQuery
 
     /**
      * Get all the sales in the database
@@ -31,12 +31,12 @@ interface SaleDatabase {
     fun getNSales(
         numberOfSales: Int,
         page: Int,
-        ordering: _root_ide_package_.com.github.polybooks.database.interfaces.SaleOrdering
+        ordering: SaleOrdering
     ): CompletableFuture<List<Sale>> = querySales().withOrdering(ordering).getN(numberOfSales, page)
 
     /**
      * Add the sale defined by the given parameters to the database
-     * @param book the isbn of the book being sold
+     * @param bookISBN the isbn of the book being sold
      * @param seller the user selling the book (can't be the local user)
      * @param price the price of the sale
      * @param condition the condition of the book
@@ -44,7 +44,7 @@ interface SaleDatabase {
      * @param image the image describing the book being sold
      * @return a future containing the sale created and added to the database
      */
-    fun addSale(book : ISBN,
+    fun addSale(bookISBN : ISBN,
                 seller : User,
                 price : Float,
                 condition : BookCondition,
@@ -71,69 +71,69 @@ interface SaleDatabase {
  * A SaleQuery is a builder for a query to the database that will yield Sales.
  * Most methods return themselves for function chaining.
  * */
-interface SaleQuery: _root_ide_package_.com.github.polybooks.database.interfaces.Query<Sale> {
+interface SaleQuery: Query<Sale> {
 
     /**
      * Set this query to only include sales that satisfy the given interests.
      * */
-    fun onlyIncludeInterests(interests: Set<Interest>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery
 
     /**
      * Set this query to only search for sales with book's title that are like the given one.
      *  If called successively only the last call is taken into account
      * */
-    fun searchByTitle(title: String): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun searchByTitle(title: String): SaleQuery
 
     /**
      *  Set this query to only search for sales in the given states.
      *  If called successively only the last call is taken into account
      *  (see {@link SaleState})
      * */
-    fun searchByState(state: Set<SaleState>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun searchByState(state: Set<SaleState>): SaleQuery
 
     /**
      * Set this query to only search for sales of books in the given condition.
      * If called successively only the last call is taken into account
      * (see {@link BookCondition})
      * */
-    fun searchByCondition(condition: Set<BookCondition>): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun searchByCondition(condition: Set<BookCondition>): SaleQuery
 
     /**
      * Set this query to only search for sales above a certain price.
      * */
-    fun searchByMinPrice(min: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun searchByMinPrice(min: Float): SaleQuery
 
     /**
      * Set this query to only search for sales below a certain price.
      * */
-    fun searchByMaxPrice(max: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun searchByMaxPrice(max: Float): SaleQuery
 
     /**
      * Set this query to only search for sales within the given price range.
      * */
-    fun searchByPrice(min: Float, max: Float): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun searchByPrice(min: Float, max: Float): SaleQuery
 
     /**
      * Set this query to order books with the given ordering.
      * (see {@link BookOrdering})
      * */
-    fun withOrdering(ordering: _root_ide_package_.com.github.polybooks.database.interfaces.SaleOrdering): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun withOrdering(ordering: SaleOrdering): SaleQuery
 
     /**
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN(isbn13: String): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun searchByISBN(isbn13: String): SaleQuery
 
     /**
      * Get Settings from the book
      * */
-    fun getSettings(): _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings
+    fun getSettings(): SaleSettings
 
     /**
      * Reset this query using the given settings
      */
-    fun fromSettings(settings: _root_ide_package_.com.github.polybooks.database.interfaces.SaleSettings): _root_ide_package_.com.github.polybooks.database.interfaces.SaleQuery
+    fun fromSettings(settings: SaleSettings): SaleQuery
 
 }
 
@@ -146,7 +146,7 @@ interface SaleQuery: _root_ide_package_.com.github.polybooks.database.interfaces
  * calling the other methods (ig. searchByPrice)
  */
 data class SaleSettings(
-    val ordering: _root_ide_package_.com.github.polybooks.database.interfaces.SaleOrdering,
+    val ordering: SaleOrdering,
     val isbn: String?,
     val title: String?,
     val interests: Set<Interest>?,
