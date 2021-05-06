@@ -1,5 +1,6 @@
 package com.github.polybooks
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -41,8 +42,8 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
     private lateinit var bookFuture: CompletableFuture<Book?>
-    private var stringISBN: String? = null
-    private var pictureFileName: String? = null
+    private var stringISBN: String = ""
+    private var pictureFileName: String = ""
     private var bookConditionSelected: BookCondition? = null
 
 
@@ -53,15 +54,18 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // Get the Intent that started this activity and extract the strings
         val intent = intent
         val extras = intent.extras
-        stringISBN = extras!!.getString(EXTRA_ISBN)
-        pictureFileName = extras.getString(EXTRA_PICTURE_FILE)
+        if (extras != null) {
+            stringISBN = extras.getString(EXTRA_ISBN) ?: ""
+            pictureFileName = extras.getString(EXTRA_PICTURE_FILE) ?: ""
+        }
+
 
         // Check if ISBN in our database
 
         // Retrieve book data and display it if possible, else redirect with error toast
-        if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN!!)) {
+        if(stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
-                bookFuture = bookDB.getBook(stringISBN!!)
+                bookFuture = bookDB.getBook(stringISBN)
                 val book = bookFuture.get()
                 if (book != null) {
                     fillBookData(book)
@@ -127,8 +131,9 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // TODO whole lines could be removed from UI (visibility = View.GONE) when argument is null instead of placeholding with default value
         findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }
 
-        if (pictureFileName != null) {
-            val bmImg = BitmapFactory.decodeFile("/data/data/com.github.polybooks/files/" + pictureFileName)
+        if (pictureFileName.isNotEmpty()) {
+            Log.w("BookFuture", this.filesDir.path + '/' + pictureFileName)
+            val bmImg = BitmapFactory.decodeFile(this.filesDir.path + '/' + pictureFileName)
             //TODO The picture gets rotated 90°, could work on fixing this, but not urgent.
             findViewById<ImageView>(R.id.proof_picture).setImageBitmap(bmImg)
         } else {
