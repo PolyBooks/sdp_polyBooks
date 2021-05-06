@@ -52,6 +52,8 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_sale_fancy)
 
+        supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.fragment_take_picture)!!)
+
         // Get the Intent that started this activity and extract the string
         val stringISBN = intent.getStringExtra(ISBN)
 
@@ -145,6 +147,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
          */
     }
 
+    // TODO fragment should start only when clicking on add picture
+    // Fragment should close itself after
+    // Fragment should take whole screen
+    //java.lang.IllegalStateException: Could not find method takePhoto(View) in a parent or ancestor Context for android:onClick attribute defined on view class androidx.camera.view.PreviewView with id 'viewFinder'
 
     // TODO all the picture stuff.
     fun takePicture(view: View) {

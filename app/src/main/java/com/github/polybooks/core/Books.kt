@@ -30,7 +30,6 @@ data class Book(
     val publisher : String?,
     val publishDate : Timestamp?,
     val format : String?,
-    val pictureFileName : String?
 ) : Serializable
 
 /**
@@ -44,5 +43,6 @@ enum class BookFields(val fieldName: String) {
     LANGUAGE("language"),
     PUBLISHER("publisher"),
     PUBLISHDATE("publishDate"),
-    FORMAT("format")
+    FORMAT("format"),
+    PICTUREFILENAME("pictureFileName")
 }
