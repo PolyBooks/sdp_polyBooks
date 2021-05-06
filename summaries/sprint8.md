@@ -15,7 +15,9 @@ Next time I hope to be able to continue working with someone as a pair.
 
 
 ## Sophie
+This week I managed to complete all my tasks. I was able to finish the testing of `FilteringSalesActivity`, and make `FilteringBooksActivity` dynamic as well. So to be clear, now both the two filtering activities are in a finished version : we can properly filter the books and the sales with parameter values that really exist in the database.
 
+Next week I will work on various minor fixes in the database, because some query requests are not implemented yet. 
 
 ## Zied
 
