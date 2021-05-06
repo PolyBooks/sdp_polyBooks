@@ -11,7 +11,6 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.core.database.implementation.DummyBookQuery
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.interfaces.BookOrdering
@@ -35,7 +34,7 @@ class FilteringBooksActivity: FilteringActivity() {
 
     // TODO use future global static dbs
     private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase{ string -> url2json(string)}
+    private val olBookDB = OLBookDatabase { string -> url2json(string) }
     private val bookDB = FBBookDatabase(firestore, olBookDB)
 
     private lateinit var mReset: Button

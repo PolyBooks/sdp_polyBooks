@@ -8,7 +8,6 @@ import android.widget.EditText
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.com.github.polybooks.FilteringActivity
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.implementation.DummySalesQuery
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
@@ -32,7 +31,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
     // TODO use future global static dbs
     private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase{ string -> url2json(string) }
+    private val olBookDB = OLBookDatabase { string -> url2json(string) }
     private val bookDB = FBBookDatabase(firestore, olBookDB)
     private val saleDB = SaleDatabase(firestore, bookDB)
 
@@ -109,7 +108,7 @@ class FilteringSalesActivity: FilteringActivity() {
         if (mName.text.isNotEmpty())
             query.searchByTitle(mName.text.toString())
 
-        if(mISBN.text.isNotEmpty())
+        if (mISBN.text.isNotEmpty())
             query = query.searchByISBN(mISBN.text.toString())
 
         // price
