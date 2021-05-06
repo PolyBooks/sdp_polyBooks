@@ -124,13 +124,15 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         findViewById<TextView>(R.id.filled_publish_date).apply {
             text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
         }
-        // TODO whole lines could be removed from UI when argument is null instead of placeholding with default value
+        // TODO whole lines could be removed from UI (visibility = View.GONE) when argument is null instead of placeholding with default value
         findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }
 
         if (pictureFileName != null) {
             val bmImg = BitmapFactory.decodeFile("/data/data/com.github.polybooks/files/" + pictureFileName)
             //TODO The picture gets rotated 90°, could work on fixing this, but not urgent.
             findViewById<ImageView>(R.id.proof_picture).setImageBitmap(bmImg)
+        } else {
+            findViewById<ImageView>(R.id.proof_picture).visibility = View.GONE
         }
     }
 

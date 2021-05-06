@@ -75,12 +75,8 @@ class TakeBookPictureActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
-                    //bundle.putParcelable(pictureBundleK, image) // TODO convert to parcellable, but also as needed by DB
-                    // TODO Option 2: abandon this because apparently big sizes are hard to transfer and instead save to cache or user storage and retrieve in next step?
-                    // https://stackoverflow.com/questions/4352172/how-do-you-pass-images-bitmaps-between-android-activities-using-bundles
-                    // https://stackoverflow.com/questions/2459524/how-can-i-pass-a-bitmap-object-from-one-activity-to-another
 
-                    val buffer: ByteBuffer = image.planes[0].buffer // TODO or image.image ?
+                    val buffer: ByteBuffer = image.planes[0].buffer
                     val bytes = ByteArray(buffer.remaining())
                     buffer.get(bytes)
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
