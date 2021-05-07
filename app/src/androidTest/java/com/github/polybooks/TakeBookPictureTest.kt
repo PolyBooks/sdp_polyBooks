@@ -1,10 +1,8 @@
 package com.github.polybooks
 
-import androidx.core.os.bundleOf
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -35,7 +33,7 @@ class TakeBookPictureTest {
 
     @Test
     fun takePictureButtonWorks() {
-        onView(withId(R.id.camera_capture_button)).perform(click())
+        onView(withId(R.id.camera_capture_button)).perform(scrollTo(), click())
         Intents.intended(IntentMatchers.hasComponent(FillSaleTest::class.java.name))
     }
 

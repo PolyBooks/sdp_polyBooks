@@ -36,7 +36,7 @@ class FillSaleTest {
 
     @Test
     fun addPictureRedirects() {
-        onView(withId(R.id.add_picture)).perform(click())
+        onView(withId(R.id.add_picture)).perform(scrollTo(), click())
         Intents.intended(IntentMatchers.hasComponent(TakeBookPictureActivity::class.java.name))
     }
 
@@ -87,53 +87,53 @@ class FillSaleTest {
         // TODO the destination in the intent will probably be changed in the future
         inputPrice("5")
         selectCondition("Worn")
-        onView(withId(R.id.confirm_sale_button)).perform(click())
+        onView(withId(R.id.confirm_sale_button)).perform(scrollTo(), click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 
 
     @Test
     fun navBarSales() {
-        Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
+        onView(withId(R.id.sales)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
-        Espresso.onView(ViewMatchers.withId(R.id.user_profile)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.add_picture)).perform(scrollTo()).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()))
+        onView(withId(R.id.user_profile)).perform(click())
+        onView(withId(R.id.add_picture)).perform(scrollTo()).check(
+            matches(
+                isDisplayed()))
     }
 
     @Test
     fun navBarBooks() {
-        Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
+        onView(withId(R.id.books)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
     }
 
     @Test
     fun navBarDefault() {
-        Espresso.onView(ViewMatchers.withId(R.id.default_selected)).check(
-            ViewAssertions.matches(
-                ViewMatchers.withEffectiveVisibility(
-                    ViewMatchers.Visibility.GONE
+        onView(withId(R.id.default_selected)).check(
+            matches(
+                withEffectiveVisibility(
+                    Visibility.GONE
                 )
             )
         )
-        Espresso.onView(ViewMatchers.withId(R.id.default_selected))
-            .check(ViewAssertions.matches(Matchers.not(ViewMatchers.isEnabled())))
+        onView(withId(R.id.default_selected))
+            .check(matches(Matchers.not(isEnabled())))
     }
 
     @Test
     fun navBarSelected() {
-        Espresso.onView(ViewMatchers.withId(R.id.default_selected))
-            .check(ViewAssertions.matches(ViewMatchers.isSelected()))
+        onView(withId(R.id.default_selected))
+            .check(matches(isSelected()))
     }
 
     @Test
     fun navBarHome() {
-        Espresso.onView(ViewMatchers.withId(R.id.home)).perform(ViewActions.click())
+        onView(withId(R.id.home)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 
