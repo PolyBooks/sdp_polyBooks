@@ -1,7 +1,7 @@
 # Summary for week 8
 
 ## Dario (Scrum Master)
-
+This week I could not work much on SDP so I did not advance in any of my tasks. I did review a few PR and I think I gave some useful feedback to Sophie so that she could complete the features she was working on. I also prepared the product pitch for the scrum meeting. Next time I hope I will be able to provide more work on SDP
 
 ## Joshua
 This week I did some refactoring and started on the gps, and had to go through a lot of documentation to be able to do so.  
@@ -30,3 +30,4 @@ This week unfortunately I lost a big part of my work on registration/login by em
 Next time, I know how to never lose my work.
 
 ## Overall team
+This week seems to have been a regular week where most have successfully completed their task. We did our two stand-up meetings as always on tuesday and thursday. Joshua wasn't there on thursday because he had something else that he had to attend to.
