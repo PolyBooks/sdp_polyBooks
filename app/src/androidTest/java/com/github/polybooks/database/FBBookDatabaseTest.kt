@@ -120,6 +120,46 @@ class FBBookDatabaseTest {
 
     }
 
+    @Test
+    fun canSearchByInterest() {
+
+        fun setInterests(isbn: ISBN, interests : List<Interest>) : CompletableFuture<Unit> {
+            //TODO use an interface to do that instead of reimplementing it here.
+            val future = CompletableFuture<Unit>()
+            val hashed = interests.map { it.hashCode() }
+            firebase.collection("book")
+                .document(isbn).update("interests",hashed)
+                .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not set interests for $isbn")) }
+                .addOnSuccessListener { future.complete(Unit) }
+            return future
+        }
+
+        val testBook: ISBN = "9782889152728"
+
+        fun doTest(interest : Interest) {
+            //Check it finds book associated with interest
+            setInterests(testBook, listOf(interest)).get()
+            val booksWithInterest_1 =
+                fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
+            assertTrue("Should find $testBook when searching for $interest",
+                booksWithInterest_1.any { it.isbn == testBook } )
+
+            //Check it doesnt show book not associated with interest
+            setInterests(testBook, listOf()).get()
+            val booksWithInterest_2 =
+                fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
+            assertTrue("Should not find $testBook when searching for $interest",
+                booksWithInterest_2.none { it.isbn == testBook } )
+        }
+
+        //insure the book is in the database
+        fbBookDB.getBook(testBook).get()!!
+        doTest(Course("CS-101"))
+        doTest(Field("Computer Science"))
+        doTest(Semester("IN", "BA1"))
+
+    }
+
     @Ignore
     @Test
     fun isbn10alsoWorksWithoutOL() {
