@@ -10,6 +10,8 @@ Next time I hope to be able to continue working with someone as a pair.
 
 ## Nicolas
 
+This week (last sprint) I split my tasks into smaller chunks. It was successful. I managed to close 4 out of 5 tasks: I finished the sale information display (2 tasks related), design the bare bones of an interface able to store/retrieve images to/from a db, and refactored the project to follow our coding guidelines
+
 
 ## Raoul
 I had deadlines for other courses on both Monday and Wednesday, so I could only start working Thursday. I managed to cram the whole 8 hours in a single day, but it was not necessarily pleasant, nor was I at peak productivity towards the end.
