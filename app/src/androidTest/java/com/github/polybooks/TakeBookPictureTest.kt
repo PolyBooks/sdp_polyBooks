@@ -36,6 +36,7 @@ class TakeBookPictureTest {
         onView(withId(R.id.camera_capture_button)).perform(click())
         // I think the thread switching might make testing the intent impossible?
         //Intents.intended(IntentMatchers.hasComponent(FillSaleTest::class.java.name))
+
     }
 
 }
