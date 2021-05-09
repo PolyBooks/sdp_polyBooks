@@ -78,7 +78,7 @@ class MainTest {
 //    fun databaseButton() {
 //
 //        onView(withId(R.id.button_open_db_tests)).perform(click())
-//        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
+//        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
 //
 //    }
 

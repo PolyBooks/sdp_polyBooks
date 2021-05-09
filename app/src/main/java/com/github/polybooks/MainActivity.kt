@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         val dbButton: Button = findViewById(R.id.button_open_db_tests)
         dbButton.setOnClickListener {
-//            val i : Intent = Intent(this, ListSalesActivity::class.java)
+//            val i : Intent = Intent(this, ListActivity::class.java)
 //            val i : Intent = Intent(this, FilteringBooksActivity::class.java)
             val i : Intent = Intent(this, FilteringSalesActivity::class.java)
 

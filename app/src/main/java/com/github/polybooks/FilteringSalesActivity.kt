@@ -1,7 +1,6 @@
 package com.github.polybooks
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -109,8 +108,8 @@ class FilteringSalesActivity: FilteringActivity() {
         resultByParameter(query)
 
         val querySettings = query.getSettings()
-        val intent = Intent(this, ListSalesActivity::class.java)
-        intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
+        val intent = Intent(this, ListActivity::class.java)
+        intent.putExtra(ListActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 

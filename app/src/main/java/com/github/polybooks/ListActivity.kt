@@ -2,8 +2,6 @@ package com.github.polybooks
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.SystemClock
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +17,6 @@ import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.core.database.interfaces.Query
-import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
@@ -31,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore
  */
 
 //TODO change name
-class ListSalesActivity: AppCompatActivity() {
+class ListActivity: AppCompatActivity() {
 
     companion object {
         const val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
@@ -51,7 +48,7 @@ class ListSalesActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_basic_database)
+        setContentView(R.layout.activity_list)
 
         isSales = intent.extras?.getBoolean(getString(R.string.list_is_sale), true) ?: true
 

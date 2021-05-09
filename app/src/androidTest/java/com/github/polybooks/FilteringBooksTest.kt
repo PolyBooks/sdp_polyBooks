@@ -55,8 +55,8 @@ class FilteringBooksTest {
         onView(withId(R.id.results_button)).perform(click())
         intended(
             allOf(
-                hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS)
+                hasComponent(ListActivity::class.java.name),
+                hasExtraWithKey(ListActivity.EXTRA_BOOKS_QUERY_SETTINGS)
             )
         )
     }
