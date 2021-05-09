@@ -62,7 +62,7 @@ class FilteringBooksActivity: FilteringActivity() {
         // --- TODO hardcoded : make it dynamic
         setParametersButtons()
 
-        setNavBar()
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
     fun resetParameters(view: View) {
@@ -121,6 +121,7 @@ class FilteringBooksActivity: FilteringActivity() {
         mISBN = findViewById(R.id.book_isbn)
     }
 
+    /*
     private fun setNavBar(){
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
@@ -142,6 +143,8 @@ class FilteringBooksActivity: FilteringActivity() {
             }
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
     }
+
+    */
 
 
     private fun resultByParameter(query: BookQuery) {

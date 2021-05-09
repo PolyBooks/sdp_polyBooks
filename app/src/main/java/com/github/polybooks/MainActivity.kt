@@ -42,11 +42,11 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        startActivity(Intent(this, ListActivity::class.java).putExtra(getString(R.string.list_is_sale),false))
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        startActivity(Intent(this, ListActivity::class.java))
                         true
                     }
                     R.id.user_profile ->{

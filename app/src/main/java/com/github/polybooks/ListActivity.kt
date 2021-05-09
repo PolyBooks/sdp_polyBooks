@@ -20,6 +20,7 @@ import com.github.polybooks.core.database.interfaces.Query
 import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
@@ -81,7 +82,38 @@ class ListActivity: AppCompatActivity() {
 
         query.getAll().thenAccept { list -> this.updateAdapter(list) }
 
-        setupNavbar(findViewById(R.id.bottom_navigation), this)
+        setNavBar()
+    }
+
+    private fun setNavBar(){
+        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+                when(item.itemId){
+                    R.id.home ->{
+                        startActivity(Intent(this, MainActivity::class.java))
+                        true
+                    }
+                    R.id.books ->{
+                        if(isSales){
+                            startActivity(Intent(this, ListActivity::class.java).putExtra(getString(R.string.list_is_sale),false))
+                        }
+                        true
+                    }
+                    R.id.sales ->{
+                        if(!isSales){
+                            startActivity(Intent(this, ListActivity::class.java))
+                        }
+                        true
+                    }
+                    R.id.user_profile ->{
+                        // TODO: user sales
+                        false
+                    }
+                    else -> true
+                }
+            }
+        val selected = if (isSales) R.id.sales else R.id.books
+        setupNavbar(findViewById(R.id.bottom_navigation), this, selected, navBarListener)
     }
 
     private fun onFilterButtonClick() {

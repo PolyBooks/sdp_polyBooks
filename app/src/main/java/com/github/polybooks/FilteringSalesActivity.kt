@@ -63,7 +63,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
         setParametersButtons()
 
-        setNavBar()
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
 
     }
 
@@ -167,6 +167,7 @@ class FilteringSalesActivity: FilteringActivity() {
         interests.addAll(mCourseParameter.getSelectedValues())
     }
 
+    /*
     private fun setNavBar(){
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
@@ -188,6 +189,8 @@ class FilteringSalesActivity: FilteringActivity() {
             }
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
+
+     */
 
     private fun <T> resultByParameter(
         query: SaleQuery,
