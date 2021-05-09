@@ -234,6 +234,11 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    fun getAllBooksDoesntCrash() {
+        fbBookDB.queryBooks().getAll().get()
+    }
+
+    @Test
     fun getMultipleBooksWorks() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getAll()
         val books = future.get()
