@@ -90,6 +90,7 @@ class FilteringBooksActivity: FilteringActivity() {
         val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java) //TODO list books activity
         intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
+        intent.putExtra(getString(R.string.list_is_sale), false)
         startActivity(intent)
     }
 

@@ -111,6 +111,7 @@
     <string name="sale">sale</string>
     <string name="profile">profile</string>
     <string name="my_book_sales">My book sales</string>
+    <string name="list_is_sale">List is Sales?</string>
     <string name="title">Title:</string>
     <string name="edition">Edition:</string>
     <string name="book_language">Book language</string>
