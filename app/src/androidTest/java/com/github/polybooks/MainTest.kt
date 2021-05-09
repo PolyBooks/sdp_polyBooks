@@ -1,22 +1,18 @@
 package com.github.polybooks
 
-import androidx.test.core.app.ApplicationProvider
+
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.schibsted.spain.barista.assertion.BaristaCheckedAssertions.assertChecked
-import com.schibsted.spain.barista.assertion.BaristaClickableAssertions.assertClickable
-import com.schibsted.spain.barista.assertion.BaristaClickableAssertions.assertNotClickable
-import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
-import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 
-import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -103,7 +99,7 @@ class MainTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
     }
 
     @Test
@@ -115,7 +111,8 @@ class MainTest {
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        intended(hasComponent(ListActivity::class.java.name))
+        intended(hasExtra(ListActivity.IS_SALE, false))
     }
 
     @Test

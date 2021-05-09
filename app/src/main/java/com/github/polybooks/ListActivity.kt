@@ -34,6 +34,7 @@ class ListActivity: AppCompatActivity() {
     companion object {
         const val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
         const val EXTRA_BOOKS_QUERY_SETTINGS: String = "bookQuerySettings"
+        const val IS_SALE: String = "is_sale"
         private const val TAG = "ListActivity"
     }
 
@@ -51,7 +52,7 @@ class ListActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
 
-        isSales = intent.extras?.getBoolean(getString(R.string.list_is_sale), true) ?: true
+        isSales = intent.extras?.getBoolean(IS_SALE, true) ?: true
 
         findViewById<TextView>(R.id.sale_or_book).text = if (isSales) getString(R.string.sale) else getString(R.string.books)
         findViewById<Button>(R.id.filter_button).setOnClickListener { onFilterButtonClick() }
@@ -95,7 +96,7 @@ class ListActivity: AppCompatActivity() {
                     }
                     R.id.books ->{
                         if(isSales){
-                            startActivity(Intent(this, ListActivity::class.java).putExtra(getString(R.string.list_is_sale),false))
+                            startActivity(Intent(this, ListActivity::class.java).putExtra(IS_SALE,false))
                         }
                         true
                     }

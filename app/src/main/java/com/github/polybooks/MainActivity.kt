@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, ListActivity::class.java).putExtra(getString(R.string.list_is_sale),false))
+                        startActivity(Intent(this, ListActivity::class.java).putExtra(ListActivity.IS_SALE,false))
                         true
                     }
                     R.id.sales ->{

@@ -24,7 +24,7 @@ fun setupNavbar(
                     true
                 }
                 R.id.books -> {
-                    startActivity(origin, Intent(origin, ListActivity::class.java).putExtra( origin.getString(R.string.list_is_sale),false), null)
+                    startActivity(origin, Intent(origin, ListActivity::class.java).putExtra(ListActivity.IS_SALE,false), null)
                     true
                 }
                 R.id.sales -> {
