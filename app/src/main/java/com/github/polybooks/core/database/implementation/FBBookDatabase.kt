@@ -72,7 +72,15 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                     }
                 }
                 else -> {
-                    throw Error("BookQuery is in an illegal state")
+                    val future = CompletableFuture<List<Book>>()
+                    bookRef.get().addOnSuccessListener { bookEntries ->
+                            val books = bookEntries.map { bookEntry ->
+                                snapshotEntryToBook(bookEntry)
+                            }
+                            future.complete(books)
+                        }
+                    return future
+
                 }
             }
         }
