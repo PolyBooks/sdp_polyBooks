@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers
@@ -214,7 +215,7 @@ class FilteringBooksTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        intended(hasComponent(FilteringSalesActivity::class.java.name))
+        intended(hasComponent(ListActivity::class.java.name))
     }
 
     @Test
@@ -226,7 +227,8 @@ class FilteringBooksTest {
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        onView(withId(R.id.results_button)).check(matches(ViewMatchers.isDisplayed()))
+        intended(hasComponent(ListActivity::class.java.name))
+        intended(IntentMatchers.hasExtra(ListActivity.IS_SALE, false))
     }
 
     @Test
@@ -244,7 +246,7 @@ class FilteringBooksTest {
 
     @Test
     fun navBarSelected() {
-        onView(withId(R.id.books))
+        onView(withId(R.id.default_selected))
             .check(matches(ViewMatchers.isSelected()))
     }
 

@@ -58,7 +58,7 @@ class MainTest {
     fun loginButton() {
 
         onView(withId(R.id.log_button)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
+        intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
 
     }
 
@@ -66,7 +66,7 @@ class MainTest {
     fun sellButton() {
 
         onView(withId(R.id.sell_button)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
+        intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
 
     }
 
@@ -79,14 +79,11 @@ class MainTest {
 //    }
 
     @Test
-    fun salesFilterButton() {
+    fun allBooksButton() {
 
         onView(withId(R.id.button_open_db_tests)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
-      /*
-        onView(withId(R.id.button_open_db_tests)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
-      */
+        intended(hasComponent(ListActivity::class.java.name))
+        intended(hasExtra(ListActivity.IS_SALE, false))
     }
 
     //This one
@@ -99,7 +96,7 @@ class MainTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
+        intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
     }
 
     @Test

@@ -1,5 +1,9 @@
 package com.github.polybooks
 
+import android.content.Intent
+import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -7,6 +11,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.rule.ActivityTestRule
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions.sleep
@@ -15,10 +20,16 @@ import org.junit.*
 import java.util.concurrent.TimeUnit
 
 
-class ListSalesTest {
+class ListBooksTest {
+
+    companion object
+    {
+        val intent: Intent = Intent(ApplicationProvider.getApplicationContext(),ListActivity::class.java).putExtra(ListActivity.IS_SALE, false)
+        // bundleOf(ListActivity.IS_SALE to false)
+    }
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(ListActivity::class.java)
+    val activityRule = ActivityScenarioRule<ListActivity>(intent)
 
     @Before
     fun before() {
@@ -69,8 +80,7 @@ class ListSalesTest {
     @Test
     fun navBarSales() {
         Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.sales))
-            .check(ViewAssertions.matches(ViewMatchers.isSelected()))
+        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
     }
 
     @Test
@@ -82,8 +92,8 @@ class ListSalesTest {
     @Test
     fun navBarBooks() {
         Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
-        Intents.intended(IntentMatchers.hasExtra(ListActivity.IS_SALE, false))
+        Espresso.onView(ViewMatchers.withId(R.id.books))
+            .check(ViewAssertions.matches(ViewMatchers.isSelected()))
     }
 
     @Test
@@ -101,7 +111,7 @@ class ListSalesTest {
 
     @Test
     fun navBarSelected() {
-        Espresso.onView(ViewMatchers.withId(R.id.sales))
+        Espresso.onView(ViewMatchers.withId(R.id.books))
             .check(ViewAssertions.matches(ViewMatchers.isSelected()))
     }
 

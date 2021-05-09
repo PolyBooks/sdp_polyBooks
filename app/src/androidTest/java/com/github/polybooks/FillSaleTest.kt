@@ -33,7 +33,7 @@ class FillSaleTest {
     @Test
     fun navBarSales() {
         Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
     }
 
     @Test
@@ -47,7 +47,8 @@ class FillSaleTest {
     @Test
     fun navBarBooks() {
         Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasExtra(ListActivity.IS_SALE, false))
     }
 
     @Test
