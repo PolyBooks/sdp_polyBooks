@@ -35,6 +35,8 @@ class ScanBarcodeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_barcode)
 
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
         // Request camera permissions
         if (allPermissionsGranted(baseContext)) {
             startScanBarcodeCamera()
@@ -42,8 +44,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     private fun startScanBarcodeCamera() {

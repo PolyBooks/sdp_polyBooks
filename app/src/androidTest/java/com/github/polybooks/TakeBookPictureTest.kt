@@ -21,7 +21,7 @@ class TakeBookPictureTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(TakeBookPictureActivity::class.java)
 
-    /*@Before
+    @Before
     fun before() {
         Intents.init()
     }
@@ -29,9 +29,8 @@ class TakeBookPictureTest {
     @After
     fun after() {
         Intents.release()
-    }*/
+    }
 
-    /*
     @Test
     fun takePictureButtonWorks() {
         onView(withId(R.id.camera_capture_button)).perform(click())
@@ -39,6 +38,6 @@ class TakeBookPictureTest {
         //Intents.intended(IntentMatchers.hasComponent(FillSaleTest::class.java.name))
 
     }
-     */
+
 
 }
