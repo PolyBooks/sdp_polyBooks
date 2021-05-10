@@ -17,7 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyBooks">
-        <activity android:name=".SaleInformationActivity"></activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -51,6 +50,9 @@
         <activity
             android:name=".FilteringBooksActivity"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".SaleInformationActivity"
+            android:parentActivityName=".ListSalesActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

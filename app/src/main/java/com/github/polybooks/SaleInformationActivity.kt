@@ -6,6 +6,10 @@ import android.widget.TextView
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip
 
+/**
+ * This activity displays the detailed product information of a particular
+ * registered sale given in .putExtra to the activity
+ */
 class SaleInformationActivity: AppCompatActivity() {
     companion object {
         const val EXTRA_SALE_INFORMATION: String = "EXTRA_SALE_INFORMATION"
