@@ -4,15 +4,16 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.database.interfaces.InterestDatabase
 import java.util.concurrent.CompletableFuture
 
-class DummyInterestDatabase : InterestDatabase {
+class DummyInterestDatabase: InterestDatabase {
 
     companion object {
-        val mockFields : List<Field> = listOf(
+        val mockFields: List<Field> = listOf(
             Field("Biology"),
             Field("Computer Science"),
-            Field("Architecture"))
+            Field("Architecture")
+        )
 
-        val mockCourses : List<Course> = listOf(
+        val mockCourses: List<Course> = listOf(
             Course("COM-101"),
             Course("CS-306"),
             Course("CS-323"),
@@ -24,7 +25,7 @@ class DummyInterestDatabase : InterestDatabase {
             Course("MICRO-511")
         )
 
-        val mockSemesters : List<Semester> = listOf(
+        val mockSemesters: List<Semester> = listOf(
 
             Semester("IN", "BA1"),
             Semester("SV", "BA1"),
