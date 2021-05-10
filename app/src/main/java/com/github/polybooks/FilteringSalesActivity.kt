@@ -29,12 +29,6 @@ class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
 
-    // TODO use future global static dbs
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val saleDB = SaleDatabase(firestore, bookDB)
-
     private lateinit var mReset: Button
     private lateinit var mResults: Button
 
