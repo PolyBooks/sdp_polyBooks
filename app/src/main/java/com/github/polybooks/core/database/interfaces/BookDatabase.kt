@@ -20,24 +20,11 @@ interface BookDatabase {
     fun queryBooks() : BookQuery
 
     /**
-     * Get all the books in the database
-     * */
-    fun listAllBooks() : CompletableFuture<List<Book>> = queryBooks().getAll()
-
-    /**
      * Get data about a Book from the database given it's ISBN
      * */
     fun getBook(isbn : ISBN) : CompletableFuture<Book?>
             = queryBooks().searchByISBN(setOf(isbn)).getAll().thenApply { it.firstOrNull() }
 
-    /**
-     * A method for getting books by batches of at most N books. The batches are indexed by ordered pages.
-     * @param numberOfBooks The maximum number of books per page
-     * @param page The index of the page
-     * @param ordering The ordering for the pages and books within the pages (see {@link BookOrdering})
-     * */
-    fun getNBooks(numberOfBooks : Int, page : Int, ordering : BookOrdering) : CompletableFuture<List<Book>>
-            = queryBooks().withOrdering(ordering).getN(numberOfBooks, page)
 }
 
 /**

@@ -1,7 +1,6 @@
 package com.github.polybooks
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -12,8 +11,8 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
+import com.github.polybooks.core.database.implementation.SaleQueryBuilder
 import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -86,14 +85,14 @@ class FilteringSalesActivity: FilteringActivity() {
 
     fun getResults(view: View) {
 //        var query: SaleQuery = DummySalesQuery()
-        var query: SaleQuery = saleDB.querySales()
+        var builder: SaleQueryBuilder = SaleQueryBuilder()
 
         //These 2 in front for dummy sales query
         if (mName.text.isNotEmpty())
-            query.searchByTitle(mName.text.toString())
+            builder.searchByTitle(mName.text.toString())
 
         if (mISBN.text.isNotEmpty())
-            query = query.searchByISBN(mISBN.text.toString())
+            builder = builder.searchByISBN(mISBN.text.toString())
 
         // price
         val minPrice =
@@ -104,13 +103,12 @@ class FilteringSalesActivity: FilteringActivity() {
             if (mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
             else Float.MAX_VALUE
 
-        query = query.searchByPrice(minPrice, maxPrice)
+        builder = builder.searchByPrice(minPrice, maxPrice)
 
-        resultByParameter(query)
+        resultByParameter(builder)
 
-        val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java)
-        intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
+        intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY, builder.getQuery())
         startActivity(intent)
     }
 
@@ -151,7 +149,7 @@ class FilteringSalesActivity: FilteringActivity() {
         mPriceMax = findViewById(R.id.price_max)
     }
 
-    private fun resultByParameter(query: SaleQuery) {
+    private fun resultByParameter(query: SaleQueryBuilder) {
         resultByParameter(query, mSortParameter) { q, orderings ->
             q.withOrdering(orderings[0])
         }
@@ -191,9 +189,9 @@ class FilteringSalesActivity: FilteringActivity() {
     }
 
     private fun <T> resultByParameter(
-        query: SaleQuery,
+        query: SaleQueryBuilder,
         parameter: Parameter<T>,
-        f: (SaleQuery, List<T>) -> Unit
+        f: (SaleQueryBuilder, List<T>) -> Unit
     ) {
         val values: List<T> = parameter.getSelectedValues()
         if (values.isNotEmpty())

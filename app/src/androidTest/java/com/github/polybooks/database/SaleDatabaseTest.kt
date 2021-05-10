@@ -8,10 +8,10 @@ import com.github.polybooks.core.BookCondition.*
 import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.core.database.LocalUserException
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.utils.unwrapException
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
@@ -54,30 +54,12 @@ class SaleDatabaseTest {
     }
 
     @After fun cleanUp() {
-        val testSales = saleDB.listAllSales().get().filter { it.seller == testUser }
+        val testSales = saleDB.execute(SaleQuery()).get().filter { it.seller == testUser }
         testSales.forEach { saleDB.deleteSale(it).get() }
         Intents.release()
     }
 
     @Rule @JvmField val expectedException: ExpectedException = ExpectedException.none()
-
-    @Test
-    fun t_getCount() {
-        val allSales: CompletableFuture<List<Sale>> = saleDB.querySales().getAll()
-        val count: CompletableFuture<Int> = saleDB.querySales().getCount()
-
-        assertEquals(allSales.get().size, count.get())
-    }
-
-    @Test
-    fun t_listAllSales() {
-        val allSales: List<Sale> = saleDB.querySales().getAll().get()
-        var listAllSales: List<Sale> = saleDB.listAllSales().get()
-
-        val expectedSize: Int = allSales.size
-        assertEquals(expectedSize, listAllSales.size)
-        assertEquals(allSales, listAllSales)
-    }
 
     @Test
     fun t_searchByTitle() {

@@ -89,7 +89,7 @@ class FilteringBooksActivity: FilteringActivity() {
         // pass query to new activity
         val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java) //TODO list books activity
-        intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
+        intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY, querySettings)
         startActivity(intent)
     }
 
