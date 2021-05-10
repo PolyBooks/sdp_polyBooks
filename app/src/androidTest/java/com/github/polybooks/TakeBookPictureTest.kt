@@ -31,6 +31,7 @@ class TakeBookPictureTest {
         Intents.release()
     }*/
 
+    /*
     @Test
     fun takePictureButtonWorks() {
         onView(withId(R.id.camera_capture_button)).perform(click())
@@ -38,5 +39,6 @@ class TakeBookPictureTest {
         //Intents.intended(IntentMatchers.hasComponent(FillSaleTest::class.java.name))
 
     }
+     */
 
 }
