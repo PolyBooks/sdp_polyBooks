@@ -1,7 +1,6 @@
 package com.github.polybooks
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState

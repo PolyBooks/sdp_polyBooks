@@ -1,24 +1,24 @@
 package com.github.polybooks
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
-import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
-import com.schibsted.spain.barista.interaction.BaristaSleepInteractions.sleep
 import org.hamcrest.Matchers
-import org.junit.*
-import java.util.concurrent.TimeUnit
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 
 class ListSalesTest {
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(ListActivity::class.java)
+    val activityRule = ActivityScenarioRule(ListSaleActivity::class.java)
 
     @Before
     fun before() {
@@ -31,47 +31,52 @@ class ListSalesTest {
     }
 
     @Test
+    fun filterButton() {
+        onView(withId(R.id.filter_button)).perform(click())
+        Intents.intended(hasComponent(FilteringSalesActivity::class.java.name))
+    }
+
+    @Test
     fun navBarSales() {
-        Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.sales))
-            .check(ViewAssertions.matches(ViewMatchers.isSelected()))
+        onView(withId(R.id.sales)).perform(click())
+        onView(withId(R.id.sales))
+            .check(ViewAssertions.matches(isSelected()))
     }
 
     @Test
     fun navBarProfile() {
-        Espresso.onView(ViewMatchers.withId(R.id.user_profile)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.user_profile)).perform(click())
+        onView(withId(R.id.recyclerView)).check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
     fun navBarBooks() {
-        Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
-        Intents.intended(IntentMatchers.hasExtra(ListActivity.IS_SALE, false))
+        onView(withId(R.id.books)).perform(click())
+        Intents.intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
     fun navBarDefault() {
-        Espresso.onView(ViewMatchers.withId(R.id.default_selected)).check(
+        onView(withId(R.id.default_selected)).check(
             ViewAssertions.matches(
-                ViewMatchers.withEffectiveVisibility(
-                    ViewMatchers.Visibility.GONE
+                withEffectiveVisibility(
+                    Visibility.GONE
                 )
             )
         )
-        Espresso.onView(ViewMatchers.withId(R.id.default_selected))
-            .check(ViewAssertions.matches(Matchers.not(ViewMatchers.isEnabled())))
+        onView(withId(R.id.default_selected))
+            .check(ViewAssertions.matches(Matchers.not(isEnabled())))
     }
 
     @Test
     fun navBarSelected() {
-        Espresso.onView(ViewMatchers.withId(R.id.sales))
-            .check(ViewAssertions.matches(ViewMatchers.isSelected()))
+        onView(withId(R.id.sales))
+            .check(ViewAssertions.matches(isSelected()))
     }
 
     @Test
     fun navBarHome() {
-        Espresso.onView(ViewMatchers.withId(R.id.home)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
+        onView(withId(R.id.home)).perform(click())
+        Intents.intended(hasComponent(MainActivity::class.java.name))
     }
 }

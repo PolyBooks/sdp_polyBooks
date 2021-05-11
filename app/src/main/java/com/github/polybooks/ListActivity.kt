@@ -1,26 +1,16 @@
 package com.github.polybooks
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.core.Book
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
-import com.github.polybooks.core.database.BooksAdapter
-import com.github.polybooks.core.database.SalesAdapter
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.core.database.interfaces.Query
-import com.github.polybooks.core.database.interfaces.SaleSettings
-import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
@@ -64,14 +54,13 @@ abstract class ListActivity<T>: AppCompatActivity() {
         setNavBar()
     }
 
-    abstract fun onFilterButtonClick() : Unit
-
     private fun updateAdapter(list: List<*>) {
         runOnUiThread {
             mRecycler.adapter = adapter(list as List<T>)
         }
     }
 
+    abstract fun onFilterButtonClick()
     abstract fun adapter(list : List<T>): RecyclerView.Adapter<*>
     abstract fun setNavBar(): Unit
     abstract fun getQuery(): Query<T>

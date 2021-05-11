@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         dbButton.setOnClickListener {
 //            val i : Intent = Intent(this, ListActivity::class.java)
 //            val i : Intent = Intent(this, FilteringBooksActivity::class.java)
-            val i : Intent = Intent(this, ListSaleActivity::class.java)
+            val i : Intent = Intent(this, ListBooksActivity::class.java)
 
             startActivity(i)
         }

@@ -49,7 +49,7 @@ class LoginGoogleTest {
     @Test
     fun navBarSales() {
         onView(withId(com.github.polybooks.R.id.sales)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListSaleActivity::class.java.name))
     }
 
     @Test
@@ -61,8 +61,7 @@ class LoginGoogleTest {
     @Test
     fun navBarBooks() {
         onView(withId(com.github.polybooks.R.id.books)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ListActivity::class.java.name))
-        Intents.intended(IntentMatchers.hasExtra(ListActivity.IS_SALE, false))
+        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test

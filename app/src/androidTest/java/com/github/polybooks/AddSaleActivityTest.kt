@@ -86,7 +86,7 @@ class AddSaleActivityTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        intended(hasComponent(ListActivity::class.java.name))
+        intended(hasComponent(ListSaleActivity::class.java.name))
     }
 
     @Test
@@ -98,8 +98,7 @@ class AddSaleActivityTest {
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        intended(hasComponent(ListActivity::class.java.name))
-        intended(IntentMatchers.hasExtra(ListActivity.IS_SALE, false))
+        intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
