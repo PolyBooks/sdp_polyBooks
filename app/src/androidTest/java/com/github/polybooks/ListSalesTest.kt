@@ -29,42 +29,6 @@ class ListSalesTest {
     fun after() {
         Intents.release()
     }
-    //This one
-    /*
-    @Test
-    fun countIsCorrect() {
-        assertRecyclerViewItemCount(R.id.recyclerView, 1)
-        sleep(4, TimeUnit.SECONDS)
-        assertRecyclerViewItemCount(R.id.recyclerView, 7)
-    }
-    */
-
-    // FIXME waiting for PR #101 to be merged. Adapting the tests using Dummy seem to take way to much time for a temporary thing
-
-    @Ignore
-    @Test
-    fun ItemsAreCorrect() {
-        assertDisplayed("Book1")
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_title, "Book1");
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_price, "23.00");
-        sleep(4, TimeUnit.SECONDS)
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_title, "Book1");
-        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_price, "23.00");
-        assertDisplayedAtPosition(R.id.recyclerView, 4, R.id.text_view_title, "Book6");
-        assertDisplayedAtPosition(R.id.recyclerView, 6, R.id.text_view_price, "23.66");
-    }
-
-//    @Test
-//    fun ItemsAreCorrect() {
-//        assertDisplayed("Book1")
-//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName, "Book1");
-//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice, "23.00");
-//        sleep(4, TimeUnit.SECONDS)
-//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.BookName, "Book1");
-//        assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.SalePrice, "23.00");
-//        assertDisplayedAtPosition(R.id.recyclerView, 4, R.id.BookName, "Book6");
-//        assertDisplayedAtPosition(R.id.recyclerView, 6, R.id.SalePrice, "23.66");
-//    }
 
     @Test
     fun navBarSales() {
