@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         dbButton.setOnClickListener {
 //            val i : Intent = Intent(this, ListActivity::class.java)
 //            val i : Intent = Intent(this, FilteringBooksActivity::class.java)
-            val i : Intent = Intent(this, ListActivity::class.java).putExtra(ListActivity.IS_SALE, false)
+            val i : Intent = Intent(this, ListSaleActivity::class.java)
 
             startActivity(i)
         }
@@ -42,11 +42,11 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, ListActivity::class.java).putExtra(ListActivity.IS_SALE,false))
+                        startActivity(Intent(this, ListBooksActivity::class.java))
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, ListActivity::class.java))
+                        startActivity(Intent(this, ListSaleActivity::class.java))
                         true
                     }
                     R.id.user_profile ->{

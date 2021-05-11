@@ -24,11 +24,11 @@ fun setupNavbar(
                     true
                 }
                 R.id.books -> {
-                    startActivity(origin, Intent(origin, ListActivity::class.java).putExtra(ListActivity.IS_SALE,false), null)
+                    startActivity(origin, Intent(origin, ListBooksActivity::class.java), null)
                     true
                 }
                 R.id.sales -> {
-                    startActivity(origin, Intent(origin, ListActivity::class.java), null)
+                    startActivity(origin, Intent(origin, ListSaleActivity::class.java), null)
                     true
                 }
                 R.id.user_profile -> {

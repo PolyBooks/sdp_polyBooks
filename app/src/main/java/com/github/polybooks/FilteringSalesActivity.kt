@@ -108,7 +108,7 @@ class FilteringSalesActivity: FilteringActivity() {
         resultByParameter(query)
 
         val querySettings = query.getSettings()
-        val intent = Intent(this, ListActivity::class.java)
+        val intent = Intent(this, ListSaleActivity::class.java)
         intent.putExtra(ListActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
