@@ -1,4 +1,4 @@
-package com.github.polybooks.database.interfaces
+package com.github.polybooks.database
 
 import android.content.Context
 import com.github.polybooks.R

@@ -1,4 +1,4 @@
-package com.github.polybooks.database.interfaces
+package com.github.polybooks.database
 
 import java.util.concurrent.CompletableFuture
 

@@ -1,10 +1,8 @@
-package com.github.polybooks.database.implementation
+package com.github.polybooks.database
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.ISBN
-import com.github.polybooks.database.interfaces.BookDatabase
-import com.github.polybooks.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -20,7 +18,8 @@ private const val DATE_FORMAT = "yyyy MM dd"
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
  * */
-class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) : BookDatabase {
+class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) :
+    BookDatabase {
 
     /*TODO:
     [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)

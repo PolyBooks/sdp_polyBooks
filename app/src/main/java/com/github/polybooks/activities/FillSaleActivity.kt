@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.core.*
-import com.github.polybooks.database.implementation.OLBookDatabase
-import com.github.polybooks.database.implementation.SaleDatabase
+import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
@@ -33,7 +33,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
     private val firestore = FirebaseFirestore.getInstance()
     private val bookDB = OLBookDatabase { string -> url2json(string) }
-    private val salesDB = SaleDatabase(firestore, bookDB)
+    private val salesDB = FBSaleDatabase(firestore, bookDB)
 
     private lateinit var bookFuture: CompletableFuture<Book?>
     private var bookConditionSelected: BookCondition? = null

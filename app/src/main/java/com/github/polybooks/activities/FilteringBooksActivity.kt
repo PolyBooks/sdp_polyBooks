@@ -11,10 +11,10 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.database.implementation.FBBookDatabase
-import com.github.polybooks.database.implementation.OLBookDatabase
-import com.github.polybooks.database.interfaces.BookOrdering
-import com.github.polybooks.database.interfaces.BookQuery
+import com.github.polybooks.database.FBBookDatabase
+import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.database.BookOrdering
+import com.github.polybooks.database.BookQuery
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView

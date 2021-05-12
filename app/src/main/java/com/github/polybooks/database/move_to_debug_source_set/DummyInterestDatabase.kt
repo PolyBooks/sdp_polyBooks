@@ -1,7 +1,7 @@
-package com.github.polybooks.database.implementation
+package com.github.polybooks.database.move_to_debug_source_set
 
 import com.github.polybooks.core.*
-import com.github.polybooks.database.interfaces.InterestDatabase
+import com.github.polybooks.database.InterestDatabase
 import java.util.concurrent.CompletableFuture
 
 class DummyInterestDatabase: InterestDatabase {

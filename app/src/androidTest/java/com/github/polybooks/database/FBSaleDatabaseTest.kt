@@ -6,11 +6,6 @@ import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
 import com.github.polybooks.core.SaleState.*
-import com.github.polybooks.database.implementation.SaleDatabase
-import com.github.polybooks.database.interfaces.SaleOrdering
-import com.github.polybooks.database.interfaces.SaleSettings
-import com.github.polybooks.database.implementation.FBBookDatabase
-import com.github.polybooks.database.implementation.OLBookDatabase
 import com.github.polybooks.utils.unwrapException
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
@@ -23,13 +18,13 @@ import java.lang.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
-class SaleDatabaseTest {
+class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
     private val firestore = FirebaseFirestore.getInstance()
     private val olBookDB = OLBookDatabase { string -> url2json(string) }
     private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val saleDB = SaleDatabase(firestore, bookDB)
+    private val saleDB = FBSaleDatabase(firestore, bookDB)
 
     private val testUser = LoggedUser(301966, "Le givre")
     private val testBook = Book("9780156881807",null, "Tartuffe, by Moliere", null, null, null, null, null)

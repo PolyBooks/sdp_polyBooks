@@ -22,7 +22,7 @@ import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Semester
-import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.BookOrdering
 import com.github.polybooks.utils.FilteringTestUtils
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf

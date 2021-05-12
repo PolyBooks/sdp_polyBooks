@@ -8,11 +8,11 @@ import android.widget.EditText
 import com.github.polybooks.R
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.core.*
-import com.github.polybooks.database.implementation.FBBookDatabase
-import com.github.polybooks.database.implementation.OLBookDatabase
-import com.github.polybooks.database.implementation.SaleDatabase
-import com.github.polybooks.database.interfaces.SaleOrdering
-import com.github.polybooks.database.interfaces.SaleQuery
+import com.github.polybooks.database.FBBookDatabase
+import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.database.FBSaleDatabase
+import com.github.polybooks.database.SaleOrdering
+import com.github.polybooks.database.SaleQuery
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -33,7 +33,7 @@ class FilteringSalesActivity: FilteringActivity() {
     private val firestore = FirebaseFirestore.getInstance()
     private val olBookDB = OLBookDatabase { string -> url2json(string) }
     private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val saleDB = SaleDatabase(firestore, bookDB)
+    private val saleDB = FBSaleDatabase(firestore, bookDB)
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button

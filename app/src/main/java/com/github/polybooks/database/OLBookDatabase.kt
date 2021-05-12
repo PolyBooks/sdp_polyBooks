@@ -1,13 +1,10 @@
-package com.github.polybooks.database.implementation
+package com.github.polybooks.database
 
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
-import com.github.polybooks.database.DatabaseException
-import com.github.polybooks.database.interfaces.BookDatabase
-import com.github.polybooks.database.interfaces.BookOrdering.*
-import com.github.polybooks.database.interfaces.BookQuery
+import com.github.polybooks.database.BookOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
@@ -42,7 +39,8 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 /**
  * An implementation of a book database based on the Open Library online database
  * */
-class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>) : BookDatabase {
+class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>) :
+    BookDatabase {
 
     override fun queryBooks(): BookQuery = OLBookQuery()
 
@@ -175,7 +173,9 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     //parses the json of a language
     private fun parseLanguage(jsonLanguage: JsonElement) : String {
         val nameField = getJsonField(asJsonObject(jsonLanguage), LANGUAGE_NAME_FIELD_NAME)
-        return nameField.map { asString(it) }.orElseThrow(cantParseException(LANGUAGE_NAME_FIELD_NAME))
+        return nameField.map { asString(it) }.orElseThrow(cantParseException(
+            LANGUAGE_NAME_FIELD_NAME
+        ))
     }
 
     private fun parseTitle(jsonTitle: JsonElement): String = asString(jsonTitle)

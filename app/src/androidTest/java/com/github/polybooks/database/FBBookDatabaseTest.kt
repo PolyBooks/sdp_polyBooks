@@ -4,8 +4,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
-import com.github.polybooks.database.implementation.FBBookDatabase
-import com.github.polybooks.database.implementation.OLBookDatabase
 import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
 import junit.framework.AssertionFailedError
