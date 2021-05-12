@@ -42,7 +42,7 @@ class ListSaleActivity: ListActivity<Sale>() {
         return intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
             ?.let {
                 salesDB.querySales()
-                    .fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
+                    .fromSettings(it as SaleSettings)
             }
             ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
     }

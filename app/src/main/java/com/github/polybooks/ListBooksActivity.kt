@@ -41,7 +41,7 @@ class ListBooksActivity: ListActivity<Book>() {
         return intent.getSerializableExtra(EXTRA_BOOKS_QUERY_SETTINGS)
             ?.let {
                 bookDB.queryBooks()
-                    .fromSettings(intent.getSerializableExtra(EXTRA_BOOKS_QUERY_SETTINGS) as BookSettings)
+                    .fromSettings(it as BookSettings)
             }
             ?: bookDB.queryBooks()
     }
