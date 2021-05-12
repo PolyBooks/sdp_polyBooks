@@ -56,13 +56,13 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 if (book != null) {
                     fillBookData(book)
                 } else {
-                    redirectToAddSaleWithToast("Book matching the ISBN could not be found")
+                    redirectToAddSaleWithToast(getString(R.string.no_ISBN_match))
                 }
             } catch (e: Exception) {
-                redirectToAddSaleWithToast("An error occurred, please try again")
+                redirectToAddSaleWithToast(getString(R.string.error))
             }
         } else {
-            redirectToAddSaleWithToast("Please provide an ISBN")
+            redirectToAddSaleWithToast(getString(R.string.missing_ISBN))
         }
 
 

@@ -16,7 +16,6 @@ import com.github.polybooks.utils.UIManip.enableButton
 
 const val ISBN = "com.github.polybooks.activities.ISBN"
 
-
 /**
  * This activity is the starting point to add a new sale.
  * It gives the option between scanning the book barcode or manually inputting the ISBN.

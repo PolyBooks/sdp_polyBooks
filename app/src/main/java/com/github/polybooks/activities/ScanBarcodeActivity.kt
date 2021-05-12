@@ -61,7 +61,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 startCamera()
             } else {
                 Toast.makeText(this,
-                    "Permissions not granted by the user.",
+                    getString(R.string.permissions_not_granted),
                     Toast.LENGTH_SHORT).show()
                 finish()
             }
@@ -104,7 +104,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
                     this, cameraSelector, preview, imageAnalyzer)
 
             } catch(exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
+                Log.e(TAG, getString(R.string.binding_failed), exc)
             }
 
         }, ContextCompat.getMainExecutor(this))
