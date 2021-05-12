@@ -2,16 +2,15 @@ package com.github.polybooks.database
 
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.github.polybooks.MainActivity
+import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
 import com.github.polybooks.core.SaleState.*
-import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleSettings
-import com.github.polybooks.core.database.LocalUserException
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.database.implementation.SaleDatabase
+import com.github.polybooks.database.interfaces.SaleOrdering
+import com.github.polybooks.database.interfaces.SaleSettings
+import com.github.polybooks.database.implementation.FBBookDatabase
+import com.github.polybooks.database.implementation.OLBookDatabase
 import com.github.polybooks.utils.unwrapException
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp

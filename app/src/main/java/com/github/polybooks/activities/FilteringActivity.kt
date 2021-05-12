@@ -1,4 +1,4 @@
-package com.github.polybooks.com.github.polybooks
+package com.github.polybooks.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager

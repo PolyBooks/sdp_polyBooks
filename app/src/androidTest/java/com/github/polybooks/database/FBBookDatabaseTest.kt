@@ -2,14 +2,11 @@ package com.github.polybooks.database
 
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.github.polybooks.MainActivity
+import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.DatabaseException
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.database.implementation.FBBookDatabase
+import com.github.polybooks.database.implementation.OLBookDatabase
 import com.github.polybooks.utils.url2json
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import junit.framework.AssertionFailedError
 import org.junit.*

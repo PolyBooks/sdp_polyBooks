@@ -1,10 +1,10 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks.database.implementation
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.ISBN
-import com.github.polybooks.core.database.interfaces.BookDatabase
-import com.github.polybooks.core.database.interfaces.BookQuery
+import com.github.polybooks.database.interfaces.BookDatabase
+import com.github.polybooks.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot

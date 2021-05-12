@@ -1,11 +1,11 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseUser
+import com.github.polybooks.R
 
 class UserProfileActivity : AppCompatActivity() {
 

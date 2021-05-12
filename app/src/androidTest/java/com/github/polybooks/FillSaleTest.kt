@@ -8,6 +8,10 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.github.polybooks.activities.FillSaleActivity
+import com.github.polybooks.activities.FilteringBooksActivity
+import com.github.polybooks.activities.FilteringSalesActivity
+import com.github.polybooks.activities.MainActivity
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before

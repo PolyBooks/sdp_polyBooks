@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.polybooks.activities.*
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -71,7 +72,7 @@ class AddSaleActivityTest {
 
     @Test
     fun passValidISBN() {
-        val extraKey = "com.github.polybooks.ISBN"
+        val extraKey = "com.github.polybooks.activities.ISBN"
         val stringISBN = "9780345432360"
         inputISBN(stringISBN)
         onView(withId(R.id.pass_isbn_button)).perform(click())

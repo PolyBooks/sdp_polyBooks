@@ -1,10 +1,10 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks.database.implementation
 
 import android.os.SystemClock
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.interfaces.BookOrdering
-import com.github.polybooks.core.database.interfaces.BookQuery
-import com.github.polybooks.core.database.interfaces.BookSettings
+import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookQuery
+import com.github.polybooks.database.interfaces.BookSettings
 import com.google.firebase.Timestamp
 import java.util.concurrent.CompletableFuture
 

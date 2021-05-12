@@ -15,10 +15,14 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.polybooks.activities.FilteringBooksActivity
+import com.github.polybooks.activities.FilteringSalesActivity
+import com.github.polybooks.activities.ListSalesActivity
+import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Semester
-import com.github.polybooks.core.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookOrdering
 import com.github.polybooks.utils.FilteringTestUtils
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf

@@ -1,6 +1,5 @@
-package com.github.polybooks.core.database.interfaces
+package com.github.polybooks.database.interfaces
 
-import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
 /**

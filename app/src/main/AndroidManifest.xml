@@ -24,29 +24,29 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".ScanBarcodeActivity"
-            android:parentActivityName=".AddSaleActivity" />
-        <activity android:name=".FillSaleActivity"
-            android:parentActivityName=".AddSaleActivity"/>
-        <activity android:name=".AddSaleActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:name=".activities.ScanBarcodeActivity"
+            android:parentActivityName=".activities.AddSaleActivity" />
+        <activity android:name=".activities.FillSaleActivity"
+            android:parentActivityName=".activities.AddSaleActivity"/>
+        <activity android:name=".activities.AddSaleActivity"
+            android:parentActivityName=".activities.MainActivity"/>
 
-        <activity android:name=".LoginActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".activities.LoginActivity"
+            android:parentActivityName=".activities.MainActivity"/>
 
-        <activity android:name=".UserProfileActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".activities.UserProfileActivity"
+            android:parentActivityName=".activities.MainActivity"/>
 
-        <activity android:name=".FilteringSalesActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".activities.FilteringSalesActivity"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
-            android:name=".ListSalesActivity"
-            android:parentActivityName=".FilteringSalesActivity" />
+            android:name=".activities.ListSalesActivity"
+            android:parentActivityName=".activities.FilteringSalesActivity" />
         <activity
-            android:name=".FilteringBooksActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:name=".activities.FilteringBooksActivity"
+            android:parentActivityName=".activities.MainActivity"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

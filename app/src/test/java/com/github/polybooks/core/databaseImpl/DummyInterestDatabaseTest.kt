@@ -2,7 +2,7 @@ package com.github.polybooks.core.databaseImpl
 
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.LoggedUser
-import com.github.polybooks.core.database.implementation.DummyInterestDatabase
+import com.github.polybooks.database.implementation.DummyInterestDatabase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

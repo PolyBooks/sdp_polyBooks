@@ -1,19 +1,18 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import com.github.polybooks.R
 import com.github.polybooks.adapter.AdapterFactory
-import com.github.polybooks.com.github.polybooks.FilteringActivity
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.database.implementation.FBBookDatabase
+import com.github.polybooks.database.implementation.OLBookDatabase
+import com.github.polybooks.database.implementation.SaleDatabase
+import com.github.polybooks.database.interfaces.SaleOrdering
+import com.github.polybooks.database.interfaces.SaleQuery
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView

@@ -1,13 +1,12 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks.database.implementation
 
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.DatabaseException
-import com.github.polybooks.core.database.LocalUserException
-import com.github.polybooks.core.database.interfaces.*
-import com.github.polybooks.core.database.interfaces.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleOrdering.*
+import com.github.polybooks.database.DatabaseException
+import com.github.polybooks.database.LocalUserException
+import com.github.polybooks.database.interfaces.*
+import com.github.polybooks.database.interfaces.SaleDatabase
+import com.github.polybooks.database.interfaces.SaleOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.url2json
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*

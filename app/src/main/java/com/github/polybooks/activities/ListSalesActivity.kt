@@ -1,18 +1,18 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.os.Bundle
-import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.github.polybooks.core.database.interfaces.SaleSettings
+import com.github.polybooks.database.SalesAdapter
+import com.github.polybooks.database.implementation.FBBookDatabase
+import com.github.polybooks.database.implementation.OLBookDatabase
+import com.github.polybooks.database.implementation.SaleDatabase
+import com.github.polybooks.database.interfaces.SaleQuery
+import com.github.polybooks.database.interfaces.SaleSettings
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
@@ -54,7 +54,9 @@ class ListSalesActivity : AppCompatActivity() {
 
         val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
                 ?.let {
-                    salesDB.querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
+                    salesDB.querySales().fromSettings(intent.getSerializableExtra(
+                        EXTRA_SALE_QUERY_SETTINGS
+                    ) as SaleSettings)
                 }
                 ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
 

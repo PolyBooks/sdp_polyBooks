@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.database
 
 import android.view.LayoutInflater
 import android.view.View

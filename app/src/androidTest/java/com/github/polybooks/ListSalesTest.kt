@@ -1,9 +1,5 @@
 package com.github.polybooks
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -11,9 +7,10 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.platform.app.InstrumentationRegistry
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.database.implementation.SaleDatabase
+import com.github.polybooks.activities.FilteringBooksActivity
+import com.github.polybooks.activities.FilteringSalesActivity
+import com.github.polybooks.activities.ListSalesActivity
+import com.github.polybooks.activities.MainActivity
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions.sleep

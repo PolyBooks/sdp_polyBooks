@@ -3,9 +3,9 @@ package com.github.polybooks.utils
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
-import com.github.polybooks.FilteringBooksActivity
-import com.github.polybooks.FilteringSalesActivity
-import com.github.polybooks.MainActivity
+import com.github.polybooks.activities.FilteringBooksActivity
+import com.github.polybooks.activities.FilteringSalesActivity
+import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

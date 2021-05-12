@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,16 +8,16 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.R
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.core.*
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.implementation.SaleDatabase
+import com.github.polybooks.database.implementation.OLBookDatabase
+import com.github.polybooks.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.url2json
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.Exception
 import java.text.DateFormat

@@ -1,11 +1,11 @@
-package com.github.polybooks.core.database.implementation
+package com.github.polybooks.database.implementation
 
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
-import com.github.polybooks.core.database.interfaces.BookOrdering
-import com.github.polybooks.core.database.interfaces.BookOrdering.*
-import com.github.polybooks.core.database.interfaces.BookQuery
-import com.github.polybooks.core.database.interfaces.BookSettings
+import com.github.polybooks.database.interfaces.BookOrdering
+import com.github.polybooks.database.interfaces.BookOrdering.*
+import com.github.polybooks.database.interfaces.BookQuery
+import com.github.polybooks.database.interfaces.BookSettings
 import com.github.polybooks.utils.regulariseISBN
 
 /**
