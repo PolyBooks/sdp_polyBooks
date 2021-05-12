@@ -2,12 +2,10 @@ package com.github.polybooks.core.database.implementation
 
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
-import com.github.polybooks.core.Interest
+import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.database.interfaces.BookDatabase
-import com.github.polybooks.core.database.interfaces.BookOrdering
 import com.github.polybooks.core.database.interfaces.BookQuery
 import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.regulariseISBN
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
@@ -40,8 +38,17 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
                 interests != null -> {
-                    //TODO a real implementation
-                    return CompletableFuture.completedFuture(listOf<Book>())
+                    val future = CompletableFuture<List<Book>>()
+                    val hashed = interests!!.map { it.hashCode() }.toList()
+                    bookRef
+                        .whereArrayContainsAny("interests", hashed)
+                        .get().addOnSuccessListener { bookEntries ->
+                            val books = bookEntries.map { bookEntry ->
+                                snapshotEntryToBook(bookEntry)
+                            }
+                            future.complete(books)
+                        }
+                    return future
                 }
                 title != null -> {
                     val future = CompletableFuture<List<Book>>()
@@ -74,7 +81,15 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                     }
                 }
                 else -> {
-                    throw Error("BookQuery is in an illegal state")
+                    val future = CompletableFuture<List<Book>>()
+                    bookRef.get().addOnSuccessListener { bookEntries ->
+                            val books = bookEntries.map { bookEntry ->
+                                snapshotEntryToBook(bookEntry)
+                            }
+                            future.complete(books)
+                        }
+                    return future
+
                 }
             }
         }
@@ -125,7 +140,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                 Timestamp(dateFormater.parse(it)!!)
             }
             return Book(
-                map[BookFields.ISBN.fieldName] as String,
+                map[BookFields.ISBN.fieldName] as ISBN,
                 map[BookFields.AUTHORS.fieldName] as List<String>?,
                 map[BookFields.TITLE.fieldName] as String,
                 map[BookFields.EDITION.fieldName] as String?,
@@ -153,7 +168,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             return future
         }
 
-        private fun getBooksByISBNFromFirebase(isbns : List<String>) : CompletableFuture<List<Book>> {
+        private fun getBooksByISBNFromFirebase(isbns : List<ISBN>) : CompletableFuture<List<Book>> {
             val future = CompletableFuture<List<Book>>()
             bookRef.whereIn(FieldPath.documentId(), isbns)
                 .get().addOnSuccessListener { bookEntries ->
