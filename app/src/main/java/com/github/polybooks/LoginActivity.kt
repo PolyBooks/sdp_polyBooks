@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -65,7 +66,28 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        setupNavbar(findViewById(R.id.bottom_navigation), this)
+        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+                when(item.itemId){
+                    R.id.books ->{
+                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        true
+                    }
+                    R.id.sales ->{
+                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        true
+                    }
+                    R.id.user_profile ->{
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
+                    }
+                    else -> {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        true
+                    }
+                }
+            }
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.user_profile, navBarListener)
     }
 
     override fun onStart() {

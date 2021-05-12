@@ -38,6 +38,6 @@ class LoginGoogleTest {
 
     @Test
     fun signInButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(click())
+        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(scrollTo(), click())
     }
 }
