@@ -34,6 +34,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
 
+        setNavBar()
+
+    }
+
+    private fun setNavBar(){
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
