@@ -1,9 +1,12 @@
 package com.github.polybooks
 
+import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -14,10 +17,15 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class ListSalesTest {
+class ListBooksTest {
+
+    companion object
+    {
+        val intent: Intent = Intent(ApplicationProvider.getApplicationContext(),ListBooksActivity::class.java)
+    }
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(ListSalesActivity::class.java)
+    val activityRule = ActivityScenarioRule<ListBooksActivity>(intent)
 
     @Before
     fun before() {
@@ -32,26 +40,26 @@ class ListSalesTest {
     @Test
     fun filterButton() {
         onView(withId(R.id.filter_button)).perform(click())
-        Intents.intended(hasComponent(FilteringSalesActivity::class.java.name))
+        intended(hasComponent(FilteringBooksActivity::class.java.name))
     }
 
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        onView(withId(R.id.sales))
-            .check(ViewAssertions.matches(isSelected()))
+        Intents.intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        Intents.intended(hasComponent(LoginActivity::class.java.name))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        Intents.intended(hasComponent(ListBooksActivity::class.java.name))
+        onView(withId(R.id.books))
+            .check(ViewAssertions.matches(isSelected()))
     }
 
     @Test
@@ -69,13 +77,13 @@ class ListSalesTest {
 
     @Test
     fun navBarSelected() {
-        onView(withId(R.id.sales))
+        onView(withId(R.id.books))
             .check(ViewAssertions.matches(isSelected()))
     }
 
     @Test
     fun navBarHome() {
         onView(withId(R.id.home)).perform(click())
-        Intents.intended(hasComponent(MainActivity::class.java.name))
+        intended(hasComponent(MainActivity::class.java.name))
     }
 }

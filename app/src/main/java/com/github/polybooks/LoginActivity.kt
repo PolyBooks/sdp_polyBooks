@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.utils.failedUser
@@ -21,7 +20,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -70,21 +68,18 @@ class LoginActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        startActivity(Intent(this, ListBooksActivity::class.java))
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
-                        startActivity(Intent(this, LoginActivity::class.java))
-                        true
-                    }
-                    else -> {
+                    R.id.home ->{
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
+                    else -> true
                 }
             }
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.user_profile, navBarListener)

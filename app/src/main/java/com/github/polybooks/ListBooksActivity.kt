@@ -2,18 +2,17 @@ package com.github.polybooks
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
-import com.github.polybooks.core.database.SalesAdapter
+import com.github.polybooks.core.Book
+import com.github.polybooks.core.database.BooksAdapter
+import com.github.polybooks.core.database.interfaces.BookSettings
 import com.github.polybooks.core.database.interfaces.Query
-import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class ListSalesActivity: ListActivity<Sale>() {
+class ListBooksActivity: ListActivity<Book>() {
 
-    override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
-        return SalesAdapter(list)
+    override fun adapter(list: List<Book>): RecyclerView.Adapter<*> {
+        return BooksAdapter(list)
     }
 
     override fun setNavBar() {
@@ -24,8 +23,8 @@ class ListSalesActivity: ListActivity<Sale>() {
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
-                    R.id.books ->{
-                        startActivity(Intent(this, ListBooksActivity::class.java))
+                    R.id.sales ->{
+                        startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
                     R.id.user_profile ->{
@@ -35,24 +34,23 @@ class ListSalesActivity: ListActivity<Sale>() {
                     else -> true
                 }
             }
-        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
     }
 
-    override fun getQuery(): Query<Sale> {
-        return intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
+    override fun getQuery(): Query<Book> {
+        return intent.getSerializableExtra(EXTRA_BOOKS_QUERY_SETTINGS)
             ?.let {
-                salesDB.querySales()
-                    .fromSettings(it as SaleSettings)
+                bookDB.queryBooks()
+                    .fromSettings(it as BookSettings)
             }
-            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+            ?: bookDB.queryBooks()
     }
 
     override fun onFilterButtonClick() {
-        startActivity(Intent(this, FilteringSalesActivity::class.java))
+        startActivity(Intent(this, FilteringBooksActivity::class.java))
     }
 
     override fun getTitleText(): String {
-        return getString(R.string.sale)
+        return getString(R.string.books)
     }
-
 }

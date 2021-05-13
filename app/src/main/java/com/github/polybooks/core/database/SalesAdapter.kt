@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
+import com.github.polybooks.utils.StringsManip.listAuthorsToString
 
 /**
  * Adapter for listing Sale via RecyclerView
@@ -29,22 +30,6 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
 
     override fun onBindViewHolder(holder: SalesViewHolder, position: Int) {
 
-        /**
-         * Creates an authors string from a list of author(s)
-         */
-        fun authorsFromList(list: List<String>): String {
-            fun authorsFromListRec(acc: String, list: List<String>): String {
-                return if (list.size == 1) "${acc}and ${list[0]}"
-                else authorsFromListRec("${list[0]}, ", list.drop(1))
-            }
-
-            return when {
-                (list.isEmpty()) -> ""
-                (list.size == 1) -> list[0]
-                else -> authorsFromListRec("", list)
-            }
-        }
-
         val sale: Sale = salesList[position]
 
         holder.viewTitle.text = sale.book.title
@@ -56,7 +41,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
             holder.viewBy.setVisibility(View.GONE)
             holder.viewAuthor.setVisibility(View.GONE)
         } else {
-            holder.viewAuthor.text = authorsFromList(sale.book.authors)
+            holder.viewAuthor.text = listAuthorsToString(sale.book.authors)
         }
 
         holder.viewCondition.text = sale.condition.name

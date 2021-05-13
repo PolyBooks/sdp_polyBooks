@@ -26,10 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         val dbButton: Button = findViewById(R.id.button_open_db_tests)
         dbButton.setOnClickListener {
-//            val i : Intent = Intent(this, ListSalesActivity::class.java)
-//            val i : Intent = Intent(this, FilteringBooksActivity::class.java)
-            val i : Intent = Intent(this, FilteringSalesActivity::class.java)
-
+            val i : Intent = Intent(this, ListBooksActivity::class.java)
             startActivity(i)
         }
 
@@ -47,16 +44,16 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        startActivity(Intent(this, ListBooksActivity::class.java))
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
                     R.id.user_profile ->{
-                        // TODO: user sales
-                        false
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
                     }
                     else -> true
                 }

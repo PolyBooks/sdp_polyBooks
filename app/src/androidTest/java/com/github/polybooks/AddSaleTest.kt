@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 
-class AddSaleActivityTest {
+class AddSaleTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(AddSaleActivity::class.java)
@@ -86,19 +86,19 @@ class AddSaleActivityTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        intended(hasComponent(FilteringSalesActivity::class.java.name))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.pass_isbn_button)).check(ViewAssertions.matches(isDisplayed()))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
