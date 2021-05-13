@@ -80,6 +80,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
             val extras = Bundle()
             extras.putString(EXTRA_ISBN, stringISBN)
             extras.putString(EXTRA_PICTURE_FILE, null)
+            extras.putString(EXTRA_SALE_PRICE, null)
             putExtras(extras)
         }
         startActivity(intent)

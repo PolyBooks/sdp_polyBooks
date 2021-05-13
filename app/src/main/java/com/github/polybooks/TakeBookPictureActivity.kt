@@ -34,12 +34,19 @@ class TakeBookPictureActivity : AppCompatActivity() {
 
     private lateinit var cameraExecutor: ExecutorService
     private var stringISBN: String? = null
+    private var salePrice: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_book_picture)
 
-        stringISBN = intent.getStringExtra(EXTRA_ISBN)
+
+        val intent = intent
+        val extras = intent.extras
+        if (extras != null) {
+            stringISBN = extras.getString(EXTRA_ISBN)
+            salePrice = extras.getString(EXTRA_SALE_PRICE)
+        }
 
         // Request camera permissions
         if (allPermissionsGranted(baseContext)) {
@@ -91,6 +98,7 @@ class TakeBookPictureActivity : AppCompatActivity() {
                         val extras = Bundle()
                         extras.putString(EXTRA_ISBN, stringISBN)
                         extras.putString(EXTRA_PICTURE_FILE, pictureFileName)
+                        extras.putString(EXTRA_SALE_PRICE, salePrice)
                         putExtras(extras)
                     }
                     startActivity(intent)

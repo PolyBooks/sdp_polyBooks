@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".TakeBookPictureActivity">
 
-<!--    TODO add X button to cancel the scan? flash on-off button? switch front and back camera button?-->
+<!--    TODO add X button to cancel the picture? flash on-off button? switch front and back camera button?-->
 
 <!--    TODO make the capture button much nicer, could be a white circle with no text-->
     <!-- TODO corner radius-->

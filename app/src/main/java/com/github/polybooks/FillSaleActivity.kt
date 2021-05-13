@@ -1,6 +1,5 @@
 package com.github.polybooks
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -57,6 +56,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         if (extras != null) {
             stringISBN = extras.getString(EXTRA_ISBN) ?: ""
             pictureFileName = extras.getString(EXTRA_PICTURE_FILE) ?: ""
+            findViewById<EditText>(R.id.filled_price).setText(extras.getString(EXTRA_SALE_PRICE))
         }
 
 
@@ -161,7 +161,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     fun takePicture(view: View) {
         val intent = Intent(this, TakeBookPictureActivity::class.java).apply {
-            putExtra(EXTRA_ISBN, stringISBN)
+            val extras = Bundle()
+            extras.putString(EXTRA_ISBN, stringISBN)
+            extras.putString(EXTRA_SALE_PRICE, findViewById<EditText>(R.id.filled_price).text.toString())
+            putExtras(extras)
         }
         startActivity(intent)
     }
@@ -178,7 +181,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             condition = bookConditionSelected!!,
             state = SaleState.ACTIVE,
-            image = TODO()
+            image = null // TODO
         )
         //TODO handle success or failure of the addSale
 

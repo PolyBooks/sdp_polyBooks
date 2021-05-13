@@ -15,6 +15,7 @@ import com.github.polybooks.utils.setupNavbar
 
 const val EXTRA_ISBN = "com.github.polybooks.ISBN"
 const val EXTRA_PICTURE_FILE = "com.github.polybooks.picture_file"
+const val EXTRA_SALE_PRICE = "com.github.polybooks.sale_price"
 
 
 /**
@@ -62,6 +63,7 @@ class AddSaleActivity : AppCompatActivity() {
             val extras = Bundle()
             extras.putString(EXTRA_ISBN, stringISBN)
             extras.putString(EXTRA_PICTURE_FILE, null)
+            extras.putString(EXTRA_SALE_PRICE, null)
             putExtras(extras)
         }
         startActivity(intent)

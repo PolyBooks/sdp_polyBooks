@@ -17,7 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyBooks">
-        <activity android:name=".TakeBookPictureActivity"></activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -30,20 +29,27 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
+            android:name=".AddSaleActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity
             android:name=".ScanBarcodeActivity"
             android:parentActivityName=".AddSaleActivity" />
-        <activity android:name=".FillSaleActivity"
+        <activity
+            android:name=".FillSaleActivity"
             android:parentActivityName=".AddSaleActivity"/>
-        <activity android:name=".AddSaleActivity"
+        <activity
+            android:name=".TakeBookPictureActivity"
+            android:parentActivityName=".FillSaleActivity"/>
+
+        <activity
+            android:name=".LoginActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".UserProfileActivity"
             android:parentActivityName=".MainActivity"/>
 
-        <activity android:name=".LoginActivity"
-            android:parentActivityName=".MainActivity"/>
-
-        <activity android:name=".UserProfileActivity"
-            android:parentActivityName=".MainActivity"/>
-
-        <activity android:name=".FilteringSalesActivity"
+        <activity
+            android:name=".FilteringSalesActivity"
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".ListSalesActivity"
