@@ -24,12 +24,12 @@ class ListBooksActivity: ListActivity<Book>() {
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, ListSaleActivity::class.java))
+                        startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
                     R.id.user_profile ->{
-                        // TODO: user sales
-                        false
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
                     }
                     else -> true
                 }

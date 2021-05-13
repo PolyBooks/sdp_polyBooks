@@ -28,12 +28,12 @@ fun setupNavbar(
                     true
                 }
                 R.id.sales -> {
-                    startActivity(origin, Intent(origin, ListSaleActivity::class.java), null)
+                    startActivity(origin, Intent(origin, ListSalesActivity::class.java), null)
                     true
                 }
                 R.id.user_profile -> {
-                    // TODO: user sales
-                    false
+                    startActivity(origin, Intent(origin, LoginActivity::class.java), null)
+                    true
                 }
                 else -> true
             }

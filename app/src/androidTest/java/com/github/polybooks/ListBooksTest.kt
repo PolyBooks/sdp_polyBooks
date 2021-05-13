@@ -46,13 +46,13 @@ class ListBooksTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        Intents.intended(hasComponent(ListSaleActivity::class.java.name))
+        Intents.intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.recyclerView)).check(ViewAssertions.matches(isDisplayed()))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test

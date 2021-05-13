@@ -7,7 +7,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -61,7 +60,7 @@ class FilteringSalesTest {
         onView(withId(R.id.results_button)).perform(click())
         intended(
             allOf(
-                hasComponent(ListSaleActivity::class.java.name),
+                hasComponent(ListSalesActivity::class.java.name),
                 hasExtraWithKey(ListActivity.EXTRA_SALE_QUERY_SETTINGS)
             )
         )
@@ -203,13 +202,13 @@ class FilteringSalesTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        intended(hasComponent(ListSaleActivity::class.java.name))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.results_button)).check(matches(isDisplayed()))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test

@@ -4,7 +4,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -18,7 +17,7 @@ import org.junit.Test
 class ListSalesTest {
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(ListSaleActivity::class.java)
+    val activityRule = ActivityScenarioRule(ListSalesActivity::class.java)
 
     @Before
     fun before() {
@@ -46,7 +45,7 @@ class ListSalesTest {
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.recyclerView)).check(ViewAssertions.matches(isDisplayed()))
+        Intents.intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test

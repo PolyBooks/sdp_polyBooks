@@ -15,7 +15,6 @@ import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -108,7 +107,7 @@ class FilteringSalesActivity: FilteringActivity() {
         resultByParameter(query)
 
         val querySettings = query.getSettings()
-        val intent = Intent(this, ListSaleActivity::class.java)
+        val intent = Intent(this, ListSalesActivity::class.java)
         intent.putExtra(ListActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }

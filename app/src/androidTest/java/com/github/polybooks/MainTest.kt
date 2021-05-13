@@ -9,7 +9,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 
@@ -18,7 +17,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 
 
 class MainTest {
@@ -91,13 +89,13 @@ class MainTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        intended(hasComponent(ListSaleActivity::class.java.name))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test

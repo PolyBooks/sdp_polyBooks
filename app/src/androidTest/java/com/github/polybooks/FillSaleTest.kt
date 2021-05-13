@@ -33,15 +33,13 @@ class FillSaleTest {
     @Test
     fun navBarSales() {
         Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(ListSaleActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         Espresso.onView(ViewMatchers.withId(R.id.user_profile)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.add_picture)).perform(scrollTo()).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()))
+        Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
     }
 
     @Test

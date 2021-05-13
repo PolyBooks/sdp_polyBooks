@@ -1,13 +1,11 @@
 package com.github.polybooks
 
-import android.R
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -47,7 +45,7 @@ class LoginGoogleTest {
     @Test
     fun navBarSales() {
         onView(withId(com.github.polybooks.R.id.sales)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ListSaleActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test

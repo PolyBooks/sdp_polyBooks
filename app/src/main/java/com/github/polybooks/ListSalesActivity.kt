@@ -10,7 +10,7 @@ import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class ListSaleActivity: ListActivity<Sale>() {
+class ListSalesActivity: ListActivity<Sale>() {
 
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)
@@ -29,8 +29,8 @@ class ListSaleActivity: ListActivity<Sale>() {
                         true
                     }
                     R.id.user_profile ->{
-                        // TODO: user sales
-                        false
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
                     }
                     else -> true
                 }
