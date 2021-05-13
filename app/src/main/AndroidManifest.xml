@@ -52,10 +52,13 @@
             android:parentActivityName=".MainActivity"/>
 
         <activity android:name=".FilteringSalesActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".ListActivity"/>
+        <activity
+            android:name=".ListBooksActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ListSalesActivity"
-            android:parentActivityName=".FilteringSalesActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".FilteringBooksActivity"
             android:parentActivityName=".MainActivity"/>
