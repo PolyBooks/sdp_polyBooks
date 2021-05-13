@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.EXTRA_MESSAGE
-import com.github.polybooks.LoginActivity
 import com.github.polybooks.R
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView

@@ -39,7 +39,7 @@ class LoginPasswordTest {
     }
 
     @Test
-    fun FillAndLoginWithPassword() {
+    fun fillAndLoginWithPassword() {
         onView(withId(R.id.email_field)).perform(typeText("login@bypassword.test"), closeSoftKeyboard())
         onView(withId(R.id.password_field)).perform(typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.log_button)).perform(scrollTo(), click())
