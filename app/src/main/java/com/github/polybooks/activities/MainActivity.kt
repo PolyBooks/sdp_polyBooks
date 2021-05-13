@@ -20,8 +20,8 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        val button2: Button = findViewById(R.id.log_button)
-        button2.setOnClickListener {
+        val buttonLogin: Button = findViewById(R.id.log_button)
+        buttonLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
@@ -30,6 +30,11 @@ class MainActivity : AppCompatActivity() {
             val i : Intent = Intent(this, FilteringSalesActivity::class.java)
 
             startActivity(i)
+        }
+
+        val buttonRegister: Button = findViewById(R.id.signup_button)
+        buttonRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
 
         setNavBar()
