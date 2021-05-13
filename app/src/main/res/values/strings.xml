@@ -147,5 +147,6 @@
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
     <string name="textview">TextView</string>
+    <string name="hello">hello</string>
 
 </resources>

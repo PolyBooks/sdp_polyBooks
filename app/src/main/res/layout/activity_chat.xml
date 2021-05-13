@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
-            android:id="@+id/locationButton"
+            android:id="@+id/location_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
@@ -24,7 +24,7 @@
             android:src="@drawable/location" />
 
         <EditText
-            android:id="@+id/messagingEditText"
+            android:id="@+id/edit_text_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -33,10 +33,11 @@
             android:inputType="text" />
 
         <ImageView
-            android:id="@+id/sendButton"
+            android:id="@+id/send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:onClick="sendMessage"
             android:src="@android:drawable/ic_menu_send"/>
     </LinearLayout>
 

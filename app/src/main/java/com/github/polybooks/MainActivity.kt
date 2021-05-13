@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.activities.ChatActivity
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +31,13 @@ class MainActivity : AppCompatActivity() {
 //            val i : Intent = Intent(this, ListSalesActivity::class.java)
 //            val i : Intent = Intent(this, FilteringBooksActivity::class.java)
             val i : Intent = Intent(this, FilteringSalesActivity::class.java)
+
+            startActivity(i)
+        }
+
+        val msgButton: ImageView = findViewById(R.id.messages_button)
+        msgButton.setOnClickListener {
+            val i = Intent(this, ChatActivity::class.java)
 
             startActivity(i)
         }
