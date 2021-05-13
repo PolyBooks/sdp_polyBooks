@@ -78,8 +78,8 @@ class SaleInformationActivityTest {
         assertDisplayed(R.id.sale_information_value_publish_date, R.string.published_on_the)
         assertDisplayed(R.id.sale_information_value_by_2, R.string.value_by)
         assertDisplayed(R.id.sale_information_value_in, R.string.value_in)
-        assertDisplayed(R.id.sale_information_value_condition, R.string.condition)
-        assertDisplayed(R.id.sale_information_value_price, R.string.price)
+        assertDisplayed(R.id.sale_information_value_condition, R.string.sale_book_condition)
+        assertDisplayed(R.id.sale_information_value_price, R.string.sale_price)
         assertDisplayed(R.id.sale_information_value_currency, R.string.currency)
 
         // Dynamic
