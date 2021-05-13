@@ -5,8 +5,7 @@ import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.core.Sale
-import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.*
 import com.github.polybooks.core.database.SalesAdapter
 import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
