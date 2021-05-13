@@ -1,4 +1,4 @@
-package com.github.polybooks.core.databaseImpl
+package com.github.polybooks.database
 
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.LoggedUser

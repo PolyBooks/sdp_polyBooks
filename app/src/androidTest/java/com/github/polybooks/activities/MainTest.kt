@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -7,7 +7,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.github.polybooks.activities.*
+import com.github.polybooks.R
 
 import org.hamcrest.Matchers.not
 import org.junit.After

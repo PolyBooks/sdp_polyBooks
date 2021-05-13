@@ -1,4 +1,4 @@
-package com.github.polybooks.core.databaseImpl
+package com.github.polybooks.database
 
 import com.google.gson.JsonParser
 import java.io.File

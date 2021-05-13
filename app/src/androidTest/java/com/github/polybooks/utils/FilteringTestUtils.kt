@@ -8,7 +8,7 @@ import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import com.github.polybooks.FilteringSalesTest
+import com.github.polybooks.activities.FilteringSalesTest
 import com.github.polybooks.R
 import com.github.polybooks.adapter.InterestsParameterAdapter
 import com.github.polybooks.adapter.ParameterViewHolder
