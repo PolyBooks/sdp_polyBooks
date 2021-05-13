@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -8,9 +8,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.activities.AddSaleActivity
-import com.github.polybooks.activities.LoginActivity
-import com.github.polybooks.activities.UserProfileActivity
+import com.github.polybooks.R
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,25 +35,25 @@ class UserProfileTest {
 
     @Test
     fun buttonsViews() {
-        onView(withId(com.github.polybooks.R.id.button_disco)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withId(com.github.polybooks.R.id.button_disco)).check(ViewAssertions.matches(isClickable()))
+        onView(withId(R.id.button_disco)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.button_disco)).check(ViewAssertions.matches(isClickable()))
 
-        onView(withId(com.github.polybooks.R.id.sell_book_button)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withId(com.github.polybooks.R.id.sell_book_button)).check(ViewAssertions.matches(isClickable()))
+        onView(withId(R.id.sell_book_button)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.sell_book_button)).check(ViewAssertions.matches(isClickable()))
 
-        onView(withId(com.github.polybooks.R.id.my_sales_button)).check(ViewAssertions.matches(isDisplayed()))
-        onView(withId(com.github.polybooks.R.id.my_sales_button)).check(ViewAssertions.matches(isClickable()))
+        onView(withId(R.id.my_sales_button)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.my_sales_button)).check(ViewAssertions.matches(isClickable()))
     }
 
     @Test
     fun disconnectButton(){
-        onView(withId(com.github.polybooks.R.id.button_disco)).perform(click())
+        onView(withId(R.id.button_disco)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun sellButton(){
-        onView(withId(com.github.polybooks.R.id.sell_book_button)).perform(click())
+        onView(withId(R.id.sell_book_button)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
     }
 

@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
@@ -15,10 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.activities.FilteringBooksActivity
-import com.github.polybooks.activities.FilteringSalesActivity
-import com.github.polybooks.activities.ListSalesActivity
-import com.github.polybooks.activities.MainActivity
+import com.github.polybooks.R
 import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Semester

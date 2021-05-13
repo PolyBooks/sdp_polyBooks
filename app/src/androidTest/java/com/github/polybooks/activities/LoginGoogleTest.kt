@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -9,10 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.activities.FilteringBooksActivity
-import com.github.polybooks.activities.FilteringSalesActivity
-import com.github.polybooks.activities.LoginActivity
-import com.github.polybooks.activities.MainActivity
+import com.github.polybooks.R
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -40,54 +37,54 @@ class LoginGoogleTest {
 
     @Test
     fun signInButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(scrollTo(), click())
+        onView(withId(R.id.sign_in_button)).perform(scrollTo(), click())
     }
 
     @Test
     fun signOutButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.register_button)).perform(scrollTo(), click())
+        onView(withId(R.id.register_button)).perform(scrollTo(), click())
     }
 
     @Test
     fun navBarSales() {
-        onView(withId(com.github.polybooks.R.id.sales)).perform(click())
+        onView(withId(R.id.sales)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
-        onView(withId(com.github.polybooks.R.id.user_profile)).perform(click())
-        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(scrollTo()).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.user_profile)).perform(click())
+        onView(withId(R.id.sign_in_button)).perform(scrollTo()).check(ViewAssertions.matches(isDisplayed()))
     }
 
     @Test
     fun navBarBooks() {
-        onView(withId(com.github.polybooks.R.id.books)).perform(click())
+        onView(withId(R.id.books)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
     }
 
     @Test
     fun navBarDefault() {
-        onView(withId(com.github.polybooks.R.id.default_selected)).check(
+        onView(withId(R.id.default_selected)).check(
             ViewAssertions.matches(
                 withEffectiveVisibility(
                     Visibility.GONE
                 )
             )
         )
-        onView(withId(com.github.polybooks.R.id.default_selected)).check(
+        onView(withId(R.id.default_selected)).check(
             ViewAssertions.matches(
                 Matchers.not(isEnabled())))
     }
 
     @Test
     fun navBarSelected() {
-        onView(withId(com.github.polybooks.R.id.default_selected)).check(ViewAssertions.matches(isSelected()))
+        onView(withId(R.id.default_selected)).check(ViewAssertions.matches(isSelected()))
     }
 
     @Test
     fun navBarHome() {
-        onView(withId(com.github.polybooks.R.id.home)).perform(click())
+        onView(withId(R.id.home)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
 }
