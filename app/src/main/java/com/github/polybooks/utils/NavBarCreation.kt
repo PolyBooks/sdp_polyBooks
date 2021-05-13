@@ -42,6 +42,4 @@ fun setupNavbar(
             }
         }
     }
-
-
 }

@@ -39,8 +39,17 @@ class FBBookDatabase(private val firebase: FirebaseFirestore, private val isbnDB
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
                 interests != null -> {
-                    //TODO a real implementation
-                    return CompletableFuture.completedFuture(listOf())
+                    val future = CompletableFuture<List<Book>>()
+                    val hashed = interests!!.map { it.hashCode() }.toList()
+                    bookRef
+                        .whereArrayContainsAny("interests", hashed)
+                        .get().addOnSuccessListener { bookEntries ->
+                            val books = bookEntries.map { bookEntry ->
+                                snapshotEntryToBook(bookEntry)
+                            }
+                            future.complete(books)
+                        }
+                    return future
                 }
                 title != null -> {
                     val future = CompletableFuture<List<Book>>()
@@ -74,7 +83,15 @@ class FBBookDatabase(private val firebase: FirebaseFirestore, private val isbnDB
                     }
                 }
                 else -> {
-                    throw Error("BookQuery is in an illegal state")
+                    val future = CompletableFuture<List<Book>>()
+                    bookRef.get().addOnSuccessListener { bookEntries ->
+                            val books = bookEntries.map { bookEntry ->
+                                snapshotEntryToBook(bookEntry)
+                            }
+                            future.complete(books)
+                        }
+                    return future
+
                 }
             }
         }

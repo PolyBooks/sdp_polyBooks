@@ -35,25 +35,74 @@
         android:textAllCaps="false"
         style="@style/Button" />
 
-    <!--    Lists of parameters -->
     <ScrollView
+        android:id="@+id/main_scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/results_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reset_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reset_button">
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_goneMarginBottom="9dp"
+        android:padding="9dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical" >
+
+            <!-- Search a book name and or isbn -->
+            <LinearLayout
+                android:id="@+id/name_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/book_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_book_name"
+                    android:importantForAutofill="no"
+                    android:inputType="textFilter" />
+
+            </LinearLayout>
+
+            <!-- Search an ISBN  -->
+            <LinearLayout
+                android:id="@+id/isbn_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/book_isbn"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/book_isbn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_book_isbn"
+                    android:importantForAutofill="no"
+                    android:inputType="textFilter" />
+            </LinearLayout>
 
             <!-- Sort by parameter -->
             <LinearLayout
-                android:id="@+id/sortBy_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -64,43 +113,19 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/book_sort_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <RadioGroup
-                        android:id="@+id/sort_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioButton
-                            android:id="@+id/popularity_sort"
-                            android:text="@string/book_ordering_popularity"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <RadioButton
-                            android:id="@+id/title_inc_sort"
-                            android:text="@string/book_ordering_title_inc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <RadioButton
-                            android:id="@+id/title_dec_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/book_ordering_title_dec" />
-
-                    </RadioGroup>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
             <!-- Field parameter (eg. Computer Science, Biology) -->
             <LinearLayout
                 android:id="@+id/field_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -111,42 +136,18 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/field_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/fieldGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/CS"
-                            android:text="@string/cs"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <CheckBox
-                            android:id="@+id/Biology"
-                            android:text="@string/bio"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <CheckBox
-                            android:id="@+id/Archi"
-                            android:text="@string/archi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
             <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
             <LinearLayout
                 android:id="@+id/semester_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -157,55 +158,19 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/semester_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/semester_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/ic_ba1"
-                            android:text="@string/ic_ba1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <CheckBox
-                            android:id="@+id/ma_ba2"
-                            android:text="@string/ma_ba2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <CheckBox
-                            android:id="@+id/sv_ba3"
-                            android:text="@string/sv_ba3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <CheckBox
-                            android:id="@+id/gc_ma1"
-                            android:text="@string/gc_ma1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <CheckBox
-                            android:id="@+id/mt_ma2"
-                            android:text="@string/mt_ma2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
             <!-- Course parameter (eg. CS306) -->
             <LinearLayout
                 android:id="@+id/course_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -216,35 +181,18 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/course_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/courseGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/CS306"
-                            android:text="@string/cs306"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                        <CheckBox
-                            android:id="@+id/COM480"
-                            android:text="@string/com480"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
+    <!--    Lists of parameters -->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -252,7 +200,6 @@
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_navigation_menu"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:labelVisibilityMode="labeled" />
-
-
+        app:labelVisibilityMode="labeled"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

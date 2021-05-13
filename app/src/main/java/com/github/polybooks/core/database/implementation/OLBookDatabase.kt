@@ -28,6 +28,9 @@ private val ISBN_FIELD_NAMES = listOf("isbn_13", "isbn_10")
 private const val PUBLISHER_FIELD_NAME = "publishers"
 private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
 private const val AUTHOR_NAME_FIELD_NAME = "name"
+private const val LANGUAGE_FIELD_NAME = "languages"
+private const val LANGUAGE_NAME_FIELD_NAME = "name"
+private const val EDITION_FIELD_NAME = "edition_name"
 
 private const val DATE_FORMAT = "MMM dd, yyyy"
 private const val DATE_FORMAT2 = "yyyy"
@@ -87,6 +90,7 @@ class OLBookDatabase(private val url2json: (String) -> CompletableFuture<JsonEle
         return url2json(url)
             .thenApply { parseBook(it) }
             .thenCompose { updateBookWithAuthorName(it) }
+            .thenCompose { updateBookWithLanguageName(it) }
             .exceptionally { exception ->
                 val unwraped = unwrapException(exception)
                 if (unwraped is FileNotFoundException) {
@@ -113,6 +117,16 @@ class OLBookDatabase(private val url2json: (String) -> CompletableFuture<JsonEle
         return combined.thenApply { newAuthors -> book.copy(authors = newAuthors) }
     }
 
+    //takes a book that has the language in the form /languages/<languageID>
+    //and fetches the actual name of the language
+    private fun updateBookWithLanguageName(book: Book): CompletableFuture<Book> {
+        if (book.language == null) return CompletableFuture.completedFuture(book)
+        val languageID = book.language
+        val languageURL = "$OL_BASE_ADDR$languageID.json"
+        val newLangFuture = url2json(languageURL).thenApply { parseLanguage(it) }
+        return newLangFuture.thenApply { newLanguage -> book.copy(language = newLanguage) }
+    }
+
     /**
      * Function for internal use in OLBookDatabase. Takes the json of a book, and makes a Book from it.
      * */
@@ -137,15 +151,19 @@ class OLBookDatabase(private val url2json: (String) -> CompletableFuture<JsonEle
         val publishDate = getJsonField(jsonBookObject, PUBLISH_DATE_FIELD_NAME)
             .map { parsePublishDate(it) }
             .orElse(null)
-        // TODO languages and edition!!!
+        val language = getJsonField(jsonBookObject, LANGUAGE_FIELD_NAME)
+            .map { parseLanguages(it) }
+            .orElse(null)
+        val edition = getJsonField(jsonBookObject, EDITION_FIELD_NAME)
+            .map { parseEdition(it) }
+            .orElse(null)
 
-        return Book(
-            isbn13, authors, title, null, null,
-            publisher, publishDate, format
-        )
+        return Book(isbn13, authors, title, edition, language,
+            publisher, publishDate, format)
 
     }
 
+    //parses the json of an author
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseAuthor(jsonAuthor: JsonElement): String {
         val nameField = getJsonField(asJsonObject(jsonAuthor), AUTHOR_NAME_FIELD_NAME)
@@ -153,7 +171,15 @@ class OLBookDatabase(private val url2json: (String) -> CompletableFuture<JsonEle
             .orElseThrow(cantParseException(AUTHOR_NAME_FIELD_NAME))
     }
 
+    //parses the json of a language
+    private fun parseLanguage(jsonLanguage: JsonElement) : String {
+        val nameField = getJsonField(asJsonObject(jsonLanguage), LANGUAGE_NAME_FIELD_NAME)
+        return nameField.map { asString(it) }.orElseThrow(cantParseException(LANGUAGE_NAME_FIELD_NAME))
+    }
+
     private fun parseTitle(jsonTitle: JsonElement): String = asString(jsonTitle)
+
+    private fun parseEdition(jsonEdition: JsonElement): String = asString(jsonEdition)
 
     private fun parseISBN13(jsonISBN13: JsonElement): String {
         val first: JsonElement? = asJsonArray(jsonISBN13).firstOrNull()
@@ -162,6 +188,7 @@ class OLBookDatabase(private val url2json: (String) -> CompletableFuture<JsonEle
         } else return asString(first)
     }
 
+    //parses the list of authors from the book json
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseAuthors(jsonAuthors: JsonElement): List<String> {
         return asJsonArray(jsonAuthors)
@@ -175,12 +202,22 @@ class OLBookDatabase(private val url2json: (String) -> CompletableFuture<JsonEle
             .toList()
     }
 
+    //parses the list of languages from the book json
+    private fun parseLanguages(jsonLanguages: JsonElement) : String? {
+        return asJsonArray(jsonLanguages)
+            .firstOrNull()
+            ?.let {
+                val languageOption = getJsonField(asJsonObject(it), "key")
+                val languageJson = languageOption.orElseThrow(cantParseException("$LANGUAGE_FIELD_NAME[0].key"))
+                asString(languageJson)
+            }
+    }
+
     private fun parseFormat(jsonFormat: JsonElement): String = asString(jsonFormat)
 
-    private fun parsePublisher(jsonPublisher: JsonElement): String {
+    private fun parsePublisher(jsonPublisher: JsonElement): String? {
         val first: JsonElement? = asJsonArray(jsonPublisher).firstOrNull()
-        return if (first == null) ""
-        else asString(first)
+        return first?.let { asString(it) }
     }
 
     @SuppressLint("SimpleDateFormat")

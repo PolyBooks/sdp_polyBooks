@@ -1,12 +1,14 @@
 package com.github.polybooks
 
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.SalesAdapter
+import com.github.polybooks.core.database.implementation.FBBookDatabase
 import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.core.database.interfaces.SaleQuery
@@ -32,7 +34,8 @@ class ListSalesActivity: AppCompatActivity() {
     private val initialBooks: List<Sale> = emptyList()
 
     private val firestore = FirebaseFirestore.getInstance()
-    private val bookDB = OLBookDatabase { string -> url2json(string) }
+    private val olBookDB = OLBookDatabase { string -> url2json(string) }
+    private val bookDB = FBBookDatabase(firestore, olBookDB)
     private val salesDB = SaleDatabase(firestore, bookDB)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,11 +53,11 @@ class ListSalesActivity: AppCompatActivity() {
 
 
         val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
-            ?.let {
-                salesDB.querySales()
-                    .fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
-            }
-            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+                ?.let {
+                    salesDB.querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
+                }
+                ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+
         saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
 
         setupNavbar(findViewById(R.id.bottom_navigation), this)

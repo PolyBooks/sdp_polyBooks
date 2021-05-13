@@ -33,10 +33,15 @@ class MainActivity: AppCompatActivity() {
             startActivity(i)
         }
 
-        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener { item ->
-                when (item.itemId) {
-                    R.id.books -> {
+        setNavBar()
+
+    }
+
+    private fun setNavBar(){
+        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+                when(item.itemId){
+                    R.id.books ->{
                         startActivity(Intent(this, FilteringBooksActivity::class.java))
                         true
                     }

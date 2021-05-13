@@ -9,7 +9,8 @@
     <!--    Reset default filtering values-->
     <Button
         android:id="@+id/reset_button"
-        android:text="@string/reset"
+        android:text= "@string/reset"
+        android:onClick="resetParameters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
@@ -23,6 +24,7 @@
     <Button
         android:id="@+id/results_button"
         android:text="@string/results"
+        android:onClick="getResults"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
@@ -34,14 +36,17 @@
 
     <!--    Lists of parameters -->
     <ScrollView
+        android:id="@+id/main_scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/results_button"
+        app:layout_constraintTop_toBottomOf="@+id/reset_button"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reset_button"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_goneMarginBottom="9dp"
+        android:padding="9dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,8 +72,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_book_name"
-                    android:inputType="textFilter"
-                    android:autofillHints="" />
+                    android:importantForAutofill="no"
+                    android:inputType="textFilter" />
 
             </LinearLayout>
 
@@ -91,108 +96,71 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_book_isbn"
-                    android:inputType="textFilter"
-                    android:autofillHints="" />
-
+                    android:importantForAutofill="no"
+                    android:inputType="textFilter" />
             </LinearLayout>
 
             <!-- Set range of price  -->
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/price_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sale_price"
-                        android:textAllCaps="false"
-                        android:textSize="20sp" />
-
-                    <EditText
-                        android:id="@+id/price_min"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_min_price"
-                        android:inputType="numberDecimal"
-                        android:autofillHints="" />
-
-                    <EditText
-                        android:id="@+id/price_max"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_max_price"
-                        android:inputType="numberDecimal"
-                        android:autofillHints="" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
-
-
-            <!-- Sort by parameter -->
             <LinearLayout
-                android:id="@+id/sortBy_view"
+                android:id="@+id/price_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sort_by"
+                    android:text="@string/sale_price"
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
+                <EditText
+                    android:id="@+id/price_min"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_min_price"
+                    android:importantForAutofill="no"
+                    android:maxLength="4"
+                    android:inputType="numberDecimal" />
+
+                <EditText
+                    android:id="@+id/price_max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_max_price"
+                    android:importantForAutofill="no"
+                    android:maxLength="4"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+
+            <!-- Sort by parameter -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="@string/sort_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_sort_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <RadioGroup
-                        android:id="@+id/sort_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:ignore="ExtraText">
-
-                        <RadioButton
-                            android:id="@+id/title_inc_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_ordering_title_inc" />
-                        android:layout_height="match_parent"
-
-                        <RadioButton
-                            android:id="@+id/title_dec_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_ordering_title_dec" />
-
-                        <RadioButton
-                            android:id="@+id/price_inc_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_ordering_price_inc" />
-
-                        <RadioButton
-                            android:id="@+id/price_dec_sort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_ordering_price_dec" />
-
-                    </RadioGroup>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
             <!-- State (eg. active, concluded) -->
             <LinearLayout
                 android:id="@+id/state_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -203,43 +171,19 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_state_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/state_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/state_active"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_state_active" />
-
-                        <CheckBox
-                            android:id="@+id/state_retracted"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_state_retracted" />
-
-                        <CheckBox
-                            android:id="@+id/state_concluded"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_state_concluded" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
             <!-- Condition (eg. GOOD, WORN) -->
             <LinearLayout
                 android:id="@+id/condition_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -250,97 +194,19 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sale_condition_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/condition_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <CheckBox
-                            android:id="@+id/condition_new"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_book_condition_new" />
-
-                        <CheckBox
-                            android:id="@+id/condition_good"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_book_condition_good" />
-
-                        <CheckBox
-                            android:id="@+id/condition_worn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/sale_book_condition_worn" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
-            <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
-
-            <LinearLayout
-                android:id="@+id/semester_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/interest_semester"
-                    android:textAllCaps="false"
-                    android:textSize="20sp" />
-
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/semester_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
-            </LinearLayout>
-
-            <!-- Course parameter (eg. CS306) -->
-            <LinearLayout
-                android:id="@+id/course_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/interest_course"
-                    android:textAllCaps="false"
-                    android:textSize="20sp" />
-
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/courseGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
-            </LinearLayout>
             <!-- Field parameter (eg. Computer Science, Biology) -->
             <LinearLayout
                 android:id="@+id/field_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -351,17 +217,56 @@
                     android:textAllCaps="false"
                     android:textSize="20sp" />
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/field_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/fieldGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
+            <!-- Semester Parameter (eg. IC-BA1, MA-BA6) -->
+            <LinearLayout
+                android:id="@+id/semester_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/interest_semester"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/semester_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+
+            <!-- Course parameter (eg. CS306) -->
+            <LinearLayout
+                android:id="@+id/course_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/interest_course"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/course_parameter"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
         </LinearLayout>

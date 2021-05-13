@@ -1,6 +1,9 @@
 package com.github.polybooks.core.database.interfaces
 
+import android.content.Context
+import com.github.polybooks.R
 import com.github.polybooks.core.*
+import com.github.polybooks.utils.FieldWithName
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 
@@ -156,6 +159,17 @@ data class SaleSettings(
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.
  * */
-enum class SaleOrdering {
-    DEFAULT, TITLE_INC, TITLE_DEC, PRICE_INC, PRICE_DEC, PUBLISH_DATE_INC, PUBLISH_DATE_DEC,
+enum class SaleOrdering: FieldWithName {
+    DEFAULT,
+    TITLE_INC,
+    TITLE_DEC,
+    PRICE_INC,
+    PRICE_DEC,
+    PUBLISH_DATE_INC,
+    PUBLISH_DATE_DEC;
+
+    override fun fieldName(c: Context?): String {
+        return c?.resources?.getStringArray(R.array.sale_orderings_array)?.get(ordinal)
+               ?: name
+    }
 }
