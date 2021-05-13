@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.LoginActivity
 import com.github.polybooks.R
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,8 +21,8 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        val button2: Button = findViewById(R.id.log_button)
-        button2.setOnClickListener {
+        val buttonLogin: Button = findViewById(R.id.log_button)
+        buttonLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
@@ -30,6 +31,11 @@ class MainActivity : AppCompatActivity() {
             val i : Intent = Intent(this, FilteringSalesActivity::class.java)
 
             startActivity(i)
+        }
+
+        val buttonRegister: Button = findViewById(R.id.signup_button)
+        buttonRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
 
         setNavBar()
