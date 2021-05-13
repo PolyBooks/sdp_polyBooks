@@ -94,22 +94,20 @@ class FillSaleTest {
 
     @Test
     fun navBarSales() {
-        onView(withId(R.id.sales)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
+        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
-        onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.add_picture)).perform(scrollTo()).check(
-            matches(
-                isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.user_profile)).perform(ViewActions.click())
+        Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun navBarBooks() {
-        onView(withId(R.id.books)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
+        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
@@ -136,5 +134,4 @@ class FillSaleTest {
         onView(withId(R.id.home)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
     }
-
 }

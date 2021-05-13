@@ -6,6 +6,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.github.polybooks.FilteringSalesTest
@@ -87,6 +88,7 @@ class FilteringTestUtils(private val context: Context?) {
 
     fun <T> scrollToValue(parameterId: Int, value: T) {
         Espresso.onView(ViewMatchers.withId(parameterId)).perform(
+            scrollTo(),
             RecyclerViewActions.scrollTo<ParameterViewHolder<T>>(
                 ViewMatchers.hasDescendant(ViewMatchers.withText(getName(value)))
             )
@@ -95,7 +97,7 @@ class FilteringTestUtils(private val context: Context?) {
 
     fun <T> perform(parameterId: Int, value: T, action: ViewAction) {
         scrollToValue(parameterId, value)
-        Espresso.onView(ViewMatchers.withText(getName(value))).perform(action)
+        Espresso.onView(ViewMatchers.withText(getName(value))).perform(scrollTo(), action)
     }
 
     fun <T> check(parameterId: Int, value: T, assertion: ViewAssertion) {

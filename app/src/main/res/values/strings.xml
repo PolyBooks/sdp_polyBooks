@@ -98,6 +98,7 @@
     <string name="enter_max_price">max   </string>
     <string name="sell">Sell</string>
     <string name="view_all_books">View all books</string>
+    <string name="filter">Filter</string>
 
     <!-- Adverbs/Prepositions-->
     <string name="or">Or</string>
@@ -107,7 +108,7 @@
     <!-- Others -->
     <string name="home">home</string>
     <string name="books">books</string>
-    <string name="sale">sale</string>
+    <string name="sale">sales</string>
     <string name="profile">profile</string>
     <string name="my_book_sales">My book sales</string>
     <string name="title">Title:</string>

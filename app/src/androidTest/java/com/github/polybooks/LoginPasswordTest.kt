@@ -55,7 +55,7 @@ class LoginPasswordTest {
     @Test
     fun navBarSales() {
         Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
@@ -67,7 +67,7 @@ class LoginPasswordTest {
     @Test
     fun navBarBooks() {
         Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test

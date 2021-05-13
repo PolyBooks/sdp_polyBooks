@@ -1,7 +1,6 @@
 package com.github.polybooks
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -16,7 +15,6 @@ import com.github.polybooks.core.database.interfaces.SaleOrdering
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -64,7 +62,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
         setParametersButtons()
 
-        setNavBar()
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
 
     }
 
@@ -110,7 +108,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
         val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java)
-        intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
+        intent.putExtra(ListActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 
@@ -166,28 +164,6 @@ class FilteringSalesActivity: FilteringActivity() {
         interests.addAll(mFieldParameter.getSelectedValues())
         interests.addAll(mSemesterParameter.getSelectedValues())
         interests.addAll(mCourseParameter.getSelectedValues())
-    }
-
-    private fun setNavBar(){
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.home ->{
-                        startActivity(Intent(this, MainActivity::class.java))
-                        true
-                    }
-                    R.id.books ->{
-                        startActivity(Intent(this, FilteringBooksActivity::class.java))
-                        true
-                    }
-                    R.id.user_profile ->{
-                        // TODO: user sales
-                        false
-                    }
-                    else -> true
-                }
-            }
-        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
 
     private fun <T> resultByParameter(
