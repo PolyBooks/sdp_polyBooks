@@ -68,16 +68,24 @@ class MainTest {
     }
 
     @Test
+
     fun allBooksButton() {
         onView(withId(R.id.button_open_db_tests)).perform(click())
         intended(hasComponent(ListBooksActivity::class.java.name))
+    }
+
+    @Test
+    fun listBookButton() {
+
+        onView(withId(R.id.button_open_db_tests)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 
     //This one
     @Test
     fun signUpButton() {
         onView(withId(R.id.signup_button)).perform(click())
-        onView(withId(R.id.register_button)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
     }
 
     @Test
