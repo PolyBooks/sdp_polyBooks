@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 
-class AddSaleActivityTest {
+class AddSaleTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(AddSaleActivity::class.java)
