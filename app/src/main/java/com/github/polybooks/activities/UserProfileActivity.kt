@@ -5,10 +5,11 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.EXTRA_MESSAGE
+import com.github.polybooks.LoginActivity
 import com.github.polybooks.R
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseUser
 
 class UserProfileActivity : AppCompatActivity() {
 
@@ -16,10 +17,10 @@ class UserProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
 
-        val username = intent.getStringExtra(EXTRA_MESSAGE);
+        val username = intent.getStringExtra(EXTRA_MESSAGE)
         val welcomeText = "Hello $username !"
 
-        val textMessageView = findViewById<TextView>(R.id.welcome_text);
+        val textMessageView = findViewById<TextView>(R.id.welcome_text)
         textMessageView.apply {text = welcomeText}
 
         val buttonSellBook: Button = findViewById(R.id.sell_book_button)

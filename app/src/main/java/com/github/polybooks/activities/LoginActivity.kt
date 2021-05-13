@@ -5,10 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.R
+import com.github.polybooks.activities.FilteringBooksActivity
+import com.github.polybooks.activities.FilteringSalesActivity
+import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.successUser
@@ -22,12 +23,11 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME";
+const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME"
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
@@ -142,11 +142,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    public fun signOut() {
-        if(Firebase.auth != null) {
-            Firebase.auth.signOut()
-            Log.d(TAG, "signed out")
-        }
+    fun signOut() {
+        Firebase.auth.signOut()
+        Log.d(TAG, "signed out")
     }
 
     companion object {

@@ -1,20 +1,19 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.LoginActivity
+import com.github.polybooks.R
 import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.updateUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
@@ -106,6 +105,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     companion object {
-        public const val TAG = "EmailPassword"
+        const val TAG = "EmailPassword"
     }
 }
