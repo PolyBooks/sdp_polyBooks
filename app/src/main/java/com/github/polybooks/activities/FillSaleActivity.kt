@@ -13,6 +13,7 @@ import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.core.*
 import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.FBSaleDatabase
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
@@ -44,7 +45,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         setContentView(R.layout.activity_fill_sale_fancy)
 
         // Get the Intent that started this activity and extract the string
-        val stringISBN = intent.getStringExtra(ISBN)
+        val stringISBN = intent.getStringExtra(EXTRA_ISBN)
 
         // Check if ISBN in our database: (could check ISBN validity before)
 

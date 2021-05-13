@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.utils.GlobalVariables.EXTRA_MESSAGE
 
 class UserProfileActivity : AppCompatActivity() {
 

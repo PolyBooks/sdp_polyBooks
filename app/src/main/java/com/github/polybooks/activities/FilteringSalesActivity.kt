@@ -13,6 +13,7 @@ import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.database.SaleQuery
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -109,7 +110,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
         val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java)
-        intent.putExtra(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
+        intent.putExtra(EXTRA_SALE_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 

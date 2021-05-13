@@ -72,7 +72,7 @@ class AddSaleActivityTest {
 
     @Test
     fun passValidISBN() {
-        val extraKey = "com.github.polybooks.activities.ISBN"
+        val extraKey = "com.github.polybooks.utils.ISBN"
         val stringISBN = "9780345432360"
         inputISBN(stringISBN)
         onView(withId(R.id.pass_isbn_button)).perform(click())

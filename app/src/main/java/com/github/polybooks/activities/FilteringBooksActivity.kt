@@ -15,6 +15,7 @@ import com.github.polybooks.database.FBBookDatabase
 import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.BookOrdering
 import com.github.polybooks.database.BookQuery
+import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -89,7 +90,7 @@ class FilteringBooksActivity: FilteringActivity() {
         // pass query to new activity
         val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java) //TODO list books activity
-        intent.putExtra(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
+        intent.putExtra(EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 

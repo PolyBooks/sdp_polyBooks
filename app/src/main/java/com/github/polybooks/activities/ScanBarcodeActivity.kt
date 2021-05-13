@@ -16,6 +16,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.polybooks.R
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -123,7 +124,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
     private fun passISBN(stringISBN: String) {
         val intent = Intent(this, FillSaleActivity::class.java).apply {
-            putExtra(ISBN, stringISBN)
+            putExtra(EXTRA_ISBN, stringISBN)
         }
         startActivity(intent)
     }

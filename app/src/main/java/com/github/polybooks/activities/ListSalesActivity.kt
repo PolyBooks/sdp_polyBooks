@@ -13,6 +13,7 @@ import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.SaleQuery
 import com.github.polybooks.database.SaleSettings
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,11 +23,6 @@ import com.google.firebase.firestore.FirebaseFirestore
  */
 
 class ListSalesActivity : AppCompatActivity() {
-
-    companion object {
-        const val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
-        const val EXTRA_BOOKS_QUERY_SETTINGS : String = "bookQuerySettings"
-    }
 
     private lateinit var mRecycler: RecyclerView
     private lateinit var mAdapter: SalesAdapter

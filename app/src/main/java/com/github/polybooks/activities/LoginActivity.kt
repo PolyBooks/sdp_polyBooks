@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.utils.GlobalVariables.EXTRA_MESSAGE
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -18,7 +19,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME";
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
