@@ -80,8 +80,8 @@
     <string name="log_in_using_tequila">Log In using Tequila</string>
     <string name="sign_up_using_google_account">Sign Up using Google account</string>
     <string name="disconnect">Disconnect</string>
-    <string name="don_t_have_an_account">Don\'t have an account?</string>
-    <string name="already_have_an_account">Already have an account?</string>
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm Password</string>
 
     <!-- User Interaction (could be further organized) -->
     <string name="sort_by">Sort by</string>

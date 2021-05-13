@@ -44,12 +44,14 @@
         <activity
             android:name=".LoginActivity"
             android:parentActivityName=".MainActivity"/>
-        <activity
-            android:name=".UserProfileActivity"
+
+        <activity android:name=".RegisterActivity"
             android:parentActivityName=".MainActivity"/>
 
-        <activity
-            android:name=".FilteringSalesActivity"
+        <activity android:name=".UserProfileActivity"
+            android:parentActivityName=".MainActivity"/>
+
+        <activity android:name=".FilteringSalesActivity"
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".ListSalesActivity"
