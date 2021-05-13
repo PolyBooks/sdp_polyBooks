@@ -36,7 +36,8 @@
 
         <activity android:name=".activities.UserProfileActivity"
             android:parentActivityName=".activities.MainActivity"/>
-        <activity android:name="activities.RegisterActivity"
+
+        <activity android:name=".activities.RegisterActivity"
             android:parentActivityName="activities.MainActivity"/>
 
 
