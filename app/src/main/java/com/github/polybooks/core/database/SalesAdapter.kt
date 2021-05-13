@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.SaleInformationActivity
+import com.github.polybooks.core.Book
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip
 
@@ -29,6 +30,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         val intent = Intent(view.context, SaleInformationActivity::class.java).apply {
             putExtra(SaleInformationActivity.EXTRA_SALE_INFORMATION, sale)
         }
+        println("=========================================================" + sale)
         view.context.startActivity(intent)
     }
 
@@ -38,7 +40,6 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
     }
 
     override fun onBindViewHolder(holder: SalesViewHolder, position: Int) {
-
         val sale: Sale = salesList[position]
 
         holder.viewTitle.text = sale.book.title
@@ -56,7 +57,9 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         holder.viewCondition.text = sale.condition.name
         holder.viewPrice.text = String.format("%.2f", sale.price)
 
-        holder.itemView.setOnClickListener { v -> onClickCardView(v, sale) }
+        val book1 = Book(sale.book.isbn, sale.book.authors, sale.book.title, sale.book.edition, sale.book.language, sale.book.publisher, null, sale.book.format)
+        val sale1 = Sale(book1, sale.seller, sale.price, sale.condition, null, sale.state, sale.image) // TODO remove nullable when timestamp serialization situation will be resolved
+        holder.itemView.setOnClickListener { v -> onClickCardView(v, sale1) }
     }
 
     override fun getItemCount(): Int {
