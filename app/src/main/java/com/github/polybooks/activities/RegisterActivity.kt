@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.LoginActivity
 import com.github.polybooks.R
 import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar

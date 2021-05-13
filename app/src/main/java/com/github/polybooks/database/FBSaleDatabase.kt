@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture
 
 object FBSaleDatabase : SaleDatabase {
 
-    // TODO To convert it to a singleton object, I always used OLBookDatabase as the BookDB which used to be an argument. Might need to be changed in the future with utils.SingletonHolder. Or to use two separate classes?
+    // TODO To convert it to a singleton object, I always used FBBookDatabase as the BookDB which used to be an argument. Might need to be changed in the future with utils.SingletonHolder. Or to use two separate classes?
 
     fun getInstance(): SaleDatabase {
         return this
@@ -132,7 +132,7 @@ object FBSaleDatabase : SaleDatabase {
 
 
         private fun getBookQuery() : BookQuery {
-            val bookQuery = OLBookDatabase.queryBooks()
+            val bookQuery = FBBookDatabase.queryBooks()
             if (interests != null) bookQuery.onlyIncludeInterests(interests!!)
             if (title != null) bookQuery.searchByTitle(title!!)
             if (isbn != null) bookQuery.searchByISBN(setOf(isbn!!))
@@ -258,7 +258,7 @@ object FBSaleDatabase : SaleDatabase {
             }
             return CompletableFuture.completedFuture(sales)
         } else {
-            val booksFuture = OLBookDatabase
+            val booksFuture = FBBookDatabase
                 .queryBooks()
                 .searchByISBN(missingBooks.toSet())
                 .getAll()
@@ -295,7 +295,7 @@ object FBSaleDatabase : SaleDatabase {
             future.completeExceptionally(LocalUserException("Cannot add sale as LocalUser"))
             return future
         }
-        val bookFuture = OLBookDatabase.getBook(bookISBN)
+        val bookFuture = FBBookDatabase.getBook(bookISBN)
         return bookFuture.thenCompose { book ->
             val future = CompletableFuture<Sale>()
             if (book == null) {

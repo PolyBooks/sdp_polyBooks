@@ -7,12 +7,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.activities.FilteringBooksActivity
-import com.github.polybooks.activities.FilteringSalesActivity
-import com.github.polybooks.activities.MainActivity
-import com.github.polybooks.utils.failedUser
 import com.github.polybooks.R
-import com.github.polybooks.utils.GlobalVariables.EXTRA_MESSAGE
+import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.successUser
 import com.github.polybooks.utils.updateUI
