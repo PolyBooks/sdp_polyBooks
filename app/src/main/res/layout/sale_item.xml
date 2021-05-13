@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
-        android:text="@string/value_by"
+        android:text="@string/by"
         app:layout_constraintStart_toEndOf="@+id/image_view_photo"
         app:layout_constraintTop_toBottomOf="@+id/text_view_edition" />
 

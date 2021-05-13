@@ -85,7 +85,7 @@
 
     <!-- User Interaction (could be further organized) -->
     <string name="sort_by">Sort by</string>
-    <string name="add_picture">Add Picture</string>
+    <string name="take_picture">Take Picture</string>
     <string name="scan_book">Scan Book Barcode</string>
     <string name="confirm_sale">Confirm Sale</string>
     <string name="sell_a_book">Sell a book</string>
@@ -103,10 +103,8 @@
     <string name="or">Or</string>
     <string name="in">in</string>
     <string name="by">by</string>
-    <string name="value_by">by</string>
 
     <!-- Others -->
-    <string name="textview">TextView</string>
     <string name="home">home</string>
     <string name="books">books</string>
     <string name="sale">sale</string>
@@ -135,7 +133,7 @@
 
     <!-- ====================================================================== -->
 
-    <!--     Debug (move tehm when we do build variants) -->
+    <!--     Debug (move them when we do build variants) -->
     <string name="dummy_book_name">Dummy Book</string>
     <string name="dummy_price">0.000</string>
     <string name="maybe_navbar_here_if_yes_design_once_for_all_activities">Maybe navBar here ? If yes, design once for all activities</string>
@@ -179,4 +177,7 @@
     <string name="cs306">CS-306</string>
     <string name="com480">COM-480</string>
 
+    <string name="textview">TextView</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
