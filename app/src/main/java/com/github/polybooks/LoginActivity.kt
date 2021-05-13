@@ -4,15 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.successUser
+import com.github.polybooks.utils.updateUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -31,11 +38,23 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_login)
-        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.setOnClickListener{
+
+        val signInGoogleButton = findViewById<SignInButton>(R.id.sign_in_button)
+        signInGoogleButton.setOnClickListener{
             signIn()
+        }
+
+        val signInEmailButton = findViewById<Button>(R.id.log_button)
+        signInEmailButton.setOnClickListener{
+
+            val emailField = findViewById<EditText>(R.id.email_field)
+            val email = emailField.text.toString()
+
+            val passwordField = findViewById<EditText>(R.id.password_field)
+            val password = passwordField.text.toString()
+
+            signInEmailPass(email, password)
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -47,13 +66,34 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        setupNavbar(findViewById(R.id.bottom_navigation), this)
+        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+                when(item.itemId){
+                    R.id.books ->{
+                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        true
+                    }
+                    R.id.sales ->{
+                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        true
+                    }
+                    R.id.user_profile ->{
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
+                    }
+                    else -> {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        true
+                    }
+                }
+            }
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.user_profile, navBarListener)
     }
 
     override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
-        updateUI(currentUser)
+        updateUI(currentUser, this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -76,32 +116,29 @@ class LoginActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "signInWithCredential:success")
-                        val user = auth.currentUser
-                        updateUI(user)
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.exception)
-                        updateUI(null)
-                    }
+                .addOnCompleteListener(this) { taskGoogle ->
+                    checkUser(taskGoogle)
                 }
-    }
-
-    //TODO : what is this?
-    private fun updateUI(user: FirebaseUser?) {
-        if(user != null) {
-            val intent = Intent(this, UserProfileActivity::class.java).apply {
-                putExtra(EXTRA_MESSAGE, user.displayName)
-            }
-            startActivity(intent)
-        }
     }
 
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    private fun signInEmailPass(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { taskEmailPass ->
+                checkUser(taskEmailPass)
+            }
+    }
+
+    private fun checkUser(task: Task<AuthResult>){
+        if (task.isSuccessful) {
+            successUser(auth.currentUser, this)
+        } else {
+            failedUser(auth.currentUser, this)
+        }
     }
 
     public fun signOut() {
