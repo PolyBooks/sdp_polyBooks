@@ -1,4 +1,4 @@
-package com.github.polybooks.database.move_to_debug_source_set
+package com.github.polybooks.database
 
 import android.os.Build
 import android.os.SystemClock
@@ -6,9 +6,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.*
 
-import com.github.polybooks.database.SaleOrdering
-import com.github.polybooks.database.SaleQuery
-import com.github.polybooks.database.SaleSettings
 import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
 
