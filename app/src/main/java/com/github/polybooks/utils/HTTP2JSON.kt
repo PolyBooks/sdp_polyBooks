@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture
 const val CONNECTION_TIMEOUT = 5000
 const val READ_TIMEOUT = 10000
 
+// TODO this would be the release version and we'd have a separate file also containing the fun url2json() with the mock in debug
 /**
  * Given an URL fetches the json at that address and
  * parses it as JSON

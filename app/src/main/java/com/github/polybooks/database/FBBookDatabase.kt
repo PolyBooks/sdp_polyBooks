@@ -11,28 +11,30 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.concurrent.CompletableFuture
 
-private const val COLLECTION_NAME = "book"
-private const val DATE_FORMAT = "yyyy MM dd"
-
 /**
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
  * */
-class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) :
-    BookDatabase {
-
+object FBBookDatabase : BookDatabase {
     /*TODO:
     [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
     [ ] implement search by interest
     */
 
-    private val bookRef = firebase.collection(COLLECTION_NAME)
+    private const val COLLECTION_NAME = "book"
+    private const val DATE_FORMAT = "yyyy MM dd"
 
-    private val dateFormater = SimpleDateFormat(DATE_FORMAT)
+    fun getInstance(): BookDatabase {
+        return this
+    }
+
+    private val bookRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
+
+    private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    private inner class FBBookQuery() : AbstractBookQuery() {
+    private class FBBookQuery() : AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
@@ -68,7 +70,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                     return booksFromFBFuture.thenCompose { booksFromFB ->
                         val isbnsFound = booksFromFB.map { it.isbn }
                         val remainingISBNs = isbns.minus(isbnsFound)
-                        val booksFromOLFuture = isbnDB.queryBooks().searchByISBN(remainingISBNs).getAll()
+                        val booksFromOLFuture = OLBookDatabase.queryBooks().searchByISBN(remainingISBNs).getAll()
                         val allBooksFuture = booksFromOLFuture.thenApply { booksFromOL ->
                             booksFromOL + booksFromFB
                         }
@@ -113,7 +115,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
         private fun bookToDocument(book : Book) : Any {
             val publishDate : String? = book.publishDate?.let {
-                dateFormater.format(it.toDate())
+                dateFormatter.format(it.toDate())
             }
             return hashMapOf(
                 BookFields.AUTHORS.fieldName to book.authors,
@@ -136,7 +138,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
         private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
             val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
-                Timestamp(dateFormater.parse(it)!!)
+                Timestamp(dateFormatter.parse(it)!!)
             }
             return Book(
                 map[BookFields.ISBN.fieldName] as ISBN,

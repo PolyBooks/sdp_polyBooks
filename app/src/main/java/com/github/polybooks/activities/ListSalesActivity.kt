@@ -7,16 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.database.SalesAdapter
-import com.github.polybooks.database.FBBookDatabase
-import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.SaleQuery
 import com.github.polybooks.database.SaleSettings
+import com.github.polybooks.database.SalesAdapter
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
-import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Activity to list all active sales
@@ -29,10 +25,7 @@ class ListSalesActivity : AppCompatActivity() {
     private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
     private val initialBooks: List<Sale> = emptyList()
 
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val salesDB = FBSaleDatabase(firestore, bookDB)
+    private val salesDB = FBSaleDatabase.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

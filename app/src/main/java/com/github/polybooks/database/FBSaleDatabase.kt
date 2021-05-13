@@ -10,14 +10,21 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.Query
 import java.util.concurrent.CompletableFuture
 
-private const val COLLECTION_NAME = "sale2"
 
-class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabase) :
-    SaleDatabase {
 
-    private val saleRef: CollectionReference = firestore.collection(COLLECTION_NAME)
+object FBSaleDatabase : SaleDatabase {
 
-    private inner class SalesQuery : SaleQuery {
+    // TODO To convert it to a singleton object, I always used OLBookDatabase as the BookDB which used to be an argument. Might need to be changed in the future with utils.SingletonHolder. Or to use two separate classes?
+
+    fun getInstance(): SaleDatabase {
+        return this
+    }
+
+    private const val COLLECTION_NAME = "sale2"
+
+    private val saleRef: CollectionReference = FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
+
+    private class SalesQuery : SaleQuery {
 
         private var isbn: ISBN? = null
         private var title: String? = null
@@ -125,7 +132,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
 
 
         private fun getBookQuery() : BookQuery {
-            var bookQuery = bookDB.queryBooks()
+            val bookQuery = OLBookDatabase.queryBooks()
             if (interests != null) bookQuery.onlyIncludeInterests(interests!!)
             if (title != null) bookQuery.searchByTitle(title!!)
             if (isbn != null) bookQuery.searchByISBN(setOf(isbn!!))
@@ -133,11 +140,11 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         }
 
         override fun getAll(): CompletableFuture<List<Sale>> {
-            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                return doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
+            return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
             } else {
                 val booksFuture = getBookQuery().getAll()
-                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
                     val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
                     val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
@@ -165,11 +172,11 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
                 return future
             }
 
-            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                return doQueries(filterQuery(paginateQuery(saleRef, n, page))).thenCompose { snapshotsToSales(it) }
+            return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
+                doQueries(filterQuery(paginateQuery(saleRef, n, page))).thenCompose { snapshotsToSales(it) }
             } else {
                 val booksFuture = getBookQuery().getAll()
-                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
                     val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
                     val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
@@ -251,7 +258,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
             }
             return CompletableFuture.completedFuture(sales)
         } else {
-            val booksFuture = bookDB
+            val booksFuture = OLBookDatabase
                 .queryBooks()
                 .searchByISBN(missingBooks.toSet())
                 .getAll()
@@ -288,7 +295,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
             future.completeExceptionally(LocalUserException("Cannot add sale as LocalUser"))
             return future
         }
-        val bookFuture = bookDB.getBook(bookISBN)
+        val bookFuture = OLBookDatabase.getBook(bookISBN)
         return bookFuture.thenCompose { book ->
             val future = CompletableFuture<Sale>()
             if (book == null) {
@@ -310,7 +317,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
 
     //find the ID of a sale based on the ISBN of the book being sold, the time of the publication and the UID of the seller
     private fun getReferenceID(sale: Sale): Task<DocumentSnapshot?> {
-        var query = saleRef
+        val query = saleRef
             .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
             .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
             .whereEqualTo(SaleFields.SELLER.fieldName +"."+UserFields.UID.fieldName, (sale.seller as LoggedUser).uid)

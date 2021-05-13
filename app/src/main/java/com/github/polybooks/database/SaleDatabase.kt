@@ -36,7 +36,7 @@ interface SaleDatabase {
 
     /**
      * Add the sale defined by the given parameters to the database
-     * @param book the isbn of the book being sold
+     * @param bookISBN the isbn of the book being sold
      * @param seller the user selling the book (can't be the local user)
      * @param price the price of the sale
      * @param condition the condition of the book
@@ -44,7 +44,7 @@ interface SaleDatabase {
      * @param image the image describing the book being sold
      * @return a future containing the sale created and added to the database
      */
-    fun addSale(book : ISBN,
+    fun addSale(bookISBN : ISBN,
                 seller : User,
                 price : Float,
                 condition : BookCondition,
@@ -123,7 +123,7 @@ interface SaleQuery: Query<Sale> {
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN(isbn13: String): SaleQuery
+    fun searchByISBN(isbn: String): SaleQuery
 
     /**
      * Get Settings from the book
