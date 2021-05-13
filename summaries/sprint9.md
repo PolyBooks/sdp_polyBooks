@@ -14,7 +14,7 @@ Next time I hope that the user will be fully operational
 
 
 ## Raoul
-
+This week, I spent some unforeseen time on major refactorings, part some stuff I wanted to do for a while, and part thanks to the helpful code review the TA gave us. While I didn't add crucial new features, I feel satisfied with my work, both on convenience refactors and changing the databases to singleton objects as I think it will streamline the codebase for the end of the project. On top of that, as usual I did some PR review and corrected requested changes on my PRs.
 
 
 ## Sophie
