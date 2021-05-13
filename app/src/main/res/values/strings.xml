@@ -98,6 +98,8 @@
     <string name="enter_max_price">max   </string>
     <string name="sell">Sell</string>
     <string name="view_all_books">View all books</string>
+    <string name="invite_messaging">Type a message...</string>
+
 
     <!-- Adverbs/Prepositions-->
     <string name="or">Or</string>
@@ -144,40 +146,6 @@
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
-
-    <string name="sale_ordering_popularity">Popularity</string>
-    <string name="sale_ordering_title_inc">Title (ascending)</string>
-    <string name="sale_ordering_title_dec">Title (descending)</string>
-    <string name="sale_ordering_price_inc">Price (ascending)</string>
-    <string name="sale_ordering_price_dec">Price (descending)</string>
-    <string name="sale_ordering_publish_date_inc">Publish date (ascending)</string>
-    <string name="sale_ordering_publish_date_dec">Publish date (descending)</string>
-
-    <string name="book_ordering_popularity">Popularity</string>
-    <string name="book_ordering_title_inc">Title (ascending)</string>
-    <string name="book_ordering_title_dec">Title (descending)</string>
-
-    <string name="sale_state_active">Active</string>
-    <string name="sale_state_retracted">Retracted</string>
-    <string name="sale_state_concluded">Concluded</string>
-
-    <string name="sale_book_condition_new">New</string>
-    <string name="sale_book_condition_good">Good</string>
-    <string name="sale_book_condition_worn">Worn</string>
-
-    <string name="cs">Computer Science</string>
-    <string name="bio">Biology</string>
-    <string name="archi">Architecture</string>
-
-    <string name="ic_ba1">IC-BA1</string>
-    <string name="ma_ba2">MA-BA2</string>
-    <string name="sv_ba3">SA-BA3</string>
-    <string name="gc_ma1">GC-MA1</string>
-    <string name="mt_ma2">MT-MA2</string>
-
-    <string name="cs306">CS-306</string>
-    <string name="com480">COM-480</string>
-
     <string name="textview">TextView</string>
 
 </resources>

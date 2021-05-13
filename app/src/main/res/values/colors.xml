@@ -6,6 +6,7 @@
     <color name="blue_green_700">#FF007A6E</color>
     <color name="black">#FF000000</color>
     <color name="grey">#FF777777</color>
+    <color name="light_grey">#ECECEC</color>
     <color name="white">#FFFFFFFF</color>
     <!-- Delete below?-->
     <color name="melon">#FFECB8A5</color>
