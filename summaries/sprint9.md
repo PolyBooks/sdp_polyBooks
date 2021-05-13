@@ -18,7 +18,7 @@ This week, I spent some unforeseen time on major refactorings, part some stuff I
 
 
 ## Sophie
-
+This week I explored how to implement the chat feature, and I began with the implementation of the chat activity, without bothering yet with linking it to the users and firebase. Next week I will try to have a functional chat, and the week after I will plug it to firebase. 
 
 ## Zied
 
