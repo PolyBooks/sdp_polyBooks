@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.github.polybooks.utils.setupNavbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -31,6 +33,30 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
 
+        setNavBar()
+
+    }
+
+    private fun setNavBar(){
+        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
+                when(item.itemId){
+                    R.id.books ->{
+                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        true
+                    }
+                    R.id.sales ->{
+                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        true
+                    }
+                    R.id.user_profile ->{
+                        // TODO: user sales
+                        false
+                    }
+                    else -> true
+                }
+            }
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.home, navBarListener)
     }
 
     fun signup(view: View) {

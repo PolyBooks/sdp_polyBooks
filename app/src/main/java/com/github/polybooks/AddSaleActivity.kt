@@ -6,11 +6,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.utils.StringsManip
+import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
-import com.github.polybooks.utils.UIManip
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 
@@ -28,6 +26,8 @@ class AddSaleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_sale)
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
+
 
         // Listener on fill-in ISBN to trigger pass ISBN button
         findViewById<EditText>(R.id.fill_in_ISBN).addTextChangedListener(object : TextWatcher {
@@ -51,7 +51,6 @@ class AddSaleActivity : AppCompatActivity() {
         val intent = Intent(this, ScanBarcodeActivity::class.java)
         startActivity(intent)
     }
-
 
     fun passISBN(view: View) {
         val editISBN = findViewById<EditText>(R.id.fill_in_ISBN)

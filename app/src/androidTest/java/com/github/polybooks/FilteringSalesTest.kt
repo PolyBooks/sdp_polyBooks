@@ -1,30 +1,46 @@
 package com.github.polybooks
 
-import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.Matchers.*
-import org.junit.*
-
+import com.github.polybooks.adapter.InterestsParameterAdapter
+import com.github.polybooks.core.*
+import com.github.polybooks.core.database.interfaces.SaleOrdering
+import com.github.polybooks.utils.FilteringTestUtils
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Matchers
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-
 
 @RunWith(AndroidJUnit4::class)
 class FilteringSalesTest {
-    @get:Rule
-    val activityRule: ActivityScenarioRule<FilteringSalesActivity>
-        = ActivityScenarioRule(FilteringSalesActivity::class.java)
 
-    private val RANDOM_STRING = "BL1Abl6-a"
-    private val RANDOM_NUMBER = "42"
+    companion object {
+        val COURSE = InterestsParameterAdapter.Interest.COURSE
+        val SEMESTER = InterestsParameterAdapter.Interest.SEMESTER
+        val FIELD = InterestsParameterAdapter.Interest.FIELD
+
+        const val RANDOM_STRING = "BL1Abl6-a"
+        const val RANDOM_NUMBER = "42"
+    }
+
+    @get:Rule
+    val activityRule: ActivityScenarioRule<FilteringSalesActivity> =
+        ActivityScenarioRule(FilteringSalesActivity::class.java)
+
+    private val utils = FilteringTestUtils(ApplicationProvider.getApplicationContext())
 
     @Before
     fun before() {
@@ -36,30 +52,38 @@ class FilteringSalesTest {
         Intents.release()
     }
 
+    //======================================================================
+    //                            Tests Filtering
+    //======================================================================
     @Test
     fun intentIsFiredWhenClickingOnResults() {
-
         onView(withId(R.id.results_button)).perform(click())
-
-        intended(allOf(
+        intended(
+            allOf(
                 hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)))
+                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)
+            )
+        )
     }
 
     @Test
-    fun clickingOnButtonInViewDoesntCrash() {
-        onView(withId(R.id.title_inc_sort)).perform(click())
-    }
+    fun allParameterItemsAreDisplayed() {
+        utils.swdo()
+        utils.performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter)
+        utils.performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter)
+        utils.performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter)
 
-    @Test
-    fun scrollAndClickingOnButtonOutsideTheViewDoesntCrash() {
-        onView(withId(R.id.price_dec_sort)).perform(scrollTo(), click())
+        utils.swup()
+        utils.performOnInterestParameter<Field>(FIELD, R.id.field_parameter)
+        utils.performOnInterestParameter<Semester>(SEMESTER, R.id.semester_parameter)
+        utils.performOnInterestParameter<Course>(COURSE, R.id.course_parameter)
     }
 
     @Test
     fun scrollAndClickingOnAllParameterButtonDoesntCrash() {
         clickOnAllParamButtons()
-        checkAllParamButtons(true)
+        // cannot test because nested recyclerview
+//         checkAllParamButtons(true)
     }
 
     @Test
@@ -73,10 +97,25 @@ class FilteringSalesTest {
     }
 
     @Test
-    fun reclickingOnAParamButtonClearsIt() {
-        onView(withId(R.id.state_active)).perform(scrollTo(), click())
-        onView(withId(R.id.state_active)).perform(click())
-        onView(withId(R.id.state_active)).check(matches(isNotChecked()))
+    fun orderingItemsAreMutuallyExclusive() {
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click())
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, click())
+
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.PUBLISH_DATE_DEC, matches(isChecked()))
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
+    }
+
+    @Test
+    fun clickingThreeTimesOnOrderingItemWorks() {
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
+        utils.perform(
+            R.id.sale_sort_parameter,
+            SaleOrdering.TITLE_INC,
+            click()
+        ) // is now not checked
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isNotChecked()))
+        utils.perform(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, click()) // is now checked
+        utils.check(R.id.sale_sort_parameter, SaleOrdering.TITLE_INC, matches(isChecked()))
     }
 
     @Test
@@ -92,6 +131,7 @@ class FilteringSalesTest {
         checkAllParamButtons(false)
     }
 
+
     private fun writeInTextEdits() {
         onView(withId(R.id.book_name)).perform(scrollTo(), clearText(), typeText(RANDOM_STRING))
         Espresso.closeSoftKeyboard()
@@ -101,84 +141,102 @@ class FilteringSalesTest {
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.price_max)).perform(scrollTo(), clearText(), typeText(RANDOM_NUMBER))
         Espresso.closeSoftKeyboard()
-
     }
 
     private fun checkTextEditsAreEmpty() {
-        onView(withId(R.id.book_name)).perform(scrollTo(),click())
+        onView(withId(R.id.book_name)).perform(scrollTo(), click())
         onView(withId(R.id.book_name)).check(matches(withText("")))
-        onView(withId(R.id.book_isbn)).perform(scrollTo(),click())
+        onView(withId(R.id.book_isbn)).perform(scrollTo(), click())
         onView(withId(R.id.book_isbn)).check(matches(withText("")))
-        onView(withId(R.id.price_min)).perform(scrollTo(),click())
+        onView(withId(R.id.price_min)).perform(scrollTo(), click())
         onView(withId(R.id.price_min)).check(matches(withText("")))
-        onView(withId(R.id.price_max)).perform(scrollTo(),click())
+        onView(withId(R.id.price_max)).perform(scrollTo(), click())
         onView(withId(R.id.price_max)).check(matches(withText("")))
     }
 
     private fun clickOnAllParamButtons() {
-        onView(withId(R.id.title_inc_sort)).perform(scrollTo(), click())
-        onView(withId(R.id.title_dec_sort)).perform(scrollTo(), click())
-        onView(withId(R.id.price_inc_sort)).perform(scrollTo(), click())
-        onView(withId(R.id.price_dec_sort)).perform(scrollTo(), click())
-        /*
-        onView(withId(R.id.publish_date_inc_sort)).perform(scrollTo(), click())
-        onView(withId(R.id.publish_date_dec_sort)).perform(scrollTo(), click())
+        utils.swdo()
+        utils.performOnEnumParameter(SaleOrdering.DEFAULT, R.id.sale_sort_parameter, click())
+        utils.performOnEnumParameter(SaleState.ACTIVE, R.id.sale_state_parameter, click())
+        utils.performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter, click())
 
-        onView(withId(R.id.CS)).perform(scrollTo(), click())
-        onView(withId(R.id.Biology)).perform(scrollTo(), click())
-        onView(withId(R.id.Archi)).perform(scrollTo(), click())
-
-        onView(withId(R.id.ic_ba1)).perform(scrollTo(), click())
-        onView(withId(R.id.ma_ba2)).perform(scrollTo(), click())
-        onView(withId(R.id.sv_ba3)).perform(scrollTo(), click())
-        onView(withId(R.id.gc_ma1)).perform(scrollTo(), click())
-        onView(withId(R.id.mt_ma2)).perform(scrollTo(), click())
-
-        onView(withId(R.id.CS306)).perform(scrollTo(), click())
-        onView(withId(R.id.COM480)).perform(scrollTo(), click())
-        */
-        onView(withId(R.id.state_active)).perform(scrollTo(), click())
-        onView(withId(R.id.state_retracted)).perform(scrollTo(), click())
-        onView(withId(R.id.state_concluded)).perform(scrollTo(), click())
-
-        onView(withId(R.id.condition_new)).perform(scrollTo(), click())
-        onView(withId(R.id.condition_good)).perform(scrollTo(), click())
-        onView(withId(R.id.condition_worn)).perform(scrollTo(), click())
+        utils.swup()
+        utils.performOnInterestParameter<Field>(FIELD, R.id.field_parameter, click())
+        utils.performOnInterestParameter<Semester>(SEMESTER, R.id.semester_parameter, click())
+        utils.performOnInterestParameter<Course>(COURSE, R.id.course_parameter, click())
     }
 
-    private fun checkAllParamButtons(isChecked : Boolean) {
-        val checkFun = if(isChecked) isChecked() else isNotChecked()
+    private fun checkAllParamButtons(isChecked: Boolean) {
+        val checkFun = if (isChecked) isChecked() else isNotChecked()
 
-        if(!isChecked) {
-            onView(withId(R.id.title_inc_sort)).check(matches(checkFun))
-            onView(withId(R.id.title_dec_sort)).check(matches(checkFun))
-            onView(withId(R.id.price_inc_sort)).check(matches(checkFun))
-            onView(withId(R.id.price_dec_sort)).check(matches(checkFun))
-            /*
-            onView(withId(R.id.publish_date_inc_sort)).check(matches(checkFun))
-            onView(withId(R.id.publish_date_dec_sort)).check(matches(checkFun))
-            */
+        utils.swdo()
+        if (!isChecked) {
+            utils.performOnEnumParameter(
+                SaleOrdering.DEFAULT, R.id.sale_sort_parameter, null, matches(checkFun)
+            )
         }
-    /*
-        onView(withId(R.id.CS)).check(matches(checkFun))
-        onView(withId(R.id.Biology)).check(matches(checkFun))
-        onView(withId(R.id.Archi)).check(matches(checkFun))
+        utils.performOnEnumParameter(
+            SaleState.ACTIVE, R.id.sale_state_parameter, null, matches(checkFun)
+        )
+        utils.performOnEnumParameter(
+            BookCondition.NEW, R.id.sale_condition_parameter, null, matches(checkFun)
+        )
 
-        onView(withId(R.id.ic_ba1)).check(matches(checkFun))
-        onView(withId(R.id.ma_ba2)).check(matches(checkFun))
-        onView(withId(R.id.sv_ba3)).check(matches(checkFun))
-        onView(withId(R.id.gc_ma1)).check(matches(checkFun))
-        onView(withId(R.id.mt_ma2)).check(matches(checkFun))
+        // Cannot test because recyclerView
+//        swup()
+//        performOnInterestParameter<Field>(
+//            FIELD, R.id.parameter, null, matches(checkFun)
+//        )
+//        performOnInterestParameter<Semester>(
+//            SEMESTER, R.id.semester_parameter, null, matches(checkFun)
+//        )
+//        performOnInterestParameter<Course>(
+//            COURSE, R.id.course_parameter, null, matches(checkFun)
+//        )
+    }
 
-        onView(withId(R.id.CS306)).check(matches(checkFun))
-        onView(withId(R.id.COM480)).check(matches(checkFun))
-*/
-        onView(withId(R.id.state_active)).check(matches(checkFun))
-        onView(withId(R.id.state_retracted)).check(matches(checkFun))
-        onView(withId(R.id.state_concluded)).check(matches(checkFun))
+    //======================================================================
+    //                            Tests NavBar
+    //======================================================================
 
-        onView(withId(R.id.condition_new)).check(matches(checkFun))
-        onView(withId(R.id.condition_good)).check(matches(checkFun))
-        onView(withId(R.id.condition_worn)).check(matches(checkFun))
+    @Test
+    fun navBarSales() {
+        onView(withId(R.id.sales)).perform(click())
+        onView(withId(R.id.results_button)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun navBarProfile() {
+        onView(withId(R.id.user_profile)).perform(click())
+        onView(withId(R.id.results_button)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun navBarBooks() {
+        onView(withId(R.id.books)).perform(click())
+        intended(hasComponent(FilteringBooksActivity::class.java.name))
+    }
+
+    @Test
+    fun navBarDefault() {
+        onView(withId(R.id.default_selected)).check(
+            matches(
+                withEffectiveVisibility(
+                    Visibility.GONE
+                )
+            )
+        )
+        onView(withId(R.id.default_selected)).check(matches(Matchers.not(isEnabled())))
+    }
+
+    @Test
+    fun navBarSelected() {
+        onView(withId(R.id.sales)).check(matches(isSelected()))
+    }
+
+    @Test
+    fun navBarHome() {
+        onView(withId(R.id.home)).perform(click())
+        intended(hasComponent(MainActivity::class.java.name))
     }
 }

@@ -1,27 +1,31 @@
 package com.github.polybooks
 
 import android.os.Bundle
-import android.util.Log
+import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.polybooks.core.*
+import com.github.polybooks.core.Sale
+import com.github.polybooks.core.SaleState
 import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.implementation.DummySalesQuery
+import com.github.polybooks.core.database.implementation.FBBookDatabase
+import com.github.polybooks.core.database.implementation.OLBookDatabase
 import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.implementation.format
 import com.github.polybooks.core.database.interfaces.SaleQuery
 import com.github.polybooks.core.database.interfaces.SaleSettings
-import com.github.polybooks.utils.anonymousBook
-import com.google.firebase.Timestamp
+import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.url2json
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Activity to list all active sales
  */
+
 class ListSalesActivity : AppCompatActivity() {
+
     companion object {
-        val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
-        val EXTRA_BOOKS_QUERY_SETTINGS: String = "bookQuerySettings"
+        const val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
+        const val EXTRA_BOOKS_QUERY_SETTINGS : String = "bookQuerySettings"
     }
 
     private lateinit var mRecycler: RecyclerView
@@ -29,6 +33,11 @@ class ListSalesActivity : AppCompatActivity() {
     private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
     // private val initialBooks: List<Sale> = emptyList() // FIXME remove comment once we have sales in db
     private val initialBooks: List<Sale> = listOf(Sale(Book("isbn102", listOf("Molière"), "Le Tartuffe", "Edition pré-censurée", "French", "Editions De l'Aire", null, "pocket format"), LocalUser, 33.5f, BookCondition.GOOD, null, SaleState.ACTIVE, null))
+
+    private val firestore = FirebaseFirestore.getInstance()
+    private val olBookDB = OLBookDatabase { string -> url2json(string) }
+    private val bookDB = FBBookDatabase(firestore, olBookDB)
+    private val salesDB = SaleDatabase(firestore, bookDB)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,13 +52,18 @@ class ListSalesActivity : AppCompatActivity() {
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = mAdapter
 
+
         val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
                 ?.let {
-                    SaleDatabase().querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
+                    salesDB.querySales().fromSettings(intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS) as SaleSettings)
                 }
-                ?: SaleDatabase().querySales().searchByState(setOf(SaleState.ACTIVE))
-        // saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) } // FIXME uncomment once we have sales in db
+                ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+
+        saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
+
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
+
 
     private fun updateAdapter(sales : List<Sale>){
         runOnUiThread {
