@@ -9,7 +9,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.LoginActivity
 import com.github.polybooks.R
 import org.hamcrest.Matchers
 import org.junit.After

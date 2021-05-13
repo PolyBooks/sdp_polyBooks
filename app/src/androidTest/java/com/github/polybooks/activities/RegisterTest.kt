@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -12,7 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.polybooks.activities.RegisterActivity
+import com.github.polybooks.R
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import org.hamcrest.Matchers

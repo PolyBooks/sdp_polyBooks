@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.activities.FilteringBooksActivity
-import com.github.polybooks.activities.FilteringSalesActivity
-import com.github.polybooks.activities.MainActivity
+import com.github.polybooks.R
 import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.successUser
