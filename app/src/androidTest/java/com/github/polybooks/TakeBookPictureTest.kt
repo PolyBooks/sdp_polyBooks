@@ -1,30 +1,25 @@
 package com.github.polybooks
 
-import android.R
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
+class TakeBookPictureTest {
 
-class LoginGoogleTest {
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(LoginActivity::class.java)
+    val activityRule = ActivityScenarioRule(TakeBookPictureActivity::class.java)
 
     @Before
     fun before() {
@@ -37,7 +32,12 @@ class LoginGoogleTest {
     }
 
     @Test
-    fun signInButtonGoogle() {
-        onView(withId(com.github.polybooks.R.id.sign_in_button)).perform(scrollTo(), click())
+    fun takePictureButtonWorks() {
+        onView(withId(R.id.camera_capture_button)).perform(click())
+        // I think the thread switching might make testing the intent impossible?
+        //Intents.intended(IntentMatchers.hasComponent(FillSaleTest::class.java.name))
+
     }
+
+
 }
