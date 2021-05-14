@@ -13,7 +13,9 @@ Next time I hope that the user will be fully operational
 
 ## Nicolas
 
+This week I focused on implementing part of the destabilization sprint request, displaying a star rating on a sale (star rating of the book). I spent *a lot* of time trying to merge my two precendent PRs, but without success (a PRs was merged into main that affected basically every single file of the PRs I wanted to merge. Unfortunately, I think there's a bug somewhere in the merged PR. I didn't find the mistake yet). This is slowing down every other feature I implemented this week as they rely on the PR to be merged
 
+Next week, I really hope to have all my features merged
 
 ## Raoul
 This week, I spent some unforeseen time on major refactorings, part some stuff I wanted to do for a while, and part thanks to the helpful code review the TA gave us. While I didn't add crucial new features, I feel satisfied with my work, both on convenience refactors and changing the databases to singleton objects as I think it will streamline the codebase for the end of the project. On top of that, as usual I did some PR review and corrected requested changes on my PRs.
