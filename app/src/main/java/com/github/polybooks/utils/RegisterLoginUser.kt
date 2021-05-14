@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
-import com.github.polybooks.EXTRA_MESSAGE
+import com.github.polybooks.activities.EXTRA_MESSAGE
 import com.github.polybooks.activities.UserProfileActivity
 import com.google.firebase.auth.FirebaseUser
 

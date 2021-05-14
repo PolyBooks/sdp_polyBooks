@@ -4,7 +4,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
@@ -51,37 +53,29 @@ class MainTest {
 
     @Test
     fun loginButton() {
-
         onView(withId(R.id.log_button)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
-
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun sellButton() {
-
         onView(withId(R.id.sell_button)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(AddSaleActivity::class.java.name))
+        intended(hasComponent(AddSaleActivity::class.java.name))
 
     }
 
-//    @Test
-//    fun databaseButton() {
-//
-//        onView(withId(R.id.button_open_db_tests)).perform(click())
-//        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
-//
-//    }
+    @Test
+
+    fun allBooksButton() {
+        onView(withId(R.id.button_open_db_tests)).perform(click())
+        intended(hasComponent(ListBooksActivity::class.java.name))
+    }
 
     @Test
-    fun salesFilterButton() {
+    fun listBookButton() {
 
         onView(withId(R.id.button_open_db_tests)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
-        /*
-          onView(withId(R.id.button_open_db_tests)).perform(click())
-          Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
-        */
+        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 
     //This one
@@ -94,19 +88,19 @@ class MainTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test

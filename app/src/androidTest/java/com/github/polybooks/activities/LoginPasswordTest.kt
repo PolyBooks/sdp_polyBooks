@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.polybooks.R
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -38,11 +39,11 @@ class LoginPasswordTest {
     }
 
     @Test
-    fun FillAndLoginWithPassword() {
+    fun fillAndLoginWithPassword() {
         onView(withId(R.id.email_field)).perform(typeText("login@bypassword.test"), closeSoftKeyboard())
         onView(withId(R.id.password_field)).perform(typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.log_button)).perform(scrollTo(), click())
-        Thread.sleep(1500);
+        Thread.sleep(1500)
         Intents.intended(IntentMatchers.hasComponent(UserProfileActivity::class.java.name))
         Intents.intended(toPackage("com.github.polybooks"));
         Intents.intended(hasExtra(EXTRA_MESSAGE, "TestLogin"));
@@ -55,7 +56,7 @@ class LoginPasswordTest {
     @Test
     fun navBarSales() {
         Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
@@ -67,7 +68,7 @@ class LoginPasswordTest {
     @Test
     fun navBarBooks() {
         Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test

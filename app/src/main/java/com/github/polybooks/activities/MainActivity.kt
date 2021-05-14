@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.github.polybooks.LoginActivity
 import com.github.polybooks.R
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -28,8 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         val dbButton: Button = findViewById(R.id.button_open_db_tests)
         dbButton.setOnClickListener {
-            val i : Intent = Intent(this, FilteringSalesActivity::class.java)
-
+            val i : Intent = Intent(this, ListBooksActivity::class.java)
             startActivity(i)
         }
 
@@ -47,16 +45,16 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        startActivity(Intent(this, ListBooksActivity::class.java))
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
                     R.id.user_profile ->{
-                        // TODO: user sales
-                        false
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
                     }
                     else -> true
                 }
