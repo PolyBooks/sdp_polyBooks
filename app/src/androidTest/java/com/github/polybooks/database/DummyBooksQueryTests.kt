@@ -1,23 +1,23 @@
 package com.github.polybooks.database
 
-import androidx.core.os.persistableBundleOf
 import com.github.polybooks.core.Book
-import com.github.polybooks.core.database.implementation.DummyBookQuery
-import com.github.polybooks.core.database.interfaces.*
+import com.github.polybooks.database.move_to_debug_source_set.DummyBookQuery
 import com.google.firebase.Timestamp
 import org.junit.Test
 
 import org.junit.Assert.*
-import org.junit.Before
 
 class DummyBooksQueryTests {
 
     private val query : BookQuery = DummyBookQuery()
 
     val default_books: List<Book> = listOf(
-            Book("Book1", listOf("Tolkien"), "Lord of the Rings", "?", "?", "?", Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), "?"),
-            Book("Book2", listOf("Hugo"), "Les Miserables", "?", "?", "?", Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), "?"),
-            Book("Book3", listOf("Baudelaire"), "Les fleurs du mal", "?", "?", "?", Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), "?")
+            Book("Book1", listOf("Tolkien"), "Lord of the Rings", "?", "?", "?", Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), "?"),
+            Book("Book2", listOf("Hugo"), "Les Miserables", "?", "?", "?", Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), "?"),
+            Book("Book3", listOf("Baudelaire"), "Les fleurs du mal", "?", "?", "?", Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), "?")
     )
 
     @Test
@@ -51,7 +51,8 @@ class DummyBooksQueryTests {
 
     @Test
     fun settingsTest() {
-        val settingsRes = BookSettings(BookOrdering.DEFAULT,
+        val settingsRes = BookSettings(
+            BookOrdering.DEFAULT,
                 null, null, null)
         val settings = query.withOrdering(BookOrdering.TITLE_DEC).getSettings()
         assertEquals(settingsRes, settings)
@@ -59,7 +60,8 @@ class DummyBooksQueryTests {
 
     @Test
     fun getSettingsAfterFromSettingsShouldCorrespond() {
-        val settingsRes = BookSettings(BookOrdering.DEFAULT,
+        val settingsRes = BookSettings(
+            BookOrdering.DEFAULT,
                 null, null, null)
 
         val settings = query.fromSettings(settingsRes).getSettings()

@@ -9,7 +9,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import com.github.polybooks.FilteringSalesTest
+import com.github.polybooks.activities.FilteringSalesTest
 import com.github.polybooks.R
 import com.github.polybooks.adapter.InterestsParameterAdapter
 import com.github.polybooks.adapter.ParameterViewHolder
@@ -17,7 +17,7 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.core.database.implementation.DummyInterestDatabase
+import com.github.polybooks.database.move_to_debug_source_set.DummyInterestDatabase
 
 class FilteringTestUtils(private val context: Context?) {
 

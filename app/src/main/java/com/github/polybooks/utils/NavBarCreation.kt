@@ -3,7 +3,11 @@ package com.github.polybooks.utils
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
-import com.github.polybooks.*
+import com.github.polybooks.R
+import com.github.polybooks.activities.ListBooksActivity
+import com.github.polybooks.activities.ListSalesActivity
+import com.github.polybooks.activities.LoginActivity
+import com.github.polybooks.activities.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 fun setupNavbar(

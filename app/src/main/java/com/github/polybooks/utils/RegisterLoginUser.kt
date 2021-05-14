@@ -2,13 +2,10 @@ package com.github.polybooks.utils
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
-import com.github.polybooks.EXTRA_MESSAGE
-import com.github.polybooks.LoginActivity
-import com.github.polybooks.RegisterActivity
-import com.github.polybooks.UserProfileActivity
+import com.github.polybooks.activities.EXTRA_MESSAGE
+import com.github.polybooks.activities.UserProfileActivity
 import com.google.firebase.auth.FirebaseUser
 
 fun updateUI(user: FirebaseUser?, origin: Context) {

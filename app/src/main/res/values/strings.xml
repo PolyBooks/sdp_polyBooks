@@ -11,8 +11,9 @@
         - User              please begin name by "user_"
         - Login             __
         - User Interaction  __
-        - Others            words you don't know where to put
+        - Toasts            __
         - Adverbs/Preps     typically small words often used (such as "and", "in")
+        - Others            words you don't know where to put
         - Debug/Temp        put here the words that are not meant to last
 
     =============================================================================== -->
@@ -99,6 +100,14 @@
     <string name="sell">Sell</string>
     <string name="view_all_books">View all books</string>
     <string name="filter">Filter</string>
+
+    <!-- Toasts -->
+    <string name="error">An error occurred, please try again</string>
+    <string name="permissions_not_granted">You must grant camera permissions to take a picture.</string>
+    <string name="binding_failed">Use case binding failed</string>
+    <string name="no_ISBN_match">Book matching the ISBN could not be found</string>
+    <string name="missing_ISBN">Please provide an ISBN</string>
+
 
     <!-- Adverbs/Prepositions-->
     <string name="or">Or</string>

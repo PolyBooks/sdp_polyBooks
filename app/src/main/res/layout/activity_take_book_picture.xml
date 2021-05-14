@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TakeBookPictureActivity">
+    tools:context=".activities.TakeBookPictureActivity">
 
 <!--    TODO add X button to cancel the picture? flash on-off button? switch front and back camera button?-->
 
