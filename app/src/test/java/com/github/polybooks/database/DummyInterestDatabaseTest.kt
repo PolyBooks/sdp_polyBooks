@@ -10,7 +10,7 @@ class DummyInterestDatabaseTest {
     private val courses = DummyInterestDatabase.mockCourses
     private val semesters = DummyInterestDatabase.mockSemesters
 
-    private val db = DummyInterestDatabase()
+    private val db = DummyInterestDatabase.getInstance()
 
     @Test
     fun t_listAllFields() {
