@@ -1,10 +1,10 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.github.polybooks.activities.SaleInformationActivity
+import com.github.polybooks.R
 import com.github.polybooks.core.*
 import com.github.polybooks.utils.StringsManip
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
