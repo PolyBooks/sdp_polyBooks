@@ -7,10 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.Query
+import com.github.polybooks.database.*
 import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -33,7 +30,7 @@ abstract class ListActivity<T>: AppCompatActivity() {
     private val firestore = FirebaseFirestore.getInstance()
     private val olBookDB = OLBookDatabase { string -> url2json(string) }
     open val bookDB = FBBookDatabase(firestore, olBookDB)
-    open val salesDB = SaleDatabase(firestore, bookDB)
+    open val salesDB = FBSaleDatabase(firestore, bookDB)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

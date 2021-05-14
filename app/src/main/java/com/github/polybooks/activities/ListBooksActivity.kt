@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.database.BooksAdapter
-import com.github.polybooks.core.database.interfaces.BookSettings
-import com.github.polybooks.core.database.interfaces.Query
+import com.github.polybooks.database.BookSettings
+import com.github.polybooks.database.Query
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

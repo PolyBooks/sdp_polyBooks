@@ -1,31 +1,15 @@
 package com.github.polybooks.activities
 
 import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.database.SalesAdapter
-import com.github.polybooks.database.FBBookDatabase
-import com.github.polybooks.database.OLBookDatabase
-import com.github.polybooks.database.FBSaleDatabase
-import com.github.polybooks.database.SaleQuery
+import com.github.polybooks.database.Query
 import com.github.polybooks.database.SaleSettings
-import com.github.polybooks.core.*
-import com.github.polybooks.core.database.SalesAdapter
-import com.github.polybooks.core.database.implementation.FBBookDatabase
-import com.github.polybooks.core.database.implementation.OLBookDatabase
-import com.github.polybooks.core.database.implementation.SaleDatabase
-import com.github.polybooks.core.database.interfaces.Query
-import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.github.polybooks.core.database.interfaces.SaleSettings
+import com.github.polybooks.database.SalesAdapter
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.FirebaseFirestore
 
 class ListSalesActivity: ListActivity<Sale>() {
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
