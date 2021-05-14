@@ -26,6 +26,8 @@ This week I explored how to implement the chat feature, and I began with the imp
 
 ## Zied
 
+This week I added some features for the login and registration of users and I worked on the GPS and on how to implement the GPS using the users and firebase.
+I still have some work to do for the GPS, so I will take some time next week to work on it.
 
 
 ## Overall team
