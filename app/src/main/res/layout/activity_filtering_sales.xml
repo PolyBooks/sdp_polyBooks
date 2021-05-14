@@ -46,12 +46,13 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintVertical_bias="1.0"
         app:layout_goneMarginBottom="9dp"
-        android:padding="9dp">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="9dp">
 
             <!-- Search a book name and or isbn -->
             <LinearLayout

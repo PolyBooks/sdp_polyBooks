@@ -35,8 +35,15 @@ class FillSaleActivityUnitTests {
 
     @Test
     fun listAuthors3ToString() {
-        val expected = "Fowler, Beck and Evans"
+        val expected = "Fowler, Beck, and Evans"
         val input = listOf("Fowler", "Beck", "Evans")
+        assertEquals(expected, listAuthorsToString(input))
+    }
+
+    @Test
+    fun listAuthors4ToString() {
+        val expected = "Fowler, Beck, Evans, and Denis Brogniart"
+        val input = listOf("Fowler", "Beck", "Evans", "Denis Brogniart")
         assertEquals(expected, listAuthorsToString(input))
     }
 

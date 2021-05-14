@@ -17,6 +17,7 @@ import com.github.polybooks.adapter.InterestsParameterAdapter
 import com.github.polybooks.core.*
 import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.utils.FilteringTestUtils
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers
 import org.junit.After
@@ -62,7 +63,7 @@ class FilteringSalesTest {
         intended(
             allOf(
                 hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListSalesActivity.EXTRA_SALE_QUERY_SETTINGS)
+                hasExtraWithKey(EXTRA_SALE_QUERY_SETTINGS)
             )
         )
     }
@@ -203,19 +204,19 @@ class FilteringSalesTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        onView(withId(R.id.results_button)).check(matches(isDisplayed()))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.results_button)).check(matches(isDisplayed()))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        intended(hasComponent(FilteringBooksActivity::class.java.name))
+        intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
@@ -232,7 +233,7 @@ class FilteringSalesTest {
 
     @Test
     fun navBarSelected() {
-        onView(withId(R.id.sales)).check(matches(isSelected()))
+        onView(withId(R.id.default_selected)).check(matches(isSelected()))
     }
 
     @Test

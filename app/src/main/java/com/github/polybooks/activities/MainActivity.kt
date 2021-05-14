@@ -20,16 +20,20 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        val button2: Button = findViewById(R.id.log_button)
-        button2.setOnClickListener {
+        val buttonLogin: Button = findViewById(R.id.log_button)
+        buttonLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
         val dbButton: Button = findViewById(R.id.button_open_db_tests)
         dbButton.setOnClickListener {
-            val i : Intent = Intent(this, FilteringSalesActivity::class.java)
-
+            val i : Intent = Intent(this, ListBooksActivity::class.java)
             startActivity(i)
+        }
+
+        val buttonRegister: Button = findViewById(R.id.signup_button)
+        buttonRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
 
         setNavBar()
@@ -41,16 +45,16 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        startActivity(Intent(this, ListBooksActivity::class.java))
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
                     R.id.user_profile ->{
-                        // TODO: user sales
-                        false
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
                     }
                     else -> true
                 }

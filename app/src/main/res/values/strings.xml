@@ -81,12 +81,12 @@
     <string name="log_in_using_tequila">Log In using Tequila</string>
     <string name="sign_up_using_google_account">Sign Up using Google account</string>
     <string name="disconnect">Disconnect</string>
-    <string name="don_t_have_an_account">Don\'t have an account?</string>
-    <string name="already_have_an_account">Already have an account?</string>
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm Password</string>
 
     <!-- User Interaction (could be further organized) -->
     <string name="sort_by">Sort by</string>
-    <string name="add_picture">Add Picture</string>
+    <string name="take_picture">Take Picture</string>
     <string name="scan_book">Scan Book Barcode</string>
     <string name="confirm_sale">Confirm Sale</string>
     <string name="sell_a_book">Sell a book</string>
@@ -99,10 +99,11 @@
     <string name="enter_max_price">max   </string>
     <string name="sell">Sell</string>
     <string name="view_all_books">View all books</string>
+    <string name="filter">Filter</string>
 
     <!-- Toasts -->
     <string name="error">An error occurred, please try again</string>
-    <string name="permissions_not_granted">Permissions not granted by the user.</string>
+    <string name="permissions_not_granted">You must grant camera permissions to take a picture.</string>
     <string name="binding_failed">Use case binding failed</string>
     <string name="no_ISBN_match">Book matching the ISBN could not be found</string>
     <string name="missing_ISBN">Please provide an ISBN</string>
@@ -112,12 +113,11 @@
     <string name="or">Or</string>
     <string name="in">in</string>
     <string name="by">by</string>
-    <string name="value_by">by</string>
 
     <!-- Others -->
     <string name="home">home</string>
     <string name="books">books</string>
-    <string name="sale">sale</string>
+    <string name="sale">sales</string>
     <string name="profile">profile</string>
     <string name="my_book_sales">My book sales</string>
     <string name="title">Title:</string>
@@ -143,7 +143,7 @@
 
     <!-- ====================================================================== -->
 
-    <!--     Debug (move tehm when we do build variants) -->
+    <!--     Debug (move them when we do build variants) -->
     <string name="dummy_book_name">Dummy Book</string>
     <string name="dummy_price">0.000</string>
     <string name="maybe_navbar_here_if_yes_design_once_for_all_activities">Maybe navBar here ? If yes, design once for all activities</string>
@@ -153,6 +153,8 @@
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
+    <string name="value_buy">buy</string>
+    <string name="value_in">in</string>
 
     <string name="sale_ordering_popularity">Popularity</string>
     <string name="sale_ordering_title_inc">Title (ascending)</string>
@@ -189,4 +191,5 @@
 
     <string name="textview">TextView</string>
 
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

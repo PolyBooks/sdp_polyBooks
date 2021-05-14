@@ -3,10 +3,11 @@ package com.github.polybooks.utils
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
-import com.github.polybooks.activities.FilteringBooksActivity
-import com.github.polybooks.activities.FilteringSalesActivity
-import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.R
+import com.github.polybooks.activities.ListBooksActivity
+import com.github.polybooks.activities.ListSalesActivity
+import com.github.polybooks.activities.LoginActivity
+import com.github.polybooks.activities.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 fun setupNavbar(
@@ -27,16 +28,16 @@ fun setupNavbar(
                     true
                 }
                 R.id.books -> {
-                    startActivity(origin, Intent(origin, FilteringBooksActivity::class.java), null)
+                    startActivity(origin, Intent(origin, ListBooksActivity::class.java), null)
                     true
                 }
                 R.id.sales -> {
-                    startActivity(origin, Intent(origin, FilteringSalesActivity::class.java), null)
+                    startActivity(origin, Intent(origin, ListSalesActivity::class.java), null)
                     true
                 }
                 R.id.user_profile -> {
-                    // TODO: user sales
-                    false
+                    startActivity(origin, Intent(origin, LoginActivity::class.java), null)
+                    true
                 }
                 else -> true
             }

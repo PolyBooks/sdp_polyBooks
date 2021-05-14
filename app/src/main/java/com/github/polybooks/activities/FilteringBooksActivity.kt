@@ -16,7 +16,6 @@ import com.github.polybooks.database.BookQuery
 import com.github.polybooks.database.FBBookDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
  * This activity let the users to select the sorting and filtering parameters
@@ -57,7 +56,7 @@ class FilteringBooksActivity: FilteringActivity() {
         // --- TODO hardcoded : make it dynamic
         setParametersButtons()
 
-        setNavBar()
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
     fun resetParameters(view: View) {
@@ -83,7 +82,7 @@ class FilteringBooksActivity: FilteringActivity() {
 
         // pass query to new activity
         val querySettings = query.getSettings()
-        val intent = Intent(this, ListSalesActivity::class.java) //TODO list books activity
+        val intent = Intent(this, ListBooksActivity::class.java)
         intent.putExtra(EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
@@ -114,29 +113,6 @@ class FilteringBooksActivity: FilteringActivity() {
         mName = findViewById(R.id.book_name)
         mISBN = findViewById(R.id.book_isbn)
     }
-
-    private fun setNavBar(){
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.home ->{
-                        startActivity(Intent(this, MainActivity::class.java))
-                        true
-                    }
-                    R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
-                        true
-                    }
-                    R.id.user_profile ->{
-                        // TODO: user sales
-                        false
-                    }
-                    else -> true
-                }
-            }
-        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
-    }
-
 
     private fun resultByParameter(query: BookQuery) {
         val sortingValues = mSortParameter.getSelectedValues()

@@ -5,26 +5,24 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
-import com.github.polybooks.core.SaleState.*
+import com.github.polybooks.core.SaleState.ACTIVE
+import com.github.polybooks.core.SaleState.RETRACTED
 import com.github.polybooks.utils.unwrapException
-import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FirebaseFirestore
 import junit.framework.AssertionFailedError
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.ExpectedException
-import java.lang.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 
 class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val saleDB = FBSaleDatabase(firestore, bookDB)
+    private val saleDB = FBSaleDatabase.getInstance()
 
     private val testUser = LoggedUser(301966, "Le givre")
     private val testBook = Book("9780156881807",null, "Tartuffe, by Moliere", null, null, null, null, null)
@@ -39,7 +37,7 @@ class FBSaleDatabaseTest {
         null
     )
 
-    fun addDummySale() : Sale {
+    private fun addDummySale() : Sale {
         return saleDB.addSale(dummySale).get()
     }
 
@@ -66,7 +64,7 @@ class FBSaleDatabaseTest {
     @Test
     fun t_listAllSales() {
         val allSales: List<Sale> = saleDB.querySales().getAll().get()
-        var listAllSales: List<Sale> = saleDB.listAllSales().get()
+        val listAllSales: List<Sale> = saleDB.listAllSales().get()
 
         val expectedSize: Int = allSales.size
         assertEquals(expectedSize, listAllSales.size)
@@ -171,7 +169,7 @@ class FBSaleDatabaseTest {
         )
     }
 
-    fun <T>customAssertFutureThrows(future: CompletableFuture<T>, n: Int, page: Int) {
+    private fun <T>customAssertFutureThrows(future: CompletableFuture<T>, n: Int, page: Int) {
         try {
             future.get()
             fail("Future should not succeed")
@@ -272,8 +270,7 @@ class FBSaleDatabaseTest {
                 )
             ).get()
         } catch (e: Throwable) {
-            val exception = unwrapException(e)
-            when (exception) {
+            when (unwrapException(e)) {
                 is IllegalArgumentException -> return
                 else -> throw AssertionFailedError("Wrong exception type thrown")
             }

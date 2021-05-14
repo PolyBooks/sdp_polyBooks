@@ -1,22 +1,22 @@
 package com.github.polybooks.activities
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.polybooks.R
+import com.github.polybooks.utils.CameraManip.REQUEST_CODE_PERMISSIONS
+import com.github.polybooks.utils.CameraManip.REQUIRED_PERMISSIONS
+import com.github.polybooks.utils.CameraManip.allPermissionsGranted
+import com.github.polybooks.utils.CameraManip.startCamera
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -32,7 +32,7 @@ import java.util.concurrent.Executors
  */
 class ScanBarcodeActivity : AppCompatActivity() {
 
-    // TODO next step: Maybe refactor the inner class and/or the CameraX related code, but it causes issues with access rights...
+    // TODO next step: Maybe refactor the BarcodeAnalyzer inner class, but it causes issues with access rights...
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -40,16 +40,25 @@ class ScanBarcodeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_barcode)
 
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
         // Request camera permissions
-        if (allPermissionsGranted()) {
-            startCamera()
+        if (allPermissionsGranted(baseContext)) {
+            startScanBarcodeCamera()
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
+                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
+    }
 
-        cameraExecutor = Executors.newSingleThreadExecutor()
+    private fun startScanBarcodeCamera() {
+        val imageAnalyzer = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+            .also {
+                it.setAnalyzer(cameraExecutor, BarcodeAnalyzer())
+            }
+        startCamera(this, viewFinder, imageAnalyzer)
     }
 
     override fun onRequestPermissionsResult(
@@ -57,9 +66,10 @@ class ScanBarcodeActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                startCamera()
+            if (allPermissionsGranted(baseContext)) {
+                startScanBarcodeCamera()
             } else {
                 Toast.makeText(this,
                     getString(R.string.permissions_not_granted),
@@ -70,60 +80,13 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
 
-    private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-
-        cameraProviderFuture.addListener( {
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            // Preview
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(viewFinder.surfaceProvider)
-                }
-
-            val imageAnalyzer = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also {
-                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer())
-                }
-
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            // TODO Other option:
-            //       = CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
-
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageAnalyzer)
-
-            } catch(exc: Exception) {
-                Log.e(TAG, getString(R.string.binding_failed), exc)
-            }
-
-        }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    companion object {
-        private const val TAG = "CameraXBasic"
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-    }
-
     private fun passISBN(stringISBN: String) {
         val intent = Intent(this, FillSaleActivity::class.java).apply {
+            val extras = Bundle()
+            extras.putString(EXTRA_ISBN, stringISBN)
+            extras.putString(EXTRA_PICTURE_FILE, null)
+            extras.putString(EXTRA_SALE_PRICE, null)
+            putExtras(extras)
             putExtra(EXTRA_ISBN, stringISBN)
         }
         startActivity(intent)
@@ -132,6 +95,11 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
     private inner class BarcodeAnalyzer : ImageAnalysis.Analyzer {
 
+        override fun analyze(imageProxy: ImageProxy) {
+            // Pass image to an ML Kit Vision API
+            scanBarcodes(imageProxy)
+        }
+
         // Inspired from the library guide : https://developers.google.com/ml-kit/vision/barcode-scanning/android#kotlin
         @SuppressLint("UnsafeExperimentalUsageError")
         private fun scanBarcodes(imageProxy: ImageProxy) {
@@ -139,7 +107,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
             val mediaImage = imageProxy.image
             if (mediaImage != null) {
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-
 
                 // [START set_detector_options]
                 // ISBNs are represented on EAN-13 barcodes only.
@@ -157,7 +124,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 scanner.process(image)
                     .addOnSuccessListener { barcodes ->
                         // Task completed successfully
-                        // [START_EXCLUDE]
                         // [START get_barcodes]
                         for (barcode in barcodes) {
                             // In the case of ISBN, both rawValue and displayValue are identical and simply contain the ISBN with no extra text.
@@ -175,7 +141,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
                             }
                         }
                         // [END get_barcodes]
-                        // [END_EXCLUDE]
                         imageProxy.close()
                     }
                     .addOnFailureListener {
@@ -185,11 +150,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
                     }
                 // [END run_detector]
             }
-        }
-
-        override fun analyze(imageProxy: ImageProxy) {
-            // Pass image to an ML Kit Vision API
-            scanBarcodes(imageProxy)
         }
 
     }
