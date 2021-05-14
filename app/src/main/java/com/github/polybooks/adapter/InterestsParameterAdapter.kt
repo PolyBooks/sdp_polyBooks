@@ -5,6 +5,7 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
+import com.github.polybooks.database.DummyInterestDatabase
 
 /**
  * An adapter when filtering by Interest, which is a dynamic list of filtering values
@@ -24,12 +25,9 @@ class InterestsParameterAdapter<T: Interest>(
     init {
         val setV = { values: Any -> setValues(values as List<T>) }
         when (interestType) {
-            /*
-            // TODO I couldn't manage to fix that code using source set so I'm disabling it for now. I think it's fine as it is anyways not production code as it refers to Dummy.
             Interest.COURSE -> DummyInterestDatabase.getInstance().listAllCourses().thenAccept(setV)
             Interest.FIELD -> DummyInterestDatabase.getInstance().listAllFields().thenAccept(setV)
             Interest.SEMESTER -> DummyInterestDatabase.getInstance().listAllSemesters().thenAccept(setV)
-             */
         }
     }
 
