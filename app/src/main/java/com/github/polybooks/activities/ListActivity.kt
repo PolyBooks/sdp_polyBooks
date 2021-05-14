@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.database.*
-import com.github.polybooks.utils.url2json
-import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Activity to list all active sales
