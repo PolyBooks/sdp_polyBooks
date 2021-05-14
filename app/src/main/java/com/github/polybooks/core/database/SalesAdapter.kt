@@ -30,7 +30,6 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         val intent = Intent(view.context, SaleInformationActivity::class.java).apply {
             putExtra(SaleInformationActivity.EXTRA_SALE_INFORMATION, sale)
         }
-        println("=========================================================" + sale)
         view.context.startActivity(intent)
     }
 
