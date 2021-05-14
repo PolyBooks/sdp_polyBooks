@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.activities
 
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
@@ -10,7 +10,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.github.polybooks.activities.ListBooksActivity
+import com.github.polybooks.R
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
