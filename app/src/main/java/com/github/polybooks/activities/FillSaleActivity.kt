@@ -15,16 +15,13 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.FBSaleDatabase
-import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
-import java.lang.Exception
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
-import com.google.firebase.firestore.FirebaseFirestore
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 

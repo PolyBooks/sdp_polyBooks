@@ -16,7 +16,6 @@ import com.github.polybooks.database.BookQuery
 import com.github.polybooks.database.FBBookDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
  * This activity let the users to select the sorting and filtering parameters
