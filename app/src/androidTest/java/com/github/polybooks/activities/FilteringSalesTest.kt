@@ -17,6 +17,7 @@ import com.github.polybooks.adapter.InterestsParameterAdapter
 import com.github.polybooks.core.*
 import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.utils.FilteringTestUtils
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers
 import org.junit.After
@@ -62,7 +63,7 @@ class FilteringSalesTest {
         intended(
             allOf(
                 hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListActivity.EXTRA_SALE_QUERY_SETTINGS)
+                hasExtraWithKey(EXTRA_SALE_QUERY_SETTINGS)
             )
         )
     }
