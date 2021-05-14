@@ -1,6 +1,7 @@
 package com.github.polybooks.activities
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,15 +14,22 @@ import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.core.*
 import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.FBSaleDatabase
+import com.github.polybooks.core.Book
+import com.github.polybooks.core.BookCondition
+import com.github.polybooks.core.LoggedUser
+import com.github.polybooks.core.SaleState
+import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.core.database.implementation.SaleDatabase
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
+import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
-import java.lang.Exception
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
+
 
 /**
  * This activity receives the ISBN, either manually inputted from AddSale or deduced from the scanned barcode,
@@ -35,21 +43,32 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private val bookDB = OLBookDatabase { string -> url2json(string) }
     private val salesDB = FBSaleDatabase(firestore, bookDB)
 
-    private lateinit var bookFuture: CompletableFuture<Book?>
-    private var bookConditionSelected: BookCondition? = null
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
+
+    private lateinit var bookFuture: CompletableFuture<Book?>
+    private var stringISBN: String = ""
+    private var pictureFileName: String = ""
+    private var bookConditionSelected: BookCondition? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fill_sale_fancy)
+        setContentView(R.layout.activity_fill_sale)
 
-        // Get the Intent that started this activity and extract the string
-        val stringISBN = intent.getStringExtra(ISBN)
+        // Get the Intent that started this activity and extract the strings
+        val intent = intent
+        val extras = intent.extras
+        if (extras != null) {
+            stringISBN = extras.getString(EXTRA_ISBN) ?: ""
+            pictureFileName = extras.getString(EXTRA_PICTURE_FILE) ?: ""
+            findViewById<EditText>(R.id.filled_price).setText(extras.getString(EXTRA_SALE_PRICE))
+        }
 
-        // Check if ISBN in our database: (could check ISBN validity before)
+
+        // Check if ISBN in our database
 
         // Retrieve book data and display it if possible, else redirect with error toast
-        if(!stringISBN.isNullOrEmpty() && isbnHasCorrectFormat(stringISBN)) {
+        if(stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
                 val book = bookFuture.get()
@@ -82,12 +101,14 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         spinner.onItemSelectedListener = this
 
         // Listener on fill-in book price to trigger confirm button
-        findViewById<EditText>(R.id.filled_price).addTextChangedListener(object : TextWatcher {
+        findViewById<EditText>(R.id.filled_price).addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 handleConfirmButton()
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
@@ -112,8 +133,17 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         findViewById<TextView>(R.id.filled_publish_date).apply {
             text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
         }
-        // TODO whole lines could be removed from UI when argument is null instead of placeholding with default value
+        // TODO whole lines could be removed from UI (visibility = View.GONE) when argument is null instead of placeholding with default value
         findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }
+
+        if (pictureFileName.isNotEmpty()) {
+            Log.w("BookFuture", this.filesDir.path + '/' + pictureFileName)
+            val bmImg = BitmapFactory.decodeFile(this.filesDir.path + '/' + pictureFileName)
+            //TODO The picture gets rotated 90°, could work on fixing this, but not urgent.
+            findViewById<ImageView>(R.id.proof_picture).setImageBitmap(bmImg)
+        } else {
+            findViewById<ImageView>(R.id.proof_picture).visibility = View.GONE
+        }
     }
 
     /**
@@ -134,8 +164,15 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
          */
     }
 
-
-    // TODO all the picture stuff.
+    fun takePicture(view: View) {
+        val intent = Intent(this, TakeBookPictureActivity::class.java).apply {
+            val extras = Bundle()
+            extras.putString(EXTRA_ISBN, stringISBN)
+            extras.putString(EXTRA_SALE_PRICE, findViewById<EditText>(R.id.filled_price).text.toString())
+            putExtras(extras)
+        }
+        startActivity(intent)
+    }
 
 
     /**
@@ -149,7 +186,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             condition = bookConditionSelected!!,
             state = SaleState.ACTIVE,
-            image = null
+            image = null // TODO
         )
         //TODO handle success or failure of the addSale
 

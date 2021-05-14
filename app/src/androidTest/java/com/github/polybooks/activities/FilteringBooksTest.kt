@@ -56,8 +56,8 @@ class FilteringBooksTest {
         onView(withId(R.id.results_button)).perform(click())
         intended(
             allOf(
-                hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListSalesActivity.EXTRA_BOOKS_QUERY_SETTINGS)
+                hasComponent(ListBooksActivity::class.java.name),
+                hasExtraWithKey(ListActivity.EXTRA_BOOKS_QUERY_SETTINGS)
             )
         )
     }
@@ -215,19 +215,19 @@ class FilteringBooksTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        intended(hasComponent(FilteringSalesActivity::class.java.name))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
         onView(withId(R.id.user_profile)).perform(click())
-        onView(withId(R.id.results_button)).check(matches(ViewMatchers.isDisplayed()))
+        intended(hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun navBarBooks() {
         onView(withId(R.id.books)).perform(click())
-        onView(withId(R.id.results_button)).check(matches(ViewMatchers.isDisplayed()))
+        intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
@@ -245,7 +245,7 @@ class FilteringBooksTest {
 
     @Test
     fun navBarSelected() {
-        onView(withId(R.id.books))
+        onView(withId(R.id.default_selected))
             .check(matches(ViewMatchers.isSelected()))
     }
 

@@ -43,7 +43,7 @@ class LoginPasswordTest {
         onView(withId(R.id.email_field)).perform(typeText("login@bypassword.test"), closeSoftKeyboard())
         onView(withId(R.id.password_field)).perform(typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.log_button)).perform(scrollTo(), click())
-        Thread.sleep(1500);
+        Thread.sleep(1500)
         Intents.intended(IntentMatchers.hasComponent(UserProfileActivity::class.java.name))
         Intents.intended(toPackage("com.github.polybooks"));
         Intents.intended(hasExtra(EXTRA_MESSAGE, "TestLogin"));
@@ -56,7 +56,7 @@ class LoginPasswordTest {
     @Test
     fun navBarSales() {
         Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
@@ -68,7 +68,7 @@ class LoginPasswordTest {
     @Test
     fun navBarBooks() {
         Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.github.polybooks.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,64 +14,60 @@ import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.SaleQuery
 import com.github.polybooks.database.SaleSettings
+import com.github.polybooks.core.*
+import com.github.polybooks.core.database.SalesAdapter
+import com.github.polybooks.core.database.implementation.FBBookDatabase
+import com.github.polybooks.core.database.implementation.OLBookDatabase
+import com.github.polybooks.core.database.implementation.SaleDatabase
+import com.github.polybooks.core.database.interfaces.Query
+import com.github.polybooks.core.database.interfaces.SaleQuery
+import com.github.polybooks.core.database.interfaces.SaleSettings
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 
-/**
- * Activity to list all active sales
- */
-
-class ListSalesActivity : AppCompatActivity() {
-
-    companion object {
-        const val EXTRA_SALE_QUERY_SETTINGS :String = "saleQuerySettings"
-        const val EXTRA_BOOKS_QUERY_SETTINGS : String = "bookQuerySettings"
+class ListSalesActivity: ListActivity<Sale>() {
+    override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
+        return SalesAdapter(list)
     }
 
-    private lateinit var mRecycler: RecyclerView
-    private lateinit var mAdapter: SalesAdapter
-    private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
-    private val initialBooks: List<Sale> = emptyList()
-
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val salesDB = FBSaleDatabase(firestore, bookDB)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // TODO: rename / change this
-        setContentView(R.layout.activity_basic_database)
-
-        mRecycler = findViewById(R.id.recyclerView)
-        mRecycler.setHasFixedSize(true)
-        // Links the database api to the recyclerView
-        // TODO: check if completable future is used correctly
-        mAdapter = SalesAdapter(initialBooks)
-        mRecycler.layoutManager = mLayout
-        mRecycler.adapter = mAdapter
-
-
-        val saleQuery: SaleQuery = intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
-                ?.let {
-                    salesDB.querySales().fromSettings(intent.getSerializableExtra(
-                        EXTRA_SALE_QUERY_SETTINGS
-                    ) as SaleSettings
-                    )
+    override fun setNavBar() {
+        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        true
+                    }
+                    R.id.books -> {
+                        startActivity(Intent(this, ListBooksActivity::class.java))
+                        true
+                    }
+                    R.id.user_profile -> {
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        true
+                    }
+                    else -> true
                 }
-                ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
-
-        saleQuery.getAll().thenAccept { list -> this.updateAdapter(list) }
-
-        setupNavbar(findViewById(R.id.bottom_navigation), this)
+            }
+            setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
 
+    override fun getQuery(): Query<Sale> {
+        return intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
+            ?.let {
+                salesDB.querySales()
+                    .fromSettings(it as SaleSettings)
+            }
+            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+    }
 
-    private fun updateAdapter(sales : List<Sale>){
-        runOnUiThread {
-            mAdapter = SalesAdapter(sales)
-            mRecycler.adapter= mAdapter
-        }
+    override fun onFilterButtonClick() {
+        startActivity(Intent(this, FilteringSalesActivity::class.java))
+    }
+
+    override fun getTitleText(): String {
+        return getString(R.string.sale)
     }
 }

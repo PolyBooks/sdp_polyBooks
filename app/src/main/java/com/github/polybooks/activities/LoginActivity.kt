@@ -69,21 +69,18 @@ class LoginActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
                     R.id.books ->{
-                        startActivity(Intent(this, FilteringBooksActivity::class.java))
+                        startActivity(Intent(this, ListBooksActivity::class.java))
                         true
                     }
                     R.id.sales ->{
-                        startActivity(Intent(this, FilteringSalesActivity::class.java))
+                        startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
-                        startActivity(Intent(this, LoginActivity::class.java))
-                        true
-                    }
-                    else -> {
+                    R.id.home ->{
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
+                    else -> true
                 }
             }
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.user_profile, navBarListener)
