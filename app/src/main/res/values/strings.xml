@@ -144,6 +144,8 @@
     <string name="image_of_the_sale">Image of the sale</string>
     <string name="etat">Etat</string>
     <string name="currency">CHF</string>
+    <string name="value_buy">buy</string>
+    <string name="value_in">in</string>
 
     <string name="sale_ordering_popularity">Popularity</string>
     <string name="sale_ordering_title_inc">Title (ascending)</string>

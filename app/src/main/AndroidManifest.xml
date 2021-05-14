@@ -24,6 +24,7 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -61,7 +62,10 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".FilteringBooksActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".SaleInformationActivity"
+            android:parentActivityName=".ListSalesActivity" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
