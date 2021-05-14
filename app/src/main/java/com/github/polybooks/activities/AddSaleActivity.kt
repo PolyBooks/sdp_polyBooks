@@ -9,6 +9,8 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton

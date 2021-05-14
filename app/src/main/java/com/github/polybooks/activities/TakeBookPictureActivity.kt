@@ -20,6 +20,9 @@ import com.github.polybooks.utils.CameraManip.REQUIRED_PERMISSIONS
 import com.github.polybooks.utils.CameraManip.TAG
 import com.github.polybooks.utils.CameraManip.allPermissionsGranted
 import com.github.polybooks.utils.CameraManip.startCamera
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import kotlinx.android.synthetic.main.activity_take_book_picture.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream

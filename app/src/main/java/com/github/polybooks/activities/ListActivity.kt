@@ -19,18 +19,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 abstract class ListActivity<T>: AppCompatActivity() {
 
     companion object {
-        const val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
-        const val EXTRA_BOOKS_QUERY_SETTINGS: String = "bookQuerySettings"
         private const val TAG = "ListActivity"
     }
 
     private lateinit var mRecycler: RecyclerView
     private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
-
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    open val bookDB = FBBookDatabase(firestore, olBookDB)
-    open val salesDB = FBSaleDatabase(firestore, bookDB)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

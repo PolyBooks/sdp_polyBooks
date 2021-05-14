@@ -17,6 +17,8 @@ import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton

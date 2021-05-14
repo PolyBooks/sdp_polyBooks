@@ -15,6 +15,8 @@ import com.github.polybooks.utils.CameraManip.REQUIRED_PERMISSIONS
 import com.github.polybooks.utils.CameraManip.allPermissionsGranted
 import com.github.polybooks.utils.CameraManip.startCamera
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
