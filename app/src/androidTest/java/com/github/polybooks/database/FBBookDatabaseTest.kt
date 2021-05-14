@@ -33,6 +33,7 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    @Ignore("Reimplement when mocked")
     fun canGetBookByISBN() {
         val future = fbBookDB.getBook("9782376863069")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
@@ -95,6 +96,7 @@ class FBBookDatabaseTest {
     }*/
 
     @Test
+    @Ignore("Reimplement when mocked")
     fun usesOpenLibraryWhenBookNotStored() {
 
         fun deleteBook(isbn : String) : CompletableFuture<Unit> {
@@ -178,6 +180,7 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    @Ignore("Reimplement when mocked")
     fun getNalsoWorks() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069")).getN(1,0)
         val books = future.get()
@@ -194,6 +197,7 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    @Ignore("Reimplement when mocked")
     fun getNalsoWorks2() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,1)
         val books = future.get()
@@ -219,6 +223,7 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    @Ignore("Reimplement when mocked")
     fun getNalsoWorks4() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4,0)
         val books = future.get()
