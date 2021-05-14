@@ -12,8 +12,7 @@ import com.github.polybooks.utils.url2json
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
- * Activity to list all active sales
- * Pass boolean extra with id R.string.list_is_sale as false for books
+ * Activity to list something using a recyclerview
  */
 
 abstract class ListActivity<T>: AppCompatActivity() {
