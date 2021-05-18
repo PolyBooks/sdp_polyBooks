@@ -70,7 +70,9 @@ dependencies {
     androidTestImplementation('com.schibsted.spain:barista:3.9.0') {
         exclude group: 'org.jetbrains.kotlin' // Only if you already use Kotlin in your project
     }
-    //To be able to
+
+    //To be able to use the map
+    implementation("androidx.activity:activity-ktx:1.2.3")
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
 
