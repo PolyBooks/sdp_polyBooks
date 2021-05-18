@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture
 class FBBookDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
-    private val firebase = FirebaseFirestore.getInstance()
+    private val firebase = FirebaseProvider.getMockFirestore()
     private val olBookDB = OLBookDatabase{url2json(it)}
     private val fbBookDB = FBBookDatabase(firebase, olBookDB)
 

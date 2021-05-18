@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException
 class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
-    private val firestore = FirebaseFirestore.getInstance()
+    private val firestore = FirebaseProvider.getMockFirestore()
     private val olBookDB = OLBookDatabase { string -> url2json(string) }
     private val bookDB = FBBookDatabase(firestore, olBookDB)
     private val saleDB = FBSaleDatabase(firestore, bookDB)
