@@ -26,16 +26,6 @@ class DummyBooksQueryTests {
         assertEquals(default_books, q1.get())
     }
 
-    @Test(expected = NotImplementedError::class)
-    fun getNThrows() {
-        val q1 = query.getN(3,3)
-    }
-
-    @Test(expected = NotImplementedError::class)
-    fun getCountThrows() {
-        val q1 = query.getCount()
-    }
-
     @Test
     fun allFunctionsWork() {
         val q1 = query.onlyIncludeInterests(emptySet()).getAll()

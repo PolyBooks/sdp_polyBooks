@@ -44,11 +44,7 @@ class DummySalesQueryTest {
 
     @Test
     fun basicFunctionsWork() {
-        val q1 = query.getCount()
-        val q2 = query.getN(0,0)
         val q3 = query.getAll()
-        assertEquals(default_sale.size, q1.get())
-        assertEquals(default_sale, q2.get())
         assertEquals(default_sale, q3.get())
     }
 

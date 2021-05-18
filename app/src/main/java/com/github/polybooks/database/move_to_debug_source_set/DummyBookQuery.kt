@@ -40,14 +40,6 @@ class DummyBookQuery(private val books : List<Book> = default_books) : BookQuery
         }
     }
 
-    override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getCount(): CompletableFuture<Int> {
-        TODO("Not yet implemented")
-    }
-
     override fun getSettings() : BookSettings {
         return BookSettings(BookOrdering.DEFAULT, null, null, null)
     }

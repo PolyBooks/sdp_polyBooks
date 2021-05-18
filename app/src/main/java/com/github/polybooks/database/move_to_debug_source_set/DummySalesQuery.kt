@@ -92,21 +92,6 @@ class DummySalesQuery(private val sale: List<Sale> = default_sale) : SaleQuery {
         }
     }
 
-    override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
-        Log.d(TAG, "getN not implemented correctly")
-        return CompletableFuture.supplyAsync {
-            SystemClock.sleep(2000)
-            sale
-        }
-    }
-
-    override fun getCount(): CompletableFuture<Int> {
-        return CompletableFuture.supplyAsync {
-            SystemClock.sleep(2000)
-            sale.size
-        }
-    }
-
     override fun getSettings(): SaleSettings {
         return SaleSettings(
             SaleOrdering.DEFAULT,

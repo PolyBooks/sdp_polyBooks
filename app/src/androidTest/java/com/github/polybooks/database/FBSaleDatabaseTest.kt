@@ -56,14 +56,6 @@ class FBSaleDatabaseTest {
     @Rule @JvmField val expectedException: ExpectedException = ExpectedException.none()
 
     @Test
-    fun t_getCount() {
-        val allSales: CompletableFuture<List<Sale>> = saleDB.querySales().getAll()
-        val count: CompletableFuture<Int> = saleDB.querySales().getCount()
-
-        assertEquals(allSales.get().size, count.get())
-    }
-
-    @Test
     fun t_listAllSales() {
         val allSales: List<Sale> = saleDB.querySales().getAll().get()
         var listAllSales: List<Sale> = saleDB.listAllSales().get()
@@ -75,30 +67,30 @@ class FBSaleDatabaseTest {
 
     @Test
     fun t_searchByTitle() {
-        val initialCount: Int = saleDB.querySales().searchByTitle(dummySale.book.title).getCount().get()
+        val initialCount: Int = saleDB.querySales().searchByTitle(dummySale.book.title).getAll().get().size
         val dummySale = addDummySale()
-        val secondCount: Int = saleDB.querySales().searchByTitle(dummySale.book.title).getCount().get()
+        val secondCount: Int = saleDB.querySales().searchByTitle(dummySale.book.title).getAll().get().size
         //saleDB.deleteSale(dummySale)
 
         assertEquals(initialCount + 1, secondCount)
-        assertEquals(0, saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getCount().get())
+        assertEquals(0, saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getAll().get().size)
     }
 
     @Test
     fun t_searchMinPrice() {
         assertEquals(
                 saleDB.listAllSales().get().size,
-                saleDB.querySales().searchByMinPrice(0f).getCount().get()
+                saleDB.querySales().searchByMinPrice(0f).getAll().get().size
         )
 
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> s.price >= 10f }.size,
-                saleDB.querySales().searchByMinPrice(10f).getCount().get()
+                saleDB.querySales().searchByMinPrice(10f).getAll().get().size
         )
 
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> s.price >= 150f }.size,
-                saleDB.querySales().searchByMinPrice(150f).getCount().get()
+                saleDB.querySales().searchByMinPrice(150f).getAll().get().size
         )
     }
 
@@ -106,17 +98,17 @@ class FBSaleDatabaseTest {
     fun t_searchMaxPrice() {
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> s.price == 0f }.size,
-                saleDB.querySales().searchByMaxPrice(0f).getCount().get()
+                saleDB.querySales().searchByMaxPrice(0f).getAll().get().size
         )
 
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> s.price <= 10f }.size,
-                saleDB.querySales().searchByMaxPrice(10f).getCount().get()
+                saleDB.querySales().searchByMaxPrice(10f).getAll().get().size
         )
 
         assertEquals(
                 0,
-                saleDB.querySales().searchByMaxPrice(-1f).getCount().get()
+                saleDB.querySales().searchByMaxPrice(-1f).getAll().get().size
         )
     }
 
@@ -124,12 +116,12 @@ class FBSaleDatabaseTest {
     fun t_searchByPrice() {
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> (s.price in 5f..20f) }.size,
-                saleDB.querySales().searchByPrice(5f, 20f).getCount().get()
+                saleDB.querySales().searchByPrice(5f, 20f).getAll().get().size
         )
 
         assertEquals(
                 0,
-                saleDB.querySales().searchByPrice(5f, 2f).getCount().get()
+                saleDB.querySales().searchByPrice(5f, 2f).getAll().get().size
         )
     }
 
@@ -137,23 +129,23 @@ class FBSaleDatabaseTest {
     fun t_searchByCondition() {
         // empty collection should be ignored
         assertEquals(
-                saleDB.querySales().getCount().get(),
-                saleDB.querySales().searchByCondition(emptySet()).getCount().get()
+                saleDB.querySales().getAll().get().size,
+                saleDB.querySales().searchByCondition(emptySet()).getAll().get().size
         )
 
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> s.condition == NEW }.size,
-                saleDB.querySales().searchByCondition(setOf(NEW)).getCount().get()
+                saleDB.querySales().searchByCondition(setOf(NEW)).getAll().get().size
         )
 
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> (s.condition == NEW || s.condition == WORN)}.size,
-                saleDB.querySales().searchByCondition(setOf(NEW, WORN)).getCount().get()
+                saleDB.querySales().searchByCondition(setOf(NEW, WORN)).getAll().get().size
         )
 
         assertEquals(
-                saleDB.querySales().getCount().get(),
-                saleDB.querySales().searchByCondition(setOf(NEW, GOOD, WORN)).getCount().get()
+                saleDB.querySales().getAll().get().size,
+                saleDB.querySales().searchByCondition(setOf(NEW, GOOD, WORN)).getAll().get().size
         )
     }
 
@@ -161,13 +153,13 @@ class FBSaleDatabaseTest {
     fun t_searchByState() {
         // empty collection should be ignored
         assertEquals(
-                saleDB.querySales().getCount().get(),
-                saleDB.querySales().searchByState(emptySet()).getCount().get()
+                saleDB.querySales().getAll().get().size,
+                saleDB.querySales().searchByState(emptySet()).getAll().get().size
         )
 
         assertEquals(
                 saleDB.listAllSales().get().filter { s -> s.state == ACTIVE }.size,
-                saleDB.querySales().searchByState(setOf(ACTIVE)).getCount().get()
+                saleDB.querySales().searchByState(setOf(ACTIVE)).getAll().get().size
         )
     }
 
@@ -181,31 +173,6 @@ class FBSaleDatabaseTest {
         } catch (e: Throwable) {
             fail("Wrong exception type")
         }
-    }
-
-    @Test
-    fun t_getN() {
-        var future: CompletableFuture<List<Sale>> = saleDB.querySales().getN(-1, 10)
-        assertTrue(future.isCompletedExceptionally)
-        customAssertFutureThrows(future, -1, 10)
-
-        future = saleDB.querySales().getN(10, -1)
-        assertTrue(future.isCompletedExceptionally)
-        customAssertFutureThrows(future, 10, -1)
-
-        future = saleDB.querySales().getN(-1, -1)
-        assertTrue(future.isCompletedExceptionally)
-        customAssertFutureThrows(future, -1, -1)
-
-        future = saleDB.querySales().getN(0, 0)
-        assertEquals(0, future.get().size)
-
-        future = saleDB.querySales().getN(1, 0)
-        assertTrue(future.get().size <= 1)
-
-        addDummySale()
-        future = saleDB.querySales().getN(1, 0)
-        assertTrue(future.get().size <= 1)
     }
 
     @Test
@@ -289,8 +256,8 @@ class FBSaleDatabaseTest {
         )
         val sale = saleDB.addSale("9780156881807", testUser, 666f, WORN, RETRACTED, null).get()
         assertNotEquals(
-                saleDB.querySales().searchByState(setOf(ACTIVE)).fromSettings(settings).getCount().get(),
-                saleDB.querySales().searchByState(setOf(ACTIVE)).getCount().get()
+                saleDB.querySales().searchByState(setOf(ACTIVE)).fromSettings(settings).getAll().get().size,
+                saleDB.querySales().searchByState(setOf(ACTIVE)).getAll().get().size
         )
         saleDB.deleteSale(sale).get()
     }
@@ -303,8 +270,8 @@ class FBSaleDatabaseTest {
         )
 
         assertEquals(
-                saleDB.querySales().fromSettings(settings).getCount().get(),
-                saleDB.querySales().searchByTitle("Tartuffe").getCount().get()
+                saleDB.querySales().fromSettings(settings).getAll().get().size,
+                saleDB.querySales().searchByTitle("Tartuffe").getAll().get().size
         )
     }
 
@@ -319,10 +286,10 @@ class FBSaleDatabaseTest {
                 ,null, minPrice, maxPrice
         )
         assertEquals(
-                saleDB.querySales().fromSettings(settings).getCount().get(),
+                saleDB.querySales().fromSettings(settings).getAll().get().size,
                 saleDB.querySales()
                     .searchByTitle("Tartuffe")
-                    .searchByPrice(minPrice, maxPrice).getCount().get()
+                    .searchByPrice(minPrice, maxPrice).getAll().get().size
 
         )
     }
