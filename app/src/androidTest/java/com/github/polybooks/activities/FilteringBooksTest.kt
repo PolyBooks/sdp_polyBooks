@@ -57,7 +57,7 @@ class FilteringBooksTest {
         intended(
             allOf(
                 hasComponent(ListBooksActivity::class.java.name),
-                hasExtraWithKey(ListActivity.EXTRA_BOOKS_QUERY_SETTINGS)
+                hasExtraWithKey(ListActivity.EXTRA_BOOKS_QUERY)
             )
         )
     }

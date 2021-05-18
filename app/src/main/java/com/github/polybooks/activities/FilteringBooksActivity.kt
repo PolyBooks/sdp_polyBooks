@@ -11,14 +11,8 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.database.FBBookDatabase
-import com.github.polybooks.database.OLBookDatabase
-import com.github.polybooks.database.BookOrdering
-import com.github.polybooks.database.BookQuery
+import com.github.polybooks.database.*
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * This activity let the users to select the sorting and filtering parameters
@@ -31,11 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 class FilteringBooksActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringBooksActivity"
-
-    // TODO use future global static dbs
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
@@ -77,19 +66,17 @@ class FilteringBooksActivity: FilteringActivity() {
     }
 
     fun getResults(view: View) {
-//        var query: BookQuery = DummyBookQuery()
-        var query: BookQuery = bookDB.queryBooks()
+        var builder: BookQueryBuilder = BookQueryBuilder()
 
         //These 2 in front for dummy books query
         if (mName.text.isNotEmpty())
-            query.searchByTitle(mName.text.toString())
+            builder.searchByTitle(mName.text.toString())
 
-        resultByParameter(query)
+        resultByParameter(builder)
 
         // pass query to new activity
-        val querySettings = query.getSettings()
         val intent = Intent(this, ListBooksActivity::class.java)
-        intent.putExtra(ListActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
+        intent.putExtra(ListActivity.EXTRA_BOOKS_QUERY, builder.get())
         startActivity(intent)
     }
 
@@ -120,7 +107,7 @@ class FilteringBooksActivity: FilteringActivity() {
         mISBN = findViewById(R.id.book_isbn)
     }
 
-    private fun resultByParameter(query: BookQuery) {
+    private fun resultByParameter(query: BookQueryBuilder) {
         val sortingValues = mSortParameter.getSelectedValues()
         if (sortingValues.isNotEmpty()) {
             query.withOrdering(sortingValues[0])

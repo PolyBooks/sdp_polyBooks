@@ -62,7 +62,7 @@ class FilteringSalesTest {
         intended(
             allOf(
                 hasComponent(ListSalesActivity::class.java.name),
-                hasExtraWithKey(ListActivity.EXTRA_SALE_QUERY_SETTINGS)
+                hasExtraWithKey(ListActivity.EXTRA_SALE_QUERY)
             )
         )
     }

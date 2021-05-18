@@ -39,21 +39,14 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
  * An implementation of a book database based on the Open Library online database
  * */
 class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>) :
-    BookDatabase {
+    BookDatabase() {
 
-    override fun queryBooks(): BookQuery = OLBookQuery()
-
-    private inner class OLBookQuery() : AbstractBookQuery() {
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getAll(): CompletableFuture<List<Book>> {
-            return if (isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
-            else {
-                val futures = isbns!!.map{getBookByISBN(it)}
-                listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
-            }
+    override fun execute(bookQuery: BookQuery): CompletableFuture<List<Book>> {
+        return if (bookQuery.isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
+        else {
+            val futures = bookQuery.isbns.map{getBookByISBN(it)}
+            listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
         }
-
     }
 
     //makes an URL to the OpenLibrary page out of an isbn

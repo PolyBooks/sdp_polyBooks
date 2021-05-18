@@ -52,7 +52,7 @@ class FBBookDatabaseTest {
     @Test
     fun canGetBookByTitle() {
         fbBookDB.getBook("9780156881807").get() //insure at least one Tartuffe book is in the database
-        val future = fbBookDB.queryBooks().searchByTitle("Tartuffe").getAll()
+        val future = fbBookDB.execute(BookQuery(title = "Tartuffe"))
         val books = future.get()
         assertTrue(books.isNotEmpty())
         books.forEach {
@@ -64,7 +64,7 @@ class FBBookDatabaseTest {
     @Test
     fun canGetBookByTitle2() {
         fbBookDB.getBook("9781985086593").get() //insure at least one OSTEP book is in the database
-        val future = fbBookDB.queryBooks().searchByTitle("Operat").getAll()
+        val future = fbBookDB.execute(BookQuery(title = "Operat"))
         val books = future.get()
         assertTrue(books.isNotEmpty())
         books.forEach {
@@ -135,14 +135,14 @@ class FBBookDatabaseTest {
             //Check it finds book associated with interest
             setInterests(testBook, listOf(interest)).get()
             val booksWithInterest_1 =
-                fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
+                fbBookDB.execute(BookQuery(interests = setOf(interest))).get()
             assertTrue("Should find $testBook when searching for $interest",
                 booksWithInterest_1.any { it.isbn == testBook } )
 
             //Check it doesnt show book not associated with interest
             setInterests(testBook, listOf()).get()
             val booksWithInterest_2 =
-                fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
+                fbBookDB.execute(BookQuery(interests = setOf(interest))).get()
             assertTrue("Should not find $testBook when searching for $interest",
                 booksWithInterest_2.none { it.isbn == testBook } )
         }
@@ -174,34 +174,34 @@ class FBBookDatabaseTest {
 
     @Test
     fun wrongISBNyieldsEmptyList() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("1234567890666")).getAll()
+        val future = fbBookDB.getBook("1234567890666")
         val books = future.get()
 
-        assertEquals(0, books.size)
+        assertNull(books)
     }
 
     @Test
     fun getAllBooksDoesntCrash() {
-        fbBookDB.queryBooks().getAll().get()
+        fbBookDB.execute(BookQuery()).get()
     }
 
     @Test
     fun getMultipleBooksWorks() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getAll()
+        val future = fbBookDB.execute(BookQuery(isbns = setOf("9782376863069", "9781985086593")))
         val books = future.get()
         assertEquals(2, books.size)
     }
 
     @Test
     fun getMultipleBooksWorks2() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593", "1234567890666")).getAll()
+        val future = fbBookDB.execute(BookQuery(isbns = setOf("9782376863069", "9781985086593", "1234567890666")))
         val books = future.get()
         assertEquals(2, books.size)
     }
 
     @Test
     fun searchByInterestDoesntCrash() {
-        val future = fbBookDB.queryBooks().onlyIncludeInterests(setOf(Field("Test"))).getAll()
+        val future = fbBookDB.execute(BookQuery(interests = setOf(Field("Test"))))
         val book = future.get()
     }
 

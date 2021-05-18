@@ -5,16 +5,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.database.Query
-import com.github.polybooks.database.SaleSettings
-import com.github.polybooks.database.SalesAdapter
+import com.github.polybooks.database.*
 import com.github.polybooks.utils.setupNavbar
+import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.CompletableFuture
 
 /**
  * Activity to list Sales
  */
 class ListSalesActivity: ListActivity<Sale>() {
+
+    private val firestore = FirebaseFirestore.getInstance()
+    private val olBookDB = OLBookDatabase { string -> url2json(string) }
+    private val bookDB = FBBookDatabase(firestore, olBookDB)
+    private val saleDB = FBSaleDatabase(firestore, bookDB)
+
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)
     }
@@ -41,13 +48,12 @@ class ListSalesActivity: ListActivity<Sale>() {
             setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
 
-    override fun getQuery(): Query<Sale> {
-        return intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
-            ?.let {
-                salesDB.querySales()
-                    .fromSettings(it as SaleSettings)
+    override fun getElements(): CompletableFuture<List<Sale>> {
+        return intent.getSerializableExtra(EXTRA_SALE_QUERY)
+            ?.let { query ->
+                saleDB.execute(query as SaleQuery)
             }
-            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+            ?: saleDB.execute(SaleQuery(states = setOf(SaleState.ACTIVE)))
     }
 
     override fun onFilterButtonClick() {
