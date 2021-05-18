@@ -5,7 +5,7 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.core.database.implementation.DummyInterestDatabase
+import com.github.polybooks.database.move_to_debug_source_set.DummyInterestDatabase
 
 /**
  * An adapter when filtering by Interest, which is a dynamic list of filtering values

@@ -4,10 +4,7 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LocalUser
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.core.database.implementation.DummySalesQuery
-import com.github.polybooks.core.database.interfaces.SaleOrdering
-import com.github.polybooks.core.database.interfaces.SaleQuery
-import com.github.polybooks.core.database.interfaces.SaleSettings
+import com.github.polybooks.database.move_to_debug_source_set.DummySalesQuery
 import com.github.polybooks.utils.anonymousBook
 import com.google.firebase.Timestamp
 import org.junit.Test
@@ -24,15 +21,24 @@ class DummySalesQueryTest {
     val query : SaleQuery = DummySalesQuery()
 
     val default_sale: List<Sale> = listOf(
-            Sale( anonymousBook("Book1"), LocalUser, 23.00f, BookCondition.GOOD, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-            Sale(anonymousBook("Book2"), LocalUser, 24.55f, BookCondition.GOOD, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-            Sale(anonymousBook("Book3"), LocalUser, 25.00f, BookCondition.NEW, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-            Sale(anonymousBook("Book4"), LocalUser, 26.00f, BookCondition.GOOD, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-            Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
-            Sale(anonymousBook("Book6"), LocalUser, 29.00f, BookCondition.GOOD, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-            Sale(anonymousBook("Book7"), LocalUser, 23.00f, BookCondition.GOOD, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-            Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-            Sale(anonymousBook("Book9"), LocalUser, 25.00f, BookCondition.GOOD, com.google.firebase.Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.RETRACTED, null),
+            Sale( anonymousBook("Book1"), LocalUser, 23.00f, BookCondition.GOOD, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+            Sale(anonymousBook("Book2"), LocalUser, 24.55f, BookCondition.GOOD, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+            Sale(anonymousBook("Book3"), LocalUser, 25.00f, BookCondition.NEW, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+            Sale(anonymousBook("Book4"), LocalUser, 26.00f, BookCondition.GOOD, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+            Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
+            Sale(anonymousBook("Book6"), LocalUser, 29.00f, BookCondition.GOOD, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+            Sale(anonymousBook("Book7"), LocalUser, 23.00f, BookCondition.GOOD, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+            Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+            Sale(anonymousBook("Book9"), LocalUser, 25.00f, BookCondition.GOOD, com.google.firebase.Timestamp(
+                com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.RETRACTED, null),
     )
 
 
@@ -65,19 +71,28 @@ class DummySalesQueryTest {
 
 
         val q1Result = listOf(
-                Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
-                Sale(anonymousBook("Book9"), LocalUser, 25.00f, BookCondition.GOOD, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.RETRACTED, null),
+                Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
+                Sale(anonymousBook("Book9"), LocalUser, 25.00f, BookCondition.GOOD, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.RETRACTED, null),
                 )
         val q2Result = listOf(
-                Sale(anonymousBook("Book3"), LocalUser, 25.00f, BookCondition.NEW, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-                Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
-                Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+                Sale(anonymousBook("Book3"), LocalUser, 25.00f, BookCondition.NEW, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+                Sale(anonymousBook("Book5"), LocalUser, 21.00f, BookCondition.WORN, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.CONCLUDED, null),
+                Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
                 )
         val q3Result = listOf(
-                Sale(anonymousBook("Book1"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-                Sale(anonymousBook("Book2"), LocalUser, 24.55f, BookCondition.GOOD, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-                Sale(anonymousBook("Book7"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
-                Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, Timestamp(com.github.polybooks.core.database.implementation.format.parse("2016-05-05")!!), SaleState.ACTIVE, null)
+                Sale(anonymousBook("Book1"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+                Sale(anonymousBook("Book2"), LocalUser, 24.55f, BookCondition.GOOD, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+                Sale(anonymousBook("Book7"), LocalUser, 23.00f, BookCondition.GOOD, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null),
+                Sale(anonymousBook("Book8"), LocalUser, 23.66f, BookCondition.NEW, Timestamp(
+                    com.github.polybooks.database.move_to_debug_source_set.format.parse("2016-05-05")!!), SaleState.ACTIVE, null)
         )
         assertEquals(q1Result, q1.get())
         assertEquals(q2Result, q2.get())
@@ -86,7 +101,8 @@ class DummySalesQueryTest {
 
     @Test
     fun settingsTest() {
-        val settingsRes = SaleSettings(SaleOrdering.DEFAULT,
+        val settingsRes = SaleSettings(
+            SaleOrdering.DEFAULT,
                 null, null, null, null, null,null, null)
         val settings = query.searchByMaxPrice(10.0f).getSettings()
         assertEquals(settingsRes, settings)
@@ -94,7 +110,8 @@ class DummySalesQueryTest {
 
     @Test
     fun getSettingsAfterFromSettingsShouldCorrespond() {
-        val settingsRes = SaleSettings(SaleOrdering.DEFAULT,
+        val settingsRes = SaleSettings(
+            SaleOrdering.DEFAULT,
                 null, null, null, null, null,null, null)
 
         val settings = query.fromSettings(settingsRes).getSettings()
