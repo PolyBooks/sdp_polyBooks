@@ -139,6 +139,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
                 val booksFuture = getBookQuery().getAll()
                 return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
+                    if (isbns.isEmpty()) return@thenCompose CompletableFuture.completedFuture(listOf())
                     val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
                     val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
                     doQueries(filterQuery(saleQuery)).thenCompose { snapshotsToSales(it,isbnToBook) }
@@ -171,6 +172,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
                 val booksFuture = getBookQuery().getAll()
                 return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
+                    if (isbns.isEmpty()) return@thenCompose CompletableFuture.completedFuture(listOf())
                     val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
                     val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
                     doQueries(filterQuery(paginateQuery(saleQuery, n, page))).thenCompose { snapshotsToSales(it,isbnToBook) }

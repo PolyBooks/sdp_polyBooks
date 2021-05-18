@@ -85,6 +85,12 @@ class FBSaleDatabaseTest {
     }
 
     @Test
+    fun doesntCrashWhenNoBooksAreFound() {
+        saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getAll().get()
+        saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getN(2,0).get()
+    }
+
+    @Test
     fun t_searchMinPrice() {
         assertEquals(
                 saleDB.listAllSales().get().size,
