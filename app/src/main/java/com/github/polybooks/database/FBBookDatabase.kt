@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -34,7 +35,7 @@ object FBBookDatabase : BookDatabase {
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    private class FBBookQuery() : AbstractBookQuery() {
+    private class FBBookQuery: AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
