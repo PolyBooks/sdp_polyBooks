@@ -29,7 +29,9 @@ data class Book(
     val language : String?,
     val publisher : String?,
     val publishDate : Timestamp?,
-    val format : String?
+    val format : String?,
+    val totalStars: Double? = null,
+    val numberVotes: Int? = null
 ) : Serializable
 
 /**
@@ -44,5 +46,6 @@ enum class BookFields(val fieldName: String) {
     PUBLISHER("publisher"),
     PUBLISHDATE("publishDate"),
     FORMAT("format"),
-    PICTUREFILENAME("pictureFileName")
+    PICTUREFILENAME("pictureFileName"),
+    RATING("rating")
 }

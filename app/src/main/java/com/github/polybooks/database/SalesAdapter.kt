@@ -56,7 +56,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         holder.viewCondition.text = sale.condition.name
         holder.viewPrice.text = String.format("%.2f", sale.price)
 
-        val book1 = Book(sale.book.isbn, sale.book.authors, sale.book.title, sale.book.edition, sale.book.language, sale.book.publisher, null, sale.book.format)
+        val book1 = Book(sale.book.isbn, sale.book.authors, sale.book.title, sale.book.edition, sale.book.language, sale.book.publisher, null, sale.book.format, sale.book.totalStars, sale.book.numberVotes)
         val sale1 = Sale(book1, sale.seller, sale.price, sale.condition, null, sale.state, sale.image) // TODO remove nullable when timestamp serialization situation will be resolved
         holder.itemView.setOnClickListener { v -> onClickCardView(v, sale1) }
     }
