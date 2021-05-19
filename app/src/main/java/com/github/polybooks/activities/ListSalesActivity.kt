@@ -16,7 +16,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 /**
  * Activity to list all active sales
  */
-
 class ListSalesActivity: ListActivity<Sale>() {
 
     val salesDB = FBSaleDatabase.getInstance()

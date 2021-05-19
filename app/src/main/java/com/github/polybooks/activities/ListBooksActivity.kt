@@ -13,6 +13,9 @@ import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+/**
+ * Activity to list Books
+ */
 class ListBooksActivity: ListActivity<Book>() {
 
     val bookDB = FBBookDatabase.getInstance()
