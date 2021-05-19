@@ -1,22 +1,23 @@
 package com.github.polybooks.database
 
 import com.github.polybooks.core.*
-import com.github.polybooks.database.SaleOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "sale2"
 
-class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabase) :
+class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatabase):
     SaleDatabase() {
 
     private val saleRef: CollectionReference = firestore.collection(COLLECTION_NAME)
 
-    override fun execute(saleQuery : SaleQuery): CompletableFuture<List<Sale>> {
+    override fun execute(saleQuery: SaleQuery): CompletableFuture<List<Sale>> {
         val isbn = saleQuery.isbn
         val title = saleQuery.title
         val interests = saleQuery.interests
@@ -28,26 +29,45 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         //This functions computes the set of queries to execute in order to get the desired Sales.
         //We need to return a set of queries because Firebase doesn't allow for more than one IN clause.
         //Ergo, we need to do multiple queries.
-        fun filterQuery(q: Query) : List<Query> {
+        fun filterQuery(q: Query): List<Query> {
             var queries = listOf(q)
 
-            minPrice?.let { queries = queries.map{it.whereGreaterThanOrEqualTo(SaleFields.PRICE.fieldName, minPrice!!)} }
-            maxPrice?.let { queries = queries.map{it.whereLessThanOrEqualTo(SaleFields.PRICE.fieldName, maxPrice!!)} }
+            minPrice?.let {
+                queries = queries.map {
+                    it.whereGreaterThanOrEqualTo(
+                        SaleFields.PRICE.fieldName,
+                        minPrice
+                    )
+                }
+            }
+            maxPrice?.let {
+                queries = queries.map {
+                    it.whereLessThanOrEqualTo(
+                        SaleFields.PRICE.fieldName,
+                        maxPrice
+                    )
+                }
+            }
             states?.let {
                 queries = queries.flatMap { query ->
-                    states.map{ state -> query.whereEqualTo(SaleFields.STATE.fieldName, state) }
+                    states.map { state -> query.whereEqualTo(SaleFields.STATE.fieldName, state) }
                 }
             }
             conditions?.let {
-                queries = queries.flatMap{ query ->
-                    conditions.map{ condition -> query.whereEqualTo(SaleFields.CONDITION.fieldName, condition) }
+                queries = queries.flatMap { query ->
+                    conditions.map { condition ->
+                        query.whereEqualTo(
+                            SaleFields.CONDITION.fieldName,
+                            condition
+                        )
+                    }
                 }
             }
 
             return queries
         }
 
-        fun doQuery(query : Query) : CompletableFuture<Iterable<DocumentSnapshot>> {
+        fun doQuery(query: Query): CompletableFuture<Iterable<DocumentSnapshot>> {
             val future = CompletableFuture<Iterable<DocumentSnapshot>>()
             query.get()
                 .addOnSuccessListener { documents ->
@@ -61,13 +81,14 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
             return future
         }
 
-        fun doQueries(queries : List<Query>) : CompletableFuture<Iterable<DocumentSnapshot>> {
-            return listOfFuture2FutureOfList(queries.map { doQuery(it) }.toList()).thenApply { it.flatten() }
+        fun doQueries(queries: List<Query>): CompletableFuture<Iterable<DocumentSnapshot>> {
+            return listOfFuture2FutureOfList(queries.map { doQuery(it) }
+                .toList()).thenApply { it.flatten() }
         }
 
 
         //get the books for which we want to find the sales
-        fun queryAssociatedBooks() : CompletableFuture<List<Book>> {
+        fun queryAssociatedBooks(): CompletableFuture<List<Book>> {
             val builder = BookQueryBuilder()
             if (interests != null) builder.onlyIncludeInterests(interests)
             if (title != null) builder.searchByTitle(title)
@@ -80,11 +101,12 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
             return doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
         } else {
             return queryAssociatedBooks().thenCompose { books ->
-                val isbns = books.map {it.isbn}
+                val isbns = books.map { it.isbn }
                 if (isbns.isEmpty()) return@thenCompose CompletableFuture.completedFuture(listOf())
-                val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
+                val isbnToBook =
+                    books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
                 val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
-                doQueries(filterQuery(saleQuery)).thenCompose { snapshotsToSales(it,isbnToBook) }
+                doQueries(filterQuery(saleQuery)).thenCompose { snapshotsToSales(it, isbnToBook) }
             }
         }
 
@@ -97,7 +119,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         return LoggedUser(uid, pseudo)
     }
 
-    private fun snapshotToSale(snapshot: DocumentSnapshot, bookCache : Map<ISBN, Book>): Sale {
+    private fun snapshotToSale(snapshot: DocumentSnapshot, bookCache: Map<ISBN, Book>): Sale {
         val isbn = snapshot[SaleFields.BOOK_ISBN.fieldName] as ISBN
         return Sale(
             bookCache[isbn]!!, // The cache should contain the book, otherwise the call to this function is illegal
@@ -110,16 +132,21 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         )
     }
 
-    private fun snapshotsToSales(snapshots : Iterable<DocumentSnapshot>, bookCache: Map<ISBN, Book> = mapOf()) : CompletableFuture<List<Sale>> {
-        val missingBooks = snapshots.map { doc -> doc[SaleFields.BOOK_ISBN.fieldName] as ISBN }.toSet().minus(bookCache.keys)
-        if (missingBooks.isEmpty()) {
+    private fun snapshotsToSales(
+        snapshots: Iterable<DocumentSnapshot>,
+        bookCache: Map<ISBN, Book> = mapOf()
+    ): CompletableFuture<List<Sale>> {
+        val missingBooks =
+            snapshots.map { doc -> doc[SaleFields.BOOK_ISBN.fieldName] as ISBN }.toSet()
+                .minus(bookCache.keys)
+        return if (missingBooks.isEmpty()) {
             val sales = snapshots.map { doc ->
                 snapshotToSale(doc, bookCache)
             }
-            return CompletableFuture.completedFuture(sales)
+            CompletableFuture.completedFuture(sales)
         } else {
             val booksFuture = bookDB.execute(BookQuery(isbns = missingBooks))
-            return booksFuture.thenApply { books ->
+            booksFuture.thenApply { books ->
                 val biggerBookCache = bookCache + books.associateBy { it.isbn }
                 snapshots.map { doc ->
                     snapshotToSale(doc, biggerBookCache)
@@ -140,14 +167,16 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         )
     }
 
-    override fun addSale(bookISBN : ISBN,
-                         seller : User,
-                         price : Float,
-                         condition : BookCondition,
-                         state : SaleState,
-                         image : Image?) : CompletableFuture<Sale> {
+    override fun addSale(
+        bookISBN: ISBN,
+        seller: User,
+        price: Float,
+        condition: BookCondition,
+        state: SaleState,
+        image: Image?
+    ): CompletableFuture<Sale> {
 
-        if(seller == LocalUser) {
+        if (seller == LocalUser) {
             val future = CompletableFuture<Sale>()
             future.completeExceptionally(LocalUserException("Cannot add sale as LocalUser"))
             return future
@@ -177,12 +206,15 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         var query = saleRef
             .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
             .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
-            .whereEqualTo(SaleFields.SELLER.fieldName +"."+UserFields.UID.fieldName, (sale.seller as LoggedUser).uid)
+            .whereEqualTo(
+                SaleFields.SELLER.fieldName + "." + UserFields.UID.fieldName,
+                (sale.seller as LoggedUser).uid
+            )
         return query.get().continueWith { task -> task.result.documents.firstOrNull() }
 
     }
 
-    override fun deleteSale(sale: Sale) : CompletableFuture<Boolean> {
+    override fun deleteSale(sale: Sale): CompletableFuture<Boolean> {
         if (sale.seller == LocalUser) {
             throw IllegalArgumentException("A sale by the LocalUser is invalid")
         }

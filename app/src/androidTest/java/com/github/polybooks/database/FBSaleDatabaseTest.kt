@@ -3,20 +3,23 @@ package com.github.polybooks.database
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
-import com.github.polybooks.core.*
+import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition.*
+import com.github.polybooks.core.LocalUser
+import com.github.polybooks.core.LoggedUser
+import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.utils.unwrapException
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import junit.framework.AssertionFailedError
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.ExpectedException
-import java.lang.IllegalArgumentException
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutionException
 
 class FBSaleDatabaseTest {
     @get:Rule
@@ -299,7 +302,9 @@ class FBSaleDatabaseTest {
         assertFalse(res4.contains(saleActiveGood))
         assertFalse(res4.contains(saleRetractedGood))
 
-        val res5 = saleDB.execute(SaleQuery(conditions = setOf(WORN), states = setOf(ACTIVE, RETRACTED))).get()
+        val res5 =
+            saleDB.execute(SaleQuery(conditions = setOf(WORN), states = setOf(ACTIVE, RETRACTED)))
+                .get()
         assertTrue(res5.contains(saleActiveWorn))
         assertTrue(res5.contains(saleRetractedWorn))
         assertFalse(res5.contains(saleActiveGood))
