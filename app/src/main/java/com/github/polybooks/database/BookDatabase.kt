@@ -20,6 +20,11 @@ interface BookDatabase {
     fun queryBooks() : BookQuery
 
     /**
+     * Adds/Modifies a book in the database
+     */
+    fun addBook(book: Book): CompletableFuture<Unit>
+
+    /**
      * Get all the books in the database
      * */
     fun listAllBooks() : CompletableFuture<List<Book>> = queryBooks().getAll()

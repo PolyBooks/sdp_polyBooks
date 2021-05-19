@@ -28,11 +28,51 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
     private val bookRef = firebase.collection(COLLECTION_NAME)
 
-    private val dateFormater = SimpleDateFormat(DATE_FORMAT)
+    private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    private inner class FBBookQuery() : AbstractBookQuery() {
+    private fun bookToDocument(book : Book) : Any {
+        val publishDate : String? = book.publishDate?.let {
+            dateFormatter.format(it.toDate())
+        }
+        val rating: HashMap<String, Number?> = hashMapOf(
+            "totalStars" to book.totalStars,
+            "numberVotes" to book.numberVotes
+        )
+        return hashMapOf(
+            BookFields.AUTHORS.fieldName to book.authors,
+            BookFields.EDITION.fieldName to book.edition,
+            BookFields.FORMAT.fieldName to book.format,
+            BookFields.ISBN.fieldName to book.isbn,
+            BookFields.LANGUAGE.fieldName to book.language,
+            BookFields.PUBLISHDATE.fieldName to publishDate,
+            BookFields.PUBLISHER.fieldName to book.publisher,
+            BookFields.TITLE.fieldName to book.title,
+            BookFields.RATING.fieldName to rating
+        )
+    }
+
+    private fun assembleBookEntry(bookDocument : Any) : Any {
+        return hashMapOf(
+            "book" to bookDocument,
+            "interests" to listOf<Any>()
+        )
+    }
+
+    override fun addBook(book: Book): CompletableFuture<Unit> {
+        val future = CompletableFuture<Unit>()
+        val bookEntry = assembleBookEntry(bookToDocument(book))
+        bookRef.document(book.isbn).set(bookEntry)
+            .addOnSuccessListener {
+                future.complete(Unit)
+            }.addOnFailureListener {
+                future.completeExceptionally(it)
+            }
+        return future
+    }
+
+    private inner class FBBookQuery : AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
@@ -73,7 +113,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                             booksFromOL + booksFromFB
                         }
                         val booksToFBFuture = booksFromOLFuture.thenCompose { booksFromOL ->
-                            val futures = booksFromOL.map { book -> addBookToFirebase(book) }
+                            val futures = booksFromOL.map { book -> addBook(book) }
                             listOfFuture2FutureOfList(futures)
                         }
                         booksToFBFuture.thenCompose { allBooksFuture }
@@ -111,33 +151,19 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             return getAll().thenApply { it.size }
         }
 
-        private fun bookToDocument(book : Book) : Any {
-            val publishDate : String? = book.publishDate?.let {
-                dateFormater.format(it.toDate())
-            }
-            return hashMapOf(
-                BookFields.AUTHORS.fieldName to book.authors,
-                BookFields.EDITION.fieldName to book.edition,
-                BookFields.FORMAT.fieldName to book.format,
-                BookFields.ISBN.fieldName to book.isbn,
-                BookFields.LANGUAGE.fieldName to book.language,
-                BookFields.PUBLISHDATE.fieldName to publishDate,
-                BookFields.PUBLISHER.fieldName to book.publisher,
-                BookFields.TITLE.fieldName to book.title,
-            )
-        }
-
-        private fun assembleBookEntry(bookDocument : Any) : Any {
-            return hashMapOf(
-                "book" to bookDocument,
-                "interests" to listOf<Any>()
-            )
-        }
-
         private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
             val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
-                Timestamp(dateFormater.parse(it)!!)
+                Timestamp(dateFormatter.parse(it)!!)
             }
+
+            val ratingMap: HashMap<String, Number>? = map[BookFields.RATING.fieldName] as HashMap<String, Number>?
+            var totalStars: Double? = null; var numberVotes: Int? = null
+
+            if (ratingMap != null) {
+                totalStars = ratingMap["totalStars"] as Double
+                numberVotes = (ratingMap["numberVotes"] as Long).toInt()
+            }
+
             return Book(
                 map[BookFields.ISBN.fieldName] as ISBN,
                 map[BookFields.AUTHORS.fieldName] as List<String>?,
@@ -146,25 +172,15 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                 map[BookFields.LANGUAGE.fieldName] as String?,
                 map[BookFields.PUBLISHER.fieldName] as String?,
                 publishDate,
-                map[BookFields.FORMAT.fieldName] as String?
+                map[BookFields.FORMAT.fieldName] as String?,
+                totalStars,
+                numberVotes
             )
         }
 
         private fun snapshotEntryToBook(snapshot : DocumentSnapshot) : Book {
             val bookDocument = snapshot.get("book") as HashMap<String, Any>
             return snapshotBookToBook(bookDocument)
-        }
-
-        private fun addBookToFirebase(book : Book) : CompletableFuture<Unit> {
-            val future = CompletableFuture<Unit>()
-            val bookEntry = assembleBookEntry(bookToDocument(book))
-            bookRef.document(book.isbn).set(bookEntry)
-                .addOnSuccessListener {
-                    future.complete(Unit)
-                }.addOnFailureListener {
-                    future.completeExceptionally(it)
-                }
-            return future
         }
 
         private fun getBooksByISBNFromFirebase(isbns : List<ISBN>) : CompletableFuture<List<Book>> {

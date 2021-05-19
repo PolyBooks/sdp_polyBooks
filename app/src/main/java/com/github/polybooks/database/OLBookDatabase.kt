@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import com.github.polybooks.utils.unwrapException
+import java.lang.UnsupportedOperationException
 
 
 // TODO add to/create listOf as we discover new fields
@@ -43,6 +44,10 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     BookDatabase {
 
     override fun queryBooks(): BookQuery = OLBookQuery()
+
+    override fun addBook(book: Book): CompletableFuture<Unit> {
+        throw UnsupportedOperationException("The 'add' operation is not supported by open library database")
+    }
 
     private inner class OLBookQuery() : AbstractBookQuery() {
 
