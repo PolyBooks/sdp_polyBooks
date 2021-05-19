@@ -129,6 +129,7 @@
     <string name="publisher">Publisher</string>
     <string name="chf">CHF</string>
     <string name="copyrights">Copyrights</string>
+    <string name="rating">Rating</string>
     <string name="date_published">Date Published</string>
     <string name="format">format</string>
     <string name="should_appear_automatically">Should appear automatically</string>
