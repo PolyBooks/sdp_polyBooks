@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
 import com.github.polybooks.utils.listOfFuture2FutureOfList
+import com.github.polybooks.utils.regulariseISBN
 import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -44,7 +45,8 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     override fun execute(bookQuery: BookQuery): CompletableFuture<List<Book>> {
         return if (bookQuery.isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
         else {
-            val futures = bookQuery.isbns.map{getBookByISBN(it)}
+            val regularised = bookQuery.isbns.map { regulariseISBN(it) ?: throw IllegalArgumentException("ISBN \"$it\" is not valid") }
+            val futures = regularised.map{getBookByISBN(it)}
             listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
         }
     }
