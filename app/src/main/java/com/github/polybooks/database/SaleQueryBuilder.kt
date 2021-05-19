@@ -99,7 +99,7 @@ class SaleQueryBuilder {
      * Set this query to get sales of books associated with the given isbn13.
      * (ignoring other filters)
      * */
-    fun searchByISBN(isbn13: String): SaleQueryBuilder {
+    fun searchByISBN(isbn: String): SaleQueryBuilder {
         this.isbn = isbn
         return this
     }
