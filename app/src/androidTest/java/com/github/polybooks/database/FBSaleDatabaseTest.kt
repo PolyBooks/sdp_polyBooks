@@ -82,6 +82,11 @@ class FBSaleDatabaseTest {
     }
 
     @Test
+    fun doesntCrashWhenNoBooksAreFound() {
+        saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getAll().get()
+    }
+
+    @Test
     fun t_searchMinPrice() {
 
         val sale1 = saleDB.addSale(dummySale.copy(price = 1.0f)).get()
