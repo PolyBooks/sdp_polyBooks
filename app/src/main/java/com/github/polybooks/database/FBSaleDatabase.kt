@@ -9,14 +9,13 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.Query
 import java.util.concurrent.CompletableFuture
 
+private const val COLLECTION_NAME = "sale2"
 
-object FBSaleDatabase : SaleDatabase {
-
-    private const val COLLECTION_NAME = "sale2"
+internal class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
 
     private val saleRef: CollectionReference = FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
 
-    private class SalesQuery : SaleQuery {
+    private inner class SalesQuery : SaleQuery {
 
         private var isbn: ISBN? = null
         private var title: String? = null
@@ -124,7 +123,7 @@ object FBSaleDatabase : SaleDatabase {
 
 
         private fun getBookQuery() : BookQuery {
-            val bookQuery = FBBookDatabase.queryBooks()
+            val bookQuery = bookDatabase.queryBooks()
             if (interests != null) bookQuery.onlyIncludeInterests(interests!!)
             if (title != null) bookQuery.searchByTitle(title!!)
             if (isbn != null) bookQuery.searchByISBN(setOf(isbn!!))
@@ -205,7 +204,7 @@ object FBSaleDatabase : SaleDatabase {
             }
             return CompletableFuture.completedFuture(sales)
         } else {
-            val booksFuture = FBBookDatabase
+            val booksFuture = bookDatabase
                 .queryBooks()
                 .searchByISBN(missingBooks.toSet())
                 .getAll()
@@ -242,7 +241,7 @@ object FBSaleDatabase : SaleDatabase {
             future.completeExceptionally(LocalUserException("Cannot add sale as LocalUser"))
             return future
         }
-        val bookFuture = FBBookDatabase.getBook(bookISBN)
+        val bookFuture = bookDatabase.getBook(bookISBN)
         return bookFuture.thenCompose { book ->
             val future = CompletableFuture<Sale>()
             if (book == null) {

@@ -3,7 +3,7 @@ package com.github.polybooks.database
 import com.github.polybooks.core.*
 import java.util.concurrent.CompletableFuture
 
-object DummyInterestDatabase: InterestDatabase {
+internal object DummyInterestDatabase: InterestDatabase {
 
     fun getInstance(): InterestDatabase {
         return this

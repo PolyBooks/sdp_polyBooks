@@ -4,9 +4,11 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
+import com.github.polybooks.utils.unwrapException
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
+import java.io.FileNotFoundException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -15,13 +17,13 @@ class FBBookDatabaseTest {
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     private val firestore = FirebaseProvider.getFirestore()
-    private val fbBookDB = FBBookDatabase
+    private val fbBookDB = Database.bookDatabase
 
     //the OL book database wont return any useful information. will need to use firebase :)
-    /*private val fbWithoutOL =
-        com.github.polybooks.database.FBBookDatabase(firebase, OLBookDatabase {
+    private val fbWithoutOL =
+        FBBookDatabase(OLBookDatabase {
             CompletableFuture.supplyAsync { throw FileNotFoundException() }
-        })*/
+        })
 
     @Before
     fun setUp() {
@@ -34,7 +36,6 @@ class FBBookDatabaseTest {
     }
 
     @Test
-    @Ignore("Check how it works after mocking")
     fun canGetBookByISBN() {
         val future = fbBookDB.getBook("9782376863069")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
@@ -72,7 +73,7 @@ class FBBookDatabaseTest {
 
     }
 
-    /*@Test
+    @Test
     fun usesFirebaseAsCache() {
         //ensure the database had an opportunity to cache
         val getBookWithRegularDB = fbBookDB.getBook("9782376863069").get()
@@ -94,10 +95,9 @@ class FBBookDatabaseTest {
         val getBookWithRegularDB = fbBookDB.getBook("9780156881807").get()
         val future = fbWithoutOL.getBook("9780156881807")
         val book = future.get() ?: throw AssertionFailedError("Book was not cached")
-    }*/
+    }
 
     @Test
-    @Ignore("Check how it works after mocking")
     fun usesOpenLibraryWhenBookNotStored() {
 
         fun deleteBook(isbn : String) : CompletableFuture<Unit> {
@@ -124,12 +124,12 @@ class FBBookDatabaseTest {
             val hashed = interests.map { it.hashCode() }
             firestore.collection("book")
                 .document(isbn).update("interests",hashed)
-                .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not set interests for $isbn")) }
+                .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not set interests for $isbn.")) }
                 .addOnSuccessListener { future.complete(Unit) }
             return future
         }
 
-        val testBook: ISBN = "9782889152728"
+        val testBook: ISBN = "9780156881807"
 
         fun doTest(interest : Interest) {
             //Check it finds book associated with interest
@@ -155,7 +155,7 @@ class FBBookDatabaseTest {
 
     }
 
-    /*@Ignore
+    @Ignore("This is a test for a feature that is not yet implemented")
     @Test
     fun isbn10alsoWorksWithoutOL() {
         //ensure the database had an opportunity to cache
@@ -170,7 +170,7 @@ class FBBookDatabaseTest {
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
         assertEquals(publishDate, book.publishDate!!.toDate())
-    }*/
+    }
 
     @Test
     fun wrongISBNyieldsEmptyList() {
@@ -186,7 +186,6 @@ class FBBookDatabaseTest {
     }
 
     @Test
-    @Ignore("Check how it works after mocking")
     fun getMultipleBooksWorks() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getAll()
         val books = future.get()
@@ -194,7 +193,6 @@ class FBBookDatabaseTest {
     }
 
     @Test
-    @Ignore("Check how it works after mocking")
     fun getMultipleBooksWorks2() {
         val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593", "1234567890666")).getAll()
         val books = future.get()

@@ -11,22 +11,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
+private const val COLLECTION_NAME = "book"
+private const val DATE_FORMAT = "yyyy MM dd"
+
 /**
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
  * */
-object FBBookDatabase : BookDatabase {
-
-    private const val COLLECTION_NAME = "book"
-    private const val DATE_FORMAT = "yyyy MM dd"
+internal class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
 
     private val bookRef = FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
-
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    private class FBBookQuery: AbstractBookQuery() {
+    private inner class FBBookQuery: AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
@@ -62,7 +61,7 @@ object FBBookDatabase : BookDatabase {
                     return booksFromFBFuture.thenCompose { booksFromFB ->
                         val isbnsFound = booksFromFB.map { it.isbn }
                         val remainingISBNs = isbns.minus(isbnsFound)
-                        val booksFromOLFuture = OLBookDatabase.queryBooks().searchByISBN(remainingISBNs).getAll()
+                        val booksFromOLFuture = bookProvider.queryBooks().searchByISBN(remainingISBNs).getAll()
                         val allBooksFuture = booksFromOLFuture.thenApply { booksFromOL ->
                             booksFromOL + booksFromFB
                         }
