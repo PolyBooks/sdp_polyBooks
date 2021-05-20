@@ -18,9 +18,10 @@ class FBBookDatabaseTest {
     private val fbBookDB = FBBookDatabase.getInstance()
 
     //the OL book database wont return any useful information. will need to use firebase :)
-    private val fbWithoutOL = FBBookDatabase(firebase, OLBookDatabase{
-            CompletableFuture.supplyAsync{ throw FileNotFoundException() }
-    })
+    /*private val fbWithoutOL =
+        com.github.polybooks.database.FBBookDatabase(firebase, OLBookDatabase {
+            CompletableFuture.supplyAsync { throw FileNotFoundException() }
+        })*/
 
     @Before
     fun setUp() {
@@ -70,7 +71,7 @@ class FBBookDatabaseTest {
 
     }
 
-    @Test
+    /*@Test
     fun usesFirebaseAsCache() {
         //ensure the database had an opportunity to cache
         val getBookWithRegularDB = fbBookDB.getBook("9782376863069").get()
@@ -92,7 +93,7 @@ class FBBookDatabaseTest {
         val getBookWithRegularDB = fbBookDB.getBook("9780156881807").get()
         val future = fbWithoutOL.getBook("9780156881807")
         val book = future.get() ?: throw AssertionFailedError("Book was not cached")
-    }
+    }*/
 
     @Test
     fun usesOpenLibraryWhenBookNotStored() {

@@ -5,8 +5,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
-import com.github.polybooks.core.SaleState.ACTIVE
-import com.github.polybooks.core.SaleState.RETRACTED
+import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.utils.unwrapException
 import com.google.firebase.Timestamp
 import junit.framework.AssertionFailedError
@@ -18,6 +17,7 @@ class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
     private val saleDB = FBSaleDatabase.getInstance()
+    private val olBookDB = OLBookDatabase.getInstance()
 
     private val testUser = LoggedUser(301966, "Le givre")
     private val testBook =
