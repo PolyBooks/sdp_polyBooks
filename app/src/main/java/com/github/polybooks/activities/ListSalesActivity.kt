@@ -11,6 +11,9 @@ import com.github.polybooks.adapter.database.SalesAdapter
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+/**
+ * Activity to list Sales
+ */
 class ListSalesActivity: ListActivity<Sale>() {
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)

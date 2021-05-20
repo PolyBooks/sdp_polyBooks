@@ -10,6 +10,9 @@ import com.github.polybooks.database.Query
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+/**
+ * Activity to list Books
+ */
 class ListBooksActivity: ListActivity<Book>() {
 
     override fun adapter(list: List<Book>): RecyclerView.Adapter<*> {

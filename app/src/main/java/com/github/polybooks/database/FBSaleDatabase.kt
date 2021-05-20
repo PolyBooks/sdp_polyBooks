@@ -1,7 +1,6 @@
 package com.github.polybooks.database
 
 import com.github.polybooks.core.*
-import com.github.polybooks.database.*
 import com.github.polybooks.database.SaleOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.android.gms.tasks.Task
@@ -139,55 +138,10 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
                 val booksFuture = getBookQuery().getAll()
                 return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
+                    if (isbns.isEmpty()) return@thenCompose CompletableFuture.completedFuture(listOf())
                     val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
                     val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
                     doQueries(filterQuery(saleQuery)).thenCompose { snapshotsToSales(it,isbnToBook) }
-                }
-            }
-        }
-
-        override fun getN(n: Int, page: Int): CompletableFuture<List<Sale>> {
-            val future: CompletableFuture<List<Sale>> = CompletableFuture()
-
-            if (n < 0 || page < 0) {
-                future.completeExceptionally(
-                    IllegalArgumentException(
-                        if (n < 0) "Cannot return a negative ($n) number of results"
-                        else "Cannot return a negative ($page) page number"
-                    )
-                )
-                return future
-            }
-
-            // Firebase cannot handle querying 0 element
-            if (n == 0) {
-                future.complete(emptyList())
-                return future
-            }
-
-            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                return doQueries(filterQuery(paginateQuery(saleRef, n, page))).thenCompose { snapshotsToSales(it) }
-            } else {
-                val booksFuture = getBookQuery().getAll()
-                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
-                    val isbns = books.map {it.isbn}
-                    val isbnToBook = books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
-                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
-                    doQueries(filterQuery(paginateQuery(saleQuery, n, page))).thenCompose { snapshotsToSales(it,isbnToBook) }
-                }
-            }
-        }
-
-        override fun getCount(): CompletableFuture<Int> {
-            if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                return doQueries(filterQuery(saleRef)).thenApply { it.count() }
-            } else {
-                val booksFuture = getBookQuery().getAll()
-                return booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
-                    if (books.isEmpty()) return@thenCompose CompletableFuture.completedFuture(0)
-                    val isbns = books.map {it.isbn}
-                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
-                    doQueries(filterQuery(saleQuery)).thenApply { it.count() }
                 }
             }
         }

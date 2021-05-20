@@ -93,24 +93,6 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             }
         }
 
-        override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            if (n <= 0 || page < 0) {
-                throw IllegalArgumentException(
-                    if (n <= 0) "Cannot return a negative/null ($n) number of results"
-                    else "Cannot return a negative ($page) page number"
-                )
-            }
-            return getAll().thenApply { list ->
-                val lowRange = Integer.min(n * page, list.size)
-                val highRange = Integer.min(n * page + n, list.size)
-                list.subList(lowRange, highRange)
-            }
-        }
-
-        override fun getCount(): CompletableFuture<Int> {
-            return getAll().thenApply { it.size }
-        }
-
         private fun bookToDocument(book : Book) : Any {
             val publishDate : String? = book.publishDate?.let {
                 dateFormater.format(it.toDate())
