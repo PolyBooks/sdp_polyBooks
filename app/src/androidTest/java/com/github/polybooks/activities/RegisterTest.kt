@@ -48,11 +48,11 @@ class RegisterTest {
         onView(withId(R.id.password1_field)).perform(scrollTo(), typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.password2_field)).perform(scrollTo(), typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.button_reg)).perform(scrollTo(), click())
-        Thread.sleep(1500);
+        Thread.sleep(1500)
         Intents.intended(IntentMatchers.hasComponent(UserProfileActivity::class.java.name))
-        Intents.intended(toPackage("com.github.polybooks"));
-        Intents.intended(hasExtra(EXTRA_USERNAME, "TestTestTest"));
-        Thread.sleep(1500);
+        Intents.intended(toPackage("com.github.polybooks"))
+        Intents.intended(hasExtra(EXTRA_USERNAME, "TestTestTest"))
+        Thread.sleep(1500)
         Firebase.auth.currentUser.delete()
     }
 
