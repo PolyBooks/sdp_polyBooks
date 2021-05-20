@@ -8,7 +8,7 @@ class HTTP2JSONTests {
 
     @Test
     fun url2jsonDontCrash() {
-        val json = url2json("https://openlibrary.org/books/OL29583638M.json")
+        val json = url2json("https://openlibrary.org/isbn/9782376863069.json")
             .handle { json, exception ->
                 assertNotNull(json)
             }.get()

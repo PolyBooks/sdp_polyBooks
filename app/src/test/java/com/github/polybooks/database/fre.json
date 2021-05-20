@@ -1,1 +1,20 @@
-{"comment": "initial import", "code": "fre", "latest_revision": 5, "name": "French / fran\u00e7ais", "key": "/languages/fre", "created": {"type": "/type/datetime", "value": "2008-04-04T15:49:50.080837"}, "type": {"key": "/type/language"}, "m": "edit", "last_modified": {"type": "/type/datetime", "value": "2020-04-07T20:17:00.983838"}, "revision": 5}
+{
+  "comment": "initial import",
+  "code": "fre",
+  "latest_revision": 5,
+  "name": "French / fran\u00e7ais",
+  "key": "/languages/fre",
+  "created": {
+    "type": "/type/datetime",
+    "value": "2008-04-04T15:49:50.080837"
+  },
+  "type": {
+    "key": "/type/language"
+  },
+  "m": "edit",
+  "last_modified": {
+    "type": "/type/datetime",
+    "value": "2020-04-07T20:17:00.983838"
+  },
+  "revision": 5
+}

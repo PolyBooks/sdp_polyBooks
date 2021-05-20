@@ -8,14 +8,12 @@ import android.widget.EditText
 import com.github.polybooks.R
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.core.*
-import com.github.polybooks.database.FBBookDatabase
-import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.database.SaleQuery
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 /**
@@ -28,11 +26,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
 
-    // TODO use future global static dbs
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
-    private val saleDB = FBSaleDatabase(firestore, bookDB)
+    private val saleDB = FBSaleDatabase
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
@@ -108,7 +102,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
         val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java)
-        intent.putExtra(ListActivity.EXTRA_SALE_QUERY_SETTINGS, querySettings)
+        intent.putExtra(EXTRA_SALE_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 

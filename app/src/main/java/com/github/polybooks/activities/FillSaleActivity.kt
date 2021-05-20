@@ -16,13 +16,14 @@ import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
-import com.google.firebase.firestore.FirebaseFirestore
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 
@@ -34,10 +35,8 @@ import java.util.concurrent.CompletableFuture
  */
 class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
-    private val firestore = FirebaseFirestore.getInstance()
-    private val bookDB = OLBookDatabase { string -> url2json(string) }
-    private val salesDB = FBSaleDatabase(firestore, bookDB)
+    private val bookDB = OLBookDatabase
+    private val salesDB = FBSaleDatabase
 
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
