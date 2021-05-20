@@ -1,5 +1,6 @@
 package com.github.polybooks.utils
 
+import com.github.polybooks.core.Semester
 import java.util.*
 
 /**
@@ -32,5 +33,9 @@ object StringsManip {
 
     fun isbnHasCorrectFormat(isbn: String): Boolean {
         return isbn.matches(Regex(ISBN_FORMAT))
+    }
+
+    fun mergeSectionAndSemester(semester: Semester): String {
+        return semester.section + "-" + semester.semester
     }
 }
