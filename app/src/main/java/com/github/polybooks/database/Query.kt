@@ -12,13 +12,4 @@ interface Query<T> {
      * */
     fun getAll() : CompletableFuture<List<T>>
 
-    /**
-     * Get the results in batches of at most n books.
-     * */
-    fun getN(n : Int, page : Int) : CompletableFuture<List<T>>
-
-    /**
-     * Get how many entries match this query
-     * */
-    fun getCount() : CompletableFuture<Int>
 }
