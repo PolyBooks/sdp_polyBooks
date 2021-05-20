@@ -10,6 +10,7 @@ This week set up the project to use mock firebase instances for tests. I then di
 
 
 ## Raoul
+This week, I finished a bit the refactoring into source-sets I started last week, but mostly I got to start working with Firebase. That was thrilling as it was learning something new and the hours flew by. I progressed well, while still being a bit above my expected time estimates.
 
 
 ## Sophie (Scrum Master)
