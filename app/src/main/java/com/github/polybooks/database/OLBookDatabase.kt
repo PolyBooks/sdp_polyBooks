@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
-import com.github.polybooks.database.BookOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.github.polybooks.utils.unwrapException
 import com.github.polybooks.utils.url2json
@@ -55,26 +54,6 @@ object OLBookDatabase: BookDatabase {
                 val futures = isbns!!.map { getBookByISBN(it) }
                 listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
             }
-        }
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            if (n <= 0 || page < 0) {
-                throw IllegalArgumentException(
-                    if (n <= 0) "Cannot return a negative/null ($n) number of results"
-                    else "Cannot return a negative ($page) page number"
-                )
-            }
-            return getAll().thenApply { list ->
-                val lowRange = min(n * page, list.size)
-                val highRange = min(n * page + n, list.size)
-                list.subList(lowRange, highRange)
-            }
-        }
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getCount(): CompletableFuture<Int> {
-            return getAll().thenApply { it.size }
         }
 
     }

@@ -18,9 +18,9 @@ class FBBookDatabaseTest {
     private val fbBookDB = FBBookDatabase.getInstance()
 
     //the OL book database wont return any useful information. will need to use firebase :)
-    /*private val fbWithoutOL = FBBookDatabase(firebase, OLBookDatabase{
+    private val fbWithoutOL = FBBookDatabase(firebase, OLBookDatabase{
             CompletableFuture.supplyAsync{ throw FileNotFoundException() }
-    })*/
+    })
 
     @Before
     fun setUp() {
@@ -33,7 +33,6 @@ class FBBookDatabaseTest {
     }
 
     @Test
-    @Ignore("Reimplement when mocked")
     fun canGetBookByISBN() {
         val future = fbBookDB.getBook("9782376863069")
         val book = future.get() ?: throw AssertionFailedError("Book was not found")
@@ -71,7 +70,7 @@ class FBBookDatabaseTest {
 
     }
 
-    /*@Test
+    @Test
     fun usesFirebaseAsCache() {
         //ensure the database had an opportunity to cache
         val getBookWithRegularDB = fbBookDB.getBook("9782376863069").get()
@@ -93,10 +92,9 @@ class FBBookDatabaseTest {
         val getBookWithRegularDB = fbBookDB.getBook("9780156881807").get()
         val future = fbWithoutOL.getBook("9780156881807")
         val book = future.get() ?: throw AssertionFailedError("Book was not cached")
-    }*/
+    }
 
     @Test
-    @Ignore("Reimplement when mocked")
     fun usesOpenLibraryWhenBookNotStored() {
 
         fun deleteBook(isbn : String) : CompletableFuture<Unit> {
@@ -177,57 +175,6 @@ class FBBookDatabaseTest {
         val books = future.get()
 
         assertEquals(0, books.size)
-    }
-
-    @Test
-    @Ignore("Reimplement when mocked")
-    fun getNalsoWorks() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069")).getN(1,0)
-        val books = future.get()
-        assertEquals(1, books.size)
-        val book = books[0]
-        assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn)
-        assertEquals("ACTUSF", book.publisher)
-        assertNotNull(book.authors)
-        assertEquals("paperback", book.format)
-        assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
-    }
-
-    @Test
-    @Ignore("Reimplement when mocked")
-    fun getNalsoWorks2() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,1)
-        val books = future.get()
-        assertEquals(1, books.size)
-        val book = books[0]
-        assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn)
-        assertEquals("ACTUSF", book.publisher)
-        assertNotNull(book.authors)
-        assertEquals("paperback", book.format)
-        assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
-    }
-
-    @Test
-    fun getNalsoWorks3() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,0)
-        val books = future.get()
-        assertEquals(1, books.size)
-        val book = books[0]
-        assertEquals("9781985086593", book.isbn)
-    }
-
-    @Test
-    @Ignore("Reimplement when mocked")
-    fun getNalsoWorks4() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4,0)
-        val books = future.get()
-        assertEquals(2, books.size)
     }
 
     @Test

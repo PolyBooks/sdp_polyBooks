@@ -23,18 +23,6 @@ interface SaleDatabase {
     fun listAllSales(): CompletableFuture<List<Sale>> = querySales().getAll()
 
     /**
-     * A method for getting sales by batches of at most N sales. The batches are indexed by ordered pages.
-     * @param numberOfSales The maximum number of sales per page
-     * @param page The index of the page
-     * @param ordering The ordering for the pages and sales within the pages (see {@link SaleOrdering})
-     * */
-    fun getNSales(
-        numberOfSales: Int,
-        page: Int,
-        ordering: SaleOrdering
-    ): CompletableFuture<List<Sale>> = querySales().withOrdering(ordering).getN(numberOfSales, page)
-
-    /**
      * Add the sale defined by the given parameters to the database
      * @param bookISBN the isbn of the book being sold
      * @param seller the user selling the book (can't be the local user)
