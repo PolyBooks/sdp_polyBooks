@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture
  * It might seem unnecessary to have 3 root level collections for interests,
  * but it is by far the best option if we potentially want each interest to hold the list of books and user associated with it
  * As each document will be able to have a book collection and a user collection.
- * Using snapshotListener here does not feel necessary as interestsare rarely changing.
+ * Using snapshotListener here does not feel necessary as interests are rarely changing.
  */
 object FBInterestDatabase: InterestDatabase {
 
@@ -156,8 +156,6 @@ object FBInterestDatabase: InterestDatabase {
 
 
     }
-
-
 
 
     /**
