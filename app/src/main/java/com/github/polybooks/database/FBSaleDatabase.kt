@@ -9,20 +9,13 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.Query
 import java.util.concurrent.CompletableFuture
 
+private const val COLLECTION_NAME = "sale2"
 
-object FBSaleDatabase : SaleDatabase {
+internal class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
 
-    // TODO To convert it to a singleton object, I always used FBBookDatabase as the BookDB which used to be an argument. Might need to be changed in the future with utils.SingletonHolder. Or to use two separate classes?
+    private val saleRef: CollectionReference = FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
 
-    fun getInstance(): SaleDatabase {
-        return this
-    }
-
-    private const val COLLECTION_NAME = "sale2"
-
-    private val saleRef: CollectionReference = FirebaseFirestore.getInstance().collection(COLLECTION_NAME)
-
-    private class SalesQuery : SaleQuery {
+    private inner class SalesQuery : SaleQuery {
 
         private var isbn: ISBN? = null
         private var title: String? = null
@@ -130,7 +123,7 @@ object FBSaleDatabase : SaleDatabase {
 
 
         private fun getBookQuery() : BookQuery {
-            val bookQuery = FBBookDatabase.queryBooks()
+            val bookQuery = bookDatabase.queryBooks()
             if (interests != null) bookQuery.onlyIncludeInterests(interests!!)
             if (title != null) bookQuery.searchByTitle(title!!)
             if (isbn != null) bookQuery.searchByISBN(setOf(isbn!!))
@@ -211,7 +204,7 @@ object FBSaleDatabase : SaleDatabase {
             }
             return CompletableFuture.completedFuture(sales)
         } else {
-            val booksFuture = FBBookDatabase
+            val booksFuture = bookDatabase
                 .queryBooks()
                 .searchByISBN(missingBooks.toSet())
                 .getAll()
@@ -248,7 +241,7 @@ object FBSaleDatabase : SaleDatabase {
             future.completeExceptionally(LocalUserException("Cannot add sale as LocalUser"))
             return future
         }
-        val bookFuture = FBBookDatabase.getBook(bookISBN)
+        val bookFuture = bookDatabase.getBook(bookISBN)
         return bookFuture.thenCompose { book ->
             val future = CompletableFuture<Sale>()
             if (book == null) {

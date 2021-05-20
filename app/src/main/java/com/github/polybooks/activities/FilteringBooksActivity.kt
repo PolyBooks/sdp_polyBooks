@@ -13,6 +13,7 @@ import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import com.github.polybooks.database.BookOrdering
 import com.github.polybooks.database.BookQuery
+import com.github.polybooks.database.Database
 import com.github.polybooks.database.FBBookDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
@@ -29,7 +30,7 @@ class FilteringBooksActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringBooksActivity"
 
-    private val bookDB = FBBookDatabase.getInstance()
+    private val bookDB = Database.bookDatabase
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
