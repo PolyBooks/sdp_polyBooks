@@ -1,7 +1,7 @@
 # Summary for week 10
 
 ## Dario
-
+This week set up the project to use mock firebase instances for tests. I then did some refactoring, removing unused code. I did stuff that had to be done so I believe it was a good week. Next week I will probably work more with the other team members to be closer to finishing the very important features
 
 ## Joshua
 
