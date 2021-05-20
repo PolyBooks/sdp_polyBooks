@@ -181,54 +181,6 @@ class FBBookDatabaseTest {
     }
 
     @Test
-    fun getNalsoWorks() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069")).getN(1,0)
-        val books = future.get()
-        assertEquals(1, books.size)
-        val book = books[0]
-        assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn)
-        assertEquals("ACTUSF", book.publisher)
-        assertNotNull(book.authors)
-        assertEquals("paperback", book.format)
-        assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
-    }
-
-    @Test
-    fun getNalsoWorks2() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,1)
-        val books = future.get()
-        assertEquals(1, books.size)
-        val book = books[0]
-        assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn)
-        assertEquals("ACTUSF", book.publisher)
-        assertNotNull(book.authors)
-        assertEquals("paperback", book.format)
-        assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
-    }
-
-    @Test
-    fun getNalsoWorks3() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(1,0)
-        val books = future.get()
-        assertEquals(1, books.size)
-        val book = books[0]
-        assertEquals("9781985086593", book.isbn)
-    }
-
-    @Test
-    fun getNalsoWorks4() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9781985086593", "9782376863069")).getN(4,0)
-        val books = future.get()
-        assertEquals(2, books.size)
-    }
-
-    @Test
     fun getAllBooksDoesntCrash() {
         fbBookDB.queryBooks().getAll().get()
     }
