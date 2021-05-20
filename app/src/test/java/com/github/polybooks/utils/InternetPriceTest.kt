@@ -10,21 +10,21 @@ class InternetPriceTest {
     fun url2jsonDontCrash() {
         val json = getInternetPrice("9780007269709")
             .get()
-        assertEquals("Unavailable",json)
+        assertEquals(INTERNET_PRICE_UNAVAILABLE, json)
     }
 
     @Test
     fun url3jsonDontCrash() {
         val json = getInternetPrice("9780099549482")
             .get()
-        assertNotEquals("Unavailable",json)
+        assertNotEquals(INTERNET_PRICE_UNAVAILABLE, json)
     }
 
     @Test
     fun url4jsonDontCrash() {
         val json = getInternetPrice("9782889152728")
             .get()
-        assertEquals("Unavailable",json)
+        assertEquals(INTERNET_PRICE_UNAVAILABLE, json)
     }
 
 

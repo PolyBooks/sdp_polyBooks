@@ -9,7 +9,9 @@ import com.github.polybooks.R
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Sale
 import com.github.polybooks.database.*
+import com.github.polybooks.utils.INTERNET_PRICE_UNAVAILABLE
 import com.github.polybooks.utils.StringsManip
+import com.github.polybooks.utils.getInternetPrice
 import com.github.polybooks.utils.url2json
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -81,8 +83,17 @@ class SaleInformationActivity: AppCompatActivity() {
             Toast.makeText(this, "You chose : $rating stars", Toast.LENGTH_SHORT).show()
         }
 
+
         findViewById<TextView>(R.id.sale_information_condition).text = sale.condition.name
-        findViewById<TextView>(R.id.sale_information_internet_price).text = "100"
+
+        getInternetPrice(sale.book.isbn).thenApply { price ->
+            if (price == INTERNET_PRICE_UNAVAILABLE) {
+                findViewById<TextView>(R.id.sale_information_internet_price).text = "???"
+            } else {
+                findViewById<TextView>(R.id.sale_information_internet_price).text = price
+            }
+        }
+
         findViewById<TextView>(R.id.sale_information_price).text = sale.price.toString()
     }
 }
