@@ -2,7 +2,7 @@ package com.github.polybooks.database
 
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
-import com.github.polybooks.database.BookOrdering.*
+import com.github.polybooks.database.BookOrdering.DEFAULT
 import com.github.polybooks.utils.regulariseISBN
 
 /**

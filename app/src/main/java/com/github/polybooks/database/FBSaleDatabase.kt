@@ -6,7 +6,6 @@ import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.Query
 import java.util.concurrent.CompletableFuture
 
 

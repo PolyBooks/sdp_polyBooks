@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
-import com.github.polybooks.database.*
+import com.github.polybooks.database.Query
 
 /**
  * Activity to list something using a recyclerview
