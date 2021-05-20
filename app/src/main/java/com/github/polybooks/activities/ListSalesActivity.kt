@@ -6,6 +6,7 @@ import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.*
+import com.github.polybooks.adapter.database.SalesAdapter
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView

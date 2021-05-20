@@ -4,10 +4,10 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Book
-import com.github.polybooks.core.database.BooksAdapter
 import com.github.polybooks.database.BookQuery
 import com.github.polybooks.database.FBBookDatabase
 import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.adapter.database.BooksAdapter
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.url2json
 import com.google.android.material.bottomnavigation.BottomNavigationView
