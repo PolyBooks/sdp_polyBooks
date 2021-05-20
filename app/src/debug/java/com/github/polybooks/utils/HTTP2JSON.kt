@@ -24,7 +24,7 @@ val url2filename = mapOf(
     "/isbn/9780156881807.json" to "9780156881807.json",
     "/isbn/9781603090476.json" to "9781603090476.json"
 )
-val baseDir = "src/test/java/com/github/polybooks/database"
+const val baseDir = "src/test/java/com/github/polybooks/database"
 val url2json = { url : String ->
     CompletableFuture.supplyAsync {
         val regexMatch = urlRegex.matchEntire(url) ?: throw FileNotFoundException("File Not Found : $url")

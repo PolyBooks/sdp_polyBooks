@@ -1,4 +1,4 @@
-package com.github.polybooks
+package com.github.polybooks.utils
 
 import org.junit.Test
 import org.junit.Assert.*
