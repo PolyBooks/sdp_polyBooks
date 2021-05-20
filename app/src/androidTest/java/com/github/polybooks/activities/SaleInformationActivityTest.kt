@@ -1,6 +1,7 @@
 package com.github.polybooks.activities
 
 import android.content.Intent
+import android.widget.RatingBar
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -8,6 +9,7 @@ import com.github.polybooks.R
 import com.github.polybooks.core.*
 import com.github.polybooks.utils.StringsManip
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -43,7 +45,9 @@ class SaleInformationActivityTest {
             "Frenglish",
             "Editions De l'Aire",
             null,
-            "pocket format"
+            "pocket format",
+            9.0,
+            2
         ),
         LocalUser,
         37.57f,
@@ -76,8 +80,6 @@ class SaleInformationActivityTest {
 
         // Static
         assertDisplayed(R.id.sale_information_value_by_1, R.string.by)
-        assertDisplayed(R.id.sale_information_value_publish_date, R.string.published_on_the)
-        assertDisplayed(R.id.sale_information_value_by_2, R.string.by)
         assertDisplayed(R.id.sale_information_value_in, R.string.value_in)
         assertDisplayed(R.id.sale_information_value_condition, R.string.sale_book_condition)
         assertDisplayed(R.id.sale_information_value_price, R.string.sale_price)
@@ -87,8 +89,6 @@ class SaleInformationActivityTest {
         assertDisplayed(R.id.sale_information_title, expected.book.title)
         assertDisplayed(R.id.sale_information_edition, expectedDisplayed(expected.book.edition))
         assertDisplayed(R.id.sale_information_authors, StringsManip.listAuthorsToString(expected.book.authors))
-        assertDisplayed(R.id.sale_information_book_publish_date, )
-        assertDisplayed(R.id.sale_information_book_publisher, expectedDisplayed(expected.book.publisher))
         assertDisplayed(R.id.sale_information_book_format, expectedDisplayed(expected.book.format))
         assertDisplayed(R.id.sale_information_condition, expected.condition.name)
         assertDisplayed(R.id.sale_information_price, expected.price.toString())

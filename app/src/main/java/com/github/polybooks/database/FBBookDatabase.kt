@@ -37,8 +37,8 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             dateFormatter.format(it.toDate())
         }
         val rating: HashMap<String, Number?> = hashMapOf(
-            "totalStars" to book.totalStars,
-            "numberVotes" to book.numberVotes
+            "totalStars" to (book.totalStars ?: 0.0),
+            "numberVotes" to (book.numberVotes ?: 0)
         )
         return hashMapOf(
             BookFields.AUTHORS.fieldName to book.authors,

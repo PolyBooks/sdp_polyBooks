@@ -21,7 +21,7 @@ interface BookDatabase {
 
     /**
      * Adds/Modifies a book in the database
-     */
+     * */
     fun addBook(book: Book): CompletableFuture<Unit>
 
     /**

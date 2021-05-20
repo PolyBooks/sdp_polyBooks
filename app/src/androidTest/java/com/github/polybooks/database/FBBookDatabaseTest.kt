@@ -253,4 +253,24 @@ class FBBookDatabaseTest {
         val book = future.get()
     }
 
+    @Test
+    fun canModifyBook() {
+        val bookTartuffe: Book? = fbBookDB.getBook("9780156881807").get()
+        assertNotNull(bookTartuffe)
+
+        val modifiedBook: Book = Book(
+            bookTartuffe!!.isbn, bookTartuffe.authors, bookTartuffe.title, bookTartuffe.edition,
+            bookTartuffe.language, bookTartuffe.publisher, bookTartuffe.publishDate, bookTartuffe.format,
+            (bookTartuffe.totalStars ?: 0.0) + 4.0, (bookTartuffe.numberVotes ?: 0) + 1
+        )
+        fbBookDB.addBook(modifiedBook).get()
+
+        val book: Book? = fbBookDB.getBook(modifiedBook.isbn).get()
+        assertNotNull(book)
+
+        assertEquals(modifiedBook.title, book!!.title)
+        assertEquals(modifiedBook.isbn, book.isbn)
+        assertEquals(modifiedBook.totalStars, book.totalStars)
+        assertEquals(modifiedBook.numberVotes, book.numberVotes)
+    }
 }
