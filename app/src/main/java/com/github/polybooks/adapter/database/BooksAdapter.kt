@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.adapter.database
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Book
-import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 
 /**
