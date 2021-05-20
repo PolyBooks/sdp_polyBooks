@@ -11,14 +11,11 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.database.FBBookDatabase
-import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.database.BookOrdering
 import com.github.polybooks.database.BookQuery
+import com.github.polybooks.database.FBBookDatabase
+import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * This activity let the users to select the sorting and filtering parameters
@@ -32,10 +29,7 @@ class FilteringBooksActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringBooksActivity"
 
-    // TODO use future global static dbs
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    private val bookDB = FBBookDatabase(firestore, olBookDB)
+    private val bookDB = FBBookDatabase.getInstance()
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
@@ -78,7 +72,7 @@ class FilteringBooksActivity: FilteringActivity() {
 
     fun getResults(view: View) {
 //        var query: BookQuery = DummyBookQuery()
-        var query: BookQuery = bookDB.queryBooks()
+        val query: BookQuery = bookDB.queryBooks()
 
         //These 2 in front for dummy books query
         if (mName.text.isNotEmpty())
@@ -89,7 +83,7 @@ class FilteringBooksActivity: FilteringActivity() {
         // pass query to new activity
         val querySettings = query.getSettings()
         val intent = Intent(this, ListBooksActivity::class.java)
-        intent.putExtra(ListActivity.EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
+        intent.putExtra(EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
         startActivity(intent)
     }
 
