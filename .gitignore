@@ -66,6 +66,11 @@ captures/
 .cxx/
 
 # Google Services (e.g. APIs or Firebase)
+.firebaserc
+database.rules.json
+firebase.json
+firestore.indexes.json
+firestore.rules
 # google-services.json
 
 # Freeline
