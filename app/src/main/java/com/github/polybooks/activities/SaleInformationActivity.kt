@@ -82,6 +82,7 @@ class SaleInformationActivity: AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.sale_information_condition).text = sale.condition.name
+        findViewById<TextView>(R.id.sale_information_internet_price).text = "100"
         findViewById<TextView>(R.id.sale_information_price).text = sale.price.toString()
     }
 }
