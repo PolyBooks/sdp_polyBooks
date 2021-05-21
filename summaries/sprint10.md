@@ -22,6 +22,7 @@ This week, I finished a bit the refactoring into source-sets I started last week
 This week I didn't have the time to do anything, I am caught up with other projects. My apologies to the team and our coachs :(
 
 ## Zied
+This week I worked on implementing the GPS and connecting it to the users. The task is very complex and I still have a lot of bugs to fix. I may have to still work on in next week.
 
 
 ## Overall team
