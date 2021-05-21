@@ -4,7 +4,8 @@
 This week set up the project to use mock firebase instances for tests. I then did some refactoring, removing unused code. I did stuff that had to be done so I believe it was a good week. Next week I will probably work more with the other team members to be closer to finishing the very important features
 
 ## Joshua
-
+This week I was able to finish all the tasks I had. I got more familiar at using foreign API's and at using different parsing methods. 
+Nest week I will probably work on some other features at those I had to implemet are mostly done
 
 ## Nicolas
 
