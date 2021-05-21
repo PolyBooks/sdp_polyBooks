@@ -53,16 +53,6 @@ abstract class ParameterAdapter<T>(
     private var mContext: Context? = null
 
     /**
-     * The adapter may need to know the Context to get string values
-     *
-     * @param context : Activity or Service
-     */
-    // TODO remove because context can be retrieved on bind to viewHolder
-//    fun setContext(context: Context) {
-//        mContext = context
-//    }
-
-    /**
      * Child class must implement this function to provide the names of the parameter's values
      */
     protected abstract fun getValueName(value: T, context: Context?): String

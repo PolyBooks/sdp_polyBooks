@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.github.polybooks.R
 import com.github.polybooks.utils.CameraManip.REQUEST_CODE_PERMISSIONS
 import com.github.polybooks.utils.CameraManip.REQUIRED_PERMISSIONS

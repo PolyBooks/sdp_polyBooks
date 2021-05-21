@@ -1,3 +1,5 @@
+@file:Suppress("RedundantUnitReturnType")
+
 package com.github.polybooks.activities
 
 import android.os.Bundle
@@ -7,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
-import com.github.polybooks.database.*
+import com.github.polybooks.database.Query
 
 /**
  * Activity to list something using a recyclerview
@@ -50,7 +52,7 @@ abstract class ListActivity<T>: AppCompatActivity() {
 
     abstract fun onFilterButtonClick()
     abstract fun adapter(list : List<T>): RecyclerView.Adapter<*>
-    abstract fun setNavBar(): Unit
+    abstract fun setNavBar()
     abstract fun getQuery(): Query<T>
     abstract fun getTitleText(): String
 }

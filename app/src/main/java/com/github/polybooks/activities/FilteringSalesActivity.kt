@@ -13,7 +13,6 @@ import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.database.SaleQuery
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 /**

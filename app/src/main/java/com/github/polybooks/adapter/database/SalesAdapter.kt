@@ -44,11 +44,11 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         holder.viewTitle.text = sale.book.title
 
         if (sale.book.edition != null) holder.viewEdition.text = sale.book.edition
-        else holder.viewEdition.setVisibility(View.GONE)
+        else holder.viewEdition.visibility = View.GONE
 
         if (sale.book.authors?.isEmpty() != false) {
-            holder.viewBy.setVisibility(View.GONE)
-            holder.viewAuthor.setVisibility(View.GONE)
+            holder.viewBy.visibility = View.GONE
+            holder.viewAuthor.visibility = View.GONE
         } else {
             holder.viewAuthor.text = StringsManip.listAuthorsToString(sale.book.authors)
         }

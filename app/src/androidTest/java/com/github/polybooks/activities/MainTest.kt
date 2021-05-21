@@ -5,7 +5,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -75,14 +74,14 @@ class MainTest {
     fun listBookButton() {
 
         onView(withId(R.id.button_open_db_tests)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
+        intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     //This one
     @Test
     fun signUpButton() {
         onView(withId(R.id.signup_button)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
+        intended(hasComponent(RegisterActivity::class.java.name))
     }
 
     @Test
