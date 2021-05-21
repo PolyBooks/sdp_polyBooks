@@ -9,6 +9,10 @@ Nest week I will probably work on some other features at those I had to implemet
 
 ## Nicolas
 
+This week I was able to do a lot of work, and mainly, merge (or at least put into PRs) the numerous issues (= features) from the past 2.5 weeks. Nothing else interesting/out of the ordinary to say
+
+Next week, I might help working on features that are requested by the client (e.g. gps/client side cache)
+
 
 ## Raoul
 This week, I finished a bit the refactoring into source-sets I started last week, but mostly I got to start working with Firebase. That was thrilling as it was learning something new and the hours flew by. I progressed well, while still being a bit above my expected time estimates.
