@@ -18,7 +18,7 @@ private const val DATE_FORMAT = "yyyy MM dd"
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
  * */
-internal class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
+class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
 
     private val bookRef = FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT)

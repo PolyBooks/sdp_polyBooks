@@ -35,7 +35,7 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 /**
  * An implementation of a book database based on the Open Library online database
  * */
-internal class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>): BookDatabase {
+class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>): BookDatabase {
 
     override fun queryBooks(): BookQuery = OLBookQuery()
 
