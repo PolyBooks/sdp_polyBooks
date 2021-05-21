@@ -11,7 +11,7 @@ import com.github.polybooks.utils.StringsManip.listAuthorsToString
 
 /**
  * Adapter for listing Sale via RecyclerView
- * @property salesList List of sales
+ * @property booksList List of sales
  */
 class BooksAdapter(internal var booksList: List<Book>): RecyclerView.Adapter<BooksAdapter.BooksViewHolder>() {
     class BooksViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
@@ -33,11 +33,11 @@ class BooksAdapter(internal var booksList: List<Book>): RecyclerView.Adapter<Boo
         holder.viewTitle.text = book.title
 
         if (book.edition != null) holder.viewEdition.text = book.edition
-        else holder.viewEdition.setVisibility(View.GONE)
+        else holder.viewEdition.visibility = View.GONE
 
         if (book.authors?.isEmpty() != false) {
-            holder.viewBy.setVisibility(View.GONE)
-            holder.viewAuthor.setVisibility(View.GONE)
+            holder.viewBy.visibility = View.GONE
+            holder.viewAuthor.visibility = View.GONE
         } else {
             holder.viewAuthor.text = listAuthorsToString(book.authors)
         }
