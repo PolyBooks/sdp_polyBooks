@@ -64,7 +64,6 @@ class FBSaleDatabaseTest {
     }
 
     @Test
-    @Ignore("Check how it works after mocking")
     fun t_searchByTitle() {
         val sale1 = saleDB.addSale(dummySale).get()
         val sale2 =
