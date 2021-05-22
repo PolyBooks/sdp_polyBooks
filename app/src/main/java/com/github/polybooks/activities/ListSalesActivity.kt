@@ -6,7 +6,7 @@ import com.github.polybooks.R
 import com.github.polybooks.adapter.database.SalesAdapter
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.database.FBSaleDatabase
+import com.github.polybooks.database.Database
 import com.github.polybooks.database.Query
 import com.github.polybooks.database.SaleSettings
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
@@ -18,7 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class ListSalesActivity: ListActivity<Sale>() {
 
-    val salesDB = FBSaleDatabase.getInstance()
+    private val salesDB = Database.saleDatabase
 
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)

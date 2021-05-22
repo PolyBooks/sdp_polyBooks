@@ -14,6 +14,7 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.database.Database
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
@@ -35,8 +36,8 @@ import java.util.concurrent.CompletableFuture
  */
 class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private val bookDB = OLBookDatabase.getInstance()
-    private val salesDB = FBSaleDatabase.getInstance()
+    private val bookDB = Database.bookDatabase
+    private val salesDB = Database.saleDatabase
 
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
