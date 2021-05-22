@@ -46,7 +46,7 @@ object FBInterestDatabase: InterestDatabase {
     fun addField(field: Field) : CompletableFuture<Field>{
         val future = CompletableFuture<Field>()
 
-        FirebaseFirestore.getInstance()
+        FirebaseProvider.getFirestore()
             .collection(fieldCollection)
             .document(field.name)
             .set(field, SetOptions.merge())
@@ -63,7 +63,7 @@ object FBInterestDatabase: InterestDatabase {
     fun addSemester(semester: Semester) : CompletableFuture<Semester>{
         val future = CompletableFuture<Semester>()
 
-        FirebaseFirestore.getInstance()
+        FirebaseProvider.getFirestore()
             .collection(semesterCollection)
             .document(mergeSectionAndSemester(semester))
             .set(semester, SetOptions.merge())
@@ -79,7 +79,7 @@ object FBInterestDatabase: InterestDatabase {
     fun addCourse(course: Course) : CompletableFuture<Course> {
         val future = CompletableFuture<Course>()
 
-        FirebaseFirestore.getInstance()
+        FirebaseProvider.getFirestore()
             .collection(courseCollection)
             .document(course.name)
             .set(course, SetOptions.merge())
@@ -100,7 +100,7 @@ object FBInterestDatabase: InterestDatabase {
     fun removeField(field: Field) : CompletableFuture<Boolean>  {
         val future = CompletableFuture<Boolean>()
 
-        FirebaseFirestore.getInstance()
+        FirebaseProvider.getFirestore()
             .collection(fieldCollection)
             .document(field.name)
             .delete()
@@ -135,7 +135,7 @@ object FBInterestDatabase: InterestDatabase {
     override fun listAllFields(): CompletableFuture<List<Field>> {
         val future = CompletableFuture<List<Field>>()
 
-        FirebaseFirestore.getInstance()
+        FirebaseProvider.getFirestore()
             .collection(fieldCollection)
             .get()
             .addOnSuccessListener { documentSnapshots ->
