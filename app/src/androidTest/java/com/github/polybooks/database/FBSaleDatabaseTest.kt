@@ -16,8 +16,8 @@ import org.junit.rules.ExpectedException
 class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
-    private val saleDB = FBSaleDatabase.getInstance()
-    private val olBookDB = OLBookDatabase.getInstance()
+
+    private val saleDB = Database.saleDatabase
 
     private val testUser = LoggedUser(301966, "Le givre")
     private val testBook =
@@ -50,7 +50,7 @@ class FBSaleDatabaseTest {
     val expectedException: ExpectedException = ExpectedException.none()
 
     //Checks that the content of both collection is the same
-    fun <T> assertSame(a: Collection<T>, b: Collection<T>) {
+    private fun <T> assertSame(a: Collection<T>, b: Collection<T>) {
         assertTrue(a.containsAll(b))
         assertTrue(b.containsAll(a))
     }
@@ -68,7 +68,7 @@ class FBSaleDatabaseTest {
     fun t_searchByTitle() {
         val sale1 = saleDB.addSale(dummySale).get()
         val sale2 =
-            saleDB.addSale(dummySale.copy(book = olBookDB.getBook("9782376863069").get()!!)).get()
+            saleDB.addSale(dummySale.copy(book = Book("9782376863069", null, "title", null, null, null, null, null))).get()
         val sales = saleDB.querySales().searchByTitle(dummySale.book.title).getAll().get()
         assertTrue(sales.contains(sale1))
         assertFalse(sales.contains(sale2))

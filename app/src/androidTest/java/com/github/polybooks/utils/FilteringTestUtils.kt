@@ -108,8 +108,8 @@ class FilteringTestUtils(private val context: Context?) {
     fun <T> getName(value: T): String {
         return when (value) {
             is FieldWithName -> (value as FieldWithName).fieldName(context)
-            is Field -> (value as Field).fieldName
-            is Course -> (value as Course).courseName
+            is Field -> (value as Field).name
+            is Course -> (value as Course).name
             is Semester -> {
                 val v = value as Semester
                 v.section + "-" + v.semester
