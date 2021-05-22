@@ -34,6 +34,7 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
 /**
  * An implementation of a book database based on the Open Library online database
+ * !! DO NOT INSTANTIATE THIS CLASS unless you are writing a BookDatabase implementation.
  * */
 class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>): BookDatabase {
 

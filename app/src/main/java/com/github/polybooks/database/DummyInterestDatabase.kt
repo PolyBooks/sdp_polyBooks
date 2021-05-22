@@ -3,6 +3,9 @@ package com.github.polybooks.database
 import com.github.polybooks.core.*
 import java.util.concurrent.CompletableFuture
 
+/**
+ * !! DO NOT INSTANCIATE THIS CLASS. You should use Database.interestDatabase instead.
+ * */
 internal object DummyInterestDatabase: InterestDatabase {
 
     fun getInstance(): InterestDatabase {
