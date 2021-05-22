@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture
 
 
 /**
+ * !! DO NOT INSTANTIATE THIS CLASS. Instead use Database.FBInterestDatabase to access it !!
  * The chosen structure for firebase is one collection for field, one for semester and one for courses.
  * Each of them will hold documents whose attribute is the name of the interest.
  * It might seem unnecessary to have 3 root level collections for interests,
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture
  * As each document will be able to have a book collection and a user collection.
  * Using snapshotListener here does not feel necessary as interests are rarely changing.
  */
-object FBInterestDatabase: InterestDatabase {
+internal class FBInterestDatabase: InterestDatabase {
 
     /**
      * get the singleton instance of FBInterestDatabase
@@ -33,12 +34,12 @@ object FBInterestDatabase: InterestDatabase {
 
 
 
-    private const val TAG: String = "FBInterestDatabase"
+    private val TAG: String = "FBInterestDatabase"
 
     // Names of the collections in Firestore
-    private const val fieldCollection: String = "fieldInterest"
-    private const val semesterCollection: String = "semesterInterest"
-    private const val courseCollection: String = "courseInterest"
+    private val fieldCollection: String = "fieldInterest"
+    private val semesterCollection: String = "semesterInterest"
+    private val courseCollection: String = "courseInterest"
 
     /**
      * Add a new field document to the fields collection
