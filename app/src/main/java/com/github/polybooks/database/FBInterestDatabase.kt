@@ -44,7 +44,7 @@ internal class FBInterestDatabase: InterestDatabase {
     /**
      * Add a new field document to the fields collection
      */
-    fun addField(field: Field) : CompletableFuture<Field>{
+    override fun addField(field: Field) : CompletableFuture<Field> {
         val future = CompletableFuture<Field>()
 
         FirebaseProvider.getFirestore()
@@ -61,7 +61,7 @@ internal class FBInterestDatabase: InterestDatabase {
     /**
      * Add a new semester document to the semesters collection
      */
-    fun addSemester(semester: Semester) : CompletableFuture<Semester>{
+    override fun addSemester(semester: Semester) : CompletableFuture<Semester>{
         val future = CompletableFuture<Semester>()
 
         FirebaseProvider.getFirestore()
@@ -77,7 +77,7 @@ internal class FBInterestDatabase: InterestDatabase {
     /**
      * Add a new course document to the courses collection
      */
-    fun addCourse(course: Course) : CompletableFuture<Course> {
+    override fun addCourse(course: Course) : CompletableFuture<Course> {
         val future = CompletableFuture<Course>()
 
         FirebaseProvider.getFirestore()

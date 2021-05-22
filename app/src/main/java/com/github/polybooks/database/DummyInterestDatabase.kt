@@ -3,7 +3,7 @@ package com.github.polybooks.database
 import com.github.polybooks.core.*
 import java.util.concurrent.CompletableFuture
 
-internal object DummyInterestDatabase: InterestDatabase {
+object DummyInterestDatabase: InterestDatabase {
 
     fun getInstance(): InterestDatabase {
         return this
@@ -40,6 +40,27 @@ internal object DummyInterestDatabase: InterestDatabase {
         Semester("CD", "BA4"),
         Semester("ENV", "BA5")
     )
+
+    /**
+     * Add a new field document to the fields collection
+     */
+    override fun addField(testField1: Field): CompletableFuture<Field> {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * Add a new semester document to the semesters collection
+     */
+    override fun addSemester(semester: Semester): CompletableFuture<Semester> {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * Add a new course document to the courses collection
+     */
+    override fun addCourse(course: Course): CompletableFuture<Course> {
+        TODO("Not yet implemented")
+    }
 
     override fun listAllFields(): CompletableFuture<List<Field>> {
         return CompletableFuture.supplyAsync {

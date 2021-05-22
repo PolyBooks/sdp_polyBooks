@@ -9,6 +9,21 @@ import java.util.concurrent.CompletableFuture
 interface InterestDatabase {
 
     /**
+     * Add a new field document to the fields collection
+     */
+    fun addField(testField1: Field) : CompletableFuture<Field>
+
+    /**
+     * Add a new semester document to the semesters collection
+     */
+    fun addSemester(semester: Semester) : CompletableFuture<Semester>
+
+    /**
+     * Add a new course document to the courses collection
+     */
+    fun addCourse(course: Course) : CompletableFuture<Course>
+
+    /**
      * List all the Fields in the database.
      * */
     fun listAllFields() : CompletableFuture<List<Field>>
@@ -41,5 +56,6 @@ interface InterestDatabase {
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
     fun setUserInterests(user : User, interests : List<Interest>) : CompletableFuture<Unit>
+
 
 }
