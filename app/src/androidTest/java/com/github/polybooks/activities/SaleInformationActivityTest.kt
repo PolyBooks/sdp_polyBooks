@@ -87,7 +87,7 @@ class SaleInformationActivityTest {
         assertDisplayed(R.id.sale_information_title, expected.book.title)
         assertDisplayed(R.id.sale_information_edition, expectedDisplayed(expected.book.edition))
         assertDisplayed(R.id.sale_information_authors, StringsManip.listAuthorsToString(expected.book.authors))
-        assertDisplayed(R.id.sale_information_book_publish_date, )
+        assertDisplayed(R.id.sale_information_book_publish_date)
         assertDisplayed(R.id.sale_information_book_publisher, expectedDisplayed(expected.book.publisher))
         assertDisplayed(R.id.sale_information_book_format, expectedDisplayed(expected.book.format))
         assertDisplayed(R.id.sale_information_condition, expected.condition.name)

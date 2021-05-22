@@ -1,14 +1,10 @@
 package com.github.polybooks.activities
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -42,60 +38,60 @@ class RegisterTest {
     }
 
     @Test
-    fun FillAndRegister() {
+    fun fillAndRegister() {
         onView(withId(R.id.username_field)).perform(scrollTo(), typeText("TestTestTest"), closeSoftKeyboard())
         onView(withId(R.id.email_field)).perform(scrollTo(), typeText("test@test.test"), closeSoftKeyboard())
         onView(withId(R.id.password1_field)).perform(scrollTo(), typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.password2_field)).perform(scrollTo(), typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.button_reg)).perform(scrollTo(), click())
-        Thread.sleep(1500);
-        Intents.intended(IntentMatchers.hasComponent(UserProfileActivity::class.java.name))
-        Intents.intended(toPackage("com.github.polybooks"));
-        Intents.intended(hasExtra(EXTRA_USERNAME, "TestTestTest"));
-        Thread.sleep(1500);
+        Thread.sleep(1500)
+        Intents.intended(hasComponent(UserProfileActivity::class.java.name))
+        Intents.intended(toPackage("com.github.polybooks"))
+        Intents.intended(hasExtra(EXTRA_USERNAME, "TestTestTest"))
+        Thread.sleep(1500)
         Firebase.auth.currentUser.delete()
     }
 
     @Test
     fun navBarSales() {
-        Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringSalesActivity::class.java.name))
+        onView(withId(R.id.sales)).perform(click())
+        Intents.intended(hasComponent(FilteringSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
-        Espresso.onView(ViewMatchers.withId(R.id.user_profile)).perform(ViewActions.click())
+        onView(withId(R.id.user_profile)).perform(click())
         //Espresso.onView(ViewMatchers.withId(R.id.recyclerView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
     fun navBarBooks() {
-        Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(FilteringBooksActivity::class.java.name))
+        onView(withId(R.id.books)).perform(click())
+        Intents.intended(hasComponent(FilteringBooksActivity::class.java.name))
     }
 
     @Test
     fun navBarDefault() {
-        Espresso.onView(ViewMatchers.withId(R.id.default_selected)).check(
+        onView(withId(R.id.default_selected)).check(
             ViewAssertions.matches(
-                ViewMatchers.withEffectiveVisibility(
-                    ViewMatchers.Visibility.GONE
+                withEffectiveVisibility(
+                    Visibility.GONE
                 )
             )
         )
-        Espresso.onView(ViewMatchers.withId(R.id.default_selected))
-            .check(ViewAssertions.matches(Matchers.not(ViewMatchers.isEnabled())))
+        onView(withId(R.id.default_selected))
+            .check(ViewAssertions.matches(Matchers.not(isEnabled())))
     }
 
     @Test
     fun navBarSelected() {
-        Espresso.onView(ViewMatchers.withId(R.id.user_profile))
-            .check(ViewAssertions.matches(ViewMatchers.isSelected()))
+        onView(withId(R.id.user_profile))
+            .check(ViewAssertions.matches(isSelected()))
     }
 
     @Test
     fun navBarHome() {
-        Espresso.onView(ViewMatchers.withId(R.id.home)).perform(ViewActions.click())
-        Intents.intended(IntentMatchers.hasComponent(MainActivity::class.java.name))
+        onView(withId(R.id.home)).perform(click())
+        Intents.intended(hasComponent(MainActivity::class.java.name))
     }
 }
