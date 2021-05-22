@@ -11,10 +11,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
 
 import org.hamcrest.Matchers.not
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 
 class MainTest {
@@ -42,11 +39,11 @@ class MainTest {
         onView(withId(R.id.signup_button)).check(matches(isDisplayed()))
         onView(withId(R.id.signup_button)).check(matches(isClickable()))
 
-        onView(withId(R.id.sell_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.sell_button)).check(matches(isClickable()))
+        //onView(withId(R.id.sell_button)).check(matches(isDisplayed()))
+        //onView(withId(R.id.sell_button)).check(matches(isClickable()))
 
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
-        onView(withId(R.id.button_open_db_tests)).check(matches(isClickable()))
+        onView(withId(R.id.view_books_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_books_button)).check(matches(isClickable()))
 
     }
 
@@ -56,6 +53,7 @@ class MainTest {
         intended(hasComponent(LoginActivity::class.java.name))
     }
 
+    @Ignore("Need user to be logged in")
     @Test
     fun sellButton() {
         onView(withId(R.id.sell_button)).perform(click())
@@ -66,14 +64,14 @@ class MainTest {
     @Test
 
     fun allBooksButton() {
-        onView(withId(R.id.button_open_db_tests)).perform(click())
+        onView(withId(R.id.view_books_button)).perform(click())
         intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
     fun listBookButton() {
 
-        onView(withId(R.id.button_open_db_tests)).perform(click())
+        onView(withId(R.id.view_books_button)).perform(click())
         intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
@@ -116,7 +114,7 @@ class MainTest {
     @Test
     fun navBarHome() {
         onView(withId(R.id.home)).perform(click())
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_books_button)).check(matches(isDisplayed()))
     }
 
 }
