@@ -8,6 +8,7 @@ import android.widget.EditText
 import com.github.polybooks.R
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.core.*
+import com.github.polybooks.database.Database
 import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.database.SaleQuery
@@ -25,7 +26,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
 
-    private val saleDB = FBSaleDatabase.getInstance()
+    private val saleDB = Database.saleDatabase
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
