@@ -42,7 +42,6 @@ class FilteringBooksTest {
     @Before
     fun before() {
         Intents.init()
-        utils.initInterestDB()
     }
 
     @After
