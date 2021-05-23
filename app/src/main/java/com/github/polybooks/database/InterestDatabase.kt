@@ -11,7 +11,7 @@ interface InterestDatabase {
     /**
      * Add a new field document to the fields collection
      */
-    fun addField(testField1: Field) : CompletableFuture<Field>
+    fun addField(field: Field) : CompletableFuture<Field>
 
     /**
      * Add a new semester document to the semesters collection
