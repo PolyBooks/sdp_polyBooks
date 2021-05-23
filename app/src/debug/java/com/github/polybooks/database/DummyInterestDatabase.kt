@@ -47,7 +47,7 @@ internal object DummyInterestDatabase: InterestDatabase {
     /**
      * Add a new field document to the fields collection
      */
-    override fun addField(testField1: Field): CompletableFuture<Field> {
+    override fun addField(field: Field): CompletableFuture<Field> {
         TODO("Not yet implemented")
     }
 
