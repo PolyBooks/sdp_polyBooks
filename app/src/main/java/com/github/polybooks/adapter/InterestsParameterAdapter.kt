@@ -5,6 +5,7 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
+import com.github.polybooks.database.Database
 import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
 
 /**
