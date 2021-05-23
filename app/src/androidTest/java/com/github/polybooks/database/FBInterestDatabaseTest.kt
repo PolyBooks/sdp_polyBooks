@@ -15,7 +15,7 @@ class FBInterestDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-    private val firestore = FirebaseProvider.getFirestore()
+    //private val firestore = FirebaseProvider.getFirestore()
     private val interestDB = Database.interestDatabase
 
     private val testUser = LoggedUser(301966, "Le givre")
@@ -30,7 +30,7 @@ class FBInterestDatabaseTest {
 
     @After
     fun cleanUp() {
-        Intents.release()
+        //Intents.release()
     }
 
 

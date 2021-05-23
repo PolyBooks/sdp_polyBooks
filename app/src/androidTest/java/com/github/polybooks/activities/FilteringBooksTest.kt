@@ -20,6 +20,7 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Semester
 import com.github.polybooks.database.BookOrdering
+import com.github.polybooks.database.Database
 import com.github.polybooks.utils.FilteringTestUtils
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import org.hamcrest.Matchers
@@ -41,6 +42,7 @@ class FilteringBooksTest {
     @Before
     fun before() {
         Intents.init()
+        utils.initInterestDB()
     }
 
     @After
