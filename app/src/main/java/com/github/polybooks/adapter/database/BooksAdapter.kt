@@ -13,7 +13,7 @@ import com.github.polybooks.utils.StringsManip.listAuthorsToString
  * Adapter for listing Sale via RecyclerView
  * @property booksList List of sales
  */
-class BooksAdapter(internal var booksList: List<Book>): RecyclerView.Adapter<BooksAdapter.BooksViewHolder>() {
+class BooksAdapter(private var booksList: List<Book>): RecyclerView.Adapter<BooksAdapter.BooksViewHolder>() {
     class BooksViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val viewTitle: TextView = itemView.findViewById(R.id.text_view_title)
         val viewEdition: TextView = itemView.findViewById(R.id.text_view_edition)

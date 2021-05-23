@@ -81,7 +81,7 @@ class FilteringTestUtils(private val context: Context?) {
     }
 
 
-    fun <T> performOnParameterList(
+    private fun <T> performOnParameterList(
         parameterId: Int,
         values: List<T>,
         action: ViewAction? = null,
@@ -100,7 +100,7 @@ class FilteringTestUtils(private val context: Context?) {
         }
     }
 
-    fun <T> scrollToValue(parameterId: Int, value: T) {
+    private fun <T> scrollToValue(parameterId: Int, value: T) {
         Espresso.onView(ViewMatchers.withId(parameterId)).perform(
             scrollTo(),
             RecyclerViewActions.scrollTo<ParameterViewHolder<T>>(
@@ -119,7 +119,7 @@ class FilteringTestUtils(private val context: Context?) {
         Espresso.onView(ViewMatchers.withText(getName(value))).check(assertion)
     }
 
-    fun <T> getName(value: T): String {
+    private fun <T> getName(value: T): String {
         return when (value) {
             is FieldWithName -> (value as FieldWithName).fieldName(context)
             is Field -> (value as Field).name
