@@ -36,7 +36,8 @@ check_android_task:
     chmod +x ./cc-test-reporter
     ./cc-test-reporter before-build
   check_script:
-    ./gradlew check connectedCheck
+    ./gradlew check connectedDebugAndroidTest
+    ./gradlew check connectedDebugTest
   report_codeclimate_script: |
     export JACOCO_SOURCE_PATH=app/src/main/java/
     ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
