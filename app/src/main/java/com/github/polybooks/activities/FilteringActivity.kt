@@ -17,7 +17,7 @@ abstract class FilteringActivity: AppCompatActivity() {
      * @param <VH>      A viewHolder holding the individual value items of the
      *                  parameter, need to implement ParameterViewHolder
      * @param viewId    The view id of the RecyclerView holding the values of that parameter
-     * @param adapter   The adapter that will binds the different values to the recyclerView
+     * @param mAdapter   The adapter that will binds the different values to the recyclerView
      * @see ParameterAdapter
      */
     inner class Parameter<T>(

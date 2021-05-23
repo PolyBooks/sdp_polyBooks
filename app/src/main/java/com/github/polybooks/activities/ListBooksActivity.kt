@@ -3,9 +3,11 @@ package com.github.polybooks.activities
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
-import com.github.polybooks.core.Book
 import com.github.polybooks.adapter.database.BooksAdapter
-import com.github.polybooks.database.*
+import com.github.polybooks.core.Book
+import com.github.polybooks.database.BookSettings
+import com.github.polybooks.database.Database
+import com.github.polybooks.database.Query
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView

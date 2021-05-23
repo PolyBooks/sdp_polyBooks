@@ -13,7 +13,6 @@ import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
  * An adapter when filtering by Interest, which is a dynamic list of filtering values
  *
  * @param itemViewId   view id in the xml layout of a value item
- * @param enumInstance any instance of class T (needed to be able to use methods of T)
  * @see   ParameterAdapter
  */
 class InterestsParameterAdapter<T: Interest>(

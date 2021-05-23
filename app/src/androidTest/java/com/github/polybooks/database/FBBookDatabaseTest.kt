@@ -133,17 +133,17 @@ class FBBookDatabaseTest {
         fun doTest(interest : Interest) {
             //Check it finds book associated with interest
             setInterests(testBook, listOf(interest)).get()
-            val booksWithInterest_1 =
+            val booksWithInterest1 =
                 fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
             assertTrue("Should find $testBook when searching for $interest",
-                booksWithInterest_1.any { it.isbn == testBook } )
+                booksWithInterest1.any { it.isbn == testBook } )
 
             //Check it doesnt show book not associated with interest
             setInterests(testBook, listOf()).get()
-            val booksWithInterest_2 =
+            val booksWithInterest2 =
                 fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
             assertTrue("Should not find $testBook when searching for $interest",
-                booksWithInterest_2.none { it.isbn == testBook } )
+                booksWithInterest2.none { it.isbn == testBook } )
         }
 
         //insure the book is in the database
