@@ -7,6 +7,7 @@ import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import com.github.polybooks.database.Database
 import com.github.polybooks.database.DummyInterestDatabase
+import com.github.polybooks.utils.StringsManip.getName
 import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
 
 /**
@@ -41,13 +42,6 @@ class InterestsParameterAdapter<T: Interest>(
     }
 
     override fun getValueName(value: T, context: Context?): String {
-        return when (interestType) {
-            Interest.COURSE -> (value as Course).name
-            Interest.FIELD -> (value as Field).name
-            Interest.SEMESTER -> {
-                val v = value as Semester
-                mergeSectionAndSemester(v)
-            }
-        }
+        return getName(value as com.github.polybooks.core.Interest)
     }
 }

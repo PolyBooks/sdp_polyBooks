@@ -177,7 +177,7 @@ internal class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDat
     }
 
     private fun snapshotToUser(map: HashMap<String, Any>): User {
-        val uid = (map[UserFields.UID.fieldName] as Long).toInt()
+        val uid = map[UserFields.UID.fieldName] as String
         val pseudo = map[UserFields.PSEUDO.fieldName] as String
 
         return LoggedUser(uid, pseudo)

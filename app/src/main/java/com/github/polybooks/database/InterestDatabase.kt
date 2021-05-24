@@ -49,6 +49,8 @@ interface InterestDatabase {
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * */
     fun getUserInterests(user : User) : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
+        //TODO : Change this
+        = CompletableFuture.completedFuture(Triple(emptyList(), emptyList(), emptyList()))
 
     /**
      * Sets the interests of the specified user.

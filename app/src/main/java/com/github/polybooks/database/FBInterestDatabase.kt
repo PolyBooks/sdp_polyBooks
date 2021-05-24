@@ -5,7 +5,6 @@ import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestoreSettings
 import java.util.concurrent.CompletableFuture
 
 
@@ -24,6 +23,7 @@ internal class FBInterestDatabase: InterestDatabase {
      * get the singleton instance of FBInterestDatabase
      * but also enable the cache
      */
+    /*
     fun getInstance(): InterestDatabase {
         val settings: FirebaseFirestoreSettings = firestoreSettings {
             isPersistenceEnabled = true
@@ -31,7 +31,7 @@ internal class FBInterestDatabase: InterestDatabase {
         FirebaseFirestore.getInstance().firestoreSettings = settings
         return this
     }
-
+*/
 
 
     private val TAG: String = "FBInterestDatabase"
