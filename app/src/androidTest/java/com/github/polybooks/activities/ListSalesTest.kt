@@ -8,6 +8,10 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
+import com.github.polybooks.core.*
+import com.github.polybooks.database.Database
+import com.google.firebase.Timestamp
+import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertListItemCount
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -16,18 +20,40 @@ import org.junit.Test
 
 
 class ListSalesTest {
+    private val saleDB = Database.saleDatabase
+
+    private val testUser = LoggedUser(301966, "Le givre")
+    private val testBook =
+        Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
+
+    private val dummySale: Sale = Sale(
+        testBook,
+        testUser,
+        500f,
+        BookCondition.WORN,
+        Timestamp.now(),
+        SaleState.RETRACTED,
+        null
+    )
 
     @get:Rule
     val activityRule = ActivityScenarioRule(ListSalesActivity::class.java)
 
     @Before
     fun before() {
+        saleDB.addSale(dummySale)
         Intents.init()
     }
 
     @After
     fun after() {
         Intents.release()
+    }
+
+    @Test
+    fun salesAreCorrect(){
+        Thread.sleep(1500)
+        assertListItemCount(R.id.recyclerView, 1)
     }
 
     @Test
