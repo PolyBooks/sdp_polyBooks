@@ -17,6 +17,7 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
+import com.github.polybooks.database.Database
 import com.github.polybooks.database.DummyInterestDatabase
 
 class FilteringTestUtils(private val context: Context?) {
@@ -27,6 +28,19 @@ class FilteringTestUtils(private val context: Context?) {
 
     fun pauselong() {
         SystemClock.sleep(10000)
+    }
+
+    fun initInterestDB() {
+        val interestDB = Database.interestDatabase
+        interestDB.addField(Field("Biology"))
+        interestDB.addField(Field("Computer Science"))
+        interestDB.addField(Field("Architecture"))
+        interestDB.addSemester(Semester("IN", "BA1"))
+        interestDB.addSemester(Semester("ENV", "BA5"))
+        interestDB.addSemester(Semester("SC", "BA6"))
+        interestDB.addCourse(Course("COM-101"))
+        interestDB.addCourse(Course("CS-306"))
+        interestDB.addCourse(Course("CS-323"))
     }
 
     fun <T: FieldWithName> performOnEnumParameter(
@@ -67,7 +81,7 @@ class FilteringTestUtils(private val context: Context?) {
     }
 
 
-    fun <T> performOnParameterList(
+    private fun <T> performOnParameterList(
         parameterId: Int,
         values: List<T>,
         action: ViewAction? = null,
@@ -86,7 +100,7 @@ class FilteringTestUtils(private val context: Context?) {
         }
     }
 
-    fun <T> scrollToValue(parameterId: Int, value: T) {
+    private fun <T> scrollToValue(parameterId: Int, value: T) {
         Espresso.onView(ViewMatchers.withId(parameterId)).perform(
             scrollTo(),
             RecyclerViewActions.scrollTo<ParameterViewHolder<T>>(
@@ -105,7 +119,7 @@ class FilteringTestUtils(private val context: Context?) {
         Espresso.onView(ViewMatchers.withText(getName(value))).check(assertion)
     }
 
-    fun <T> getName(value: T): String {
+    private fun <T> getName(value: T): String {
         return when (value) {
             is FieldWithName -> (value as FieldWithName).fieldName(context)
             is Field -> (value as Field).name

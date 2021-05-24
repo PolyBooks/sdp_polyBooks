@@ -3,7 +3,10 @@ package com.github.polybooks.database
 import com.github.polybooks.core.*
 import java.util.concurrent.CompletableFuture
 
-object DummyInterestDatabase: InterestDatabase {
+/**
+ * !! DO NOT INSTANCIATE THIS CLASS. You should use Database.interestDatabase instead.
+ * */
+internal object DummyInterestDatabase: InterestDatabase {
 
     fun getInstance(): InterestDatabase {
         return this
@@ -44,7 +47,7 @@ object DummyInterestDatabase: InterestDatabase {
     /**
      * Add a new field document to the fields collection
      */
-    override fun addField(testField1: Field): CompletableFuture<Field> {
+    override fun addField(field: Field): CompletableFuture<Field> {
         TODO("Not yet implemented")
     }
 
