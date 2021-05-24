@@ -194,4 +194,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search">SEARCH</string>
     <string name="uid">UID</string>
+    <string name="locate_a_user">Locate a user</string>
 </resources>

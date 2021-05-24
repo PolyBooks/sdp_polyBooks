@@ -18,6 +18,8 @@ class UserProfileActivity : AppCompatActivity() {
         val username = intent.getStringExtra(EXTRA_MESSAGE)
         val welcomeText = "Hello $username !"
 
+        val uid = intent.getStringExtra(EXTRA_MESSAGE2)
+
         val textMessageView = findViewById<TextView>(R.id.welcome_text)
         textMessageView.apply {text = welcomeText}
 
@@ -31,6 +33,14 @@ class UserProfileActivity : AppCompatActivity() {
         buttonDisconnect.setOnClickListener {
             LoginActivity().signOut()
             val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+        val buttonLocate: Button = findViewById(R.id.locate_button)
+        buttonLocate.setOnClickListener {
+            val intent = Intent(this, GPSActivity::class.java).apply {
+                putExtra(EXTRA_MESSAGE2, uid)
+            }
             startActivity(intent)
         }
 

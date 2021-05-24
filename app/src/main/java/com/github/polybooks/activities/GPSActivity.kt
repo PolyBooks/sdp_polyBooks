@@ -6,23 +6,28 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.github.polybooks.R
+import com.github.polybooks.activities.RegisterActivity.Companion.TAG
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
@@ -35,6 +40,18 @@ class GPSActivity: AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private lateinit var uid : String
+
+    private lateinit var locationCallback: LocationCallback
+
+    private var mapFrag : SupportMapFragment? = null
+
+    private lateinit var otherUid : String
+
+    var handler: Handler = Handler()
+    var runnable: Runnable? = null
+    var delay = 5000
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +59,8 @@ class GPSActivity: AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         setContentView(R.layout.activity_gps)
+
+        uid = intent.getStringExtra(EXTRA_MESSAGE2).toString()
 
         val mapFragment = supportFragmentManager.findFragmentById(
             R.id.map_fragment
@@ -55,6 +74,7 @@ class GPSActivity: AppCompatActivity() {
                     // Permission is granted. Continue the action or workflow in your
                     // app.
                     Log.d("GPS", "HERE 1 =======================================")
+                    mapFrag = mapFragment
                     setupMap(mapFragment)
                 } else {
                     // Explain to the user that the feature is unavailable because the
@@ -83,6 +103,7 @@ class GPSActivity: AppCompatActivity() {
             ) == PackageManager.PERMISSION_GRANTED
                 -> {
                 Log.d("GPS", "HERE 2 +++++++++++++++++++++++++++++")
+                mapFrag = mapFragment
                 setupMap(mapFragment)
                 }
             else -> {
@@ -94,29 +115,58 @@ class GPSActivity: AppCompatActivity() {
 
         }
 
+        val searchButton= findViewById<Button>(R.id.button_search)
+        searchButton.setOnClickListener{
+            val uidField = findViewById<TextInputEditText>(R.id.uid_field)
+            val uid = uidField.text.toString()
+
+            otherUid = uid;
+            addPostEventListener(Firebase.database.getReference("localisation_$uid"))
+            searchUser(uid, mapFragment)
+        }
+
         setupNavbar(findViewById(R.id.bottom_navigation), this)
 
+    }
+
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
+    private fun searchUser(uid: String, mapFragment : SupportMapFragment?){
+        mapFragment?.getMapAsync { googleMap ->
+            googleMap.isMyLocationEnabled = true
+
+            googleMap.setOnMapLoadedCallback {
+
+                val database = Firebase.database.reference
+                var lat = 0.0
+                var long = 0.0
+
+                database.child("localisation_$uid").child("latitude").get().addOnSuccessListener {
+                    Log.i("firebase", "Got value ${it.value}")
+                    lat = it.value as Double
+                    database.child("localisation_$uid").child("longitude").get().addOnSuccessListener {
+                        Log.i("firebase", "Got value ${it.value}")
+                        long = it.value as Double
+                        val loca = LatLng(lat, long)
+                        googleMap.addMarker(
+                            MarkerOptions().position(loca)
+                                .title("He is here !"))
+                        // create an object that will specify how the camera will be updated
+                        val update = CameraUpdateFactory.newLatLngZoom(loca, 16.0f)
+                        googleMap.moveCamera(update)
+                    }.addOnFailureListener{
+                        Log.e("firebase", "Error getting data", it)
+                    }
+                }.addOnFailureListener{
+                    Log.e("firebase", "Error getting data", it)
+                }
+            }
+        }
     }
 
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
     private fun setupMap(mapFragment : SupportMapFragment?) {
         mapFragment?.getMapAsync { googleMap ->
-             {
-                //shouldShowRequestPermissionRationale(GPSActivity::class.java, String)
-                //ActivityCompat.requestPermissions(
-                //    this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-                //)
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-
-            }
-            //Log.d("GPSActivity", "Have enabled the thing=============++++++++++++++++===========")
             googleMap.isMyLocationEnabled = true
 
             googleMap.setOnMapLoadedCallback {
@@ -128,47 +178,62 @@ class GPSActivity: AppCompatActivity() {
                             val current = LatLng(location.latitude, location.longitude)
 
                             val database = Firebase.database
-                            val ref = database.getReference("localisation")
+                            val ref = database.getReference("localisation_$uid")
                             ref.setValue(location)
-
-                            //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 16f))
-
-                            // create a marker at the exact location
-                            googleMap.addMarker(
-                                MarkerOptions().position(current)
-                                    .title("You are currently here!"))
-                            // create an object that will specify how the camera will be updated
-                            val update = CameraUpdateFactory.newLatLngZoom(current, 16.0f)
-                            googleMap.moveCamera(update)
-                            //Save the location data to the database
                         }
                     }
                 //val epfl = LatLng(46.5165921, 6.5576564)
             }
-            /*
-            // Put this to do updates when the location changes
-            val locationRequest = LocationRequest.create()?.apply {
-                interval = 10000
-                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            }
-            val locationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult?) {
-                    locationResult ?: return
-                    for (location in locationResult.locations){
-                        //updateMap(googleMap, location)
-                    }
-                }
-            }
-
-            fusedLocationClient.requestLocationUpdates(locationRequest,
-                locationCallback,
-                Looper.getMainLooper())
-            */
         }
     }
 
-    /*private fun updateMap(mapFr){
-        val current =  LatLng(location.latitude, location.longitude)
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLng(current))
-    }*/
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
+    private fun updateMyLoca(){
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+
+                location?.let {
+                    val current = LatLng(location.latitude, location.longitude)
+
+                    val database = Firebase.database
+                    val ref = database.getReference("localisation_$uid")
+                    ref.setValue(location)
+                }
+            }
+    }
+
+    private fun addPostEventListener(postReference: DatabaseReference) {
+        // [START post_value_event_listener]
+        val postListener = object : ValueEventListener {
+            @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Get Post object and use the values to update the UI
+                // val post = dataSnapshot.getValue()
+                searchUser(otherUid, mapFrag)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        postReference.addValueEventListener(postListener)
+        // [END post_value_event_listener]
+    }
+
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
+    override fun onResume() {
+        handler.postDelayed(Runnable {
+            handler.postDelayed(runnable!!, delay.toLong())
+            Log.w(TAG, "update my loca")
+            updateMyLoca()
+        }.also { runnable = it }, delay.toLong())
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(runnable!!)
+    }
 }
