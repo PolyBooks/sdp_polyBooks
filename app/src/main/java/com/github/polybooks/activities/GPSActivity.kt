@@ -13,7 +13,6 @@ import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.github.polybooks.R
-import com.github.polybooks.utils.CameraManip
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -21,6 +20,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
+import java.util.*
 
 
 class GPSActivity: AppCompatActivity() {
@@ -29,6 +35,7 @@ class GPSActivity: AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -87,8 +94,8 @@ class GPSActivity: AppCompatActivity() {
 
         }
 
+        setupNavbar(findViewById(R.id.bottom_navigation), this)
 
-            setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
 
@@ -116,9 +123,24 @@ class GPSActivity: AppCompatActivity() {
                 fusedLocationClient.lastLocation
                     .addOnSuccessListener { location: Location? ->
                         // Got last known location. In some rare situations this can be null.
+
                         location?.let {
                             val current = LatLng(location.latitude, location.longitude)
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 16f))
+
+                            val database = Firebase.database
+                            val ref = database.getReference("localisation")
+                            ref.setValue(location)
+
+                            //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 16f))
+
+                            // create a marker at the exact location
+                            googleMap.addMarker(
+                                MarkerOptions().position(current)
+                                    .title("You are currently here!"))
+                            // create an object that will specify how the camera will be updated
+                            val update = CameraUpdateFactory.newLatLngZoom(current, 16.0f)
+                            googleMap.moveCamera(update)
+                            //Save the location data to the database
                         }
                     }
                 //val epfl = LatLng(46.5165921, 6.5576564)
@@ -145,8 +167,8 @@ class GPSActivity: AppCompatActivity() {
         }
     }
 
-    private fun updateMap(googleMap: GoogleMap, location: Location){
+    /*private fun updateMap(mapFr){
         val current =  LatLng(location.latitude, location.longitude)
         //googleMap.moveCamera(CameraUpdateFactory.newLatLng(current))
-    }
+    }*/
 }
