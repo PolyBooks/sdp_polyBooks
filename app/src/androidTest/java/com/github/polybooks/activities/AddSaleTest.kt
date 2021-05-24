@@ -66,7 +66,6 @@ class AddSaleTest {
         onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
     }
 
-    @Ignore
     @Test
     fun passValidISBN() {
         val extraKey = EXTRA_ISBN

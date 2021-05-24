@@ -24,7 +24,6 @@ class MainTest {
 
     @Before
     fun before() {
-        //BaristaSleepInteractions.sleep(2, TimeUnit.SECONDS)
         Intents.init()
     }
 
@@ -60,7 +59,6 @@ class MainTest {
     fun sellButton() {
         onView(withId(R.id.sell_button)).perform(click())
         intended(hasComponent(AddSaleActivity::class.java.name))
-
     }
 
     @Test
