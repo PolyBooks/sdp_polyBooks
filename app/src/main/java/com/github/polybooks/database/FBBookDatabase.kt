@@ -78,6 +78,7 @@ object FBBookDatabase : BookDatabase {
     }
 
     override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
+        if (isbns.isEmpty()) return CompletableFuture.completedFuture(listOf())
         val future = CompletableFuture<List<Book>>()
         bookRef.whereIn(FieldPath.documentId(), isbns.toList())
             .get().addOnSuccessListener { bookEntries ->
