@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.github.polybooks.utils.unwrapException
-import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -16,35 +15,32 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
+// TODO add to/create listOf as we discover new fields
+private val TITLE_FIELD_NAMES = listOf("title", "full_title")
+private const val AUTHORS_FIELD_NAME = "authors"
+private const val FORMAT_FIELD_NAME = "physical_format"
+private val ISBN_FIELD_NAMES = listOf("isbn_13", "isbn_10")
+private const val PUBLISHER_FIELD_NAME = "publishers"
+private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
+private const val AUTHOR_NAME_FIELD_NAME = "name"
+private const val LANGUAGE_FIELD_NAME = "languages"
+private const val LANGUAGE_NAME_FIELD_NAME = "name"
+private const val EDITION_FIELD_NAME = "edition_name"
+
+private const val DATE_FORMAT = "MMM dd, yyyy"
+private const val DATE_FORMAT2 = "yyyy"
+
+private const val OL_BASE_ADDR = """https://openlibrary.org"""
+
 /**
  * An implementation of a book database based on the Open Library online database
+ * !! DO NOT INSTANTIATE THIS CLASS unless you are writing a BookDatabase implementation.
  * */
-object OLBookDatabase: BookDatabase {
-
-    // TODO add to/create listOf as we discover new fields
-    private val TITLE_FIELD_NAMES = listOf("title", "full_title")
-    private const val AUTHORS_FIELD_NAME = "authors"
-    private const val FORMAT_FIELD_NAME = "physical_format"
-    private val ISBN_FIELD_NAMES = listOf("isbn_13", "isbn_10")
-    private const val PUBLISHER_FIELD_NAME = "publishers"
-    private const val PUBLISH_DATE_FIELD_NAME = "publish_date"
-    private const val AUTHOR_NAME_FIELD_NAME = "name"
-    private const val LANGUAGE_FIELD_NAME = "languages"
-    private const val LANGUAGE_NAME_FIELD_NAME = "name"
-    private const val EDITION_FIELD_NAME = "edition_name"
-
-    private const val DATE_FORMAT = "MMM dd, yyyy"
-    private const val DATE_FORMAT2 = "yyyy"
-
-    private const val OL_BASE_ADDR = """https://openlibrary.org"""
-
-    fun getInstance(): BookDatabase {
-        return this
-    }
+class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>): BookDatabase {
 
     override fun queryBooks(): BookQuery = OLBookQuery()
 
-    private class OLBookQuery: AbstractBookQuery() {
+    private inner class OLBookQuery: AbstractBookQuery() {
 
         @RequiresApi(Build.VERSION_CODES.N)
         override fun getAll(): CompletableFuture<List<Book>> {
@@ -62,7 +58,7 @@ object OLBookDatabase: BookDatabase {
         return "$OL_BASE_ADDR/isbn/$isbn.json"
     }
 
-    private const val errorMessage = "Cannot parse OpenLibrary book because : "
+    private val errorMessage = "Cannot parse OpenLibrary book because : "
 
     private fun getBookByISBN(isbn: String): CompletableFuture<Book?> {
         val url = isbn2URL(isbn)
