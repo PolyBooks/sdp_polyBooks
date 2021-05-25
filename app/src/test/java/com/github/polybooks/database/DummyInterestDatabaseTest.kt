@@ -35,13 +35,13 @@ class DummyInterestDatabaseTest {
 
     @Test(expected = NotImplementedError::class)
     fun unimplementedThrows_getUserInterests() {
-        val u = LoggedUser(1, "unknown")
+        val u = LoggedUser("1", "unknown")
         db.getUserInterests(u)
     }
 
     @Test(expected = NotImplementedError::class)
     fun unimplementedThrows_setUserInterests() {
-        val u = LoggedUser(1, "unknown")
+        val u = LoggedUser("1", "unknown")
         db.setUserInterests(u, listOf(Field("Biology")))
     }
 }
