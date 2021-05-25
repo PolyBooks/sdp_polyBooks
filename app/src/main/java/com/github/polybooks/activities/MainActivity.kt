@@ -62,13 +62,6 @@ class MainActivity : AppCompatActivity() {
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.home, navBarListener)
     }
 
-    fun signup(view: View) {
-        setContentView(R.layout.activity_signup)
-    }
-
-    fun backhome(view: View) {
-        setContentView(R.layout.activity_main)
-    }
 
     fun sellBook(view: View) {
         val intent = Intent(this, AddSaleActivity::class.java)
