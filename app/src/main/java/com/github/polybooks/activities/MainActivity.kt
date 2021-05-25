@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : AppCompatActivity() {
-    private var mAuth: FirebaseAuth? = null
+    private var mAuth: FirebaseAuth? = null 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
