@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.ISBN
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.github.polybooks.utils.unwrapException
+import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.io.FileNotFoundException
+import java.lang.UnsupportedOperationException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -36,21 +39,16 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
  * An implementation of a book database based on the Open Library online database
  * !! DO NOT INSTANTIATE THIS CLASS unless you are writing a BookDatabase implementation.
  * */
-class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>): BookDatabase {
+object OLBookDatabase: BookProvider {
 
-    override fun queryBooks(): BookQuery = OLBookQuery()
+    override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
+        val futures = isbns.toSet().map { getBookByISBN(it) }
+        return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
+    }
 
-    private inner class OLBookQuery: AbstractBookQuery() {
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getAll(): CompletableFuture<List<Book>> {
-            return if (isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
-            else {
-                val futures = isbns!!.map { getBookByISBN(it) }
-                listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
-            }
-        }
-
+    override fun addBook(book: Book): CompletableFuture<Unit> {
+        //Can't add books to OpenLibrary
+        return CompletableFuture.completedFuture(Unit)
     }
 
     //makes an URL to the OpenLibrary page out of an isbn

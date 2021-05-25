@@ -5,12 +5,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.adapter.database.BooksAdapter
 import com.github.polybooks.core.Book
-import com.github.polybooks.database.BookSettings
+import com.github.polybooks.database.BookQuery
 import com.github.polybooks.database.Database
 import com.github.polybooks.database.Query
-import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
+import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.CompletableFuture
 
 /**
  * Activity to list Books
@@ -45,13 +46,12 @@ class ListBooksActivity: ListActivity<Book>() {
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.books, navBarListener)
     }
 
-    override fun getQuery(): Query<Book> {
-        return intent.getSerializableExtra(EXTRA_BOOKS_QUERY_SETTINGS)
+    override fun getElements(): CompletableFuture<List<Book>> {
+        return intent.getSerializableExtra(EXTRA_BOOKS_QUERY)
             ?.let {
-                bookDB.queryBooks()
-                    .fromSettings(it as BookSettings)
+                bookDB.execute(it as BookQuery)
             }
-            ?: bookDB.queryBooks()
+            ?: bookDB.listAllBooks()
     }
 
     override fun onFilterButtonClick() {

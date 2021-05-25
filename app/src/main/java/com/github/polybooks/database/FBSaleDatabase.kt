@@ -127,10 +127,10 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
 
 
         private fun getBookQuery() : BookQuery {
-            val bookQuery = bookDatabase.queryBooks()
-            if (interests != null) bookQuery.onlyIncludeInterests(interests!!)
-            if (title != null) bookQuery.searchByTitle(title!!)
-            if (isbn != null) bookQuery.searchByISBN(setOf(isbn!!))
+            var bookQuery : BookQuery = AllBooksQuery()
+            if (interests != null) bookQuery = bookQuery.searchByInterests(interests!!)
+            if (title != null) bookQuery = bookQuery.searchByTitle(title!!)
+            if (isbn != null) bookQuery = bookQuery.getBooks(setOf(isbn!!))
             return bookQuery
         }
 
@@ -138,7 +138,7 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
             return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
                 doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
             } else {
-                val booksFuture = getBookQuery().getAll()
+                val booksFuture = bookDatabase.execute(getBookQuery())
                 booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
                     val isbns = books.map {it.isbn}
                     if (isbns.isEmpty()) return@thenCompose CompletableFuture.completedFuture(listOf())
@@ -209,9 +209,7 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
             return CompletableFuture.completedFuture(sales)
         } else {
             val booksFuture = bookDatabase
-                .queryBooks()
-                .searchByISBN(missingBooks.toSet())
-                .getAll()
+                .getBooks(missingBooks.toSet())
             return booksFuture.thenApply { books ->
                 val biggerBookCache = bookCache + books.associateBy { it.isbn }
                 snapshots.map { doc ->

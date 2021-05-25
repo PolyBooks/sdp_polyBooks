@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.database.Query
+import java.util.concurrent.CompletableFuture
 
 /**
  * Activity to list something using a recyclerview
@@ -30,7 +31,6 @@ abstract class ListActivity<T>: AppCompatActivity() {
 
         findViewById<TextView>(R.id.sale_or_book).text = getTitleText()
         findViewById<Button>(R.id.filter_button).setOnClickListener { onFilterButtonClick() }
-        val query: Query<T> = getQuery()
 
         mRecycler = findViewById(R.id.recyclerView)
         mRecycler.setHasFixedSize(true)
@@ -39,7 +39,7 @@ abstract class ListActivity<T>: AppCompatActivity() {
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = adapter(emptyList())
 
-        query.getAll().thenAccept { list -> this.updateAdapter(list) }
+        getElements().thenAccept { list -> this.updateAdapter(list) }
 
         setNavBar()
     }
@@ -53,6 +53,6 @@ abstract class ListActivity<T>: AppCompatActivity() {
     abstract fun onFilterButtonClick()
     abstract fun adapter(list : List<T>): RecyclerView.Adapter<*>
     abstract fun setNavBar()
-    abstract fun getQuery(): Query<T>
+    abstract fun getElements() : CompletableFuture<List<T>>
     abstract fun getTitleText(): String
 }

@@ -11,11 +11,11 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
+import com.github.polybooks.database.AllBooksQuery
 import com.github.polybooks.database.BookOrdering
 import com.github.polybooks.database.BookQuery
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.FBBookDatabase
-import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
+import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY
 import com.github.polybooks.utils.setupNavbar
 
 /**
@@ -29,8 +29,6 @@ import com.github.polybooks.utils.setupNavbar
 class FilteringBooksActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringBooksActivity"
-
-    private val bookDB = Database.bookDatabase
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
@@ -72,19 +70,11 @@ class FilteringBooksActivity: FilteringActivity() {
     }
 
     fun getResults(view: View) {
-//        var query: BookQuery = DummyBookQuery()
-        val query: BookQuery = bookDB.queryBooks()
-
-        //These 2 in front for dummy books query
-        if (mName.text.isNotEmpty())
-            query.searchByTitle(mName.text.toString())
-
-        resultByParameter(query)
+        val query = buildQuery()
 
         // pass query to new activity
-        val querySettings = query.getSettings()
         val intent = Intent(this, ListBooksActivity::class.java)
-        intent.putExtra(EXTRA_BOOKS_QUERY_SETTINGS, querySettings)
+        intent.putExtra(EXTRA_BOOKS_QUERY, query)
         startActivity(intent)
     }
 
@@ -115,15 +105,26 @@ class FilteringBooksActivity: FilteringActivity() {
         mISBN = findViewById(R.id.book_isbn)
     }
 
-    private fun resultByParameter(query: BookQuery) {
-        val sortingValues = mSortParameter.getSelectedValues()
-        if (sortingValues.isNotEmpty()) {
-            query.withOrdering(sortingValues[0])
-        }
+    private fun buildQuery() : BookQuery {
+        var query: BookQuery = AllBooksQuery()
 
         val interests: MutableSet<Interest> = mutableSetOf()
         interests.addAll(mFieldParameter.getSelectedValues())
         interests.addAll(mSemesterParameter.getSelectedValues())
         interests.addAll(mCourseParameter.getSelectedValues())
+
+        if (interests.isNotEmpty())
+            query = query.searchByInterests(interests)
+
+        if (mName.text.isNotEmpty())
+            query = query.searchByTitle(mName.text.toString())
+
+        val sortingValues = mSortParameter.getSelectedValues()
+        if (sortingValues.isNotEmpty()) {
+            query = query.orderBy(sortingValues[0])
+        }
+
+        return query
+
     }
 }

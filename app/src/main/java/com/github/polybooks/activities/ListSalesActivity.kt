@@ -12,6 +12,7 @@ import com.github.polybooks.database.SaleSettings
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.CompletableFuture
 
 /**
  * Activity to list all active sales
@@ -46,13 +47,13 @@ class ListSalesActivity: ListActivity<Sale>() {
             setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
 
-    override fun getQuery(): Query<Sale> {
+    override fun getElements(): CompletableFuture<List<Sale>> {
         return intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
             ?.let {
                 salesDB.querySales()
-                    .fromSettings(it as SaleSettings)
+                    .fromSettings(it as SaleSettings).getAll()
             }
-            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE)).getAll()
     }
 
     override fun onFilterButtonClick() {
