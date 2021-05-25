@@ -96,7 +96,7 @@ sealed class BookQuery(private val ordering: BookOrdering): Serializable {
     /**
      * Get the books with the given ISBNs
      * */
-    fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering = DEFAULT): ISBNBookQuery =
+    fun getBooks(isbns: Collection<ISBN>): ISBNBookQuery =
         ISBNBookQuery(isbns, this.ordering)
 
     /**
