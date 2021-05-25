@@ -18,7 +18,7 @@ class FBInterestDatabaseTest {
     //private val firestore = FirebaseProvider.getFirestore()
     private val interestDB = Database.interestDatabase
 
-    private val testUser = LoggedUser(301966, "Le givre")
+    private val testUser = LoggedUser("301966", "Le givre")
 
     @Before
     fun setUp() {
