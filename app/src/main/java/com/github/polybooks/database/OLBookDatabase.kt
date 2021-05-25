@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.utils.listOfFuture2FutureOfList
+import com.github.polybooks.utils.regulariseISBN
 import com.github.polybooks.utils.unwrapException
 import com.github.polybooks.utils.url2json
 import com.google.firebase.Timestamp
@@ -37,12 +38,12 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
 /**
  * An implementation of a book database based on the Open Library online database
- * !! DO NOT INSTANTIATE THIS CLASS unless you are writing a BookDatabase implementation.
  * */
 object OLBookDatabase: BookProvider {
 
     override fun getBook(isbn: String): CompletableFuture<Book?> {
-        val url = isbn2URL(isbn)
+        val regularised = regulariseISBN(isbn) ?: throw IllegalArgumentException("ISBN cannot be regularised")
+        val url = isbn2URL(regularised)
         return url2json(url)
             .thenApply { parseBook(it) }
             .thenCompose { updateBookWithAuthorName(it) }
@@ -56,7 +57,8 @@ object OLBookDatabase: BookProvider {
     }
 
     override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
-        val futures = isbns.toSet().map { getBook(it) }
+        val regularised = isbns.map { regulariseISBN(it) ?: throw IllegalArgumentException("ISBN cannot be regularised") }
+        val futures = regularised.toSet().map { getBook(it) }
         return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
     }
 
