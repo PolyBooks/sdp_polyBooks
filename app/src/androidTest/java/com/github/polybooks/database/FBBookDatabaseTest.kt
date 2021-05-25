@@ -17,6 +17,15 @@ class FBBookDatabaseTest {
     private val firestore = FirebaseProvider.getFirestore()
     private val fbBookDB = FBBookDatabase
 
+    companion object {
+        private val usedBooks = listOf("9782376863069", "9780156881807", "9781985086593")
+        @BeforeClass
+        @JvmStatic
+        fun initDB() {
+            usedBooks.forEach { book -> FBBookDatabase.addBook(OLBookDatabase.getBook(book).get()!!) }
+        }
+    }
+
     @Before
     fun setUp() {
         Intents.init()
@@ -62,24 +71,6 @@ class FBBookDatabaseTest {
         books.forEach {
             assertTrue(it.title.contains("Operat"))
         }
-
-    }
-
-    @Test
-    fun usesOpenLibraryWhenBookNotStored() {
-
-        fun deleteBook(isbn : String) : CompletableFuture<Unit> {
-            val future = CompletableFuture<Unit>()
-            firestore.collection("book")
-                .document(isbn).delete()
-                .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete $isbn")) }
-                .addOnSuccessListener { future.complete(Unit) }
-            return future
-        }
-
-        deleteBook("9782376863069").get()
-        val future = fbBookDB.getBook("9782376863069")
-        val book = future.get() ?: throw AssertionFailedError("Book was not fetched from OpenLibrary")
 
     }
 
