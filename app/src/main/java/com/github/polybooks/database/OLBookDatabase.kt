@@ -41,8 +41,22 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
  * */
 object OLBookDatabase: BookProvider {
 
+    override fun getBook(isbn: String): CompletableFuture<Book?> {
+        val url = isbn2URL(isbn)
+        return url2json(url)
+            .thenApply { parseBook(it) }
+            .thenCompose { updateBookWithAuthorName(it) }
+            .thenCompose { updateBookWithLanguageName(it) }
+            .exceptionally { exception ->
+                val unwrapped = unwrapException(exception)
+                if (unwrapped is FileNotFoundException) {
+                    return@exceptionally null
+                } else throw unwrapped
+            }
+    }
+
     override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
-        val futures = isbns.toSet().map { getBookByISBN(it) }
+        val futures = isbns.toSet().map { getBook(it) }
         return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
     }
 
@@ -57,21 +71,6 @@ object OLBookDatabase: BookProvider {
     }
 
     private val errorMessage = "Cannot parse OpenLibrary book because : "
-
-    private fun getBookByISBN(isbn: String): CompletableFuture<Book?> {
-        val url = isbn2URL(isbn)
-        return url2json(url)
-            .thenApply { parseBook(it) }
-            .thenCompose { updateBookWithAuthorName(it) }
-            .thenCompose { updateBookWithLanguageName(it) }
-            .exceptionally { exception ->
-                val unwrapped = unwrapException(exception)
-                if (unwrapped is FileNotFoundException) {
-                    return@exceptionally null
-                } else throw unwrapped
-            }
-    }
-
 
     //takes a book that has the authors in the form /authors/<authorID>
     //and fetches the actual name of the author
