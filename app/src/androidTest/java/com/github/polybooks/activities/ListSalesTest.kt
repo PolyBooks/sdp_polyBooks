@@ -72,6 +72,7 @@ class ListSalesTest {
 
     @Test
     fun salesAreCorrect(){
+        Thread.sleep(2000)
         assertListItemCount(R.id.recyclerView, 1)
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_title, "Tartuffe, by Moliere")
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_condition, "WORN")
