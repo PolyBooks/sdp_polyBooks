@@ -7,7 +7,6 @@ import com.github.polybooks.adapter.database.SalesAdapter
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.Query
 import com.github.polybooks.database.SaleSettings
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
@@ -26,7 +25,7 @@ class ListSalesActivity: ListActivity<Sale>() {
     }
 
     override fun setNavBar() {
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.home -> {
@@ -44,7 +43,7 @@ class ListSalesActivity: ListActivity<Sale>() {
                     else -> true
                 }
             }
-            setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
 
     override fun getElements(): CompletableFuture<List<Sale>> {

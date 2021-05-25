@@ -4,12 +4,10 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
-import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "book"
@@ -19,13 +17,16 @@ private const val DATE_FORMAT = "yyyy MM dd"
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
  * */
-object FBBookDatabase : BookDatabase {
+object FBBookDatabase: BookDatabase {
 
     private val bookRef = FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
 
-    override fun searchByTitle(title: String, ordering: BookOrdering): CompletableFuture<List<Book>> {
+    override fun searchByTitle(
+        title: String,
+        ordering: BookOrdering
+    ): CompletableFuture<List<Book>> {
         val future = CompletableFuture<List<Book>>()
         bookRef
             .whereGreaterThanOrEqualTo("book.title", title)
@@ -39,7 +40,10 @@ object FBBookDatabase : BookDatabase {
         return future
     }
 
-    override fun searchByInterests(interests: Collection<Interest>, ordering: BookOrdering): CompletableFuture<List<Book>> {
+    override fun searchByInterests(
+        interests: Collection<Interest>,
+        ordering: BookOrdering
+    ): CompletableFuture<List<Book>> {
         val future = CompletableFuture<List<Book>>()
         val hashed = interests.map { it.hashCode() }.toList()
         bookRef
@@ -76,7 +80,10 @@ object FBBookDatabase : BookDatabase {
         return future
     }
 
-    override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
+    override fun getBooks(
+        isbns: Collection<ISBN>,
+        ordering: BookOrdering
+    ): CompletableFuture<List<Book>> {
         if (isbns.isEmpty()) return CompletableFuture.completedFuture(listOf())
         val future = CompletableFuture<List<Book>>()
         bookRef.whereIn(FieldPath.documentId(), isbns.toList())
@@ -89,8 +96,8 @@ object FBBookDatabase : BookDatabase {
         return future
     }
 
-    private fun bookToDocument(book : Book) : Any {
-        val publishDate : String? = book.publishDate?.let {
+    private fun bookToDocument(book: Book): Any {
+        val publishDate: String? = book.publishDate?.let {
             dateFormatter.format(it.toDate())
         }
         return hashMapOf(
@@ -105,14 +112,14 @@ object FBBookDatabase : BookDatabase {
         )
     }
 
-    private fun assembleBookEntry(bookDocument : Any) : Any {
+    private fun assembleBookEntry(bookDocument: Any): Any {
         return hashMapOf(
             "book" to bookDocument,
             "interests" to listOf<Any>()
         )
     }
 
-    private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
+    private fun snapshotBookToBook(map: HashMap<String, Any>): Book {
         val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
             Timestamp(dateFormatter.parse(it)!!)
         }
@@ -128,7 +135,7 @@ object FBBookDatabase : BookDatabase {
         )
     }
 
-    private fun snapshotEntryToBook(snapshot : DocumentSnapshot) : Book {
+    private fun snapshotEntryToBook(snapshot: DocumentSnapshot): Book {
         val bookDocument = snapshot.get("book") as HashMap<String, Any>
         return snapshotBookToBook(bookDocument)
     }

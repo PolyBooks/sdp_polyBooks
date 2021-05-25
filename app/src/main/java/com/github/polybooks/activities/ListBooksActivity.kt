@@ -7,7 +7,6 @@ import com.github.polybooks.adapter.database.BooksAdapter
 import com.github.polybooks.core.Book
 import com.github.polybooks.database.BookQuery
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.Query
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,18 +24,18 @@ class ListBooksActivity: ListActivity<Book>() {
     }
 
     override fun setNavBar() {
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener{ item ->
-                when(item.itemId){
-                    R.id.home ->{
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
-                    R.id.sales ->{
+                    R.id.sales -> {
                         startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
+                    R.id.user_profile -> {
                         startActivity(Intent(this, LoginActivity::class.java))
                         true
                     }

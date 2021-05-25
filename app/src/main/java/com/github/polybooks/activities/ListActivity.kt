@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
-import com.github.polybooks.database.Query
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -51,8 +50,8 @@ abstract class ListActivity<T>: AppCompatActivity() {
     }
 
     abstract fun onFilterButtonClick()
-    abstract fun adapter(list : List<T>): RecyclerView.Adapter<*>
+    abstract fun adapter(list: List<T>): RecyclerView.Adapter<*>
     abstract fun setNavBar()
-    abstract fun getElements() : CompletableFuture<List<T>>
+    abstract fun getElements(): CompletableFuture<List<T>>
     abstract fun getTitleText(): String
 }

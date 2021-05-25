@@ -4,9 +4,12 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
 import java.util.concurrent.CompletableFuture
 
-object LocalBookCache : BookProvider {
+object LocalBookCache: BookProvider {
 
-    override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
+    override fun getBooks(
+        isbns: Collection<ISBN>,
+        ordering: BookOrdering
+    ): CompletableFuture<List<Book>> {
         return CompletableFuture.completedFuture(listOf())
     }
 
