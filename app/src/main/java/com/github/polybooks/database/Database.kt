@@ -1,5 +1,6 @@
 package com.github.polybooks.database
 
+import android.content.Context
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
@@ -13,24 +14,24 @@ object Database {
     /**
      * The instance of a Book Database associated with this Database
      * */
-    val bookDatabase: BookDatabase = CompleteBookDatabase
+    fun bookDatabase(context: Context): BookDatabase = CompleteBookDatabase(context)
 
     /**
      * The instance of a Sale Database associated with this Database
      * */
-    val saleDatabase: SaleDatabase = FBSaleDatabase(bookDatabase)
+    fun saleDatabase(context: Context): SaleDatabase = FBSaleDatabase(bookDatabase(context))
 
     /**
      * The instance of a Interest Database associated with this Database
      * */
-    val interestDatabase: InterestDatabase = DummyInterestDatabase
+    fun interestDatabase(context: Context): InterestDatabase = DummyInterestDatabase
 
 }
 
-object CompleteBookDatabase: BookDatabase {
+private class CompleteBookDatabase(context: Context): BookDatabase {
 
     val provider =
-        CachedBookProvider(CachedBookProvider(FBBookDatabase, OLBookDatabase), LocalBookCache)
+        CachedBookProvider(CachedBookProvider(FBBookDatabase, OLBookDatabase), LocalBookCache(context))
 
     override fun searchByTitle(
         title: String,

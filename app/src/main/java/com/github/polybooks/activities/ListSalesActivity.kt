@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture
  */
 class ListSalesActivity: ListActivity<Sale>() {
 
-    private val salesDB = Database.saleDatabase
+    private val salesDB = Database.saleDatabase(applicationContext)
 
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)

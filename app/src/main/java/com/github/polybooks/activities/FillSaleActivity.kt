@@ -36,8 +36,8 @@ import java.util.concurrent.CompletableFuture
  */
 class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private val bookDB = Database.bookDatabase
-    private val salesDB = Database.saleDatabase
+    private val bookDB = Database.bookDatabase(applicationContext)
+    private val salesDB = Database.saleDatabase(applicationContext)
 
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 

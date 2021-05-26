@@ -1,5 +1,6 @@
 package com.github.polybooks.database
 
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
@@ -17,7 +18,7 @@ class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-    private val saleDB = Database.saleDatabase
+    private val saleDB = Database.saleDatabase(ApplicationProvider.getApplicationContext())
 
     private val testUser = LoggedUser(301966, "Le givre")
     private val testBook =

@@ -26,7 +26,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
 
-    private val saleDB = Database.saleDatabase
+    private val saleDB = Database.saleDatabase(applicationContext)
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button

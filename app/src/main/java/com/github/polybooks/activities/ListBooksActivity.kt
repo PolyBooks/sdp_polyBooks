@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture
  */
 class ListBooksActivity: ListActivity<Book>() {
 
-    private val bookDB = Database.bookDatabase
+    private val bookDB = Database.bookDatabase(applicationContext)
 
     override fun adapter(list: List<Book>): RecyclerView.Adapter<*> {
         return BooksAdapter(list)
