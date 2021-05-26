@@ -25,8 +25,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-const val EXTRA_MESSAGE = "com.github.polybooks.USERNAME"
 const val EXTRA_MESSAGE2 = "com.github.polybooks.UID"
+
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */

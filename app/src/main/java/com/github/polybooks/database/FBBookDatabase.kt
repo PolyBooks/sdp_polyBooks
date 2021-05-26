@@ -7,8 +7,8 @@ import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "book"
@@ -17,22 +17,16 @@ private const val DATE_FORMAT = "yyyy MM dd"
 /**
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
+ * !! DO NOT INSTANTIATE THIS CLASS. If you are writing a UI you should always use Database.bookDatabase instead.
  * */
-class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnDB : BookDatabase) :
-    BookDatabase {
+class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
 
-    /*TODO:
-    [ ] handle ISBN10 and alternative ISBN better (not always ask OL for aid)
-    [ ] implement search by interest
-    */
-
-    private val bookRef = firebase.collection(COLLECTION_NAME)
-
-    private val dateFormater = SimpleDateFormat(DATE_FORMAT)
+    private val bookRef = FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
+    private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
     override fun queryBooks(): BookQuery = FBBookQuery()
 
-    private inner class FBBookQuery() : AbstractBookQuery() {
+    private inner class FBBookQuery: AbstractBookQuery() {
 
         override fun getAll(): CompletableFuture<List<Book>> {
             when {
@@ -68,7 +62,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
                     return booksFromFBFuture.thenCompose { booksFromFB ->
                         val isbnsFound = booksFromFB.map { it.isbn }
                         val remainingISBNs = isbns.minus(isbnsFound)
-                        val booksFromOLFuture = isbnDB.queryBooks().searchByISBN(remainingISBNs).getAll()
+                        val booksFromOLFuture = bookProvider.queryBooks().searchByISBN(remainingISBNs).getAll()
                         val allBooksFuture = booksFromOLFuture.thenApply { booksFromOL ->
                             booksFromOL + booksFromFB
                         }
@@ -93,27 +87,9 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
             }
         }
 
-        override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            if (n <= 0 || page < 0) {
-                throw IllegalArgumentException(
-                    if (n <= 0) "Cannot return a negative/null ($n) number of results"
-                    else "Cannot return a negative ($page) page number"
-                )
-            }
-            return getAll().thenApply { list ->
-                val lowRange = Integer.min(n * page, list.size)
-                val highRange = Integer.min(n * page + n, list.size)
-                list.subList(lowRange, highRange)
-            }
-        }
-
-        override fun getCount(): CompletableFuture<Int> {
-            return getAll().thenApply { it.size }
-        }
-
         private fun bookToDocument(book : Book) : Any {
             val publishDate : String? = book.publishDate?.let {
-                dateFormater.format(it.toDate())
+                dateFormatter.format(it.toDate())
             }
             return hashMapOf(
                 BookFields.AUTHORS.fieldName to book.authors,
@@ -136,7 +112,7 @@ class FBBookDatabase(private val firebase : FirebaseFirestore, private val isbnD
 
         private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
             val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
-                Timestamp(dateFormater.parse(it)!!)
+                Timestamp(dateFormatter.parse(it)!!)
             }
             return Book(
                 map[BookFields.ISBN.fieldName] as ISBN,

@@ -1,8 +1,8 @@
 package com.github.polybooks.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip

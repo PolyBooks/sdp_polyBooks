@@ -100,6 +100,9 @@
     <string name="sell">Sell</string>
     <string name="view_all_books">View all books</string>
     <string name="filter">Filter</string>
+    <string name="search">SEARCH</string>
+    <string name="uid">UID</string>
+    <string name="locate_a_user">Locate a user</string>
 
     <!-- Toasts -->
     <string name="error">An error occurred, please try again</string>
@@ -192,7 +195,6 @@
     <string name="textview">TextView</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="search">SEARCH</string>
-    <string name="uid">UID</string>
-    <string name="locate_a_user">Locate a user</string>
+    <string name="image_description_favorite">Image of the favorite icon (star)</string>
+    <string name="image_description_cart">Image of the cart icon (bag)</string>
 </resources>

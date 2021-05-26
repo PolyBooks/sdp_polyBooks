@@ -2,7 +2,6 @@ package com.github.polybooks.database
 
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.LoggedUser
-import com.github.polybooks.database.move_to_debug_source_set.DummyInterestDatabase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -11,7 +10,7 @@ class DummyInterestDatabaseTest {
     private val courses = DummyInterestDatabase.mockCourses
     private val semesters = DummyInterestDatabase.mockSemesters
 
-    private val db = DummyInterestDatabase()
+    private val db = DummyInterestDatabase.getInstance()
 
     @Test
     fun t_listAllFields() {

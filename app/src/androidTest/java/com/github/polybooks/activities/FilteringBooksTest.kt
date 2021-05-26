@@ -21,6 +21,7 @@ import com.github.polybooks.core.Field
 import com.github.polybooks.core.Semester
 import com.github.polybooks.database.BookOrdering
 import com.github.polybooks.utils.FilteringTestUtils
+import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -57,7 +58,7 @@ class FilteringBooksTest {
         intended(
             allOf(
                 hasComponent(ListBooksActivity::class.java.name),
-                hasExtraWithKey(ListActivity.EXTRA_BOOKS_QUERY_SETTINGS)
+                hasExtraWithKey(EXTRA_BOOKS_QUERY_SETTINGS)
             )
         )
     }

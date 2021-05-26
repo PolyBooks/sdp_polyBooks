@@ -23,7 +23,8 @@
         android:layout_height="50dp"
         android:src="@android:drawable/btn_star_big_on"
         app:layout_constraintStart_toEndOf="@+id/search_bar"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/image_description_favorite" />
 
     <ImageView
         android:id="@+id/cart"
@@ -32,7 +33,8 @@
         android:layout_marginStart="11dp"
         android:src="@drawable/kisspng_handbag_emoji_clip_art_coin_purse_5d17d4b8d1e568_5931225215618428728597"
         app:layout_constraintStart_toEndOf="@+id/favourites"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/image_description_cart" />
 
     <View
         android:id="@+id/top_line"
@@ -49,7 +51,7 @@
         android:layout_marginTop="9dp"
         android:layout_marginEnd="9dp"
         android:backgroundTint="#DCDADA"
-        android:text="Filter"
+        android:text="@string/filter"
         android:textAllCaps="false"
         android:textColor="#D83030"
         android:textSize="30sp"

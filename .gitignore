@@ -66,6 +66,7 @@ captures/
 .cxx/
 
 # Google Services (e.g. APIs or Firebase)
+firebase/firebase-tools
 # google-services.json
 
 # Freeline
@@ -89,3 +90,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+#Signing keys
+Key.jks
+keystore.properties
