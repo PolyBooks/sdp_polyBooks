@@ -1,12 +1,14 @@
 package com.github.polybooks.activities
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.adapter.database.SalesAdapter
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.Database
+import com.github.polybooks.database.SaleDatabase
 import com.github.polybooks.database.SaleSettings
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
@@ -18,7 +20,12 @@ import java.util.concurrent.CompletableFuture
  */
 class ListSalesActivity: ListActivity<Sale>() {
 
-    private val salesDB = Database.saleDatabase(applicationContext)
+    private lateinit var salesDB : SaleDatabase
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        salesDB = Database.saleDatabase(applicationContext)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)

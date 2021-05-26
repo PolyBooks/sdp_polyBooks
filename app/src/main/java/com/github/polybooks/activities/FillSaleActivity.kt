@@ -14,9 +14,9 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.database.BookDatabase
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.FBSaleDatabase
-import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.database.SaleDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
@@ -36,8 +36,8 @@ import java.util.concurrent.CompletableFuture
  */
 class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private val bookDB = Database.bookDatabase(applicationContext)
-    private val salesDB = Database.saleDatabase(applicationContext)
+    private lateinit var bookDB : BookDatabase
+    private lateinit var salesDB : SaleDatabase
 
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
@@ -50,6 +50,9 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_sale)
+
+        bookDB = Database.bookDatabase(applicationContext)
+        salesDB = Database.saleDatabase(applicationContext)
 
         // Get the Intent that started this activity and extract the strings
         val intent = intent

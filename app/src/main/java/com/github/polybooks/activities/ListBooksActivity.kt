@@ -1,10 +1,12 @@
 package com.github.polybooks.activities
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.adapter.database.BooksAdapter
 import com.github.polybooks.core.Book
+import com.github.polybooks.database.BookDatabase
 import com.github.polybooks.database.BookQuery
 import com.github.polybooks.database.Database
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY
@@ -17,7 +19,12 @@ import java.util.concurrent.CompletableFuture
  */
 class ListBooksActivity: ListActivity<Book>() {
 
-    private val bookDB = Database.bookDatabase(applicationContext)
+    private lateinit var bookDB : BookDatabase
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        bookDB = Database.bookDatabase(applicationContext)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun adapter(list: List<Book>): RecyclerView.Adapter<*> {
         return BooksAdapter(list)

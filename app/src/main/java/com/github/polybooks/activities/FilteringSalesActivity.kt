@@ -8,10 +8,7 @@ import android.widget.EditText
 import com.github.polybooks.R
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.core.*
-import com.github.polybooks.database.Database
-import com.github.polybooks.database.FBSaleDatabase
-import com.github.polybooks.database.SaleOrdering
-import com.github.polybooks.database.SaleQuery
+import com.github.polybooks.database.*
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 
@@ -26,7 +23,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
 
-    private val saleDB = Database.saleDatabase(applicationContext)
+    private lateinit var saleDB : SaleDatabase
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button
@@ -50,6 +47,7 @@ class FilteringSalesActivity: FilteringActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_filtering_sales)
 
+        saleDB = Database.saleDatabase(applicationContext)
         // Get a reference to the UI parameters
         mReset = findViewById(R.id.reset_button)
         mResults = findViewById(R.id.results_button)
