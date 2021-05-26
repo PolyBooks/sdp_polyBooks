@@ -23,7 +23,7 @@ class FilteringSalesActivity: FilteringActivity() {
 
     private val TAG: String = "FilteringSalesActivity"
 
-    private lateinit var saleDB : SaleDatabase
+    private lateinit var saleDB: SaleDatabase
 
     private lateinit var mReset: Button
     private lateinit var mResults: Button

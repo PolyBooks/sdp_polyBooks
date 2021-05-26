@@ -31,7 +31,10 @@ object Database {
 private class CompleteBookDatabase(context: Context): BookDatabase {
 
     val provider =
-        CachedBookProvider(CachedBookProvider(FBBookDatabase, OLBookDatabase), LocalBookCache(context))
+        CachedBookProvider(
+            CachedBookProvider(FBBookDatabase, OLBookDatabase),
+            LocalBookCache(context)
+        )
 
     override fun searchByTitle(
         title: String,

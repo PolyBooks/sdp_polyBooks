@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture
  */
 class ListSalesActivity: ListActivity<Sale>() {
 
-    private lateinit var salesDB : SaleDatabase
+    private lateinit var salesDB: SaleDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         salesDB = Database.saleDatabase(applicationContext)

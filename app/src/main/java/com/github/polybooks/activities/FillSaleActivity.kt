@@ -34,10 +34,10 @@ import java.util.concurrent.CompletableFuture
  * shows the retrieved data, but does not allow modification of it, only confirmation,
  * and offers some additional manual fields such as price, condition, etc.
  */
-class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class FillSaleActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private lateinit var bookDB : BookDatabase
-    private lateinit var salesDB : SaleDatabase
+    private lateinit var bookDB: BookDatabase
+    private lateinit var salesDB: SaleDatabase
 
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
@@ -67,7 +67,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // Check if ISBN in our database
 
         // Retrieve book data and display it if possible, else redirect with error toast
-        if(stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
+        if (stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
                 val book = bookFuture.get()
@@ -167,7 +167,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val intent = Intent(this, TakeBookPictureActivity::class.java).apply {
             val extras = Bundle()
             extras.putString(EXTRA_ISBN, stringISBN)
-            extras.putString(EXTRA_SALE_PRICE, findViewById<EditText>(R.id.filled_price).text.toString())
+            extras.putString(
+                EXTRA_SALE_PRICE,
+                findViewById<EditText>(R.id.filled_price).text.toString()
+            )
             putExtras(extras)
         }
         startActivity(intent)
@@ -195,7 +198,9 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     private fun handleConfirmButton() {
-        if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
+        if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString()
+                .isNotEmpty()
+        ) {
             enableButton(findViewById(R.id.confirm_sale_button), applicationContext)
         } else {
             disableButton(findViewById(R.id.confirm_sale_button), applicationContext)
