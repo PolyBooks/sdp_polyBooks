@@ -37,7 +37,7 @@ class LoginGoogleTest {
         onView(withId(R.id.sign_in_button)).perform(scrollTo(), click())
     }
 
-    @Ignore("Bog needs to be fixed")
+    @Ignore("Bog needs to be fixed") //FIXME
     @Test
     fun signOutButtonGoogle() {
         onView(withId(R.id.log_button)).perform(scrollTo(), click())
