@@ -41,7 +41,7 @@ class CachedBookProviderTests {
             ordering: BookOrdering
         ): CompletableFuture<List<Book>> {
             return CompletableFuture.supplyAsync {
-                isbns.flatMap { backing[it]?.let { listOf(it) } ?: listOf() }
+                isbns.mapNotNull { backing[it] }
             }
         }
 

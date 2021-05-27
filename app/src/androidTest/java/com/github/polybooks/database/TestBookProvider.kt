@@ -54,7 +54,7 @@ object TestBookProvider : BookProvider {
         isbns: Collection<ISBN>,
         ordering: BookOrdering
     ): CompletableFuture<List<Book>> {
-        val b = isbns.flatMap { books[it]?.let { listOf(it) } ?: listOf() }
+        val b = isbns.mapNotNull { books[it] }
         return CompletableFuture.completedFuture(b)
     }
 
