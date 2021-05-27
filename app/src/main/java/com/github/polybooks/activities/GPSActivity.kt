@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
@@ -74,30 +73,17 @@ class GPSActivity: AppCompatActivity() {
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
     private fun requestPermissionsAndSetUpMap(){
         val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ) { permissions ->
-                if (permissions.all { it.value }) {
-                    setupMap(mapFrag)
-                } else {
-                    Toast.makeText(this,
-                        "This feature is unavailable without the required permissions",
-                        Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
-                }
+            registerForActivityResult( ActivityResultContracts.RequestMultiplePermissions() )
+            { permissions ->
+                if (permissions.all { it.value }) { setupMap(mapFrag) }
+                else { startActivity(Intent(this, MainActivity::class.java)) }
             }
         when {
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-            -> {
-                setupMap(mapFrag)
-            }
+            ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            -> { setupMap(mapFrag) }
             else -> {
                 requestPermissionLauncher.launch(
                     REQUIRED_PERMISSIONS)
@@ -109,31 +95,23 @@ class GPSActivity: AppCompatActivity() {
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
     private fun searchUser(uid: String, mapFragment : SupportMapFragment?){
         mapFragment?.getMapAsync { googleMap ->
-            googleMap.clear()
-            googleMap.isMyLocationEnabled = true
+            googleMap.clear() ; googleMap.isMyLocationEnabled = true
             googleMap.setOnMapLoadedCallback {
-                val database = Firebase.database.reference
-                var lat: Double
-                var long: Double
-                database.child("localisation_$uid").child("latitude").get().addOnSuccessListener {
-                    Log.i("firebase", "Got value ${it.value}")
-                    lat = it.value as Double
-                    database.child("localisation_$uid").child("longitude").get().addOnSuccessListener {
-                        Log.i("firebase", "Got value ${it.value}")
-                        long = it.value as Double
+                val database = Firebase.database.reference ; var lat: Double ; var long: Double
+                database.child("localisation_$uid").child("latitude").get()
+                    .addOnSuccessListener { it -> lat = it.value as Double
+                    database.child("localisation_$uid").child("longitude")
+                        .get().addOnSuccessListener {
+                            long = it.value as Double
                         val loca = LatLng(lat, long)
-                        googleMap.addMarker(
-                            MarkerOptions().position(loca)
-                                .title("He is here !")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
+                        googleMap.addMarker(MarkerOptions().position(loca).title("He is here !")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
                         val update = CameraUpdateFactory.newLatLngZoom(loca, 16.0f)
                         googleMap.moveCamera(update)
                     }.addOnFailureListener{
-                        Log.e("firebase", "Error getting data", it)
-                    }
+                        Log.e("firebase", "Error getting data", it) }
                 }.addOnFailureListener{
-                    Log.e("firebase", "Error getting data", it)
-                }
+                    Log.e("firebase", "Error getting data", it) }
             }
         }
     }
