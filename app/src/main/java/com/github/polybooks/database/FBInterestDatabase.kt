@@ -34,7 +34,7 @@ class FBInterestDatabase: InterestDatabase {
         val settings: FirebaseFirestoreSettings = firestoreSettings {
             isPersistenceEnabled = true
         }
-        FirebaseFirestore.getInstance().firestoreSettings = settings
+        FirebaseProvider.getFirestore().firestoreSettings = settings
         return this
     }
 
@@ -109,22 +109,21 @@ class FBInterestDatabase: InterestDatabase {
 
         return future
     }
-/*
+
     /**
      * Remove a semester and all its potential sub-collections (users and books)
      */
     fun removeSemester(semester: Semester) : CompletableFuture<Boolean>  {
-
+        return TODO("maybe in the future, if needed")
     }
 
     /**
      * Remove a course and all its potential sub-collections (users and books)
      */
     fun removeCourse(course: Course) : CompletableFuture<Boolean>  {
-
+        return TODO("maybe in the future, if needed")
     }
 
- */
 
     // TODO maybe add listAllBooksOfCourse(course), etc. and listAllUsersInterestedIn(interest) if relevant
     // TODO Also addUserInterest() and removeUserInterest() instead of setUserInterest()

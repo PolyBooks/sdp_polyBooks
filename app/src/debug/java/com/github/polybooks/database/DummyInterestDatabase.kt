@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * !! DO NOT INSTANCIATE THIS CLASS. You should use Database.interestDatabase instead.
  * */
-internal object DummyInterestDatabase: InterestDatabase {
+object DummyInterestDatabase: InterestDatabase {
 
     fun getInstance(): InterestDatabase {
         return this
