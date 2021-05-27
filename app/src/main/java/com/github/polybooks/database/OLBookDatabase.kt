@@ -9,12 +9,10 @@ import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.github.polybooks.utils.regulariseISBN
 import com.github.polybooks.utils.unwrapException
 import com.github.polybooks.utils.url2json
-import com.google.firebase.Timestamp
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.io.FileNotFoundException
-import java.lang.UnsupportedOperationException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -202,16 +200,16 @@ object OLBookDatabase: BookProvider {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun parsePublishDate(jsonPublishDate: JsonElement): Timestamp {
+    private fun parsePublishDate(jsonPublishDate: JsonElement): Date {
         val dateString = asString(jsonPublishDate)
         val dateFormat1 = SimpleDateFormat(DATE_FORMAT)
         val dateFormat2 = SimpleDateFormat(DATE_FORMAT2)
         dateFormat1.isLenient = false
         dateFormat2.isLenient = false
         return try {
-            Timestamp(dateFormat1.parse(dateString)!!)
+            dateFormat1.parse(dateString)!!
         } catch (e: java.text.ParseException) {
-            Timestamp(dateFormat2.parse(dateString)!!)
+            dateFormat2.parse(dateString)!!
         }
     }
 

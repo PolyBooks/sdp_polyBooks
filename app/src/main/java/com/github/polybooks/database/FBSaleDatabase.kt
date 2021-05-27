@@ -8,7 +8,9 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
+import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashMap
 
 private const val COLLECTION_NAME = "sale2"
 
@@ -222,7 +224,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
             snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
             snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
             BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
+            snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate(),
             SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
             null
         )
@@ -258,7 +260,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
             SaleFields.SELLER.fieldName to sale.seller,
             SaleFields.PRICE.fieldName to sale.price,
             SaleFields.CONDITION.fieldName to sale.condition,
-            SaleFields.PUBLICATION_DATE.fieldName to sale.date,
+            SaleFields.PUBLICATION_DATE.fieldName to Timestamp(sale.date),
             SaleFields.STATE.fieldName to sale.state,
             SaleFields.IMAGE.fieldName to null //TODO change this, image goes elsewhere
         )
@@ -285,7 +287,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
                 future.completeExceptionally(DatabaseException("Could not find book associated with sale : isbn = $bookISBN"))
 
             } else {
-                val sale = Sale(book, seller, price, condition, Timestamp.now(), state, image)
+                val sale = Sale(book, seller, price, condition, Date(), state, image)
                 saleRef.add(saleToDocument(sale))
                     .addOnSuccessListener {
                         future.complete(sale)

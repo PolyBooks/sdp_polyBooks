@@ -4,7 +4,6 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import java.text.SimpleDateFormat
@@ -98,7 +97,7 @@ object FBBookDatabase: BookDatabase {
 
     private fun bookToDocument(book: Book): Any {
         val publishDate: String? = book.publishDate?.let {
-            dateFormatter.format(it.toDate())
+            dateFormatter.format(it)
         }
         return hashMapOf(
             BookFields.AUTHORS.fieldName to book.authors,
@@ -121,7 +120,7 @@ object FBBookDatabase: BookDatabase {
 
     private fun snapshotBookToBook(map: HashMap<String, Any>): Book {
         val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
-            Timestamp(dateFormatter.parse(it)!!)
+            dateFormatter.parse(it)
         }
         return Book(
             map[BookFields.ISBN.fieldName] as ISBN,
