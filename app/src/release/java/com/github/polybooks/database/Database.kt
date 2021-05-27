@@ -1,4 +1,5 @@
-import com.github.polybooks.database.*
+package com.github.polybooks.database
+
 import com.github.polybooks.utils.url2json
 
 /**
