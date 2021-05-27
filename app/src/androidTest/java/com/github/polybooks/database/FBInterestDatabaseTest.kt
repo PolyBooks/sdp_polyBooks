@@ -16,7 +16,7 @@ class FBInterestDatabaseTest {
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     //private val firestore = FirebaseProvider.getFirestore()
-    private val interestDB = Database.interestDatabase
+    private val interestDB = FBInterestDatabase.getInstance()
 
     private val testUser = LoggedUser(301966, "Le givre")
 
