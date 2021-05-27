@@ -4,7 +4,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
-import com.github.polybooks.utils.unwrapException
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*

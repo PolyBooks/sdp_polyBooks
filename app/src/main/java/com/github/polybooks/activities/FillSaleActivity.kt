@@ -15,8 +15,6 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.FBSaleDatabase
-import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
