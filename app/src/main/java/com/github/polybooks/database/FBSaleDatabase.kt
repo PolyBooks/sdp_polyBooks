@@ -125,11 +125,6 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
             return queries
         }
 
-        //FIXME make pages work
-        private fun paginateQuery(query: Query, n: Int, page: Int): Query {
-            return query.limit(n.toLong())
-        }
-
         private fun doQuery(query: Query): CompletableFuture<Iterable<DocumentSnapshot>> {
             val future = CompletableFuture<Iterable<DocumentSnapshot>>()
             query.get()
@@ -285,7 +280,6 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
             val future = CompletableFuture<Sale>()
             if (book == null) {
                 future.completeExceptionally(DatabaseException("Could not find book associated with sale : isbn = $bookISBN"))
-
             } else {
                 val sale = Sale(book, seller, price, condition, Date(), state, image)
                 saleRef.add(saleToDocument(sale))

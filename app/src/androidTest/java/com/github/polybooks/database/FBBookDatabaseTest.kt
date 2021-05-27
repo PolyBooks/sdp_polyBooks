@@ -18,11 +18,10 @@ class FBBookDatabaseTest {
     private val fbBookDB = FBBookDatabase
 
     companion object {
-        private val usedBooks = listOf("9782376863069", "9780156881807", "9781985086593")
         @BeforeClass
         @JvmStatic
         fun initDB() {
-            usedBooks.forEach { book -> FBBookDatabase.addBook(OLBookDatabase.getBook(book).get()!!) }
+            TestBookProvider.books.values.forEach { book -> FBBookDatabase.addBook(book) }
         }
     }
 
@@ -51,8 +50,17 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    fun canGetBookByISBN2() {
+        val future = fbBookDB.getBook("9780156881807")
+        val book = future.get() ?: throw AssertionFailedError("Book was not found")
+        val publishDate = Date(68, 0, 10)
+        assertEquals(publishDate, book.publishDate!!)
+    }
+
+
+    @Test
     fun canGetBookByTitle() {
-        fbBookDB.getBook("9780156881807").get() //insure at least one Tartuffe book is in the database
+        fbBookDB.getBook("9780156881807").get() //ensure at least one Tartuffe book is in the database
         val future = fbBookDB.searchByTitle("Tartuffe")
         val books = future.get()
         assertTrue(books.isNotEmpty())

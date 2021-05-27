@@ -8,6 +8,7 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
 import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.utils.unwrapException
+import com.google.firebase.Timestamp
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
@@ -18,11 +19,18 @@ class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun initDB() {
+            TestBookProvider.books.values.forEach { book -> FBBookDatabase.addBook(book) }
+        }
+    }
+
     private val saleDB = Database.saleDatabase(ApplicationProvider.getApplicationContext())
 
     private val testUser = LoggedUser(301966, "Le givre")
-    private val testBook =
-        Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
+    private val testBook = TestBookProvider.getBook("9781985086593").get()!!
 
     private val dummySale: Sale = Sale(
         testBook,
@@ -68,8 +76,9 @@ class FBSaleDatabaseTest {
     fun t_searchByTitle() {
         val sale1 = saleDB.addSale(dummySale).get()
         val sale2 =
-            saleDB.addSale(dummySale.copy(book = Book("9782376863069", null, "title", null, null, null, null, null))).get()
+            saleDB.addSale(dummySale.copy(book = TestBookProvider.getBook("9782376863069").get()!!)).get()
         val sales = saleDB.querySales().searchByTitle(dummySale.book.title).getAll().get()
+        assertEquals(testBook.publishDate, Timestamp(testBook.publishDate!!).toDate())
         assertTrue(sales.contains(sale1))
         assertFalse(sales.contains(sale2))
 

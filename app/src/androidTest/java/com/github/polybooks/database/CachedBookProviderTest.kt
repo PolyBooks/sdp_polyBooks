@@ -12,11 +12,10 @@ import java.util.concurrent.CompletableFuture
 class CachedBookProviderTests {
 
     companion object {
-        private val usedBooks = listOf("9782376863069", "9780156881807", "9781985086593")
         @BeforeClass
         @JvmStatic
         fun initDB() {
-            usedBooks.forEach { book -> FBBookDatabase.addBook(OLBookDatabase.getBook(book).get()!!) }
+            TestBookProvider.books.values.forEach { book -> FBBookDatabase.addBook(book) }
         }
     }
 
