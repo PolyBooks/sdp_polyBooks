@@ -24,7 +24,7 @@ private const val courseCollection: String = "courseInterest"
  * As each document will be able to have a book collection and a user collection.
  * Using snapshotListener here does not feel necessary as interests are rarely changing.
  */
-class FBInterestDatabase: InterestDatabase {
+object FBInterestDatabase: InterestDatabase {
 
     /**
      * get the singleton instance of FBInterestDatabase
