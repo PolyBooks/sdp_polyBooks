@@ -4,13 +4,9 @@ import com.github.polybooks.core.*
 import java.util.concurrent.CompletableFuture
 
 /**
- * !! DO NOT INSTANCIATE THIS CLASS. You should use Database.interestDatabase instead.
+ * !! DO NOT INSTANTIATE THIS CLASS. You should use Database.interestDatabase instead.
  * */
 object DummyInterestDatabase: InterestDatabase {
-
-    fun getInstance(): InterestDatabase {
-        return this
-    }
 
 
     val mockFields: List<Field> = listOf(

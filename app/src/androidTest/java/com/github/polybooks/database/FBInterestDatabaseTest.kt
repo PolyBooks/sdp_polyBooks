@@ -15,23 +15,9 @@ class FBInterestDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-    //private val firestore = FirebaseProvider.getFirestore()
-    private val interestDB = FBInterestDatabase.getInstance()
+    private val interestDB = FBInterestDatabase()
 
     private val testUser = LoggedUser(301966, "Le givre")
-
-    @Before
-    fun setUp() {
-        /*firestore.initializeTestApp({
-            projectId: "PolyBooks",
-            auth: { uid: "alice", email: "alice@example.com" }
-        })*/
-    }
-
-    @After
-    fun cleanUp() {
-        //Intents.release()
-    }
 
 
     @Test

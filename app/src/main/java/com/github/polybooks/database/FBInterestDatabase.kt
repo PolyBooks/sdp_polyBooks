@@ -24,20 +24,7 @@ private const val courseCollection: String = "courseInterest"
  * As each document will be able to have a book collection and a user collection.
  * Using snapshotListener here does not feel necessary as interests are rarely changing.
  */
-object FBInterestDatabase: InterestDatabase {
-
-    /**
-     * get the singleton instance of FBInterestDatabase
-     * but also enable the cache
-     */
-    fun getInstance(): InterestDatabase {
-        val settings: FirebaseFirestoreSettings = firestoreSettings {
-            isPersistenceEnabled = true
-        }
-        FirebaseProvider.getFirestore().firestoreSettings = settings
-        return this
-    }
-
+class FBInterestDatabase: InterestDatabase {
 
 
     /**
