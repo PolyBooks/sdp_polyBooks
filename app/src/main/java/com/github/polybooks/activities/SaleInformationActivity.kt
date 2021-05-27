@@ -70,58 +70,30 @@ class SaleInformationActivity: AppCompatActivity() {
     }
 
     private fun onClickRetract(sale: Sale) {
-        // get the same sale back in case something changed in the mean time
-        var query: SaleQuery = saleDB.querySales()
-        query = query.searchByISBN(sale.book.isbn)
-
-
-        // fireStore.collection('sale2').doc()
-        // TODO search by document id with getrefid
-        val aaaa = fireStore.collection("sale2")
-            .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
-            .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
-            .get()
-            .addOnSuccessListener { d -> println("ddd : " + d) }
-
-        println("abc : " + aaaa)
-
-        saleDB.getReferenceID(sale).addOnSuccessListener { s ->
-            println("sid : " + s)
-        }
-
-        query.getAll().thenCompose { sales ->
-            if (sales == null || sales.isEmpty()) {
-                throw DatabaseException(
-                    "SaleInformationActivity tried to request information from a Sale() " +
-                    "which '${sale.book.isbn}' isbn doesn't exist in database anymore"
+        // Only update the state of the book if the sale is active
+        when (sale.state) {
+            SaleState.RETRACTED -> {
+                Toast.makeText(this, "The sale is already delisted", Toast.LENGTH_SHORT).show()
+                // CompletableFuture.completedFuture(saleFresh) // should return a CompletionStage
+            }
+            SaleState.CONCLUDED -> {
+                Toast.makeText(this, "The sale is already concluded", Toast.LENGTH_SHORT).show()
+                // CompletableFuture.completedFuture(saleFresh) // should return a CompletionStage
+            }
+            else -> {
+                val newSale = Sale(
+                    sale.book, sale.seller, sale.price, sale.condition,
+                    sale.date, SaleState.RETRACTED, sale.image
                 )
-            } else if (sales.size > 1) {
-                throw DatabaseException(
-                    "SaleInformationActivity tried to request information from a Sale() " +
-                    "which isbn '${sale.book.isbn}' is used ${sales.size} times in the database"
-                )
-            } else {
-                val saleFresh: Sale = sales[0]
-                Toast.makeText(this, "else case : " + saleFresh.state, Toast.LENGTH_SHORT).show()
 
-                // Only update the state of the book if the sale is active
-                when (saleFresh.state) {
-                    SaleState.RETRACTED -> {
-                        Toast.makeText(this, "The sale is already delisted", Toast.LENGTH_SHORT).show()
-                        CompletableFuture.completedFuture(saleFresh) // should return a CompletionStage
-                    }
-                    SaleState.CONCLUDED -> {
-                        Toast.makeText(this, "The sale is already concluded", Toast.LENGTH_SHORT).show()
-                        CompletableFuture.completedFuture(saleFresh) // should return a CompletionStage
-                    }
-                    else -> {
+                saleDB.getReferenceID(sale).addOnSuccessListener { ref ->
+                    if (ref != null) {
                         Toast.makeText(this, "The sale was successfully delisted", Toast.LENGTH_SHORT).show()
-
-                        saleDB.addSale( // modify the sale entry
-                            Sale(
-                                saleFresh.book, saleFresh.seller, saleFresh.price, saleFresh.condition,
-                                saleFresh.date, SaleState.RETRACTED, saleFresh.image
-                            )
+                        saleDB.modifySale(ref.id, newSale)
+                    } else {
+                        throw DatabaseException(
+                            "SaleInformationActivity tried to request information from a Sale() " +
+                                    "which '${sale.book.isbn}' isbn doesn't exist in database anymore"
                         )
                     }
                 }

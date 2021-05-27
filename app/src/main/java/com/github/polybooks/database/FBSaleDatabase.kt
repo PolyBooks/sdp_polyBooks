@@ -276,6 +276,18 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         )
     }
 
+    fun modifySale(referenceId: String, newSale: Sale): CompletableFuture<Sale> {
+        val future = CompletableFuture<Sale>()
+        saleRef.document(referenceId).set(saleToDocument(newSale))
+            .addOnSuccessListener {
+                future.complete(newSale)
+            }.addOnFailureListener {
+                future.completeExceptionally(it)
+            }
+
+        return future
+    }
+
     override fun addSale(bookISBN : ISBN,
                          seller : User,
                          price : Float,
