@@ -56,7 +56,7 @@ class MainTest {
         onView(withId(R.id.log_button)).perform(click())
         intended(hasComponent(LoginActivity::class.java.name))
     }
-
+    
     @Test
     fun sellButton() {
         onView(withId(R.id.signup_button)).perform(click())
@@ -147,3 +147,5 @@ class MainTest {
     }
 
 }
+
+// bug test
