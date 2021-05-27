@@ -22,7 +22,7 @@ object Database {
     /**
      * The instance of a Interest Database associated with this Database
      * */
-    val interestDatabase : InterestDatabase = FBInterestDatabase()
+    val interestDatabase : InterestDatabase = FBInterestDatabase.getInstance()
 
 }
 
