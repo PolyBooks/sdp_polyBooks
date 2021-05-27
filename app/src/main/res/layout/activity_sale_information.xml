@@ -191,12 +191,19 @@
         app:layout_constraintTop_toTopOf="@+id/sale_information_price" />
 
     <Button
+        android:id="@+id/sale_information_button_extra"
+        style="@style/SmallButton"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/sale_information_button_buy"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
         android:id="@+id/sale_information_button_buy"
         style="@style/SmallButton"
         android:layout_marginBottom="32dp"
         android:text="@string/value_buy"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

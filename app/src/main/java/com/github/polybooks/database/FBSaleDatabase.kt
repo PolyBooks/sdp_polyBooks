@@ -276,6 +276,18 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
         )
     }
 
+    fun modifySale(referenceId: String, newSale: Sale): CompletableFuture<Sale> {
+        val future = CompletableFuture<Sale>()
+        saleRef.document(referenceId).set(saleToDocument(newSale))
+            .addOnSuccessListener {
+                future.complete(newSale)
+            }.addOnFailureListener {
+                future.completeExceptionally(it)
+            }
+
+        return future
+    }
+
     override fun addSale(bookISBN : ISBN,
                          seller : User,
                          price : Float,
@@ -309,7 +321,7 @@ class FBSaleDatabase(firestore: FirebaseFirestore, private val bookDB: BookDatab
     }
 
     //find the ID of a sale based on the ISBN of the book being sold, the time of the publication and the UID of the seller
-    private fun getReferenceID(sale: Sale): Task<DocumentSnapshot?> {
+    fun getReferenceID(sale: Sale): Task<DocumentSnapshot?> {
         var query = saleRef
             .whereEqualTo(SaleFields.BOOK_ISBN.fieldName, sale.book.isbn)
             .whereEqualTo(SaleFields.PUBLICATION_DATE.fieldName, sale.date)
