@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.github.polybooks.R
 import com.github.polybooks.utils.CameraManip.REQUEST_CODE_PERMISSIONS
 import com.github.polybooks.utils.CameraManip.REQUIRED_PERMISSIONS
 import com.github.polybooks.utils.CameraManip.allPermissionsGranted
 import com.github.polybooks.utils.CameraManip.startCamera
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -84,6 +86,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
             extras.putString(EXTRA_PICTURE_FILE, null)
             extras.putString(EXTRA_SALE_PRICE, null)
             putExtras(extras)
+            putExtra(EXTRA_ISBN, stringISBN)
         }
         startActivity(intent)
     }

@@ -2,13 +2,10 @@ package com.github.polybooks.activities
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
@@ -95,19 +92,19 @@ class FillSaleTest {
 
     @Test
     fun navBarSales() {
-        Espresso.onView(ViewMatchers.withId(R.id.sales)).perform(ViewActions.click())
+        onView(withId(R.id.sales)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
     fun navBarProfile() {
-        Espresso.onView(ViewMatchers.withId(R.id.user_profile)).perform(ViewActions.click())
+        onView(withId(R.id.user_profile)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
     }
 
     @Test
     fun navBarBooks() {
-        Espresso.onView(ViewMatchers.withId(R.id.books)).perform(ViewActions.click())
+        onView(withId(R.id.books)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(ListBooksActivity::class.java.name))
     }
 

@@ -5,13 +5,12 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.database.move_to_debug_source_set.DummyInterestDatabase
+import com.github.polybooks.database.DummyInterestDatabase
 
 /**
  * An adapter when filtering by Interest, which is a dynamic list of filtering values
  *
  * @param itemViewId   view id in the xml layout of a value item
- * @param enumInstance any instance of class T (needed to be able to use methods of T)
  * @see   ParameterAdapter
  */
 class InterestsParameterAdapter<T: Interest>(
@@ -25,9 +24,9 @@ class InterestsParameterAdapter<T: Interest>(
     init {
         val setV = { values: Any -> setValues(values as List<T>) }
         when (interestType) {
-            Interest.COURSE -> DummyInterestDatabase().listAllCourses().thenAccept(setV)
-            Interest.FIELD -> DummyInterestDatabase().listAllFields().thenAccept(setV)
-            Interest.SEMESTER -> DummyInterestDatabase().listAllSemesters().thenAccept(setV)
+            Interest.COURSE -> DummyInterestDatabase.getInstance().listAllCourses().thenAccept(setV)
+            Interest.FIELD -> DummyInterestDatabase.getInstance().listAllFields().thenAccept(setV)
+            Interest.SEMESTER -> DummyInterestDatabase.getInstance().listAllSemesters().thenAccept(setV)
         }
     }
 

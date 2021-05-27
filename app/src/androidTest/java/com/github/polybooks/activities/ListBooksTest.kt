@@ -47,7 +47,7 @@ class ListBooksTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        Intents.intended(hasComponent(ListSalesActivity::class.java.name))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test
