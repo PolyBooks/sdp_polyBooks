@@ -45,7 +45,7 @@ object TestBookProvider : BookProvider {
             null,
             null,
             "CreateSpace Independent Publishing Platform",
-            Date(118, 8, 0),
+            Date(118, 8, 1),
             "paperback"
         )
     )
