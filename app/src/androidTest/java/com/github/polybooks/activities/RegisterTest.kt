@@ -34,6 +34,7 @@ class RegisterTest {
 
     @After
     fun after() {
+        Firebase.auth.currentUser?.delete() // Par securité
         Intents.release()
     }
 

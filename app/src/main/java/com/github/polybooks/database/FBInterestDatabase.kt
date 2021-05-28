@@ -25,20 +25,6 @@ private const val courseCollection: String = "courseInterest"
  */
 class FBInterestDatabase: InterestDatabase {
 
-    /**
-     * get the singleton instance of FBInterestDatabase
-     * but also enable the cache
-     */
-    /*
-    fun getInstance(): InterestDatabase {
-        val settings: FirebaseFirestoreSettings = firestoreSettings {
-            isPersistenceEnabled = true
-        }
-        FirebaseFirestore.getInstance().firestoreSettings = settings
-        return this
-    }
-*/
-
 
     /**
      * Add a new field document to the fields collection
@@ -109,22 +95,21 @@ class FBInterestDatabase: InterestDatabase {
 
         return future
     }
-/*
+
     /**
      * Remove a semester and all its potential sub-collections (users and books)
      */
     fun removeSemester(semester: Semester) : CompletableFuture<Boolean>  {
-
+        return TODO("maybe in the future, if needed")
     }
 
     /**
      * Remove a course and all its potential sub-collections (users and books)
      */
     fun removeCourse(course: Course) : CompletableFuture<Boolean>  {
-
+        return TODO("maybe in the future, if needed")
     }
 
- */
 
     // TODO maybe add listAllBooksOfCourse(course), etc. and listAllUsersInterestedIn(interest) if relevant
     // TODO Also addUserInterest() and removeUserInterest() instead of setUserInterest()
