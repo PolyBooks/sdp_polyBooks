@@ -25,5 +25,11 @@ For next time, I will fully finish those two tasks, and put in overtime as neede
 
 ## Zied (Scrum Master)
 
+This week I finished the implementation of the real time geo-localisation between users. 
+Now users can locate each other to buy books.
+
 
 ## Overall team
+
+This week we focused on the cache and GPS feature and some other little options. 
+We have a lot of pull requests to merge that still has to be organized.
