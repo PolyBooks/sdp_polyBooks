@@ -47,6 +47,13 @@ class UserProfileTest {
     }
 
     @Test
+    fun userInterestsButton() {
+        onView(withId(R.id.edit_user_interests)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(EditUserInterestsActivity::class.java.name))
+
+    }
+
+    @Test
     fun disconnectButton(){
         onView(withId(R.id.button_disco)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))

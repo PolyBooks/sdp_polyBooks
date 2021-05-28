@@ -30,7 +30,7 @@ class ListSalesTest {
 
     class SaleActivityRule: TestWatcher() {
 
-        private val testUser = LoggedUser(301966, "Le givre")
+        private val testUser = LoggedUser("301966", "Le givre")
         private val testBook =
             Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
 
