@@ -24,7 +24,7 @@ object Database {
     /**
      * The instance of a Interest Database associated with this Database
      * */
-    fun interestDatabase(context: Context): InterestDatabase = DummyInterestDatabase
+    val interestDatabase : InterestDatabase = DummyInterestDatabase
 
 }
 

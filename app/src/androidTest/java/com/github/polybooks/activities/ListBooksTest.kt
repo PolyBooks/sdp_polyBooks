@@ -59,10 +59,10 @@ class ListBooksTest {
     @Test
     fun BooksAreCorrect(){
         Thread.sleep(2000)
-        BaristaListAssertions.assertListItemCount(R.id.recyclerView, 3)
-        BaristaListAssertions.assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_title, "Tartuffe, by Moliere")
-        BaristaListAssertions.assertDisplayedAtPosition(R.id.recyclerView,0,R.id.text_view_author,"Molière")
-        BaristaListAssertions.assertCustomAssertionAtPosition(R.id.recyclerView,0,R.id.text_view_edition,ViewAssertions.matches(Matchers.not(isDisplayed())))
+        BaristaListAssertions.assertListItemCount(R.id.recyclerView, 4)
+        BaristaListAssertions.assertDisplayedAtPosition(R.id.recyclerView, 1, R.id.text_view_title, "Tartuffe, by Moliere")
+        BaristaListAssertions.assertDisplayedAtPosition(R.id.recyclerView,1,R.id.text_view_author,"Molière")
+        BaristaListAssertions.assertCustomAssertionAtPosition(R.id.recyclerView,1,R.id.text_view_edition,ViewAssertions.matches(Matchers.not(isDisplayed())))
     }
 
     @Test

@@ -60,7 +60,7 @@ class FBSaleDatabaseTest {
     val expectedException: ExpectedException = ExpectedException.none()
 
     //Checks that the content of both collection is the same
-    fun <T> assertSame(a: Collection<T>, b: Collection<T>) {
+    private fun <T> assertSame(a: Collection<T>, b: Collection<T>) {
         assertTrue(a.containsAll(b))
         assertTrue(b.containsAll(a))
     }

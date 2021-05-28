@@ -31,7 +31,7 @@ object TestBookProvider : BookProvider {
         "9780156881807" to Book(
             "9780156881807",
             listOf("Molière"),
-            "Tartuffe, by Molière",
+            "Tartuffe, by Moliere",
             null,
             "English",
             "Harvest Books",

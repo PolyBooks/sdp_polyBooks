@@ -15,8 +15,8 @@ import kotlin.collections.HashMap
 private const val COLLECTION_NAME = "sale2"
 
 /**
+ *  !! DO NOT INSTANTIATE THIS CLASS. If you are writing a UI you should always use Database.saleDatabase instead.
  * A sale database that uses Firebase Firestore to store and retrieve sales
- * !! DO NOT INSTANTIATE THIS CLASS. If you are writing a UI you should always use Database.saleDatabase instead.
  * */
 class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
 

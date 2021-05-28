@@ -14,7 +14,6 @@ import com.github.polybooks.core.Semester
 import com.github.polybooks.database.AllBooksQuery
 import com.github.polybooks.database.BookOrdering
 import com.github.polybooks.database.BookQuery
-import com.github.polybooks.database.Database
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY
 import com.github.polybooks.utils.setupNavbar
 
