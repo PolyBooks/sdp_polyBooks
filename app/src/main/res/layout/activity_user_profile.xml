@@ -26,10 +26,10 @@
                 android:layout_marginEnd="111dp"
                 android:contentDescription="@string/user_picture"
                 android:src="@drawable/sample_profile_picture"
-                app:layout_constraintBottom_toTopOf="@+id/welcome_text"
+                app:layout_constraintBottom_toTopOf="@id/welcome_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_disco"
+                app:layout_constraintTop_toBottomOf="@id/button_disco"
                 app:layout_constraintVertical_bias="0.0"
                 tools:srcCompat="@tools:sample/avatars" />
 
@@ -42,10 +42,10 @@
                 android:layout_marginEnd="122dp"
                 android:layout_marginBottom="24dp"
                 android:text="@string/textview"
-                app:layout_constraintBottom_toTopOf="@+id/sell_book_button"
+                app:layout_constraintBottom_toTopOf="@id/sell_book_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintTop_toBottomOf="@id/imageView" />
 
             <Button
                 android:id="@+id/my_sales_button"
@@ -58,7 +58,7 @@
                 android:text="@string/my_book_sales"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sell_book_button" />
+                app:layout_constraintTop_toBottomOf="@id/sell_book_button" />
 
             <Button
                 android:id="@+id/sell_book_button"
@@ -74,7 +74,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/welcome_text" />
+                app:layout_constraintTop_toBottomOf="@id/welcome_text" />
 
             <Button
                 android:id="@+id/button_disco"
@@ -88,6 +88,20 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                style="@style/Button"
+                android:id="@+id/edit_user_interests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="161dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="161dp"
+                android:text="@string/user_edit_interests"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/my_sales_button" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

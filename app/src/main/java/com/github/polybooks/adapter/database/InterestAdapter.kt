@@ -1,5 +1,6 @@
 package com.github.polybooks.adapter.database
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,10 @@ import com.google.firebase.auth.FirebaseAuth
 
 class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>(){
 
-    val user = fireBaseUsertoUser(FirebaseAuth.getInstance().currentUser)
+    private val user = fireBaseUsertoUser(FirebaseAuth.getInstance().currentUser)
     private var userInterests = Database.interestDatabase.getUserInterests(user)
         .thenApply { triple -> triple.first + triple.second + triple.third }.get().toMutableSet()
-    val interests : List<Interest> = Database.interestDatabase.listAllInterests()
+    private val interests : List<Interest> = Database.interestDatabase.listAllInterests()
         .thenApply { triple -> triple.first + triple.second + triple.third }.get()
 
     class InterestHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
@@ -33,8 +34,7 @@ class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>(){
         val interest : Interest = interests[position]
         holder.button.text = getName(interest)
         holder.button.isChecked = selected(interest)
-        holder.button.setOnClickListener { view ->
-            holder.button.isChecked = !holder.button.isChecked
+        holder.button.setOnClickListener {
             if (selected(interest)){
                 userInterests.remove(interest)
             } else {
@@ -52,6 +52,7 @@ class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>(){
     }
 
     fun updateUserInterests() : Unit{
+        Log.d("In adapter", "Updated ===================")
         Database.interestDatabase.setUserInterests(user, userInterests.toList())// TODO: check if we need to add .get()
     }
 }

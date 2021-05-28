@@ -2,6 +2,9 @@ package com.github.polybooks.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.transition.Visibility
+import android.view.View.GONE
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
@@ -16,7 +19,7 @@ class EditUserInterestsActivity: ListActivity<Interest>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_edit_user_interests)
-
+        findViewById<Button>(R.id.filter_button).visibility = GONE
     }
 
     override fun onFilterButtonClick() {
@@ -43,8 +46,8 @@ class EditUserInterestsActivity: ListActivity<Interest>() {
         setupNavbar(findViewById(R.id.bottom_navigation), this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         adapter.updateUserInterests()
     }
 }
