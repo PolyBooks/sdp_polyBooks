@@ -1,6 +1,7 @@
 package com.github.polybooks.activities
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
@@ -13,6 +14,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
 import com.github.polybooks.core.*
 import com.github.polybooks.database.Database
+import com.github.polybooks.database.TestBookProvider
 import com.google.firebase.Timestamp
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertCustomAssertionAtPosition
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
@@ -22,31 +24,32 @@ import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
+import java.util.*
 
 
 class ListSalesTest {
-    private val saleDB = Database.saleDatabase
 
+    private val saleDB = Database.saleDatabase(ApplicationProvider.getApplicationContext())
 
     class SaleActivityRule: TestWatcher() {
 
         private val testUser = LoggedUser(301966, "Le givre")
         private val testBook =
-            Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
+            TestBookProvider.getBook("9780156881807").get()!!
 
         private val dummySale: Sale = Sale(
             testBook,
             testUser,
             500f,
             BookCondition.WORN,
-            Timestamp.now(),
+            Date(),
             SaleState.ACTIVE,
             null
         )
 
         private lateinit var a :ActivityScenario<ListSalesActivity>
         override fun starting(description: Description?) {
-            Database.saleDatabase.addSale(dummySale).get()
+            Database.saleDatabase(ApplicationProvider.getApplicationContext()).addSale(dummySale).get()
             a = ActivityScenario.launch(ListSalesActivity::class.java)
         }
 

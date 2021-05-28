@@ -1,6 +1,7 @@
 package com.github.polybooks.activities
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
@@ -13,6 +14,7 @@ import com.github.polybooks.R
 import com.github.polybooks.core.*
 import com.github.polybooks.database.Database
 import com.github.polybooks.database.FirebaseProvider
+import com.github.polybooks.database.TestBookProvider
 import com.google.firebase.Timestamp
 import com.schibsted.spain.barista.assertion.BaristaListAssertions
 import org.hamcrest.Matchers
@@ -26,16 +28,12 @@ import java.util.concurrent.CompletableFuture
 
 
 class ListBooksTest {
-    private val bookDB = Database.bookDatabase
-
 
     class BookActivityRule: TestWatcher() {
-        private val fbBookDB = Database.bookDatabase
+        private val bookDB = Database.bookDatabase(ApplicationProvider.getApplicationContext())
         private lateinit var a : ActivityScenario<ListBooksActivity>
         override fun starting(description: Description?) {
-            CompletableFuture.allOf(fbBookDB.getBook("9782376863069"),
-                fbBookDB.getBook("9780156881807"),
-                fbBookDB.getBook("9781985086593")).get()
+            TestBookProvider.books.values.forEach { book -> bookDB.addBook(book).get() }
             a = ActivityScenario.launch(ListBooksActivity::class.java)
         }
 

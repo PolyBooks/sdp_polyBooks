@@ -23,7 +23,8 @@ class FBSaleDatabaseTest {
         @BeforeClass
         @JvmStatic
         fun initDB() {
-            TestBookProvider.books.values.forEach { book -> FBBookDatabase.addBook(book) }
+            val bookDB = Database.bookDatabase(ApplicationProvider.getApplicationContext())
+            TestBookProvider.books.values.forEach { book -> bookDB.addBook(book).get() }
         }
     }
 
