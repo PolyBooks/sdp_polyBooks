@@ -4,8 +4,8 @@
 package com.github.polybooks.core
 
 
-import com.google.firebase.Timestamp
 import java.io.Serializable
+import java.util.*
 
 typealias ISBN = String
 
@@ -28,7 +28,7 @@ data class Book(
     val edition : String?,
     val language : String?,
     val publisher : String?,
-    val publishDate : Timestamp?,
+    val publishDate : Date?,
     val format : String?
 ) : Serializable
 
