@@ -10,6 +10,10 @@ For next time I hope to clean up the project.
 
 ## Nicolas
 
+This week, we all spent a lot of time trying to resolve archaic issues we never had to solve. I finished the "retract a sale" feature as well as start the "edit a sale" feature. It might not seem much, but I had a lot of trouble merging/accomodating the work with what's already written
+
+For next week, I hope to have a clean working project! :)
+
 
 ## Raoul
 This week, I feel like I wasted too much time debugging consequences of the fact I previously implemented build-variants and source-sets. While I still think build-variants and source-sets is the most professional way to handle mocking for instance, in the context of this project, it lead me to slightly regretting doing it as it added complications close to the end of the project and there were maybe easier way to mock the DBs. Anyways, I was still able to finish merging one of my attributed task, but not the 2 others.
