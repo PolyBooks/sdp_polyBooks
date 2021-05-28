@@ -11,14 +11,6 @@ import java.util.concurrent.CompletableFuture
 
 class CachedBookProviderTests {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun initDB() {
-            TestBookProvider.books.values.forEach { book -> FBBookDatabase.addBook(book) }
-        }
-    }
-
     object EmptyBookProvider : BookProvider {
         override fun getBooks(
             isbns: Collection<ISBN>,
@@ -67,27 +59,27 @@ class CachedBookProviderTests {
 
     @Test
     fun canGetBookFromBacking() {
-        val cached = CachedBookProvider(FBBookDatabase, EmptyBookProvider)
+        val cached = CachedBookProvider(TestBookProvider, EmptyBookProvider)
         val future = cached.getBook("9782376863069")
         assertNotNull(future.get())
-        assertEquals(FBBookDatabase.getBook("9782376863069").get(), cached.getBook("9782376863069").get())
+        assertEquals(TestBookProvider.getBook("9782376863069").get(), cached.getBook("9782376863069").get())
     }
 
     @Test
     fun canGetBookFromCache() {
-        val cached = CachedBookProvider(EmptyBookProvider, FBBookDatabase)
+        val cached = CachedBookProvider(EmptyBookProvider, TestBookProvider)
         val future = cached.getBook("9780156881807")
         assertNotNull(future.get())
-        assertEquals(FBBookDatabase.getBook("9780156881807").get(), cached.getBook("9780156881807").get())
+        assertEquals(TestBookProvider.getBook("9780156881807").get(), cached.getBook("9780156881807").get())
     }
 
     @Test
     fun valueGetsCached() {
         val mapProvider = MapBookProvider()
-        val cached = CachedBookProvider(FBBookDatabase, mapProvider)
+        val cached = CachedBookProvider(TestBookProvider, mapProvider)
         assertNotNull(cached.getBook("9781985086593").get())
         assertNotNull(mapProvider.getBook("9781985086593"))
-        assertEquals(FBBookDatabase.getBook("9781985086593").get(), mapProvider.getBook("9781985086593").get())
+        assertEquals(TestBookProvider.getBook("9781985086593").get(), mapProvider.getBook("9781985086593").get())
     }
 
 
