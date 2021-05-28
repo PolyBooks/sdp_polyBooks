@@ -5,7 +5,8 @@ This Week I implemented a Book Cache. This required some refactoring for it not 
 I spent more time than the 8h we should work for this week, but that feature is important, and people haven't even started reviewing it. for next time I should try to make smaller PRs to not frighten the others.
 
 ## Joshua
-
+This week I did several tasks, including UI which I've become more familiar with and add tests which took more time then exèected, and I had to find some information on how to bo something before the rule, which wasn't easy to find. I also ended up helping Zied and Raoul with some bugs they had.
+For next time I hope to clean up the project.
 
 ## Nicolas
 
