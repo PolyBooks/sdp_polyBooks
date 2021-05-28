@@ -6,6 +6,7 @@ import android.transition.Visibility
 import android.view.View.GONE
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.adapter.database.InterestAdapter
@@ -20,6 +21,7 @@ class EditUserInterestsActivity: ListActivity<Interest>() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_edit_user_interests)
         findViewById<Button>(R.id.filter_button).visibility = GONE
+        findViewById<RecyclerView>(R.id.recyclerView).setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.white, null))
     }
 
     override fun onFilterButtonClick() {
