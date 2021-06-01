@@ -9,8 +9,8 @@ Debug run on the mocked databases and is used to run the tests, both locally or 
 
 Release is the real version for the user, using the real databases, and which could potentially be put on an app store.
 
-However, its release signing keys which are not pushed to the git repository for security concerns.
-To have access to it, please contact the developers of this project, which are able to send you a Key.jks and a keystore.properties files. 
+However, release requires signing keys which are not pushed to the git repository for security concerns.
+To have access to them, please contact the developers of this project, which are able to send you a Key.jks and a keystore.properties files. 
 After receiving those files you should copy-paste them to the root level of this project (at the same level as the app folder, gradle folder, or .cirrus.yml)
 Then you should be able to launch the release version. 
 
