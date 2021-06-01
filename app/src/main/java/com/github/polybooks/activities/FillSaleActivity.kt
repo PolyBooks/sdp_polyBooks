@@ -65,11 +65,12 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         if(stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
-                val book = bookFuture.get()
-                if (book != null) {
-                    fillBookData(book)
-                } else {
-                    redirectToAddSaleWithToast(getString(R.string.no_ISBN_match))
+                bookFuture.thenAccept { book ->
+                    if (book != null) {
+                        fillBookData(book)
+                    } else {
+                        redirectToAddSaleWithToast(getString(R.string.no_ISBN_match))
+                    }
                 }
             } catch (e: Exception) {
                 redirectToAddSaleWithToast(getString(R.string.error))
@@ -77,8 +78,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         } else {
             redirectToAddSaleWithToast(getString(R.string.missing_ISBN))
         }
-
-
         // Drop-down menu for condition
         val spinner: Spinner = findViewById(R.id.filled_condition)
         // Create an ArrayAdapter using the string array and a default spinner layout
