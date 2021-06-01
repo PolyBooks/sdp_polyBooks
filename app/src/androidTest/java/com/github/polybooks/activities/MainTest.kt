@@ -1,7 +1,9 @@
 package com.github.polybooks.activities
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -9,12 +11,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 import org.hamcrest.Matchers.not
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 
 class MainTest {
@@ -29,6 +30,7 @@ class MainTest {
 
     @After
     fun after() {
+        Firebase.auth.currentUser?.delete() // Par securité
         Intents.release()
     }
 
@@ -41,11 +43,10 @@ class MainTest {
         onView(withId(R.id.signup_button)).check(matches(isDisplayed()))
         onView(withId(R.id.signup_button)).check(matches(isClickable()))
 
-        onView(withId(R.id.sell_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.sell_button)).check(matches(isClickable()))
-
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
-        onView(withId(R.id.button_open_db_tests)).check(matches(isClickable()))
+        onView(withId(R.id.sell_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
+        
+        onView(withId(R.id.view_books_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_books_button)).check(matches(isClickable()))
 
     }
 
@@ -57,21 +58,50 @@ class MainTest {
 
     @Test
     fun sellButton() {
+
+        onView(withId(R.id.signup_button)).perform(click())
+        onView(withId(R.id.username_field)).perform(
+            scrollTo(),
+            ViewActions.typeText("TestTestTest"),
+            ViewActions.closeSoftKeyboard()
+        )
+        onView(withId(R.id.email_field)).perform(
+            scrollTo(),
+            ViewActions.typeText("test@test.test"),
+            ViewActions.closeSoftKeyboard()
+        )
+        onView(withId(R.id.password1_field)).perform(
+            scrollTo(),
+            ViewActions.typeText("123456"),
+            ViewActions.closeSoftKeyboard()
+        )
+        onView(withId(R.id.password2_field)).perform(
+            scrollTo(),
+            ViewActions.typeText("123456"),
+            ViewActions.closeSoftKeyboard()
+        )
+        onView(withId(R.id.button_reg)).perform(scrollTo(), click())
+        Thread.sleep(1500)
+        onView(withId(R.id.home)).perform(click())
+
+        onView(withId(R.id.signup_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
+        onView(withId(R.id.log_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.sell_button)).perform(click())
-        intended(hasComponent(AddSaleActivity::class.java.name))
+        Firebase.auth.currentUser.delete()
+
     }
 
     @Test
 
     fun allBooksButton() {
-        onView(withId(R.id.button_open_db_tests)).perform(click())
+        onView(withId(R.id.view_books_button)).perform(click())
         intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
     @Test
     fun listBookButton() {
 
-        onView(withId(R.id.button_open_db_tests)).perform(click())
+        onView(withId(R.id.view_books_button)).perform(click())
         intended(hasComponent(ListBooksActivity::class.java.name))
     }
 
@@ -114,7 +144,7 @@ class MainTest {
     @Test
     fun navBarHome() {
         onView(withId(R.id.home)).perform(click())
-        onView(withId(R.id.button_open_db_tests)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_books_button)).check(matches(isDisplayed()))
     }
 
 }

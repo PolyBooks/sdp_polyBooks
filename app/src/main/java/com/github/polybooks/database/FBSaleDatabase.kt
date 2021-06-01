@@ -1,19 +1,20 @@
 package com.github.polybooks.database
 
 import com.github.polybooks.core.*
-import com.github.polybooks.database.SaleOrdering.*
+import com.github.polybooks.database.SaleOrdering.DEFAULT
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.android.gms.tasks.Task
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "sale2"
 
 /**
+ *  !! DO NOT INSTANTIATE THIS CLASS. If you are writing a UI you should always use Database.saleDatabase instead.
  * A sale database that uses Firebase Firestore to store and retrieve sales
- * !! DO NOT INSTANTIATE THIS CLASS. If you are writing a UI you should always use Database.saleDatabase instead.
  * */
 class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
 
@@ -194,7 +195,7 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
             snapshotToUser(snapshot.get(SaleFields.SELLER.fieldName)!! as HashMap<String, Any>),
             snapshot.getLong(SaleFields.PRICE.fieldName)!!.toFloat(),
             BookCondition.valueOf(snapshot.getString(SaleFields.CONDITION.fieldName)!!),
-            Timestamp(snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate()),
+            snapshot.getTimestamp(SaleFields.PUBLICATION_DATE.fieldName)!!.toDate(),
             SaleState.valueOf(snapshot.getString(SaleFields.STATE.fieldName)!!),
             null
         )
@@ -252,7 +253,7 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
                 future.completeExceptionally(DatabaseException("Could not find book associated with sale : isbn = $bookISBN"))
 
             } else {
-                val sale = Sale(book, seller, price, condition, Timestamp.now(), state, image)
+                val sale = Sale(book, seller, price, condition, Date(), state, image)
                 saleRef.add(saleToDocument(sale))
                     .addOnSuccessListener {
                         future.complete(sale)

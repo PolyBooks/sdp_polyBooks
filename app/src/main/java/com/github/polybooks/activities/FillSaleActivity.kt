@@ -15,8 +15,6 @@ import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.FBSaleDatabase
-import com.github.polybooks.database.OLBookDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
@@ -127,7 +125,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // findViewById<TextView>(R.id.filled_language).apply { text = book.language ?: "" }
         findViewById<TextView>(R.id.filled_publisher).apply { text = book.publisher ?: "" }
         findViewById<TextView>(R.id.filled_publish_date).apply {
-            text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
+            text = dateFormat.format(book.publishDate!!) ?: ""
         }
         // TODO whole lines could be removed from UI (visibility = View.GONE) when argument is null instead of placeholding with default value
         findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }

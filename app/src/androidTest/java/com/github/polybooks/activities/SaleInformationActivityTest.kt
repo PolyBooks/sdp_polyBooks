@@ -12,6 +12,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 
 class SaleInformationActivityTest {
@@ -29,7 +30,7 @@ class SaleInformationActivityTest {
         LocalUser,
         33.5f,
         BookCondition.GOOD,
-        null,
+        Date(),
         SaleState.ACTIVE,
         null
     )
@@ -48,7 +49,7 @@ class SaleInformationActivityTest {
         LocalUser,
         37.57f,
         BookCondition.NEW,
-        null,
+        Date(),
         SaleState.RETRACTED,
         null
     )
