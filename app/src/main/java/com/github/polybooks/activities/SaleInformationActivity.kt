@@ -1,24 +1,18 @@
 package com.github.polybooks.activities
 
-import android.R.id
-import android.net.Uri
-import android.os.Build
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip
-import java.io.File
-
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import io.grpc.Context
-import java.io.FileInputStream
-import java.lang.Exception
-import java.nio.file.Files.readAllBytes
-import java.nio.file.Paths
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 
 /**
@@ -41,7 +35,7 @@ class SaleInformationActivity: AppCompatActivity() {
         val viewPublishDate: TextView = findViewById(R.id.sale_information_book_publish_date)
         val viewPublisher: TextView = findViewById(R.id.sale_information_book_publisher)
         val viewFormat: TextView = findViewById(R.id.sale_information_book_format)
-        val bookImage = findViewById<ImageView>(R.id.proof_picture)
+        val bookImage: ImageView = findViewById<ImageView>(R.id.sale_information_book_picture)
 
         val viewCondition: TextView = findViewById(R.id.sale_information_condition)
         val viewPrice: TextView = findViewById(R.id.sale_information_price)
@@ -66,7 +60,6 @@ class SaleInformationActivity: AppCompatActivity() {
 
         
         val firebaseStorage = FirebaseStorage.getInstance()
-        var imageData: ByteArray
 /*
         try {
             val file = File("images", "chat.jpg")
@@ -76,12 +69,23 @@ class SaleInformationActivity: AppCompatActivity() {
             println("======== GOT EXCEP>TION : " + e.message)
         }
 */
+        // TODO: Handle auth problem, you should not have to login
         println("==== just before")
-        // val storageRef: StorageReference = firebaseStorage.getReference("images").child("chat.jpg")
-        val storageRef: StorageReference = firebaseStorage.reference.child("images/chat.jpg")
-        val a = storageRef.getBytes(1 shl (20 + 4))
-            .addOnSuccessListener { _ -> print("=== SUCCESS") }
-            .addOnFailureListener { _ -> println("=== FAILURE") }
+        val storageRef: StorageReference = firebaseStorage.getReference("images").child("chat.jpg")
+        //val storageRef: StorageReference = firebaseStorage.reference.child("images/chat.jpg")
+        val a = storageRef.getBytes(1 shl 24)
+            .addOnSuccessListener { bytes -> print("=== SUCCESS")
+                val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                bookImage.setImageBitmap(
+                    Bitmap.createScaledBitmap(
+                        bmp,
+                        bookImage.width,
+                        bookImage.height,
+                        false
+                    )
+                )}
+            .addOnFailureListener { _ -> println("=== FAILURE")
+            bookImage.setImageDrawable(ResourcesCompat.getDrawable( resources,R.drawable.bibliotheque_avec_books, theme))}
         println("========= " + a)
 
         /*
