@@ -8,7 +8,6 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
 import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.utils.unwrapException
-import com.google.firebase.Timestamp
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
@@ -79,7 +78,6 @@ class FBSaleDatabaseTest {
         val sale2 =
             saleDB.addSale(dummySale.copy(book = TestBookProvider.getBook("9782376863069").get()!!)).get()
         val sales = saleDB.querySales().searchByTitle(dummySale.book.title).getAll().get()
-        assertEquals(testBook.publishDate, Timestamp(testBook.publishDate!!).toDate())
         assertTrue(sales.contains(sale1))
         assertFalse(sales.contains(sale2))
 

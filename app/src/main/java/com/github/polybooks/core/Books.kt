@@ -3,7 +3,6 @@
  * */
 package com.github.polybooks.core
 
-
 import java.util.Date
 import java.io.Serializable
 

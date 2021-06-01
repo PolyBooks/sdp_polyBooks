@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.activities.SaleInformationActivity
-import com.github.polybooks.core.Book
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip
 
