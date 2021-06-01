@@ -36,7 +36,7 @@ class FillSaleTest {
     fun after() {
         Intents.release()
     }
-    
+
     @Test
     fun addPictureRedirects() {
         onView(withId(R.id.add_picture)).perform(scrollTo(), click())
@@ -86,7 +86,6 @@ class FillSaleTest {
 
     @Test
     fun confirmSaleRedirects() {
-        // TODO the destination in the intent will probably be changed in the future
         inputPrice("5")
         selectCondition("Good")
         onView(withId(R.id.confirm_sale_button)).perform(scrollTo(), click())
