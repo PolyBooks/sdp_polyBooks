@@ -61,8 +61,7 @@ object OLBookDatabase: BookProvider {
     }
 
     override fun addBook(book: Book): CompletableFuture<Unit> {
-        //Can't add books to OpenLibrary
-        return CompletableFuture.completedFuture(Unit)
+        throw UnsupportedOperationException("Can't add books to OpenLibrary")
     }
 
     //makes an URL to the OpenLibrary page out of an isbn

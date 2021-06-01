@@ -32,7 +32,7 @@ private class CompleteBookDatabase(context: Context): BookDatabase {
 
     val provider =
         CachedBookProvider(
-            CachedBookProvider(FBBookDatabase, OLBookDatabase),
+            CachedBookProvider(OLBookDatabase, FBBookDatabase),
             LocalBookCache(context)
         )
 
