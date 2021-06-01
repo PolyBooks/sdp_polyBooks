@@ -3,8 +3,8 @@ package com.github.polybooks.core
 import android.content.Context
 import com.github.polybooks.R
 import com.github.polybooks.utils.FieldWithName
-import com.google.firebase.Timestamp
 import java.io.Serializable
+import java.util.*
 
 typealias Image = android.media.Image
 
@@ -23,7 +23,7 @@ data class Sale(
     val seller : User,
     val price : Float,
     val condition : BookCondition,
-    val date : Timestamp?, // TODO remove nullable when timestamp serialization situation will be resolved
+    val date : Date,
     val state : SaleState,
     val image : Image?
 ) : Serializable

@@ -2,26 +2,27 @@ package com.github.polybooks.activities
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
 import com.github.polybooks.core.*
 import com.github.polybooks.database.Database
-import com.google.firebase.Timestamp
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertCustomAssertionAtPosition
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertListItemCount
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
+import java.util.*
 
 
 class ListSalesTest {
@@ -39,7 +40,7 @@ class ListSalesTest {
             testUser,
             500f,
             BookCondition.WORN,
-            Timestamp.now(),
+            Date(),
             SaleState.ACTIVE,
             null
         )
