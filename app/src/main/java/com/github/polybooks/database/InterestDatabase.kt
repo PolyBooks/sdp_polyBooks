@@ -42,13 +42,15 @@ interface InterestDatabase {
      * List all the interests in the database.
      * */
     fun listAllInterests() : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
-        = TODO("It can be implemented from the previous functions")
-
+        = listAllFields().thenCombine(listAllSemesters()) { fields, semester -> Pair(fields, semester) }
+        .thenCombine(listAllCourses()){pair, courses -> Triple(pair.first, pair.second, courses)}
     /**
      * Get the interests of the current user.
      * If the user is not auth, it will use exclusively the local storage. (TODO)
      * */
     fun getCurrentUserInterests() : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
+        //TODO : Change this
+        = CompletableFuture.completedFuture(Triple(emptyList(), emptyList(), emptyList()))
 
     /**
      * Sets the interests of the current user.
