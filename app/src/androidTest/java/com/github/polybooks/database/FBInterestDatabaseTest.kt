@@ -1,12 +1,8 @@
 package com.github.polybooks.database
 
-import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
-import com.github.polybooks.core.Course
-import com.github.polybooks.core.Field
-import com.github.polybooks.core.LoggedUser
-import com.github.polybooks.core.Semester
+import com.github.polybooks.core.*
 import org.junit.*
 import org.junit.Assert.*
 
@@ -91,6 +87,48 @@ class FBInterestDatabaseTest {
         assertNotNull(retrievedCourses)
         assertTrue(retrievedCourses.containsAll(expectedCourses))
         assertTrue(expectedCourses.containsAll(retrievedCourses))
+    }
+
+
+    private val userInterestsList: List<Interest> = listOf(
+        Semester("IN", "BA1"),
+        Course("COM-101"),
+        Course("CS-306"),
+        Course("CS-323"),
+        Semester("SC", "BA6"),
+        Field("Computer Science")
+    )
+
+
+
+    @Test
+    fun addAndRetrieveUserInterestsForLoggedInUser() {
+        val newUserInterest = interestDB.setLoggedUserInterests(testUser, userInterestsList)
+
+        assertNotNull(newUserInterest.get())
+        assertTrue(newUserInterest.get().containsAll(userInterestsList))
+        assertTrue(userInterestsList.containsAll(newUserInterest.get()))
+
+        val retrievedUserInterests = interestDB.getLoggedUserInterests(testUser)
+        assertNotNull(retrievedUserInterests.get())
+        assertTrue(newUserInterest.get().containsAll(retrievedUserInterests.get()))
+        assertTrue(retrievedUserInterests.get().containsAll(newUserInterest.get()))
+    }
+
+
+    @Ignore("just to split the work in 2 PR, easier to review for you")
+    @Test
+    fun addAndRetrieveUserInterestsForLocalUser() {
+        val newUserInterest = interestDB.setCurrentUserInterests(userInterestsList)
+
+        assertNotNull(newUserInterest.get())
+        assertTrue(newUserInterest.get().containsAll(userInterestsList))
+        assertTrue(userInterestsList.containsAll(newUserInterest.get()))
+
+        val retrievedUserInterests = interestDB.getCurrentUserInterests()
+        assertNotNull(retrievedUserInterests.get())
+        assertTrue(newUserInterest.get().containsAll(retrievedUserInterests.get()))
+        assertTrue(retrievedUserInterests.get().containsAll(newUserInterest.get()))
     }
 
 

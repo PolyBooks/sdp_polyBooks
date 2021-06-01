@@ -204,7 +204,7 @@ class FBInterestDatabase: InterestDatabase {
         return if(user is LoggedUser) {
             setLoggedUserInterests(user, interests)
         } else {
-            setLocalUserInterests()
+            setLocalUserInterests(interests)
         }
     }
 
@@ -212,7 +212,7 @@ class FBInterestDatabase: InterestDatabase {
      * Get the interests of the specified logged user
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * */
-    private fun getLoggedUserInterests(user: LoggedUser): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+    fun getLoggedUserInterests(user: LoggedUser): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
         val future = CompletableFuture<List<Interest>>()
 
         FirebaseProvider.getFirestore()
@@ -238,7 +238,7 @@ class FBInterestDatabase: InterestDatabase {
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    private fun setLoggedUserInterests(user: LoggedUser, interests: List<Interest>): CompletableFuture<List<Interest>> {
+    fun setLoggedUserInterests(user: LoggedUser, interests: List<Interest>): CompletableFuture<List<Interest>> {
         val future = CompletableFuture<List<Interest>>()
 
         val docData = hashMapOf(
@@ -258,6 +258,10 @@ class FBInterestDatabase: InterestDatabase {
 
         return future
     }
+
+    // TODO list
+    // 1) store and retrieve localUser interest on local storage
+    // 2) apply something similar for LoggedUser to serve as a cache.
 
     /**
      * Get the interests of the current unlogged local user
