@@ -2,10 +2,12 @@ package com.github.polybooks.database
 
 import com.github.polybooks.core.*
 import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestoreSettings
+import com.google.firebase.ktx.Firebase
 import java.util.concurrent.CompletableFuture
 
 private const val TAG: String = "FBInterestDatabase"
@@ -14,6 +16,7 @@ private const val TAG: String = "FBInterestDatabase"
 private const val fieldCollection: String = "fieldInterest"
 private const val semesterCollection: String = "semesterInterest"
 private const val courseCollection: String = "courseInterest"
+private const val userCollection: String = "user"
 
 /**
  * !! DO NOT INSTANTIATE THIS CLASS. Instead use Database.interestDatabase to access it !!
@@ -180,10 +183,27 @@ class FBInterestDatabase: InterestDatabase {
     }
 
     /**
+     * Get the interests of the current user
+     * If the user is not auth, it will use exclusively the local storage. (TODO)
+     * */
+    override fun getCurrentUserInterests(): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+        return getUserInterests(fireBaseUsertoUser(Firebase.auth.currentUser))
+    }
+
+    /**
+     * Sets the interests of the current user.
+     * If the user is not auth, it will use exclusively the local storage. (TODO)
+     * @return A Future to receive confirmation of success/failure asynchronously
+     * */
+    override fun setCurrentUserInterests(interests: List<Interest>): CompletableFuture<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    /**
      * Get the interests of the specified user
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * */
-    override fun getUserInterests(user: User): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+    fun getUserInterests(user: User): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
         TODO("Not yet implemented")
     }
 
@@ -192,7 +212,7 @@ class FBInterestDatabase: InterestDatabase {
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    override fun setUserInterests(user: User, interests: List<Interest>): CompletableFuture<Unit> {
+    fun setUserInterests(user: User, interests: List<Interest>): CompletableFuture<Unit> {
         TODO("Not yet implemented")
     }
 

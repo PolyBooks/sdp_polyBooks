@@ -45,17 +45,17 @@ interface InterestDatabase {
         = TODO("It can be implemented from the previous functions")
 
     /**
-     * Get the interests of the specified user
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
+     * Get the interests of the current user.
+     * If the user is not auth, it will use exclusively the local storage. (TODO)
      * */
-    fun getUserInterests(user : User) : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
+    fun getCurrentUserInterests() : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
 
     /**
-     * Sets the interests of the specified user.
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
+     * Sets the interests of the current user.
+     * If the user is not auth, it will use exclusively the local storage. (TODO)
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    fun setUserInterests(user : User, interests : List<Interest>) : CompletableFuture<Unit>
+    fun setCurrentUserInterests(interests : List<Interest>) : CompletableFuture<Unit>
 
 
 }
