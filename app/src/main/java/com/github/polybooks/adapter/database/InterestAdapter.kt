@@ -10,13 +10,10 @@ import com.github.polybooks.R
 import com.github.polybooks.core.Interest
 import com.github.polybooks.database.Database
 import com.github.polybooks.utils.StringsManip.getName
-import com.github.polybooks.utils.fireBaseUsertoUser
-import com.google.firebase.auth.FirebaseAuth
 
 class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>(){
 
-    private val user = fireBaseUsertoUser(FirebaseAuth.getInstance().currentUser)
-    private var userInterests = Database.interestDatabase.getUserInterests(user)
+    private var userInterests = Database.interestDatabase.getCurrentUserInterests()
         .thenApply { triple -> triple.first + triple.second + triple.third }.get().toMutableSet()
     private val interests : List<Interest> = Database.interestDatabase.listAllInterests()
         .thenApply { triple -> triple.first + triple.second + triple.third }.get()
@@ -53,6 +50,6 @@ class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>(){
 
     fun updateUserInterests() : Unit{
         Log.d("In adapter", "Updated ===================")
-        Database.interestDatabase.setUserInterests(user, userInterests.toList())// TODO: check if we need to add .get()
+        Database.interestDatabase.setCurrentUserInterests(userInterests.toList())// TODO: check if we need to add .get()
     }
 }

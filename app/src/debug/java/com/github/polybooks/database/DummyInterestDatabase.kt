@@ -79,13 +79,13 @@ object DummyInterestDatabase: InterestDatabase {
         }
     }
 
-    override fun getUserInterests(user: User): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+    override fun getCurrentUserInterests(): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
         return CompletableFuture.supplyAsync{
             Triple(mockFields.subList(0,1), mockSemesters.subList(1,3), mockCourses.subList(0,4))
         }
     }
 
-    override fun setUserInterests(user: User, interests: List<Interest>): CompletableFuture<Unit> {
+    override fun setCurrentUserInterests(interests: List<Interest>): CompletableFuture<Unit> {
         return CompletableFuture.supplyAsync{Unit}
     }
 }

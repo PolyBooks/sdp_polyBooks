@@ -57,7 +57,7 @@ interface InterestDatabase {
      * If the user is not auth, it will use exclusively the local storage. (TODO)
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    fun setCurrentUserInterests(interests : List<Interest>) : CompletableFuture<Unit>
+    fun setCurrentUserInterests(interests : List<Interest>) : CompletableFuture<List<Interest>>
 
 
 }

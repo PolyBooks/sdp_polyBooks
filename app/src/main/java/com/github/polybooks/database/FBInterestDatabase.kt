@@ -2,12 +2,8 @@ package com.github.polybooks.database
 
 import com.github.polybooks.core.*
 import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.github.polybooks.utils.fireBaseUsertoUser
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestoreSettings
-import com.google.firebase.ktx.Firebase
 import java.util.concurrent.CompletableFuture
 
 private const val TAG: String = "FBInterestDatabase"
@@ -17,6 +13,7 @@ private const val fieldCollection: String = "fieldInterest"
 private const val semesterCollection: String = "semesterInterest"
 private const val courseCollection: String = "courseInterest"
 private const val userCollection: String = "user"
+private const val interestsFieldName: String = "interests"
 
 /**
  * !! DO NOT INSTANTIATE THIS CLASS. Instead use Database.interestDatabase to access it !!
@@ -25,7 +22,12 @@ private const val userCollection: String = "user"
  * It might seem unnecessary to have 3 root level collections for interests,
  * but it is by far the best option if we potentially want each interest to hold the list of books and user associated with it
  * As each document will be able to have a book collection and a user collection.
+ *
  * Using snapshotListener here does not feel necessary as interests are rarely changing.
+ *
+ * There's one more user collection used by this class only to store the user interest when logged in.
+ * The current implementation is to store it as an array. The subset of selected interests per user should not
+ * be changing too often, nor be too large in most cases.
  */
 class FBInterestDatabase: InterestDatabase {
 
@@ -116,7 +118,6 @@ class FBInterestDatabase: InterestDatabase {
 
 
     // TODO maybe add listAllBooksOfCourse(course), etc. and listAllUsersInterestedIn(interest) if relevant
-    // TODO Also addUserInterest() and removeUserInterest() instead of setUserInterest()
 
     /**
      * List all the Fields in the database.
@@ -184,36 +185,96 @@ class FBInterestDatabase: InterestDatabase {
 
     /**
      * Get the interests of the current user
-     * If the user is not auth, it will use exclusively the local storage. (TODO)
      * */
     override fun getCurrentUserInterests(): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
-        return getUserInterests(fireBaseUsertoUser(Firebase.auth.currentUser))
+        val user = fireBaseUsertoUser(FirebaseProvider.getAuth().currentUser)
+        return if(user is LoggedUser) {
+            getLoggedUserInterests(user)
+        } else {
+            getLocalUserInterests()
+        }
     }
 
     /**
      * Sets the interests of the current user.
-     * If the user is not auth, it will use exclusively the local storage. (TODO)
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    override fun setCurrentUserInterests(interests: List<Interest>): CompletableFuture<Unit> {
-        TODO("Not yet implemented")
+    override fun setCurrentUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
+        val user = fireBaseUsertoUser(FirebaseProvider.getAuth().currentUser)
+        return if(user is LoggedUser) {
+            setLoggedUserInterests(user, interests)
+        } else {
+            setLocalUserInterests()
+        }
     }
 
     /**
-     * Get the interests of the specified user
+     * Get the interests of the specified logged user
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * */
-    fun getUserInterests(user: User): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
-        TODO("Not yet implemented")
+    private fun getLoggedUserInterests(user: LoggedUser): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+        val future = CompletableFuture<List<Interest>>()
+
+        FirebaseProvider.getFirestore()
+            .collection(userCollection)
+            .document(user.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val interestsList = document.get(interestsFieldName)
+                    future.complete(interestsList as List<Interest>)
+                } else {
+                    future.complete(emptyList())
+                }
+
+            }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not retrieve the list of all interests of user ${user.uid} because of: $it")) }
+
+        return future
     }
 
     /**
-     * Sets the interests of the specified user.
+     * Sets the interests of the specified logged user.
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    fun setUserInterests(user: User, interests: List<Interest>): CompletableFuture<Unit> {
-        TODO("Not yet implemented")
+    private fun setLoggedUserInterests(user: LoggedUser, interests: List<Interest>): CompletableFuture<List<Interest>> {
+        val future = CompletableFuture<List<Interest>>()
+
+        val docData = hashMapOf(
+            interestsFieldName to interests
+        )
+        // TODO test between update and set with merge
+        // set with merge is nicer because it handles non-existing documents. But in some nested cases, might be failing.
+        // Afraid it doesn't remove the non-wanted interests, but it should be fine.
+        // Here, I think, thanks to Josh implementation on the UI, I can simply overwrite the whole array, so set with merge should be fine
+        FirebaseProvider.getFirestore()
+            .collection(userCollection)
+            .document(user.uid)
+            .set(docData, SetOptions.merge())
+            .addOnSuccessListener { future.complete(interests) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert $docData of user ${user.uid} into Database because of: $it")) }
+
+
+        return future
     }
+
+    /**
+     * Get the interests of the current unlogged local user
+     * As the user is not auth, it will use exclusively the local storage.
+     * */
+    private fun getLocalUserInterests(): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+
+    }
+
+    /**
+     * Sets the interests of the current unlogged local user.
+     * As the user is not auth, it will use exclusively the local storage.
+     * @return A Future to receive confirmation of success/failure asynchronously
+     * */
+    private fun setLocalUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
+
+    }
+
 
 }
