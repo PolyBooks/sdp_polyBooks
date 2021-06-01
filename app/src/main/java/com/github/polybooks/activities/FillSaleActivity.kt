@@ -150,11 +150,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             message,
             Toast.LENGTH_LONG
         ).show()
-        // TODO only enable redirect on release build variant because it causes tests to fail (don't redirect on test/debug builds)
-        /*
+
         val intent = Intent(this, AddSaleActivity::class.java)
         startActivity(intent)
-         */
+
     }
 
     fun takePicture(view: View) {

@@ -1,5 +1,7 @@
 package com.github.polybooks.activities
 
+import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -10,6 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.polybooks.utils.GlobalVariables
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers
 import org.junit.*
@@ -18,8 +22,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FillSaleTest {
 
+    val intent : Intent = Intent(ApplicationProvider.getApplicationContext(), FillSaleActivity::class.java).putExtra(EXTRA_ISBN, "9780156881807")
+
     @get:Rule
-    val activityRule = ActivityScenarioRule(FillSaleActivity::class.java)
+    val activityRule = ActivityScenarioRule<FillSaleActivity>(intent)
 
     @Before
     fun before() {
@@ -30,8 +36,7 @@ class FillSaleTest {
     fun after() {
         Intents.release()
     }
-
-
+    
     @Test
     fun addPictureRedirects() {
         onView(withId(R.id.add_picture)).perform(scrollTo(), click())
