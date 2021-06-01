@@ -45,7 +45,7 @@ class FBBookDatabaseTest {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 - 1900, 6, 3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
+        assertEquals(publishDate, book.publishDate!!)
     }
 
     @Test
@@ -85,7 +85,7 @@ class FBBookDatabaseTest {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
+        assertEquals(publishDate, book.publishDate!!)
     }
 
     @Test
@@ -168,7 +168,7 @@ class FBBookDatabaseTest {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
+        assertEquals(publishDate, book.publishDate!!)
     }
 
     @Test

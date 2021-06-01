@@ -7,11 +7,14 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
 import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.utils.unwrapException
-import com.google.firebase.Timestamp
 import junit.framework.AssertionFailedError
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.ExpectedException
+import java.util.*
 
 class FBSaleDatabaseTest {
     @get:Rule
@@ -28,7 +31,7 @@ class FBSaleDatabaseTest {
         testUser,
         500f,
         WORN,
-        Timestamp.now(),
+        Date(),
         RETRACTED,
         null
     )
@@ -289,7 +292,7 @@ class FBSaleDatabaseTest {
                     LocalUser,
                     666f,
                     WORN,
-                    Timestamp.now(),
+                    Date(),
                     RETRACTED,
                     null
                 )
