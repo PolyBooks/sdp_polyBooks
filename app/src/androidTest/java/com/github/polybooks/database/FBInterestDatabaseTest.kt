@@ -1,5 +1,6 @@
 package com.github.polybooks.database
 
+import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
@@ -16,6 +17,7 @@ class FBInterestDatabaseTest {
     private val interestDB = FBInterestDatabase()
 
     private val testUser = LoggedUser("301966", "Le givre")
+
 
 
     @Test
@@ -89,6 +91,22 @@ class FBInterestDatabaseTest {
         assertNotNull(retrievedCourses)
         assertTrue(retrievedCourses.containsAll(expectedCourses))
         assertTrue(expectedCourses.containsAll(retrievedCourses))
+    }
+
+    @Test
+    fun addAndRemoveTopic() {
+        val testTopic = Topic("Computer Science")
+        val addedTopic = interestDB.addTopic(testTopic)
+        assertNotNull(addedTopic.get())
+        assertEquals(testTopic, addedTopic.get())
+
+        val successfullyRemoved = interestDB.removeTopic(testTopic)
+        assertNotNull(successfullyRemoved.get())
+        assertEquals(successfullyRemoved.get(), true)
+
+        val retrievedTopics = interestDB.listAllTopics().get()
+        assertNotNull(retrievedTopics)
+        assertTrue(!retrievedTopics.contains(testTopic))
     }
 
 
