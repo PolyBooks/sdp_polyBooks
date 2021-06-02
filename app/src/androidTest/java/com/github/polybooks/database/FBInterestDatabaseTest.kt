@@ -109,6 +109,40 @@ class FBInterestDatabaseTest {
         assertTrue(!retrievedTopics.contains(testTopic))
     }
 
+    @Test
+    fun addAndRemoveSemester() {
+        val testSemester = Semester("SC", "BA6")
+        val addedSemester = interestDB.addSemester(testSemester)
+        assertNotNull(addedSemester.get())
+        assertEquals(testSemester, addedSemester.get())
+
+        val successfullyRemoved = interestDB.removeSemester(testSemester)
+        assertNotNull(successfullyRemoved.get())
+        assertEquals(successfullyRemoved.get(), true)
+
+        val retrievedSemesters = interestDB.listAllSemesters().get()
+        assertNotNull(retrievedSemesters)
+        assertTrue(!retrievedSemesters.contains(testSemester))
+    }
+
+
+    @Test
+    fun addAndRemoveCourse() {
+        val testCourse = Course("Computer Science")
+        val addedCourse = interestDB.addCourse(testCourse)
+        assertNotNull(addedCourse.get())
+        assertEquals(testCourse, addedCourse.get())
+
+        val successfullyRemoved = interestDB.removeCourse(testCourse)
+        assertNotNull(successfullyRemoved.get())
+        assertEquals(successfullyRemoved.get(), true)
+
+        val retrievedCourses = interestDB.listAllCourses().get()
+        assertNotNull(retrievedCourses)
+        assertTrue(!retrievedCourses.contains(testCourse))
+    }
+
+
 
     private val userInterestsList: List<Interest> = listOf(
         Semester("IN", "BA1"),

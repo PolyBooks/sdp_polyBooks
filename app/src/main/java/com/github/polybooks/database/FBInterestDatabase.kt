@@ -103,17 +103,45 @@ class FBInterestDatabase: InterestDatabase {
     }
 
     /**
-     * Remove a semester and all its potential sub-collections (users and books)
+     * Remove a semester
+     * Warning! If it has sub-collections they are currently not deleted
+     * Deleting sub-collections is not implemented yet because we are not using sub-collections here.
+     * A valid argument could also be that interests are very rarely removed
+     * So it could be fine to removed them from the console (automatically deleting all the sub-collections)
+     * Instead of using a function for it.
      */
     fun removeSemester(semester: Semester) : CompletableFuture<Boolean>  {
-        return TODO("maybe in the future, if needed")
+        val future = CompletableFuture<Boolean>()
+
+        FirebaseProvider.getFirestore()
+            .collection(semesterCollection)
+            .document(mergeSectionAndSemester(semester))
+            .delete()
+            .addOnSuccessListener { future.complete(true) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${mergeSectionAndSemester(semester)} because of: $it")) }
+
+        return future
     }
 
     /**
-     * Remove a course and all its potential sub-collections (users and books)
+     * Remove a course
+     * Warning! If it has sub-collections they are currently not deleted
+     * Deleting sub-collections is not implemented yet because we are not using sub-collections here.
+     * A valid argument could also be that interests are very rarely removed
+     * So it could be fine to removed them from the console (automatically deleting all the sub-collections)
+     * Instead of using a function for it.
      */
     fun removeCourse(course: Course) : CompletableFuture<Boolean>  {
-        return TODO("maybe in the future, if needed")
+        val future = CompletableFuture<Boolean>()
+
+        FirebaseProvider.getFirestore()
+            .collection(courseCollection)
+            .document(course.courseName)
+            .delete()
+            .addOnSuccessListener { future.complete(true) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${course.courseName} because of: $it")) }
+
+        return future
     }
 
 
