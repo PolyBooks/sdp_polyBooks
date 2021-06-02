@@ -5,7 +5,8 @@ import com.github.polybooks.core.Course
 import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
-import com.github.polybooks.database.DummyInterestDatabase
+import com.github.polybooks.database.Database
+import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
 
 /**
  * An adapter when filtering by Interest, which is a dynamic list of filtering values
@@ -24,9 +25,9 @@ class InterestsParameterAdapter<T: Interest>(
     init {
         val setV = { values: Any -> setValues(values as List<T>) }
         when (interestType) {
-            Interest.COURSE -> DummyInterestDatabase.getInstance().listAllCourses().thenAccept(setV)
-            Interest.FIELD -> DummyInterestDatabase.getInstance().listAllFields().thenAccept(setV)
-            Interest.SEMESTER -> DummyInterestDatabase.getInstance().listAllSemesters().thenAccept(setV)
+            Interest.COURSE -> Database.interestDatabase.listAllCourses().thenAccept(setV)
+            Interest.FIELD -> Database.interestDatabase.listAllFields().thenAccept(setV)
+            Interest.SEMESTER -> Database.interestDatabase.listAllSemesters().thenAccept(setV)
         }
     }
 
@@ -40,11 +41,11 @@ class InterestsParameterAdapter<T: Interest>(
 
     override fun getValueName(value: T, context: Context?): String {
         return when (interestType) {
-            Interest.COURSE -> (value as Course).courseName
-            Interest.FIELD -> (value as Field).fieldName
+            Interest.COURSE -> (value as Course).name
+            Interest.FIELD -> (value as Field).name
             Interest.SEMESTER -> {
                 val v = value as Semester
-                v.section + "-" + v.semester
+                mergeSectionAndSemester(v)
             }
         }
     }

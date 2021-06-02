@@ -4,20 +4,18 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "book"
 private const val DATE_FORMAT = "yyyy MM dd"
 
 /**
+ *  !! DO NOT INSTANTIATE THIS CLASS. If you are writing a UI you should always use Database.bookDatabase instead.
  * A book database that uses Firebase Firestore to augment the capabilities of a
  * database that only allows searching by isbn.
- * !! DO NOT INSTANTIATE THIS CLASS. If you are writing a UI you should always use Database.bookDatabase instead.
  * */
 class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
 
@@ -89,7 +87,7 @@ class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
 
         private fun bookToDocument(book : Book) : Any {
             val publishDate : String? = book.publishDate?.let {
-                dateFormatter.format(it.toDate())
+                dateFormatter.format(it)
             }
             return hashMapOf(
                 BookFields.AUTHORS.fieldName to book.authors,
@@ -112,7 +110,7 @@ class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
 
         private fun snapshotBookToBook(map: HashMap<String,Any>): Book {
             val publishDate = (map[BookFields.PUBLISHDATE.fieldName] as String?)?.let {
-                Timestamp(dateFormatter.parse(it)!!)
+                dateFormatter.parse(it)!!
             }
             return Book(
                 map[BookFields.ISBN.fieldName] as ISBN,

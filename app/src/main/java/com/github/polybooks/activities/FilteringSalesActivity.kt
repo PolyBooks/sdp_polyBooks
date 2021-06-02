@@ -9,7 +9,6 @@ import com.github.polybooks.R
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.core.*
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.FBSaleDatabase
 import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.database.SaleQuery
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS

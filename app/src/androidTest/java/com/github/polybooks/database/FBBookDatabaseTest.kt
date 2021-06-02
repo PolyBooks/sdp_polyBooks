@@ -4,7 +4,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
 import com.github.polybooks.core.*
-import com.github.polybooks.utils.unwrapException
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
@@ -46,7 +45,7 @@ class FBBookDatabaseTest {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 - 1900, 6, 3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
+        assertEquals(publishDate, book.publishDate!!)
     }
 
     @Test
@@ -86,7 +85,7 @@ class FBBookDatabaseTest {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
+        assertEquals(publishDate, book.publishDate!!)
     }
 
     @Test
@@ -169,7 +168,7 @@ class FBBookDatabaseTest {
         assertEquals("paperback", book.format)
         assertNotNull(book.publishDate)
         val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!.toDate())
+        assertEquals(publishDate, book.publishDate!!)
     }
 
     @Test

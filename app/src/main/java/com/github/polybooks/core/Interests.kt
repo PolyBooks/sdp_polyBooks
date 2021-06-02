@@ -8,15 +8,15 @@ sealed class Interest
 
 /**
  * A course that a student can follow (e.g. COM-101)
- * @property courseName The identifier name of that course
+ * @property name The identifier name of that course
  * */
-data class Course(val courseName : String) : Interest()
+data class Course(val name : String) : Interest()
 
 /**
  * A field of study.
- * @property fieldName The identifier name of that field
+ * @property name The identifier name of that field
  * */
-data class Field(val fieldName : String) : Interest()
+data class Field(val name : String) : Interest()
 
 /**
  * Represents the pair section-semester a student can be in (e.g. IC BA6)

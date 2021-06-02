@@ -25,7 +25,6 @@ class MainTest {
 
     @Before
     fun before() {
-        //BaristaSleepInteractions.sleep(2, TimeUnit.SECONDS)
         Intents.init()
     }
 
@@ -59,6 +58,7 @@ class MainTest {
     
     @Test
     fun sellButton() {
+
         onView(withId(R.id.signup_button)).perform(click())
         onView(withId(R.id.username_field)).perform(
             scrollTo(),
