@@ -17,10 +17,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.R
 import com.github.polybooks.core.Course
-import com.github.polybooks.core.Field
+import com.github.polybooks.core.Topic
 import com.github.polybooks.core.Semester
 import com.github.polybooks.database.BookOrdering
-import com.github.polybooks.database.Database
 import com.github.polybooks.utils.FilteringTestUtils
 import com.github.polybooks.utils.GlobalVariables.EXTRA_BOOKS_QUERY_SETTINGS
 import org.hamcrest.Matchers
@@ -70,7 +69,7 @@ class FilteringBooksTest {
         utils.performOnEnumParameter(BookOrdering.DEFAULT, R.id.book_sort_parameter)
 
         utils.swup()
-        utils.performOnInterestParameter<Field>(FilteringSalesTest.FIELD, R.id.field_parameter)
+        utils.performOnInterestParameter<Topic>(FilteringSalesTest.FIELD, R.id.field_parameter)
         utils.performOnInterestParameter<Semester>(
             FilteringSalesTest.SEMESTER,
             R.id.semester_parameter
@@ -169,7 +168,7 @@ class FilteringBooksTest {
         utils.performOnEnumParameter(BookOrdering.DEFAULT, R.id.book_sort_parameter, click())
 
         utils.swup()
-        utils.performOnInterestParameter<Field>(
+        utils.performOnInterestParameter<Topic>(
             FilteringSalesTest.FIELD,
             R.id.field_parameter,
             click()

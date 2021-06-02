@@ -149,7 +149,7 @@ class FBBookDatabaseTest {
         //insure the book is in the database
         fbBookDB.getBook(testBook).get()!!
         doTest(Course("CS-101"))
-        doTest(Field("Computer Science"))
+        doTest(Topic("Computer Science"))
         doTest(Semester("IN", "BA1"))
 
     }
@@ -200,7 +200,7 @@ class FBBookDatabaseTest {
 
     @Test
     fun searchByInterestDoesntCrash() {
-        val future = fbBookDB.queryBooks().onlyIncludeInterests(setOf(Field("Test"))).getAll()
+        val future = fbBookDB.queryBooks().onlyIncludeInterests(setOf(Topic("Test"))).getAll()
         val book = future.get()
     }
 

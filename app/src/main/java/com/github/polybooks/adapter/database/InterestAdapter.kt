@@ -14,7 +14,7 @@ import com.github.polybooks.utils.StringsManip.getName
 class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>(){
 
     private var userInterests = Database.interestDatabase.getCurrentUserInterests()
-        .thenApply { triple -> triple.first + triple.second + triple.third }.get().toMutableSet()
+        .get().toMutableSet()
     private val interests : List<Interest> = Database.interestDatabase.listAllInterests()
         .thenApply { triple -> triple.first + triple.second + triple.third }.get()
 

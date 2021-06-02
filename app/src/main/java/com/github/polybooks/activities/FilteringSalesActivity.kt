@@ -39,7 +39,7 @@ class FilteringSalesActivity: FilteringActivity() {
     private lateinit var mStateParameter: Parameter<SaleState>
     private lateinit var mBookConditionParameter: Parameter<BookCondition>
 
-    private lateinit var mFieldParameter: Parameter<Field>
+    private lateinit var mTopicParameter: Parameter<Topic>
     private lateinit var mSemesterParameter: Parameter<Semester>
     private lateinit var mCourseParameter: Parameter<Course>
 
@@ -70,7 +70,7 @@ class FilteringSalesActivity: FilteringActivity() {
         mStateParameter.resetItemsViews()
         mBookConditionParameter.resetItemsViews()
 
-        mFieldParameter.resetItemsViews()
+        mTopicParameter.resetItemsViews()
         mSemesterParameter.resetItemsViews()
         mCourseParameter.resetItemsViews()
     }
@@ -121,7 +121,7 @@ class FilteringSalesActivity: FilteringActivity() {
             R.id.sale_condition_parameter,
             AdapterFactory.saleBookConditionAdapter()
         )
-        mFieldParameter = Parameter(
+        mTopicParameter = Parameter(
             R.id.field_parameter,
             AdapterFactory.fieldInterestAdapter()
         )
@@ -154,7 +154,7 @@ class FilteringSalesActivity: FilteringActivity() {
         }
 
         val interests: MutableSet<Interest> = mutableSetOf()
-        interests.addAll(mFieldParameter.getSelectedValues())
+        interests.addAll(mTopicParameter.getSelectedValues())
         interests.addAll(mSemesterParameter.getSelectedValues())
         interests.addAll(mCourseParameter.getSelectedValues())
     }

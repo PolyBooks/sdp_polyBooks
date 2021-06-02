@@ -9,15 +9,15 @@ import java.util.concurrent.CompletableFuture
 private const val TAG: String = "FBInterestDatabase"
 
 // Names of the collections in Firestore
-private const val fieldCollection: String = "fieldInterest"
+private const val topicCollection: String = "topicInterest"
 private const val semesterCollection: String = "semesterInterest"
 private const val courseCollection: String = "courseInterest"
 private const val userCollection: String = "user"
-private const val interestsFieldName: String = "interests"
+private const val interestsTopicName: String = "interests"
 
 /**
  * !! DO NOT INSTANTIATE THIS CLASS. Instead use Database.interestDatabase to access it !!
- * The chosen structure for firebase is one collection for field, one for semester and one for courses.
+ * The chosen structure for firebase is one collection for Topic, one for semester and one for courses.
  * Each of them will hold documents whose attribute is the name of the interest.
  * It might seem unnecessary to have 3 root level collections for interests,
  * but it is by far the best option if we potentially want each interest to hold the list of books and user associated with it
@@ -33,17 +33,17 @@ class FBInterestDatabase: InterestDatabase {
 
 
     /**
-     * Add a new field document to the fields collection
+     * Add a new Topic document to the Topics collection
      */
-    override fun addField(field: Field) : CompletableFuture<Field> {
-        val future = CompletableFuture<Field>()
+    override fun addTopic(topic: Topic) : CompletableFuture<Topic> {
+        val future = CompletableFuture<Topic>()
 
         FirebaseProvider.getFirestore()
-            .collection(fieldCollection)
-            .document(field.name)
-            .set(field, SetOptions.merge())
-            .addOnSuccessListener { future.complete(field) }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${field.name} into Database because of: $it")) }
+            .collection(topicCollection)
+            .document(topic.name)
+            .set(topic, SetOptions.merge())
+            .addOnSuccessListener { future.complete(topic) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${topic.name} into Database because of: $it")) }
 
 
         return future
@@ -73,31 +73,31 @@ class FBInterestDatabase: InterestDatabase {
 
         FirebaseProvider.getFirestore()
             .collection(courseCollection)
-            .document(course.name)
+            .document(course.courseName)
             .set(course, SetOptions.merge())
             .addOnSuccessListener { future.complete(course) }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${course.name} into Database because of: $it")) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${course.courseName} into Database because of: $it")) }
 
         return future
     }
 
     /**
-     * Remove a field
+     * Remove a Topic
      * Warning! If it has sub-collections they are currently not deleted
      * Deleting sub-collections is not implemented yet because we are not using sub-collections here.
      * A valid argument could also be that interests are very rarely removed
      * So it could be fine to removed them from the console (automatically deleting all the sub-collections)
      * Instead of using a function for it.
      */
-    fun removeField(field: Field) : CompletableFuture<Boolean>  {
+    fun removeTopic(topic: Topic) : CompletableFuture<Boolean>  {
         val future = CompletableFuture<Boolean>()
 
         FirebaseProvider.getFirestore()
-            .collection(fieldCollection)
-            .document(field.name)
+            .collection(topicCollection)
+            .document(topic.name)
             .delete()
             .addOnSuccessListener { future.complete(true) }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${field.name} because of: $it")) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${topic.name} because of: $it")) }
 
         return future
     }
@@ -120,21 +120,21 @@ class FBInterestDatabase: InterestDatabase {
     // TODO maybe add listAllBooksOfCourse(course), etc. and listAllUsersInterestedIn(interest) if relevant
 
     /**
-     * List all the Fields in the database.
+     * List all the Topics in the database.
      * */
-    override fun listAllFields(): CompletableFuture<List<Field>> {
-        val future = CompletableFuture<List<Field>>()
+    override fun listAllTopics(): CompletableFuture<List<Topic>> {
+        val future = CompletableFuture<List<Topic>>()
 
         FirebaseProvider.getFirestore()
-            .collection(fieldCollection)
+            .collection(topicCollection)
             .get()
             .addOnSuccessListener { documentSnapshots ->
-                val fieldsList = documentSnapshots.map { snapshot ->
-                    Field(name = snapshot.get("name") as String)
+                val topicsList = documentSnapshots.map { snapshot ->
+                    Topic(name = snapshot.get("name") as String)
                 }
-                future.complete(fieldsList)
+                future.complete(topicsList)
             }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not retrieve the list of all fields because of: $it")) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not retrieve the list of all Topics because of: $it")) }
 
         return future
     }
@@ -174,7 +174,7 @@ class FBInterestDatabase: InterestDatabase {
             .get()
             .addOnSuccessListener { documentSnapshots ->
                 val coursesList = documentSnapshots.map { snapshot ->
-                    Course(name = snapshot.get("name") as String)
+                    Course(courseName = snapshot.get("courseName") as String)
                 }
                 future.complete(coursesList)
             }
@@ -186,7 +186,7 @@ class FBInterestDatabase: InterestDatabase {
     /**
      * Get the interests of the current user
      * */
-    override fun getCurrentUserInterests(): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+    override fun getCurrentUserInterests(): CompletableFuture<List<Interest>> {
         val user = fireBaseUsertoUser(FirebaseProvider.getAuth().currentUser)
         return if(user is LoggedUser) {
             getLoggedUserInterests(user)
@@ -212,7 +212,7 @@ class FBInterestDatabase: InterestDatabase {
      * Get the interests of the specified logged user
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * */
-    fun getLoggedUserInterests(user: LoggedUser): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+    fun getLoggedUserInterests(user: LoggedUser): CompletableFuture<List<Interest>> {
         val future = CompletableFuture<List<Interest>>()
 
         FirebaseProvider.getFirestore()
@@ -221,7 +221,24 @@ class FBInterestDatabase: InterestDatabase {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val interestsList = document.get(interestsFieldName)
+                   val mapList: List<Map<String, String>> = document.get(interestsTopicName) as List<Map<String, String>>
+                    val interestsList = mapList.map { interest ->
+                        when {
+                            interest.containsKey("name") -> {
+                                Topic(interest["name"] as String)
+                            }
+                            interest.containsKey("courseName") -> {
+                                Course(interest["courseName"] as String)
+                            }
+                            else -> {
+                                Semester(
+                                    section = interest["section"] as String,
+                                    semester = interest["semester"] as String
+                                )
+                            }
+                        }
+
+                    }
                     future.complete(interestsList as List<Interest>)
                 } else {
                     future.complete(emptyList())
@@ -242,12 +259,8 @@ class FBInterestDatabase: InterestDatabase {
         val future = CompletableFuture<List<Interest>>()
 
         val docData = hashMapOf(
-            interestsFieldName to interests
+            interestsTopicName to interests
         )
-        // TODO test between update and set with merge
-        // set with merge is nicer because it handles non-existing documents. But in some nested cases, might be failing.
-        // Afraid it doesn't remove the non-wanted interests, but it should be fine.
-        // Here, I think, thanks to Josh implementation on the UI, I can simply overwrite the whole array, so set with merge should be fine
         FirebaseProvider.getFirestore()
             .collection(userCollection)
             .document(user.uid)
@@ -255,20 +268,20 @@ class FBInterestDatabase: InterestDatabase {
             .addOnSuccessListener { future.complete(interests) }
             .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert $docData of user ${user.uid} into Database because of: $it")) }
 
-
         return future
     }
 
     // TODO list
-    // 1) store and retrieve localUser interest on local storage
-    // 2) apply something similar for LoggedUser to serve as a cache.
+    // 2) use sharedPreferences for LoggedUser to serve as a cache.
 
     /**
      * Get the interests of the current unlogged local user
      * As the user is not auth, it will use exclusively the local storage.
      * */
-    private fun getLocalUserInterests(): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
-
+    private fun getLocalUserInterests(): CompletableFuture<List<Interest>> {
+        val future = CompletableFuture<List<Interest>>()
+        future.completeExceptionally(LocalUserException("user needs to be logged in to get their interests"))
+        return future
     }
 
     /**
@@ -277,7 +290,9 @@ class FBInterestDatabase: InterestDatabase {
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
     private fun setLocalUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
-
+        val future = CompletableFuture<List<Interest>>()
+        future.completeExceptionally(LocalUserException("user needs to be logged in to set their interests to $interests"))
+        return future
     }
 
 

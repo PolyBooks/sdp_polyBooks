@@ -268,7 +268,7 @@ class FBSaleDatabaseTest {
             "A Book",
             setOf(
                 Course("COM-301"),
-                Field("Biology"),
+                Topic("Biology"),
                 Semester("IC", "BA3")
             ),
             setOf(RETRACTED),
