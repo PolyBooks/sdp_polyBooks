@@ -7,13 +7,14 @@ There are two build variants and source sets in this project: debug and release.
 
 ### Debug
 Debug run on the mocked databases and is used to run the tests, both locally or on the continuous-integration.
-To run the database emulator locally, you need some set-up.
+To run the database emulator locally, you need to set-up as follows:
+
 For Windows:
-Download the Firebase CLI here: https://firebase.google.com/docs/cli#install-cli-windows
-Put the .exe in the firebase folder to benefit from the parameters set-up.
-Run the .exe, log in and execute:
-firebase emulators:start --only auth,database,firestore &
-Then you can run gradlew connectedCheck or individual tests.
+- Download the Firebase CLI here: https://firebase.google.com/docs/cli#install-cli-windows
+- Put the .exe in the firebase folder to benefit from the parameters set-up.
+- Run the .exe, log in and execute:
+- firebase emulators:start --only auth,database,firestore &
+- Then you can run gradlew connectedCheck or individual tests.
 
 ### Release
 Release is the real version for the user, using the real databases, and which could potentially be put on an app store.
