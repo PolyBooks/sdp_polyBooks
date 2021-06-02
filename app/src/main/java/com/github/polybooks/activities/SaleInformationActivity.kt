@@ -43,9 +43,7 @@ class SaleInformationActivity: AppCompatActivity() {
             ratingBar.rating = (sale.book.totalStars / sale.book.numberVotes).toFloat()
         }
         ratingBar.setOnRatingBarChangeListener { bar, rating, _ ->
-            val firestore = FirebaseFirestore.getInstance()
-            val olBookDB = OLBookDatabase { string -> url2json(string) }
-            val bookDB = FBBookDatabase(olBookDB)
+            val bookDB = Database.bookDatabase
 
             var query: BookQuery = bookDB.queryBooks()
             query = query.searchByISBN(setOf(sale.book.isbn))
@@ -67,13 +65,7 @@ class SaleInformationActivity: AppCompatActivity() {
 
                     bar.setIsIndicator(true)
 
-                    bookDB.addBook(
-                        Book(
-                            book.isbn, book.authors, book.title, book.edition,
-                            book.language, book.publisher, book.publishDate,
-                            book.format, updatedTotalStars, updatedNumberVotes
-                        )
-                    )
+                    bookDB.addBook(book.copy(totalStars = updatedTotalStars, numberVotes = updatedNumberVotes))
                 }
             }
 
