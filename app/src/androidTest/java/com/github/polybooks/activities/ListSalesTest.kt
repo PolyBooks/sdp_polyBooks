@@ -6,15 +6,21 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
+
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.github.polybooks.R
+import com.github.polybooks.activities.SaleInformationActivity.Companion.EXTRA_SALE_INFORMATION
 import com.github.polybooks.core.*
 import com.github.polybooks.database.Database
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertCustomAssertionAtPosition
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertListItemCount
+import com.schibsted.spain.barista.interaction.BaristaListInteractions.clickListItem
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -33,7 +39,7 @@ class ListSalesTest {
 
         private val testUser = LoggedUser("301966", "Le givre")
         private val testBook =
-            Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
+            Book("9780156881807", listOf("Molière"), "Tartuffe, by Moliere", null, null, null, null, null)
 
         private val dummySale: Sale = Sale(
             testBook,
@@ -62,6 +68,7 @@ class ListSalesTest {
 
     @Before
     fun before() {
+        saleDB.listAllSales().thenApply { list -> list.forEach{sale -> saleDB.deleteSale(sale)} }.get()
         Intents.init()
     }
 
@@ -80,6 +87,18 @@ class ListSalesTest {
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_price, "500.00")
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_author, "Molière")
         assertCustomAssertionAtPosition(R.id.recyclerView, 0, R.id.text_view_edition, matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun clickOnSaleIsCorrect(){
+        Thread.sleep(2000)
+        clickListItem(R.id.recyclerView, 0)
+        intended(
+            allOf(
+                hasComponent(SaleInformationActivity::class.java.name),
+                hasExtraWithKey(EXTRA_SALE_INFORMATION)
+            ) )
+
     }
 
     @Test
