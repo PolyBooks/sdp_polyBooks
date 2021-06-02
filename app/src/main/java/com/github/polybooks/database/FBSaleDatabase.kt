@@ -251,7 +251,6 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
             val future = CompletableFuture<Sale>()
             if (book == null) {
                 future.completeExceptionally(DatabaseException("Could not find book associated with sale : isbn = $bookISBN"))
-
             } else {
                 val sale = Sale(book, seller, price, condition, Date(), state, image)
                 saleRef.add(saleToDocument(sale))

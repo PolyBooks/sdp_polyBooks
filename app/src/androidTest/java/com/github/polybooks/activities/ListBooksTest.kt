@@ -26,8 +26,6 @@ import java.util.concurrent.CompletableFuture
 
 
 class ListBooksTest {
-    private val bookDB = Database.bookDatabase
-
 
     class BookActivityRule: TestWatcher() {
         private val fbBookDB = Database.bookDatabase
