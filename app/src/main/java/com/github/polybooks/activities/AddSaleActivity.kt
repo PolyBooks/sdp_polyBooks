@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -57,14 +58,8 @@ class AddSaleActivity : AppCompatActivity() {
 
     fun passISBN(view: View) {
         val editISBN = findViewById<EditText>(R.id.fill_in_ISBN)
-        val stringISBN = editISBN.text.toString()
-        val intent = Intent(this, FillSaleActivity::class.java).apply {
-            val extras = Bundle()
-            extras.putString(EXTRA_ISBN, stringISBN)
-            extras.putString(EXTRA_PICTURE_FILE, null)
-            extras.putString(EXTRA_SALE_PRICE, null)
-            putExtras(extras)
-        }
+        val intent = Intent(this, FillSaleActivity::class.java)
+            .putExtra(EXTRA_ISBN, editISBN.text.toString())
         startActivity(intent)
     }
 }
