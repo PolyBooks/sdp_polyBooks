@@ -1,6 +1,5 @@
 package com.github.polybooks.database
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

@@ -1,5 +1,6 @@
 package com.github.polybooks.database
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 object FirebaseProvider {
