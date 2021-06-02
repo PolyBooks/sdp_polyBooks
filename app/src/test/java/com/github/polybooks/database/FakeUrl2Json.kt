@@ -18,7 +18,7 @@ private val url2filename = mapOf(
     "/isbn/9781985086593.json" to "9781985086593.json",
     "/isbn/9780156881807.json" to "9780156881807.json"
 )
-private val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
+const val baseDir = "src/test/java/com/github/polybooks/core/databaseImpl"
 
 val url2json = { url : String ->
     CompletableFuture.supplyAsync {

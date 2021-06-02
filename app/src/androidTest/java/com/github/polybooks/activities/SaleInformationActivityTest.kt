@@ -14,6 +14,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 
 class SaleInformationActivityTest {
@@ -31,7 +32,7 @@ class SaleInformationActivityTest {
         LocalUser,
         33.5f,
         BookCondition.GOOD,
-        null,
+        Date(),
         SaleState.ACTIVE,
         null
     )
@@ -52,7 +53,7 @@ class SaleInformationActivityTest {
         LocalUser,
         37.57f,
         BookCondition.NEW,
-        null,
+        Date(),
         SaleState.RETRACTED,
         null
     )
@@ -89,6 +90,11 @@ class SaleInformationActivityTest {
         assertDisplayed(R.id.sale_information_title, expected.book.title)
         assertDisplayed(R.id.sale_information_edition, expectedDisplayed(expected.book.edition))
         assertDisplayed(R.id.sale_information_authors, StringsManip.listAuthorsToString(expected.book.authors))
+<<<<<<< HEAD
+=======
+        assertDisplayed(R.id.sale_information_book_publish_date)
+        assertDisplayed(R.id.sale_information_book_publisher, expectedDisplayed(expected.book.publisher))
+>>>>>>> main
         assertDisplayed(R.id.sale_information_book_format, expectedDisplayed(expected.book.format))
         assertDisplayed(R.id.sale_information_condition, expected.condition.name)
         assertDisplayed(R.id.sale_information_price, expected.price.toString())

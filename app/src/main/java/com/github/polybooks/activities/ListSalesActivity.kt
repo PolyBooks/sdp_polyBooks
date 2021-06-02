@@ -3,18 +3,23 @@ package com.github.polybooks.activities
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
+import com.github.polybooks.adapter.database.SalesAdapter
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.database.Database
 import com.github.polybooks.database.Query
 import com.github.polybooks.database.SaleSettings
-import com.github.polybooks.database.SalesAdapter
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
- * Activity to list Sales
+ * Activity to list all active sales
  */
 class ListSalesActivity: ListActivity<Sale>() {
+
+    private val salesDB = Database.saleDatabase
+
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)
     }

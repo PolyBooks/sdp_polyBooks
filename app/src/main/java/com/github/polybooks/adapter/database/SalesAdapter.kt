@@ -1,4 +1,4 @@
-package com.github.polybooks.database
+package com.github.polybooks.adapter.database
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.activities.SaleInformationActivity
-import com.github.polybooks.core.Book
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip
 
@@ -44,11 +43,11 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         holder.viewTitle.text = sale.book.title
 
         if (sale.book.edition != null) holder.viewEdition.text = sale.book.edition
-        else holder.viewEdition.setVisibility(View.GONE)
+        else holder.viewEdition.visibility = View.GONE
 
         if (sale.book.authors?.isEmpty() != false) {
-            holder.viewBy.setVisibility(View.GONE)
-            holder.viewAuthor.setVisibility(View.GONE)
+            holder.viewBy.visibility = View.GONE
+            holder.viewAuthor.visibility = View.GONE
         } else {
             holder.viewAuthor.text = StringsManip.listAuthorsToString(sale.book.authors)
         }
@@ -56,9 +55,7 @@ class SalesAdapter(var salesList: List<Sale>): RecyclerView.Adapter<SalesAdapter
         holder.viewCondition.text = sale.condition.name
         holder.viewPrice.text = String.format("%.2f", sale.price)
 
-        val book1 = Book(sale.book.isbn, sale.book.authors, sale.book.title, sale.book.edition, sale.book.language, sale.book.publisher, null, sale.book.format, sale.book.totalStars, sale.book.numberVotes)
-        val sale1 = Sale(book1, sale.seller, sale.price, sale.condition, null, sale.state, sale.image) // TODO remove nullable when timestamp serialization situation will be resolved
-        holder.itemView.setOnClickListener { v -> onClickCardView(v, sale1) }
+        holder.itemView.setOnClickListener { v -> onClickCardView(v, sale) }
     }
 
     override fun getItemCount(): Int {

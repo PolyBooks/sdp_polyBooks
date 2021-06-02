@@ -14,15 +14,15 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
-import com.github.polybooks.database.FBSaleDatabase
-import com.github.polybooks.database.OLBookDatabase
+import com.github.polybooks.database.Database
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.setupNavbar
-import com.github.polybooks.utils.url2json
-import com.google.firebase.firestore.FirebaseFirestore
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 
@@ -34,10 +34,8 @@ import java.util.concurrent.CompletableFuture
  */
 class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    // TODO I would imagine that in the future, the dbs are global constants, but while writing this class, I'll instantiate one locally
-    private val firestore = FirebaseFirestore.getInstance()
-    private val bookDB = OLBookDatabase { string -> url2json(string) }
-    private val salesDB = FBSaleDatabase(firestore, bookDB)
+    private val bookDB = Database.bookDatabase
+    private val salesDB = Database.saleDatabase
 
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
@@ -67,11 +65,12 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         if(stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
-                val book = bookFuture.get()
-                if (book != null) {
-                    fillBookData(book)
-                } else {
-                    redirectToAddSaleWithToast(getString(R.string.no_ISBN_match))
+                bookFuture.thenAccept { book ->
+                    if (book != null) {
+                        fillBookData(book)
+                    } else {
+                        redirectToAddSaleWithToast(getString(R.string.no_ISBN_match))
+                    }
                 }
             } catch (e: Exception) {
                 redirectToAddSaleWithToast(getString(R.string.error))
@@ -79,8 +78,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         } else {
             redirectToAddSaleWithToast(getString(R.string.missing_ISBN))
         }
-
-
         // Drop-down menu for condition
         val spinner: Spinner = findViewById(R.id.filled_condition)
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -127,7 +124,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // findViewById<TextView>(R.id.filled_language).apply { text = book.language ?: "" }
         findViewById<TextView>(R.id.filled_publisher).apply { text = book.publisher ?: "" }
         findViewById<TextView>(R.id.filled_publish_date).apply {
-            text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
+            text = dateFormat.format(book.publishDate!!) ?: ""
         }
         // TODO whole lines could be removed from UI (visibility = View.GONE) when argument is null instead of placeholding with default value
         findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }
@@ -153,11 +150,10 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             message,
             Toast.LENGTH_LONG
         ).show()
-        // TODO only enable redirect on release build variant because it causes tests to fail (don't redirect on test/debug builds)
-        /*
+
         val intent = Intent(this, AddSaleActivity::class.java)
         startActivity(intent)
-         */
+
     }
 
     fun takePicture(view: View) {

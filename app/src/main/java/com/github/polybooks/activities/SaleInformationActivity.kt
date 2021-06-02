@@ -1,10 +1,10 @@
 package com.github.polybooks.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.Sale
@@ -45,7 +45,7 @@ class SaleInformationActivity: AppCompatActivity() {
         ratingBar.setOnRatingBarChangeListener { bar, rating, _ ->
             val firestore = FirebaseFirestore.getInstance()
             val olBookDB = OLBookDatabase { string -> url2json(string) }
-            val bookDB = FBBookDatabase(firestore, olBookDB)
+            val bookDB = FBBookDatabase(olBookDB)
 
             var query: BookQuery = bookDB.queryBooks()
             query = query.searchByISBN(setOf(sale.book.isbn))
@@ -65,7 +65,6 @@ class SaleInformationActivity: AppCompatActivity() {
                     val updatedTotalStars: Double = rating + (book.totalStars ?: 0.0)
                     val updatedNumberVotes: Int = 1 + (book.numberVotes ?: 0)
 
-                    // bar.rating = (updatedTotalStars / updatedNumberVotes).toFloat()
                     bar.setIsIndicator(true)
 
                     bookDB.addBook(

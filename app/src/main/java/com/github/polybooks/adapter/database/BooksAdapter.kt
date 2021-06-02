@@ -1,4 +1,4 @@
-package com.github.polybooks.core.database
+package com.github.polybooks.adapter.database
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,14 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Book
-import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
 
 /**
  * Adapter for listing Sale via RecyclerView
- * @property salesList List of sales
+ * @property booksList List of sales
  */
-class BooksAdapter(internal var booksList: List<Book>): RecyclerView.Adapter<BooksAdapter.BooksViewHolder>() {
+class BooksAdapter(private var booksList: List<Book>): RecyclerView.Adapter<BooksAdapter.BooksViewHolder>() {
     class BooksViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val viewTitle: TextView = itemView.findViewById(R.id.text_view_title)
         val viewEdition: TextView = itemView.findViewById(R.id.text_view_edition)
@@ -34,11 +33,11 @@ class BooksAdapter(internal var booksList: List<Book>): RecyclerView.Adapter<Boo
         holder.viewTitle.text = book.title
 
         if (book.edition != null) holder.viewEdition.text = book.edition
-        else holder.viewEdition.setVisibility(View.GONE)
+        else holder.viewEdition.visibility = View.GONE
 
         if (book.authors?.isEmpty() != false) {
-            holder.viewBy.setVisibility(View.GONE)
-            holder.viewAuthor.setVisibility(View.GONE)
+            holder.viewBy.visibility = View.GONE
+            holder.viewAuthor.visibility = View.GONE
         } else {
             holder.viewAuthor.text = listAuthorsToString(book.authors)
         }
