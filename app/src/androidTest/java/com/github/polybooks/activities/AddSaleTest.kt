@@ -14,10 +14,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.R
+import com.github.polybooks.database.Database
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers
 import org.junit.*
 import org.junit.runner.RunWith
+import java.util.concurrent.CompletableFuture
 
 @RunWith(AndroidJUnit4::class)
 class AddSaleTest {
@@ -66,7 +69,6 @@ class AddSaleTest {
         onView(withId(R.id.pass_isbn_button)).check(matches(not(isEnabled())))
     }
 
-    @Ignore
     @Test
     fun passValidISBN() {
         val extraKey = EXTRA_ISBN
@@ -74,7 +76,7 @@ class AddSaleTest {
         inputISBN(stringISBN)
         onView(withId(R.id.pass_isbn_button)).perform(click())
         intended(
-            Matchers.allOf(
+            allOf(
                 hasComponent(FillSaleActivity::class.java.name),
                 IntentMatchers.hasExtra(extraKey, stringISBN)
             )
