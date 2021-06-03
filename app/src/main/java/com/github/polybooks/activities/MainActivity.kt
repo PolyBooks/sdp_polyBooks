@@ -2,15 +2,13 @@ package com.github.polybooks.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.View.GONE
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.database.FirebaseProvider
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 /**
  * The main homepage
@@ -20,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val login = Firebase.auth.currentUser
+        val login = FirebaseProvider.getAuth().currentUser
 
         val sellButton: Button = findViewById(R.id.sell_button)
         val buttonLogin: Button = findViewById(R.id.log_button)
