@@ -3,12 +3,19 @@ package com.github.polybooks.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.github.polybooks.R
 import com.github.polybooks.utils.GlobalVariables.EXTRA_USERNAME
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+
 
 class UserProfileActivity : AppCompatActivity() {
 
@@ -45,22 +52,34 @@ class UserProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val switch_locate : Switch = findViewById(R.id.switch_loca)
+        switch_locate.setOnCheckedChangeListener { buttonView, isChecked ->
+            val database = Firebase.database
+            val ref = database.getReference("enabled_localisation_$uid")
+            if(isChecked){
+                ref.setValue(true)
+                startActivity(Intent(this, GPSActivity::class.java))
+            }else{
+                ref.setValue(false)
+            }
+        }
+
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
-                    R.id.books ->{
+                    R.id.books -> {
                         startActivity(Intent(this, ListBooksActivity::class.java))
                         true
                     }
-                    R.id.sales ->{
+                    R.id.sales -> {
                         startActivity(Intent(this, ListSalesActivity::class.java))
                         true
                     }
-                    R.id.home ->{
+                    R.id.home -> {
                         startActivity(Intent(this, MainActivity::class.java))
                         true
                     }
-                    R.id.user_profile ->{
+                    R.id.user_profile -> {
                         startActivity(Intent(this, LoginActivity::class.java))
                         true
                     }

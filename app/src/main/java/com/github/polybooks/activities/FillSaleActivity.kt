@@ -23,6 +23,8 @@ import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.setupNavbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 
@@ -172,14 +174,16 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
      * (i.e. book, condition, user, price, date)
      */
     fun confirmSale(view: View) {
+        Firebase.auth.currentUser?.let {
         salesDB.addSale(
             bookISBN = bookFuture.get()!!.isbn,
-            seller = LoggedUser(123456, "Alice"), //TODO handle real User
+            seller = LoggedUser(it.uid, it.displayName), //TODO handle real User
             price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             condition = bookConditionSelected!!,
             state = SaleState.ACTIVE,
             image = null // TODO
         )
+        }
         //TODO handle success or failure of the addSale
 
         // TODO determine to which activity we land, but probably not MainActivity but rather a confirmation page

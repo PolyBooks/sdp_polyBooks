@@ -1,10 +1,14 @@
 package com.github.polybooks.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.Sale
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SELLER_UID
 import com.github.polybooks.utils.StringsManip
 
 /**
@@ -41,10 +45,18 @@ class SaleInformationActivity: AppCompatActivity() {
 
         viewPublishDate.text = sale.book.publishDate.toString()
 
-        viewPublisher.text = sale.book.publisher
+        viewPublisher.text = (sale.seller as LoggedUser).pseudo
         viewFormat.text = sale.book.format
 
         viewCondition.text = sale.condition.name
         viewPrice.text = sale.price.toString()
+
+        val buttonLocate: Button = findViewById(R.id.locate_user)
+        buttonLocate.setOnClickListener {
+            val intent = Intent(this, GPSActivity::class.java).apply {
+                putExtra(EXTRA_SELLER_UID, (sale.seller as LoggedUser).uid)
+            }
+            startActivity(intent)
+        }
     }
 }
