@@ -78,6 +78,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation 'com.google.code.gson:gson:2.8.7'
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
