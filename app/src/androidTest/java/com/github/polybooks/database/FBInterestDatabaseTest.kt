@@ -17,7 +17,7 @@ class FBInterestDatabaseTest {
 
     private val interestDB = FBInterestDatabase()
 
-    private val testUser = LoggedUser(301966, "Le givre")
+    private val testUser = LoggedUser("301966", "Le givre")
 
 
     @Test

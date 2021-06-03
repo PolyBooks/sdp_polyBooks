@@ -174,7 +174,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     fun confirmSale(view: View) {
         salesDB.addSale(
             bookISBN = bookFuture.get()!!.isbn,
-            seller = LoggedUser(123456, "Alice"), //TODO handle real User
+            seller = LoggedUser("123456", "Alice"), //TODO handle real User
             price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             condition = bookConditionSelected!!,
             state = SaleState.ACTIVE,

@@ -35,6 +35,14 @@ class UserProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        findViewById<Button>(R.id.edit_user_interests).setOnClickListener {
+            startActivity(Intent(this, EditUserInterestsActivity::class.java))
+        }
+
+        setNavBar()
+    }
+
+    private fun setNavBar(){
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
