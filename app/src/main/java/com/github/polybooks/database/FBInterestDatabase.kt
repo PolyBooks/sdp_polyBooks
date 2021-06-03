@@ -5,7 +5,6 @@ import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestoreSettings
 import java.util.concurrent.CompletableFuture
 
 private const val TAG: String = "FBInterestDatabase"
