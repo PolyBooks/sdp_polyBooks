@@ -306,7 +306,11 @@ class FBInterestDatabase: InterestDatabase {
      * */
     private fun getLocalUserInterests(): CompletableFuture<List<Interest>> {
         val future = CompletableFuture<List<Interest>>()
-        future.completeExceptionally(LocalUserException("user needs to be logged in to get their interests"))
+        /* With the current set-up of the cache wrapping the DB, we can afford to return an empty list here
+        and by doing so, local users can still benefit from the cache, without crashing the system when their cache is empty
+         */
+        future.complete(emptyList())
+        //future.completeExceptionally(LocalUserException("user needs to be logged in to get their interests"))
         return future
     }
 
@@ -317,7 +321,11 @@ class FBInterestDatabase: InterestDatabase {
      * */
     private fun setLocalUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
         val future = CompletableFuture<List<Interest>>()
-        future.completeExceptionally(LocalUserException("user needs to be logged in to set their interests to $interests"))
+        /* With the current set-up of the cache wrapping the DB, we can afford to return an empty list here
+        and by doing so, local users can still benefit from the cache, without crashing the system when their cache is empty
+         */
+        future.complete(emptyList())
+        //future.completeExceptionally(LocalUserException("user needs to be logged in to set their interests to $interests"))
         return future
     }
 

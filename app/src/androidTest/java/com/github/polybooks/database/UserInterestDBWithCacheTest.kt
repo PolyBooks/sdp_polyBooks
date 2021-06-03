@@ -22,7 +22,7 @@ class UserInterestDBWithCacheTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-
+    // Adapt code so that localuser just use the cache and nothing else.
     @Test
     fun storeAndRetrieveFromCache() {
         val context: Context = ApplicationProvider.getApplicationContext()
