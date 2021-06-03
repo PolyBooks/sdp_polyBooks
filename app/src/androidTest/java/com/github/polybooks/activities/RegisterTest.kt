@@ -9,9 +9,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.R
+import com.github.polybooks.database.FirebaseProvider
 import com.github.polybooks.utils.GlobalVariables.EXTRA_USERNAME
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -34,7 +33,7 @@ class RegisterTest {
 
     @After
     fun after() {
-        Firebase.auth.currentUser?.delete() // Par securité
+        FirebaseProvider.getAuth().currentUser?.delete() // Par securité
         Intents.release()
     }
 
@@ -50,7 +49,7 @@ class RegisterTest {
         Intents.intended(toPackage("com.github.polybooks"))
         Intents.intended(hasExtra(EXTRA_USERNAME, "TestTestTest"))
         Thread.sleep(1500)
-        Firebase.auth.currentUser.delete()
+        FirebaseProvider.getAuth().currentUser.delete()
     }
 
     @Test

@@ -7,15 +7,16 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-
+import com.github.polybooks.database.FirebaseProvider
 import org.hamcrest.Matchers.not
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 
 class MainTest {
@@ -30,7 +31,7 @@ class MainTest {
 
     @After
     fun after() {
-        Firebase.auth.currentUser?.delete() // Par securité
+        FirebaseProvider.getAuth().currentUser?.delete() // Par securité
         Intents.release()
     }
 
@@ -87,7 +88,7 @@ class MainTest {
         onView(withId(R.id.signup_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.log_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.sell_button)).perform(click())
-        Firebase.auth.currentUser.delete()
+        FirebaseProvider.getAuth().currentUser.delete()
 
     }
 
