@@ -60,35 +60,28 @@ class GPSActivity: AppCompatActivity() {
 
         requestPermissionsAndSetUpMap()
 
-        /*val searchButton= findViewById<Button>(R.id.button_search)
+        val searchButton= findViewById<Button>(R.id.button_search)
         searchButton.setOnClickListener{
             val uidField = findViewById<TextInputEditText>(R.id.uid_field)
             otherUid = uidField.text.toString()
+            addPostEventListener(Firebase.database.getReference("localisation_$uid"))
+            searchUser(uid, mapFrag)
+        }
 
-            Firebase.database.reference
-                .child("enabled_localisation_$otherUid").get()
-                .addOnSuccessListener { it ->
-                    if (it as Boolean) {
-                        addPostEventListener(Firebase.database.getReference("localisation_$uid"))
-                        searchUser(uid, mapFrag)
+        if(intent.getStringExtra(EXTRA_SELLER_UID) != null){
+            otherUid = intent.getStringExtra(EXTRA_SELLER_UID).toString()
+            Firebase.database.reference.child("localisation_$otherUid").get()
+                .addOnSuccessListener {
+                    if(it.value != null){
+                        addPostEventListener(Firebase.database.getReference("localisation_$otherUid"))
+                        searchUser(otherUid, mapFrag)
+                    }else{
+
                     }
                 }
-        }*/
-
-        /*otherUid = intent.getStringExtra(EXTRA_SELLER_UID).toString()
-        Firebase.database.reference
-            .child("enabled_localisation_$otherUid").get()
-            .addOnSuccessListener { it ->
-                if (it as Boolean) {
-                    addPostEventListener(Firebase.database.getReference("localisation_$uid"))
-                    searchUser(uid, mapFrag)
-                }else{
-                    val toast = Toast.makeText(applicationContext, "This user didn't allow you to locate him", Toast.LENGTH_LONG)
-                    toast.show()
-                }
-            }.addOnFailureListener{
-                val toast = Toast.makeText(applicationContext, "This user didn't allow you to locate him", Toast.LENGTH_LONG)
-                toast.show() }*/
+                .addOnFailureListener{
+                    Log.e("firebase", "Error getting data", it) }
+        }
 
         setupNavbar(findViewById(R.id.bottom_navigation), this)
 

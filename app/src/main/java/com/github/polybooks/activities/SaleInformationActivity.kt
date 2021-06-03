@@ -10,6 +10,8 @@ import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SELLER_UID
 import com.github.polybooks.utils.StringsManip
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 /**
  * This activity displays the detailed product information of a particular
@@ -55,6 +57,7 @@ class SaleInformationActivity: AppCompatActivity() {
         buttonLocate.setOnClickListener {
             val intent = Intent(this, GPSActivity::class.java).apply {
                 putExtra(EXTRA_SELLER_UID, (sale.seller as LoggedUser).uid)
+                putExtra(EXTRA_MESSAGE2, Firebase.auth.currentUser?.uid)
             }
             startActivity(intent)
         }

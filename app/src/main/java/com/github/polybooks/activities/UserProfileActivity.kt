@@ -3,19 +3,16 @@ package com.github.polybooks.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import com.github.polybooks.R
 import com.github.polybooks.utils.GlobalVariables.EXTRA_USERNAME
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-
 
 class UserProfileActivity : AppCompatActivity() {
 
@@ -27,6 +24,14 @@ class UserProfileActivity : AppCompatActivity() {
         val welcomeText = "Hello $username !"
 
         val uid = intent.getStringExtra(EXTRA_MESSAGE2)
+
+        val buttonAllowLoca : Button = findViewById(R.id.switch_loca)
+        buttonAllowLoca.setOnClickListener {
+            val intent = Intent(this, GPSActivity::class.java).apply {
+                putExtra(EXTRA_MESSAGE2, uid)
+            }
+            startActivity(intent)
+        }
 
         val textMessageView = findViewById<TextView>(R.id.welcome_text)
         textMessageView.apply {text = welcomeText}
@@ -52,18 +57,6 @@ class UserProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val switch_locate : Switch = findViewById(R.id.switch_loca)
-        switch_locate.setOnCheckedChangeListener { buttonView, isChecked ->
-            val database = Firebase.database
-            val ref = database.getReference("enabled_localisation_$uid")
-            if(isChecked){
-                ref.setValue(true)
-                startActivity(Intent(this, GPSActivity::class.java))
-            }else{
-                ref.setValue(false)
-            }
-        }
-
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){
@@ -86,6 +79,7 @@ class UserProfileActivity : AppCompatActivity() {
                     else -> true
                 }
             }
+
         setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.user_profile, navBarListener)
     }
 }
