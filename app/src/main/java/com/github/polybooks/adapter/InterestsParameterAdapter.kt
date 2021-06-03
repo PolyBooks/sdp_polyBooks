@@ -1,12 +1,9 @@
 package com.github.polybooks.adapter
 
 import android.content.Context
-import com.github.polybooks.core.Course
-import com.github.polybooks.core.Field
 import com.github.polybooks.core.Interest
-import com.github.polybooks.core.Semester
 import com.github.polybooks.database.Database
-import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
+import com.github.polybooks.utils.StringsManip.getName
 
 /**
  * An adapter when filtering by Interest, which is a dynamic list of filtering values
@@ -40,13 +37,6 @@ class InterestsParameterAdapter<T: Interest>(
     }
 
     override fun getValueName(value: T, context: Context?): String {
-        return when (interestType) {
-            Interest.COURSE -> (value as Course).name
-            Interest.FIELD -> (value as Field).name
-            Interest.SEMESTER -> {
-                val v = value as Semester
-                mergeSectionAndSemester(v)
-            }
-        }
+        return getName(value as com.github.polybooks.core.Interest)
     }
 }
