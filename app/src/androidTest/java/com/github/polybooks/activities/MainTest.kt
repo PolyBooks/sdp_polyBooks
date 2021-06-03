@@ -26,7 +26,6 @@ class MainTest {
 
     @Before
     fun before() {
-        FirebaseProvider.getAuth().currentUser?.delete() // Par securité
         Intents.init()
     }
 

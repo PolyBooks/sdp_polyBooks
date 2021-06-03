@@ -28,7 +28,6 @@ class RegisterTest {
 
     @Before
     fun before() {
-        FirebaseProvider.getAuth().currentUser?.delete() // Par securité
         Intents.init()
     }
 
