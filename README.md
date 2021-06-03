@@ -16,6 +16,24 @@ For Windows:
 - firebase emulators:start --only auth,database,firestore &
 - Then you can run gradlew connectedCheck or individual tests.
 
+For Linux:
+From the root of the project run the following commands:
+```
+$ cd firebase
+$ curl -sL https://firebase.tools/bin/linux/latest -o firebase-tools
+$ chmod u+x firebase-tools
+$ ./firebase-tools emulators:start --only auth,database,firestore &
+```
+
+For MacOS:
+From the root of the project run the following commands:
+```
+$ cd firebase
+$ curl -sL https://firebase.tools/bin/macos/latest -o firebase-tools
+$ chmod u+x firebase-tools
+$ ./firebase-tools emulators:start --only auth,database,firestore &
+```
+
 ### Release
 Release is the real version for the user, using the real databases, and which could potentially be put on an app store.
 
