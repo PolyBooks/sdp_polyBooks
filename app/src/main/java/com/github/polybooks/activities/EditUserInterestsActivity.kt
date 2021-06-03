@@ -16,7 +16,7 @@ import com.github.polybooks.utils.setupNavbar
 import java.util.concurrent.CompletableFuture
 
 class EditUserInterestsActivity: ListActivity<Interest>() {
-    val adapter = InterestAdapter()
+    val adapter = InterestAdapter(applicationContext)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_edit_user_interests)
