@@ -237,8 +237,8 @@ class FBInterestDatabase: InterestDatabase {
     }
 
     /**
+     * Do not call, rather use getCurrentUserInterests(), this is not private only for testing purposes
      * Get the interests of the specified logged user
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * */
     fun getLoggedUserInterests(user: LoggedUser): CompletableFuture<List<Interest>> {
         val future = CompletableFuture<List<Interest>>()
@@ -279,8 +279,8 @@ class FBInterestDatabase: InterestDatabase {
     }
 
     /**
+     * Do not call, rather use setCurrentUserInterests(), this is not private only for testing purposes
      * Sets the interests of the specified logged user.
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
     fun setLoggedUserInterests(user: LoggedUser, interests: List<Interest>): CompletableFuture<List<Interest>> {
@@ -299,8 +299,6 @@ class FBInterestDatabase: InterestDatabase {
         return future
     }
 
-    // TODO list
-    // 2) use sharedPreferences for LoggedUser to serve as a cache.
 
     /**
      * Get the interests of the current unlogged local user
