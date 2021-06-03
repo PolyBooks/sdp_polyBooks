@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.database.FirebaseProvider
 import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.successUser
@@ -20,17 +21,14 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
+    private var auth = FirebaseProvider.getAuth()
 
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -61,8 +59,6 @@ class LoginActivity : AppCompatActivity() {
                 .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        auth = Firebase.auth
 
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
@@ -137,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun signOut() {
-        Firebase.auth.signOut()
+        FirebaseProvider.getAuth().signOut()
         Log.d(TAG, "signed out")
     }
 
