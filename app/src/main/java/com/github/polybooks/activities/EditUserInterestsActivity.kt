@@ -16,10 +16,11 @@ import com.github.polybooks.utils.setupNavbar
 import java.util.concurrent.CompletableFuture
 
 class EditUserInterestsActivity: ListActivity<Interest>() {
-    val adapter = InterestAdapter(applicationContext)
+    lateinit var adapter: InterestAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_edit_user_interests)
+        adapter = InterestAdapter(applicationContext)
         findViewById<Button>(R.id.filter_button).visibility = GONE
         findViewById<RecyclerView>(R.id.recyclerView).setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.white, null))
     }
