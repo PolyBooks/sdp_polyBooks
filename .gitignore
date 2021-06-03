@@ -67,6 +67,7 @@ captures/
 
 # Google Services (e.g. APIs or Firebase)
 firebase/firebase-tools
+firebase/firebase-tools-macos
 firebase/firebase-tools-instant-win.exe
 # google-services.json
 
