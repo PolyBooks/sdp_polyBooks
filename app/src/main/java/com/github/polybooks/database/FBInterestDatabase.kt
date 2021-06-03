@@ -2,7 +2,7 @@ package com.github.polybooks.database
 
 import com.github.polybooks.core.*
 import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
-import com.github.polybooks.utils.fireBaseUsertoUser
+import com.github.polybooks.utils.firebaseUserToUser
 import com.google.firebase.firestore.SetOptions
 import java.util.concurrent.CompletableFuture
 
@@ -215,7 +215,7 @@ class FBInterestDatabase: InterestDatabase {
      * Get the interests of the current user
      * */
     override fun getCurrentUserInterests(): CompletableFuture<List<Interest>> {
-        val user = fireBaseUsertoUser(FirebaseProvider.getAuth().currentUser)
+        val user = firebaseUserToUser(FirebaseProvider.getAuth().currentUser)
         return if(user is LoggedUser) {
             getLoggedUserInterests(user)
         } else {
@@ -228,7 +228,7 @@ class FBInterestDatabase: InterestDatabase {
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
     override fun setCurrentUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
-        val user = fireBaseUsertoUser(FirebaseProvider.getAuth().currentUser)
+        val user = firebaseUserToUser(FirebaseProvider.getAuth().currentUser)
         return if(user is LoggedUser) {
             setLoggedUserInterests(user, interests)
         } else {
