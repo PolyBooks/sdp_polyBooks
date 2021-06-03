@@ -4,7 +4,7 @@ import com.github.polybooks.core.*
 import java.util.concurrent.CompletableFuture
 
 /**
- * !! DO NOT INSTANTIATE THIS CLASS. You should use Database.interestDatabase instead.
+ * !! DO NOT USE THIS OBJECT DIRECTLY. You should use Database.interestDatabase instead.
  * */
 object DummyInterestDatabase: InterestDatabase {
 
