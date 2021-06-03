@@ -2,9 +2,9 @@ package com.github.polybooks.database
 
 import com.github.polybooks.core.*
 import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
-import com.github.polybooks.utils.firebaseUserToUser
 import com.google.firebase.firestore.SetOptions
 import java.util.concurrent.CompletableFuture
+import com.github.polybooks.utils.firebaseUserToUser
 
 private const val TAG: String = "FBInterestDatabase"
 
