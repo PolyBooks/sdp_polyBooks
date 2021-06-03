@@ -32,12 +32,8 @@ class EditUserInterestsActivity: ListActivity<Interest>() {
         return adapter
     }
 
-    override fun getQuery(): Query<Interest> {
-        return object: Query<Interest> {
-            override fun getAll(): CompletableFuture<List<Interest>> {
-                return CompletableFuture.completedFuture(emptyList())
-            }
-        }
+    override fun getElements(): CompletableFuture<List<Interest>> {
+        return CompletableFuture.completedFuture(emptyList())
     }
 
     override fun getTitleText(): String {

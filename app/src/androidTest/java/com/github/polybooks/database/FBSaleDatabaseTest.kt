@@ -29,7 +29,7 @@ class FBSaleDatabaseTest {
 
     private val saleDB = Database.saleDatabase(ApplicationProvider.getApplicationContext())
 
-    private val testUser = LoggedUser(301966, "Le givre")
+    private val testUser = LoggedUser("301966", "Le givre")
     private val testBook = TestBookProvider.getBook("9781985086593").get()!!
 
     private val dummySale: Sale = Sale(
