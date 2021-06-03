@@ -255,7 +255,7 @@ class FBSaleDatabaseTest {
 
         val sale = saleDB.addSale(
             testBook.isbn,
-            LoggedUser(300437, "testUser"),
+            LoggedUser("300437", "testUser"),
             666f,
             WORN,
             RETRACTED,

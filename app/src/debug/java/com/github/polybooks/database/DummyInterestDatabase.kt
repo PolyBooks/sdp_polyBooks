@@ -80,10 +80,12 @@ object DummyInterestDatabase: InterestDatabase {
     }
 
     override fun getUserInterests(user: User): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
-        TODO("Not yet implemented")
+        return CompletableFuture.supplyAsync{
+            Triple(mockFields.subList(0,1), mockSemesters.subList(1,3), mockCourses.subList(0,4))
+        }
     }
 
     override fun setUserInterests(user: User, interests: List<Interest>): CompletableFuture<Unit> {
-        TODO("Not yet implemented")
+        return CompletableFuture.supplyAsync{Unit}
     }
 }

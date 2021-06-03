@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.adapter.database.BooksAdapter
+
 import com.github.polybooks.core.Book
 import com.github.polybooks.database.BookDatabase
 import com.github.polybooks.database.BookQuery
