@@ -28,12 +28,13 @@ class RegisterTest {
 
     @Before
     fun before() {
+        FirebaseProvider.getAuth().currentUser?.delete() // Par securité
         Intents.init()
     }
 
     @After
     fun after() {
-        //FirebaseProvider.getAuth().currentUser?.delete() // Par securité
+        FirebaseProvider.getAuth().currentUser?.delete() // Par securité
         Intents.release()
     }
 
