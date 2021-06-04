@@ -46,4 +46,13 @@ If you're still facing problems with build variants, common troubleshooting on A
 - Build -> Clean Project -> Rebuild Project (usually after changing the build variant setting)
 - File -> Invalidate Caches/Restart (usually after changing the build variant setting)
 
+### How to use google services
+
+## To use the GPS:
+Add this line to local.properties: 
+GOOGLE_MAPS_API_KEY=AIzaSyD0oats_WZIcKRk8_BzxX7W6_S5yGIbzrk
+
+## To use Google Sign In:
+You need to retrieve your SHA-1 key from android studio and give it to a member of the team to add it into Firebase.
+
 Menu icons made by Freepik from www.flaticon.com
