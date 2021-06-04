@@ -85,6 +85,7 @@
     <string name="confirm_password">Confirm Password</string>
 
     <!-- User Interaction (could be further organized) -->
+    <string name="user_edit_interests">Your interests</string>
     <string name="sort_by">Sort by</string>
     <string name="take_picture">Take Picture</string>
     <string name="scan_book">Scan Book Barcode</string>

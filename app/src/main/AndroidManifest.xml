@@ -58,6 +58,10 @@
         <activity
             android:name=".activities.TakeBookPictureActivity"
             android:parentActivityName=".activities.FillSaleActivity"/>
+      
+        <activity
+            android:name=".activities.EditUserInterestsActivity"
+            android:parentActivityName=".activities.UserProfileActivity"/>
 
         <activity
             android:name=".activities.FilteringBooksActivity"

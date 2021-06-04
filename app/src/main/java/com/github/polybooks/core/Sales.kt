@@ -3,8 +3,8 @@ package com.github.polybooks.core
 import android.content.Context
 import com.github.polybooks.R
 import com.github.polybooks.utils.FieldWithName
+import java.util.Date
 import java.io.Serializable
-import java.util.*
 
 typealias Image = android.media.Image
 
