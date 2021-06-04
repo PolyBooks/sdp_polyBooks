@@ -3,6 +3,7 @@ package com.github.polybooks.database
 import android.content.Context
 import com.github.polybooks.R
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.BookRating
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
 import com.github.polybooks.database.BookOrdering.DEFAULT
@@ -74,6 +75,16 @@ interface BookDatabase: BookProvider {
             is AllBooksQuery -> listAllBooks(query.ordering)
         }
     }
+
+    /**
+     * Get the rating of a particular book
+     */
+    fun getRating(isbn: ISBN): CompletableFuture<BookRating>
+
+    /**
+     * Set a rating for a particular book
+     */
+    fun setRating(isbn: ISBN, bookRating: BookRating): CompletableFuture<Unit>
 
 }
 

@@ -5,6 +5,7 @@ import com.github.polybooks.core.BookFields
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
 import com.github.polybooks.utils.order
+import com.github.polybooks.core.*
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import java.text.SimpleDateFormat
@@ -23,6 +24,17 @@ object FBBookDatabase: BookDatabase {
     private val bookRef = FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT)
 
+    override fun addBook(book: Book): CompletableFuture<Unit> {
+        val future = CompletableFuture<Unit>()
+        val bookEntry = assembleBookEntry(bookToDocument(book))
+        bookRef.document(book.isbn).set(bookEntry)
+            .addOnSuccessListener {
+                future.complete(Unit)
+            }.addOnFailureListener {
+                future.completeExceptionally(it)
+            }
+        return future
+    }
 
     override fun searchByTitle(
         title: String,
@@ -72,16 +84,24 @@ object FBBookDatabase: BookDatabase {
         return future
     }
 
-    override fun addBook(book: Book): CompletableFuture<Unit> {
-        val future = CompletableFuture<Unit>()
-        val bookEntry = assembleBookEntry(bookToDocument(book))
-        bookRef.document(book.isbn).set(bookEntry)
-            .addOnSuccessListener {
-                future.complete(Unit)
-            }.addOnFailureListener {
+    override fun getRating(isbn: ISBN): CompletableFuture<BookRating> {
+        val future = CompletableFuture<BookRating>()
+        BookRating.bookRatingRef.document(isbn)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data != null) {
+                    future.complete(BookRating(document.data!!))
+                }
+            }
+            .addOnFailureListener {
                 future.completeExceptionally(it)
             }
+
         return future
+    }
+
+    override fun setRating(isbn: ISBN, bookRating: BookRating): CompletableFuture<Unit> {
+        return bookRating.uploadToFirebase(isbn)
     }
 
     override fun getBooks(
