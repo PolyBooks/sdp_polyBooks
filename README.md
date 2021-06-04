@@ -13,7 +13,7 @@ For Windows:
 - Download the Firebase CLI here: https://firebase.google.com/docs/cli#install-cli-windows
 - Put the .exe in the firebase folder to benefit from the parameters set-up.
 - Run the .exe, log in and execute:
-- firebase emulators:start --only auth,database,firestore &
+- ```firebase emulators:start --only auth,database,firestore &```
 - Then you can run gradlew connectedCheck or individual tests.
 
 For Linux:
