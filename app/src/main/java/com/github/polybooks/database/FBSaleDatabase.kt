@@ -1,5 +1,10 @@
 package com.github.polybooks.database
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import androidx.core.content.res.ResourcesCompat
+import com.github.polybooks.R
 import com.github.polybooks.core.*
 import com.github.polybooks.database.SaleOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
@@ -7,6 +12,9 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.File
 import java.util.concurrent.CompletableFuture
 
 private const val COLLECTION_NAME = "sale2"
@@ -256,6 +264,7 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
                 saleRef.add(saleToDocument(sale))
                     .addOnSuccessListener {
                         future.complete(sale)
+                        uploadImage(sale)
                     }
                     .addOnFailureListener {
                         future.completeExceptionally(DatabaseException("Failed to insert $sale into Database because of : $it"))
@@ -263,6 +272,7 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
             }
             future
         }
+
     }
 
     //find the ID of a sale based on the ISBN of the book being sold, the time of the publication and the UID of the seller
@@ -273,6 +283,32 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
             .whereEqualTo(SaleFields.SELLER.fieldName +"."+UserFields.UID.fieldName, (sale.seller as LoggedUser).uid)
         return query.get().continueWith { task -> task.result.documents.firstOrNull() }
 
+    }
+
+    private fun uploadImage(sale: Sale) {
+        val firebaseStorage = FirebaseStorage.getInstance()
+        var referenceID: String = ""
+        getReferenceID(sale).addOnSuccessListener { sale ->
+            referenceID = sale?.id ?: ""
+        }
+
+        if (referenceID.isNotEmpty()) {
+            val storageRef: StorageReference = firebaseStorage
+                .getReference("images/sales")
+                .child("$referenceID.jpg")
+
+            val file = Uri.fromFile(File(sale.imageFileURL))
+            val uploadTask = storageRef.putFile(file)
+
+            // Register observers to listen for when the download is done or if it fails
+            uploadTask.addOnFailureListener {
+                // Do nothing, it's not dramatic if the image upload fails
+                // Handle unsuccessful uploads
+            }.addOnSuccessListener { taskSnapshot ->
+                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                // Do nothing either, we're happy that it succeeded, we could at most log it, but most importantly, just move on and allow the user to proceed
+            }
+        }
     }
 
     override fun deleteSale(sale: Sale) : CompletableFuture<Boolean> {

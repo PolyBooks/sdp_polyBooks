@@ -23,7 +23,7 @@ data class Sale(
     val condition : BookCondition,
     val date : Timestamp?, // TODO remove nullable when timestamp serialization situation will be resolved
     val state : SaleState,
-    val image : String?
+    val imageFileURL : String?
 ) : Serializable
 
 

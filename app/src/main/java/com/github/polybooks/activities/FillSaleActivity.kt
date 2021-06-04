@@ -180,7 +180,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             condition = bookConditionSelected!!,
             state = SaleState.ACTIVE,
-            image = null // TODO
+            image = this.filesDir.path + '/' + pictureFileName
         )
         //TODO handle success or failure of the addSale
 

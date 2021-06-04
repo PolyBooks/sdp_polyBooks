@@ -45,7 +45,7 @@ interface SaleDatabase {
      * @return a future containing the sale created and added to the database.
      * */
     fun addSale(sale: Sale) : CompletableFuture<Sale> =
-        addSale(sale.book.isbn, sale.seller, sale.price, sale.condition, sale.state, sale.image)
+        addSale(sale.book.isbn, sale.seller, sale.price, sale.condition, sale.state, sale.imageFileURL)
 
     /**
      * Delete the given sale to the database

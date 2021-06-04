@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import com.bumptech.glide.Glide
 import com.github.polybooks.R
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.StringsManip
@@ -58,6 +59,12 @@ class SaleInformationActivity: AppCompatActivity() {
         val storageRef: StorageReference = firebaseStorage
             .getReference("images/sales")
             .child("CMbTHHrs1v8u1sep7fw0.jpg") // TODO getReferenceID (waiting for PR #211)
+
+        // Couldn't this work instead of below? To test
+        /*Glide.with(this /* context */)
+            .load(storageRef)
+            .into(bookImage)
+         */
 
         storageRef.getBytes(1 shl 24)
             .addOnSuccessListener { bytes ->
