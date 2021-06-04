@@ -1,5 +1,6 @@
 package com.github.polybooks.database
 
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
@@ -7,28 +8,37 @@ import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
 import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.utils.unwrapException
-import com.google.firebase.Timestamp
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.rules.ExpectedException
+import java.util.*
 
 class FBSaleDatabaseTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-    private val saleDB = Database.saleDatabase
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun initDB() {
+            val bookDB = Database.bookDatabase(ApplicationProvider.getApplicationContext())
+            TestBookProvider.books.values.forEach { book -> bookDB.addBook(book).get() }
+        }
+    }
 
-    private val testUser = LoggedUser(301966, "Le givre")
-    private val testBook =
-        Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
+    private val saleDB = Database.saleDatabase(ApplicationProvider.getApplicationContext())
+
+    private val testUser = LoggedUser("301966", "Le givre")
+    
+    private val testBook = TestBookProvider.getBook("9781985086593").get()!!
 
     private val dummySale: Sale = Sale(
         testBook,
         testUser,
         500f,
         WORN,
-        Timestamp.now(),
+        Date(),
         RETRACTED,
         null
     )
@@ -67,7 +77,7 @@ class FBSaleDatabaseTest {
     fun t_searchByTitle() {
         val sale1 = saleDB.addSale(dummySale).get()
         val sale2 =
-            saleDB.addSale(dummySale.copy(book = Book("9782376863069", null, "title", null, null, null, null, null))).get()
+            saleDB.addSale(dummySale.copy(book = TestBookProvider.getBook("9782376863069").get()!!)).get()
         val sales = saleDB.querySales().searchByTitle(dummySale.book.title).getAll().get()
         assertTrue(sales.contains(sale1))
         assertFalse(sales.contains(sale2))
@@ -246,7 +256,7 @@ class FBSaleDatabaseTest {
 
         val sale = saleDB.addSale(
             testBook.isbn,
-            LoggedUser(300437, "testUser"),
+            LoggedUser("300437", "testUser"),
             666f,
             WORN,
             RETRACTED,
@@ -289,7 +299,7 @@ class FBSaleDatabaseTest {
                     LocalUser,
                     666f,
                     WORN,
-                    Timestamp.now(),
+                    Date(),
                     RETRACTED,
                     null
                 )
@@ -410,6 +420,27 @@ class FBSaleDatabaseTest {
         saleDB.deleteSale(saleRetractedGood)
         saleDB.deleteSale(saleActiveWorn)
         saleDB.deleteSale(saleActiveGood)
+    }
+
+    @Test
+    fun orderingsWork() {
+        val sales = TestBookProvider.books.values.mapIndexed {index, book ->
+            Thread.sleep(10)
+            saleDB.addSale(dummySale.copy(book = book, price = 3f + index.toFloat())).get()
+        }
+
+        val titleDec = saleDB.querySales().withOrdering(SaleOrdering.TITLE_DEC).getAll().get()
+        val titleInc = saleDB.querySales().withOrdering(SaleOrdering.TITLE_INC).getAll().get()
+        val priceDec = saleDB.querySales().withOrdering(SaleOrdering.PRICE_DEC).getAll().get()
+        val priceInc = saleDB.querySales().withOrdering(SaleOrdering.PRICE_INC).getAll().get()
+        val publishDec = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_DEC).getAll().get()
+        val publishInc = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_INC).getAll().get()
+
+        assertEquals(titleDec, titleInc.reversed())
+        assertEquals(priceDec, priceInc.reversed())
+        assertEquals(publishDec, publishInc.reversed())
+
+        sales.forEach { saleDB.deleteSale(it).get() }
     }
 
 }

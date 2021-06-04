@@ -4,9 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
-import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.unwrapException
-import com.google.firebase.Timestamp
+import com.github.polybooks.core.ISBN
+import com.github.polybooks.utils.*
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -14,6 +13,8 @@ import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.lang.UnsupportedOperationException
+
 
 // TODO add to/create listOf as we discover new fields
 private val TITLE_FIELD_NAMES = listOf("title", "full_title")
@@ -34,34 +35,13 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 
 /**
  * An implementation of a book database based on the Open Library online database
- * !! DO NOT INSTANTIATE THIS CLASS unless you are writing a BookDatabase implementation.
  * */
-class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>): BookDatabase {
+object OLBookDatabase: BookProvider {
 
-    override fun queryBooks(): BookQuery = OLBookQuery()
+    override fun getBook(isbn: String): CompletableFuture<Book?> {
+        val regularised = regulariseISBN(isbn) ?: throw IllegalArgumentException("ISBN cannot be regularised")
+        val url = isbn2URL(regularised)
 
-    private inner class OLBookQuery: AbstractBookQuery() {
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getAll(): CompletableFuture<List<Book>> {
-            return if (isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
-            else {
-                val futures = isbns!!.map { getBookByISBN(it) }
-                listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
-            }
-        }
-
-    }
-
-    //makes an URL to the OpenLibrary page out of an isbn
-    private fun isbn2URL(isbn: String): String {
-        return "$OL_BASE_ADDR/isbn/$isbn.json"
-    }
-
-    private val errorMessage = "Cannot parse OpenLibrary book because : "
-
-    private fun getBookByISBN(isbn: String): CompletableFuture<Book?> {
-        val url = isbn2URL(isbn)
         return url2json(url)
             .thenApply { parseBook(it) }
             .thenCompose { updateBookWithAuthorName(it) }
@@ -74,6 +54,26 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             }
     }
 
+    override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
+        val regularised = isbns.map { regulariseISBN(it) ?: throw IllegalArgumentException("ISBN cannot be regularised") }
+        val futures = regularised.toSet().map { getBook(it) }
+        return listOfFuture2FutureOfList(futures).thenApply {
+            val books = it.filterNotNull()
+            return@thenApply order(books, ordering)
+        }
+    }
+
+    override fun addBook(book: Book): CompletableFuture<Unit> {
+        // Can't add books to OpenLibrary
+        return CompletableFuture.completedFuture(Unit)
+    }
+
+    //makes an URL to the OpenLibrary page out of an isbn
+    private fun isbn2URL(isbn: String): String {
+        return "$OL_BASE_ADDR/isbn/$isbn.json"
+    }
+
+    private val errorMessage = "Cannot parse OpenLibrary book because : "
 
     //takes a book that has the authors in the form /authors/<authorID>
     //and fetches the actual name of the author
@@ -203,16 +203,16 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun parsePublishDate(jsonPublishDate: JsonElement): Timestamp {
+    private fun parsePublishDate(jsonPublishDate: JsonElement): Date {
         val dateString = asString(jsonPublishDate)
         val dateFormat1 = SimpleDateFormat(DATE_FORMAT)
         val dateFormat2 = SimpleDateFormat(DATE_FORMAT2)
         dateFormat1.isLenient = false
         dateFormat2.isLenient = false
         return try {
-            Timestamp(dateFormat1.parse(dateString)!!)
+            dateFormat1.parse(dateString)!!
         } catch (e: java.text.ParseException) {
-            Timestamp(dateFormat2.parse(dateString)!!)
+            dateFormat2.parse(dateString)!!
         }
     }
 

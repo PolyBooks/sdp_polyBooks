@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="com.google.android.things.permission.MANAGE_GNSS_DRIVERS"/>
 
     <application
         android:allowBackup="true"
@@ -17,6 +19,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyBooks">
+
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -28,6 +33,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" />
 
         <activity
             android:name=".activities.AddSaleActivity"
@@ -41,37 +49,41 @@
             android:name=".activities.FillSaleActivity"
             android:parentActivityName=".activities.AddSaleActivity"/>
 
-        <activity
-            android:name=".activities.TakeBookPictureActivity"
-            android:parentActivityName=".activities.FillSaleActivity"/>
+        <activity android:name=".activities.UserProfileActivity"
+            android:parentActivityName=".activities.MainActivity"/>
 
-
-
-        <activity
-            android:name=".activities.LoginActivity"
+        <activity android:name=".activities.FilteringSalesActivity"
             android:parentActivityName=".activities.MainActivity"/>
 
         <activity
-            android:name=".activities.UserProfileActivity"
+            android:name=".activities.TakeBookPictureActivity"
+            android:parentActivityName=".activities.FillSaleActivity"/>
+      
+        <activity
+            android:name=".activities.EditUserInterestsActivity"
+            android:parentActivityName=".activities.UserProfileActivity"/>
+
+        <activity
+            android:name=".activities.FilteringBooksActivity"
+            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name=".activities.GPSActivity"
+            android:parentActivityName="activities.MainActivity"/>
+        <activity
+            android:name=".activities.LoginActivity"
             android:parentActivityName=".activities.MainActivity"/>
 
         <activity
             android:name=".activities.RegisterActivity"
             android:parentActivityName="activities.MainActivity"/>
 
-
-        <activity
-            android:name=".activities.FilteringSalesActivity"
-            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.ListBooksActivity"
             android:parentActivityName=".activities.MainActivity" />
+
         <activity
             android:name=".activities.ListSalesActivity"
             android:parentActivityName=".activities.FilteringSalesActivity" />
-        <activity
-            android:name=".activities.FilteringBooksActivity"
-            android:parentActivityName=".activities.MainActivity"/>
 
         <activity
             android:name=".activities.SaleInformationActivity"

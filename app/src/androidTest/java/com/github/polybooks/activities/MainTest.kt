@@ -25,7 +25,6 @@ class MainTest {
 
     @Before
     fun before() {
-        //BaristaSleepInteractions.sleep(2, TimeUnit.SECONDS)
         Intents.init()
     }
 
@@ -56,9 +55,10 @@ class MainTest {
         onView(withId(R.id.log_button)).perform(click())
         intended(hasComponent(LoginActivity::class.java.name))
     }
-
+    
     @Test
     fun sellButton() {
+
         onView(withId(R.id.signup_button)).perform(click())
         onView(withId(R.id.username_field)).perform(
             scrollTo(),
@@ -87,7 +87,7 @@ class MainTest {
         onView(withId(R.id.signup_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.log_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.sell_button)).perform(click())
-        Firebase.auth.currentUser.delete()
+        Firebase.auth.currentUser?.delete()
     }
 
     @Test
@@ -147,3 +147,5 @@ class MainTest {
     }
 
 }
+
+// bug test

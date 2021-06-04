@@ -14,7 +14,9 @@ import com.github.polybooks.core.Book
 import com.github.polybooks.core.BookCondition
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.SaleState
+import com.github.polybooks.database.BookDatabase
 import com.github.polybooks.database.Database
+import com.github.polybooks.database.SaleDatabase
 import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
 import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
@@ -23,6 +25,8 @@ import com.github.polybooks.utils.StringsManip.listAuthorsToString
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.setupNavbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.text.DateFormat
 import java.util.concurrent.CompletableFuture
 
@@ -32,10 +36,10 @@ import java.util.concurrent.CompletableFuture
  * shows the retrieved data, but does not allow modification of it, only confirmation,
  * and offers some additional manual fields such as price, condition, etc.
  */
-class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class FillSaleActivity: AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private val bookDB = Database.bookDatabase
-    private val salesDB = Database.saleDatabase
+    private lateinit var bookDB: BookDatabase
+    private lateinit var salesDB: SaleDatabase
 
     private val dateFormat: DateFormat = DateFormat.getDateInstance(DateFormat.LONG)
 
@@ -48,6 +52,9 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_sale)
+
+        bookDB = Database.bookDatabase(applicationContext)
+        salesDB = Database.saleDatabase(applicationContext)
 
         // Get the Intent that started this activity and extract the strings
         val intent = intent
@@ -62,14 +69,15 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // Check if ISBN in our database
 
         // Retrieve book data and display it if possible, else redirect with error toast
-        if(stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
+        if (stringISBN.isNotEmpty() && isbnHasCorrectFormat(stringISBN)) {
             try {
                 bookFuture = bookDB.getBook(stringISBN)
-                val book = bookFuture.get()
-                if (book != null) {
-                    fillBookData(book)
-                } else {
-                    redirectToAddSaleWithToast(getString(R.string.no_ISBN_match))
+                bookFuture.thenAccept { book ->
+                    if (book != null) {
+                        fillBookData(book)
+                    } else {
+                        redirectToAddSaleWithToast(getString(R.string.no_ISBN_match))
+                    }
                 }
             } catch (e: Exception) {
                 redirectToAddSaleWithToast(getString(R.string.error))
@@ -77,8 +85,6 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         } else {
             redirectToAddSaleWithToast(getString(R.string.missing_ISBN))
         }
-
-
         // Drop-down menu for condition
         val spinner: Spinner = findViewById(R.id.filled_condition)
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -125,7 +131,7 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         // findViewById<TextView>(R.id.filled_language).apply { text = book.language ?: "" }
         findViewById<TextView>(R.id.filled_publisher).apply { text = book.publisher ?: "" }
         findViewById<TextView>(R.id.filled_publish_date).apply {
-            text = dateFormat.format(book.publishDate!!.toDate()) ?: ""
+            text = dateFormat.format(book.publishDate!!) ?: ""
         }
         // TODO whole lines could be removed from UI (visibility = View.GONE) when argument is null instead of placeholding with default value
         findViewById<TextView>(R.id.filled_format).apply { text = book.format ?: "" }
@@ -151,18 +157,20 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             message,
             Toast.LENGTH_LONG
         ).show()
-        // TODO only enable redirect on release build variant because it causes tests to fail (don't redirect on test/debug builds)
-        /*
+
         val intent = Intent(this, AddSaleActivity::class.java)
         startActivity(intent)
-         */
+
     }
 
     fun takePicture(view: View) {
         val intent = Intent(this, TakeBookPictureActivity::class.java).apply {
             val extras = Bundle()
             extras.putString(EXTRA_ISBN, stringISBN)
-            extras.putString(EXTRA_SALE_PRICE, findViewById<EditText>(R.id.filled_price).text.toString())
+            extras.putString(
+                EXTRA_SALE_PRICE,
+                findViewById<EditText>(R.id.filled_price).text.toString()
+            )
             putExtras(extras)
         }
         startActivity(intent)
@@ -174,14 +182,16 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
      * (i.e. book, condition, user, price, date)
      */
     fun confirmSale(view: View) {
+        Firebase.auth.currentUser?.let {
         salesDB.addSale(
             bookISBN = bookFuture.get()!!.isbn,
-            seller = LoggedUser(123456, "Alice"), //TODO handle real User
+            seller = LoggedUser(it.uid, it.displayName), //TODO handle real User
             price = findViewById<EditText>(R.id.filled_price).text.toString().toFloat(),
             condition = bookConditionSelected!!,
             state = SaleState.ACTIVE,
             image = null // TODO
         )
+        }
         //TODO handle success or failure of the addSale
 
         // TODO determine to which activity we land, but probably not MainActivity but rather a confirmation page
@@ -190,7 +200,9 @@ class FillSaleActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     private fun handleConfirmButton() {
-        if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString().isNotEmpty()) {
+        if (bookConditionSelected != null && findViewById<EditText>(R.id.filled_price).text.toString()
+                .isNotEmpty()
+        ) {
             enableButton(findViewById(R.id.confirm_sale_button), applicationContext)
         } else {
             disableButton(findViewById(R.id.confirm_sale_button), applicationContext)

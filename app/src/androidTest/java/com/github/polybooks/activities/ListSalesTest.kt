@@ -1,52 +1,61 @@
 package com.github.polybooks.activities
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
+
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
+import com.github.polybooks.activities.SaleInformationActivity.Companion.EXTRA_SALE_INFORMATION
 import com.github.polybooks.core.*
 import com.github.polybooks.database.Database
-import com.google.firebase.Timestamp
+import com.github.polybooks.database.TestBookProvider
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertCustomAssertionAtPosition
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertDisplayedAtPosition
 import com.schibsted.spain.barista.assertion.BaristaListAssertions.assertListItemCount
+import com.schibsted.spain.barista.interaction.BaristaListInteractions.clickListItem
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
+import java.util.*
 
 
 class ListSalesTest {
-    private val saleDB = Database.saleDatabase
 
+    private val saleDB = Database.saleDatabase(ApplicationProvider.getApplicationContext())
 
     class SaleActivityRule: TestWatcher() {
 
-        private val testUser = LoggedUser(301966, "Le givre")
+        private val testUser = LoggedUser("301966", "Le givre")
         private val testBook =
-            Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
+            TestBookProvider.getBook("9780156881807").get()!!
 
         private val dummySale: Sale = Sale(
             testBook,
             testUser,
             500f,
             BookCondition.WORN,
-            Timestamp.now(),
+            Date(),
             SaleState.ACTIVE,
             null
         )
 
         private lateinit var a :ActivityScenario<ListSalesActivity>
         override fun starting(description: Description?) {
-            Database.saleDatabase.addSale(dummySale).get()
+            Database.saleDatabase(ApplicationProvider.getApplicationContext()).addSale(dummySale).get()
             a = ActivityScenario.launch(ListSalesActivity::class.java)
         }
 
@@ -61,6 +70,7 @@ class ListSalesTest {
 
     @Before
     fun before() {
+        saleDB.listAllSales().thenApply { list -> list.forEach{sale -> saleDB.deleteSale(sale)} }.get()
         Intents.init()
     }
 
@@ -79,6 +89,18 @@ class ListSalesTest {
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_price, "500.00")
         assertDisplayedAtPosition(R.id.recyclerView, 0, R.id.text_view_author, "Molière")
         assertCustomAssertionAtPosition(R.id.recyclerView, 0, R.id.text_view_edition, matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun clickOnSaleIsCorrect(){
+        Thread.sleep(2000)
+        clickListItem(R.id.recyclerView, 0)
+        intended(
+            allOf(
+                hasComponent(SaleInformationActivity::class.java.name),
+                hasExtraWithKey(EXTRA_SALE_INFORMATION)
+            ) )
+
     }
 
     @Test

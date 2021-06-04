@@ -1,31 +1,39 @@
 package com.github.polybooks.activities
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.adapter.database.SalesAdapter
+
 import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.Database
-import com.github.polybooks.database.Query
+import com.github.polybooks.database.SaleDatabase
 import com.github.polybooks.database.SaleSettings
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.CompletableFuture
 
 /**
  * Activity to list all active sales
  */
 class ListSalesActivity: ListActivity<Sale>() {
 
-    private val salesDB = Database.saleDatabase
+    private lateinit var salesDB: SaleDatabase
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        salesDB = Database.saleDatabase(applicationContext)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun adapter(list: List<Sale>): RecyclerView.Adapter<*> {
         return SalesAdapter(list)
     }
 
     override fun setNavBar() {
-        val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
+        val navBarListener: BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.home -> {
@@ -43,16 +51,16 @@ class ListSalesActivity: ListActivity<Sale>() {
                     else -> true
                 }
             }
-            setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
+        setupNavbar(findViewById(R.id.bottom_navigation), this, R.id.sales, navBarListener)
     }
 
-    override fun getQuery(): Query<Sale> {
+    override fun getElements(): CompletableFuture<List<Sale>> {
         return intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
             ?.let {
                 salesDB.querySales()
-                    .fromSettings(it as SaleSettings)
+                    .fromSettings(it as SaleSettings).getAll()
             }
-            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE))
+            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE)).getAll()
     }
 
     override fun onFilterButtonClick() {
