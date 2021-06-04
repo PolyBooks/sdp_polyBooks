@@ -5,10 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
-import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.regulariseISBN
-import com.github.polybooks.utils.unwrapException
-import com.github.polybooks.utils.url2json
+import com.github.polybooks.utils.*
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -16,6 +13,8 @@ import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.lang.UnsupportedOperationException
+
 
 // TODO add to/create listOf as we discover new fields
 private val TITLE_FIELD_NAMES = listOf("title", "full_title")
@@ -42,6 +41,7 @@ object OLBookDatabase: BookProvider {
     override fun getBook(isbn: String): CompletableFuture<Book?> {
         val regularised = regulariseISBN(isbn) ?: throw IllegalArgumentException("ISBN cannot be regularised")
         val url = isbn2URL(regularised)
+
         return url2json(url)
             .thenApply { parseBook(it) }
             .thenCompose { updateBookWithAuthorName(it) }
@@ -57,11 +57,14 @@ object OLBookDatabase: BookProvider {
     override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
         val regularised = isbns.map { regulariseISBN(it) ?: throw IllegalArgumentException("ISBN cannot be regularised") }
         val futures = regularised.toSet().map { getBook(it) }
-        return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
+        return listOfFuture2FutureOfList(futures).thenApply {
+            val books = it.filterNotNull()
+            return@thenApply order(books, ordering)
+        }
     }
 
     override fun addBook(book: Book): CompletableFuture<Unit> {
-        //Can't add books to OpenLibrary
+        // Can't add books to OpenLibrary
         return CompletableFuture.completedFuture(Unit)
     }
 

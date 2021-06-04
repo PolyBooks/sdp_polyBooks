@@ -43,4 +43,5 @@ enum class BookFields(val fieldName: String) {
     PUBLISHER("publisher"),
     PUBLISHDATE("publishDate"),
     FORMAT("format"),
+    PICTUREFILENAME("pictureFileName")
 }
