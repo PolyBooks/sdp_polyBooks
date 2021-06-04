@@ -11,6 +11,7 @@ import com.github.polybooks.R
 import com.github.polybooks.utils.GlobalVariables.EXTRA_USERNAME
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -21,9 +22,9 @@ class UserProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_user_profile)
 
         val username = intent.getStringExtra(EXTRA_USERNAME)
-        val welcomeText = "Hello $username !"
-
         val uid = intent.getStringExtra(EXTRA_MESSAGE2)
+
+        val welcomeText = "Hello $username ! \n Your UID: $uid"
 
         findViewById<Button>(R.id.switch_loca).setOnClickListener {
             val intent = Intent(this, GPSActivity::class.java).apply {
