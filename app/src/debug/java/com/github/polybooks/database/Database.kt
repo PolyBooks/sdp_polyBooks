@@ -61,7 +61,7 @@ private class CompleteBookDatabase(context: Context): BookDatabase {
     override fun getBooks(
         isbns: Collection<ISBN>,
         ordering: BookOrdering
-    ): CompletableFuture<List<Book>> = provider.getBooks(isbns)
+    ): CompletableFuture<List<Book>> = provider.getBooks(isbns, ordering)
 
     override fun addBook(book: Book): CompletableFuture<Unit> = provider.addBook(book)
 
