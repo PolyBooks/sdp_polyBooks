@@ -50,7 +50,7 @@ object AdapterFactory {
     /**
      * Create an instantiate an adapter to filter by Course
      *
-     * @see SaleQuery.onlyIncludeInterests
+     * @see SaleQuery.searchByInterests
      * @see BookQuery.onlyIncludeInterests
      */
     fun courseInterestAdapter(): ParameterAdapter<Course> {
@@ -60,7 +60,7 @@ object AdapterFactory {
     /**
      * Create an instantiate an adapter to filter by Semester
      *
-     * @see SaleQuery.onlyIncludeInterests
+     * @see SaleQuery.searchByInterests
      * @see BookQuery.onlyIncludeInterests
      */
     fun semesterInterestAdapter(): ParameterAdapter<Semester> {
@@ -70,7 +70,7 @@ object AdapterFactory {
     /**
      * Create an instantiate an adapter to filter by Semester
      *
-     * @see SaleQuery.onlyIncludeInterests
+     * @see SaleQuery.searchByInterests
      * @see BookQuery.onlyIncludeInterests
      */
     fun fieldInterestAdapter(): ParameterAdapter<Field> {

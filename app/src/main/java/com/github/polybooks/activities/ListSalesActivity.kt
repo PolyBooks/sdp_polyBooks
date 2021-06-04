@@ -10,8 +10,8 @@ import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState
 import com.github.polybooks.database.Database
 import com.github.polybooks.database.SaleDatabase
-import com.github.polybooks.database.SaleSettings
-import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
+import com.github.polybooks.database.SaleQuery
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.concurrent.CompletableFuture
@@ -55,12 +55,11 @@ class ListSalesActivity: ListActivity<Sale>() {
     }
 
     override fun getElements(): CompletableFuture<List<Sale>> {
-        return intent.getSerializableExtra(EXTRA_SALE_QUERY_SETTINGS)
+        return intent.getSerializableExtra(EXTRA_SALE_QUERY)
             ?.let {
-                salesDB.querySales()
-                    .fromSettings(it as SaleSettings).getAll()
+                salesDB.execute(it as SaleQuery)
             }
-            ?: salesDB.querySales().searchByState(setOf(SaleState.ACTIVE)).getAll()
+            ?: salesDB.execute(SaleQuery(states = listOf(SaleState.ACTIVE)))
     }
 
     override fun onFilterButtonClick() {
