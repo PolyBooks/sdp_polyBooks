@@ -6,8 +6,6 @@ import com.github.polybooks.utils.FieldWithName
 import com.google.firebase.Timestamp
 import java.io.Serializable
 
-typealias Image = android.media.Image
-
 /**
  * The Sale class contains all the information about a book on sale.
  * @property book The isbn13 of the book that is being sold
@@ -25,7 +23,7 @@ data class Sale(
     val condition : BookCondition,
     val date : Timestamp?, // TODO remove nullable when timestamp serialization situation will be resolved
     val state : SaleState,
-    val image : Image?
+    val image : String?
 ) : Serializable
 
 

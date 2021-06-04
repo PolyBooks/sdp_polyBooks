@@ -29,7 +29,7 @@ interface SaleDatabase {
      * @param price the price of the sale
      * @param condition the condition of the book
      * @param state the state of the sale
-     * @param image the image describing the book being sold
+     * @param string the image describing the book being sold
      * @return a future containing the sale created and added to the database
      */
     fun addSale(bookISBN : ISBN,
@@ -37,7 +37,7 @@ interface SaleDatabase {
                 price : Float,
                 condition : BookCondition,
                 state : SaleState,
-                image : Image?) : CompletableFuture<Sale>
+                image : String?) : CompletableFuture<Sale>
 
     /**
      * Add a sale defined by the attributes of the given sale.

@@ -238,7 +238,7 @@ class FBSaleDatabase(private val bookDatabase : BookDatabase) : SaleDatabase {
                          price : Float,
                          condition : BookCondition,
                          state : SaleState,
-                         image : Image?) : CompletableFuture<Sale> {
+                         image : String?) : CompletableFuture<Sale> {
 
         if(seller == LocalUser) {
             val future = CompletableFuture<Sale>()
