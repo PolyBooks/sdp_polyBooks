@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
+import com.github.polybooks.activities.EXTRA_MESSAGE2
 import com.github.polybooks.activities.UserProfileActivity
 import com.github.polybooks.utils.GlobalVariables.EXTRA_USERNAME
 import com.google.firebase.auth.FirebaseUser
@@ -11,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser
 fun updateUI(user: FirebaseUser?, origin: Context) {
     if(user != null) {
         val intent = Intent(origin, UserProfileActivity::class.java).apply {
+            putExtra(EXTRA_MESSAGE2, user.uid)
             putExtra(EXTRA_USERNAME, user.displayName)
         }
         startActivity(origin, intent, null)

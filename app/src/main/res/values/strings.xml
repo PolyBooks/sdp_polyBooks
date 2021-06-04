@@ -101,6 +101,9 @@
     <string name="sell">Sell</string>
     <string name="view_all_books">View all books</string>
     <string name="filter">Filter</string>
+    <string name="search">SEARCH</string>
+    <string name="uid">UID</string>
+    <string name="locate_a_user">Locate a user</string>
 
     <!-- Toasts -->
     <string name="error">An error occurred, please try again</string>
@@ -197,4 +200,8 @@
     <string name="internet_price">Internet price</string>
     <string name="image_description_favorite">Image of the favorite icon (star)</string>
     <string name="image_description_cart">Image of the cart icon (bag)</string>
+    <string name="locate">locate</string>
+    <string name="allow_user_to_locate_me">Allow user to locate me</string>
+    <string name="seller">Seller:</string>
+    <string name="seller_name">Seller_name</string>
 </resources>
