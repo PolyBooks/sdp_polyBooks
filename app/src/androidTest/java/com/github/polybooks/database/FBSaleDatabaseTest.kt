@@ -179,11 +179,6 @@ class FBSaleDatabaseTest {
         val sale2 = saleDB.addSale(dummySale.copy(condition = WORN)).get()
         val sale3 = saleDB.addSale(dummySale.copy(condition = NEW)).get()
 
-        assertSame(
-            saleDB.execute(SaleQuery()).get(),
-            saleDB.execute(SaleQuery(conditions = emptyList())).get()
-        )
-
         val salesWorn = saleDB.execute(SaleQuery(conditions = listOf(WORN))).get()
         assertTrue(salesWorn.all { it.condition == WORN })
         assertTrue(salesWorn.contains(sale2))
@@ -209,11 +204,6 @@ class FBSaleDatabaseTest {
         val sale1 = saleDB.addSale(dummySale.copy(state = ACTIVE)).get()
         val sale2 = saleDB.addSale(dummySale.copy(state = RETRACTED)).get()
         val sale3 = saleDB.addSale(dummySale.copy(state = CONCLUDED)).get()
-
-        assertSame(
-            saleDB.execute(SaleQuery()).get(),
-            saleDB.execute(SaleQuery(states = emptyList())).get()
-        )
 
         val salesActive = saleDB.execute(SaleQuery(states = listOf(ACTIVE))).get()
         assertTrue(salesActive.all { it.state == ACTIVE })
