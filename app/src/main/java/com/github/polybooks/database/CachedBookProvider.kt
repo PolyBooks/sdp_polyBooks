@@ -3,6 +3,7 @@ package com.github.polybooks.database
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.utils.listOfFuture2FutureOfList
+import com.github.polybooks.utils.regulariseISBN
 import java.util.concurrent.CompletableFuture
 
 
@@ -18,10 +19,11 @@ class CachedBookProvider(private val backing: BookProvider, private val cache: B
         isbns: Collection<ISBN>,
         ordering: BookOrdering
     ): CompletableFuture<List<Book>> {
-        val booksFromCacheFuture = cache.getBooks(isbns)
+        val regularised = isbns.mapNotNull { regulariseISBN(it) }
+        val booksFromCacheFuture = cache.getBooks(regularised)
         return booksFromCacheFuture.thenCompose { booksFromCache ->
             val isbnsFound = booksFromCache.map { it.isbn }
-            val remainingISBNs = isbns.minus(isbnsFound)
+            val remainingISBNs = regularised.minus(isbnsFound)
             val booksFromBackingFuture = backing.getBooks(remainingISBNs)
             val allBooksFuture = booksFromBackingFuture.thenApply { booksFromBacking ->
                 booksFromBacking + booksFromCache

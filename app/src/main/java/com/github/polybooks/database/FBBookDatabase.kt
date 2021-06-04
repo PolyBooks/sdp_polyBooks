@@ -1,6 +1,7 @@
 package com.github.polybooks.database
 
 import com.github.polybooks.core.*
+import com.github.polybooks.utils.regulariseISBN
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import java.text.SimpleDateFormat
@@ -100,9 +101,10 @@ object FBBookDatabase: BookDatabase {
         isbns: Collection<ISBN>,
         ordering: BookOrdering
     ): CompletableFuture<List<Book>> {
-        if (isbns.isEmpty()) return CompletableFuture.completedFuture(listOf())
+        val regularised = isbns.mapNotNull { regulariseISBN(it) }
+        if (regularised.isEmpty()) return CompletableFuture.completedFuture(listOf())
         val future = CompletableFuture<List<Book>>()
-        bookRef.whereIn(FieldPath.documentId(), isbns.toList())
+        bookRef.whereIn(FieldPath.documentId(), regularised.toList())
             .get().addOnSuccessListener { bookEntries ->
                 val books = bookEntries.map { bookEntry ->
                     snapshotEntryToBook(bookEntry)

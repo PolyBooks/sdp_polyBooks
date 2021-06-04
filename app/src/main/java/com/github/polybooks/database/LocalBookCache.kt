@@ -3,6 +3,7 @@ package com.github.polybooks.database
 import android.content.Context
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
+import com.github.polybooks.utils.regulariseISBN
 import java.io.*
 import java.util.concurrent.CompletableFuture
 
@@ -26,7 +27,8 @@ class LocalBookCache(context: Context): BookProvider {
         ordering: BookOrdering
     ): CompletableFuture<List<Book>> {
         return CompletableFuture.supplyAsync {
-            val filesToGet = isbns.map { fileForBook(it) }
+            val regularised = isbns.mapNotNull { regulariseISBN(it) }
+            val filesToGet = regularised.map { fileForBook(it) }
             val bookFiles = booksDir.listFiles { file: File -> filesToGet.contains(file) }!!
             bookFiles.map { deserialize(it) }
         }
