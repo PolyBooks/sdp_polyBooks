@@ -3,9 +3,8 @@
  * */
 package com.github.polybooks.core
 
-
+import java.util.Date
 import java.io.Serializable
-import java.util.*
 
 typealias ISBN = String
 
@@ -44,6 +43,5 @@ enum class BookFields(val fieldName: String) {
     PUBLISHER("publisher"),
     PUBLISHDATE("publishDate"),
     FORMAT("format"),
-    PICTUREFILENAME("pictureFileName"),
-    RATING("rating")
+    PICTUREFILENAME("pictureFileName")
 }

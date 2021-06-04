@@ -7,7 +7,6 @@ import com.github.polybooks.core.*
 import junit.framework.AssertionFailedError
 import org.junit.*
 import org.junit.Assert.*
-import java.io.FileNotFoundException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -16,13 +15,15 @@ class FBBookDatabaseTest {
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     private val firestore = FirebaseProvider.getFirestore()
-    private val fbBookDB = Database.bookDatabase
+    private val fbBookDB = FBBookDatabase
 
-    //the OL book database wont return any useful information. will need to use firebase :)
-    private val fbWithoutOL =
-        FBBookDatabase(OLBookDatabase {
-            CompletableFuture.supplyAsync { throw FileNotFoundException() }
-        })
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun initDB() {
+            TestBookProvider.books.values.forEach { book -> FBBookDatabase.addBook(book) }
+        }
+    }
 
     @Before
     fun setUp() {
@@ -49,9 +50,18 @@ class FBBookDatabaseTest {
     }
 
     @Test
+    fun canGetBookByISBN2() {
+        val future = fbBookDB.getBook("9780156881807")
+        val book = future.get() ?: throw AssertionFailedError("Book was not found")
+        val publishDate = Date(68, 0, 10)
+        assertEquals(publishDate, book.publishDate!!)
+    }
+
+
+    @Test
     fun canGetBookByTitle() {
-        fbBookDB.getBook("9780156881807").get() //insure at least one Tartuffe book is in the database
-        val future = fbBookDB.queryBooks().searchByTitle("Tartuffe").getAll()
+        fbBookDB.getBook("9780156881807").get() //ensure at least one Tartuffe book is in the database
+        val future = fbBookDB.searchByTitle("Tartuffe")
         val books = future.get()
         assertTrue(books.isNotEmpty())
         books.forEach {
@@ -63,54 +73,12 @@ class FBBookDatabaseTest {
     @Test
     fun canGetBookByTitle2() {
         fbBookDB.getBook("9781985086593").get() //insure at least one OSTEP book is in the database
-        val future = fbBookDB.queryBooks().searchByTitle("Operat").getAll()
+        val future = fbBookDB.searchByTitle("Operat")
         val books = future.get()
         assertTrue(books.isNotEmpty())
         books.forEach {
             assertTrue(it.title.contains("Operat"))
         }
-
-    }
-
-    @Test
-    fun usesFirebaseAsCache() {
-        //ensure the database had an opportunity to cache
-        val getBookWithRegularDB = fbBookDB.getBook("9782376863069").get()
-        val future = fbWithoutOL.getBook("9782376863069")
-        val book = future.get() ?: throw AssertionFailedError("Book was not cached")
-        assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn)
-        assertEquals("ACTUSF", book.publisher)
-        assertNotNull(book.authors)
-        assertEquals("paperback", book.format)
-        assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!)
-    }
-
-    @Test
-    fun usesFirebaseAsCache2() {
-        //ensure the database had an opportunity to cache
-        val getBookWithRegularDB = fbBookDB.getBook("9780156881807").get()
-        val future = fbWithoutOL.getBook("9780156881807")
-        val book = future.get() ?: throw AssertionFailedError("Book was not cached")
-    }
-
-    @Test
-    fun usesOpenLibraryWhenBookNotStored() {
-
-        fun deleteBook(isbn : String) : CompletableFuture<Unit> {
-            val future = CompletableFuture<Unit>()
-            firestore.collection("book")
-                .document(isbn).delete()
-                .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete $isbn")) }
-                .addOnSuccessListener { future.complete(Unit) }
-            return future
-        }
-
-        deleteBook("9782376863069").get()
-        val future = fbBookDB.getBook("9782376863069")
-        val book = future.get() ?: throw AssertionFailedError("Book was not fetched from OpenLibrary")
 
     }
 
@@ -134,14 +102,14 @@ class FBBookDatabaseTest {
             //Check it finds book associated with interest
             setInterests(testBook, listOf(interest)).get()
             val booksWithInterest1 =
-                fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
+                fbBookDB.searchByInterests(setOf(interest)).get()
             assertTrue("Should find $testBook when searching for $interest",
                 booksWithInterest1.any { it.isbn == testBook } )
 
             //Check it doesnt show book not associated with interest
             setInterests(testBook, listOf()).get()
             val booksWithInterest2 =
-                fbBookDB.queryBooks().onlyIncludeInterests(setOf(interest)).getAll().get()
+                fbBookDB.searchByInterests(setOf(interest)).get()
             assertTrue("Should not find $testBook when searching for $interest",
                 booksWithInterest2.none { it.isbn == testBook } )
         }
@@ -154,26 +122,9 @@ class FBBookDatabaseTest {
 
     }
 
-    @Ignore("This is a test for a feature that is not yet implemented")
-    @Test
-    fun isbn10alsoWorksWithoutOL() {
-        //ensure the database had an opportunity to cache
-        val getBookWithRegularDB = fbBookDB.getBook("2376863066").get()
-        val future = fbWithoutOL.getBook("2376863066")
-        val book = future.get() ?: throw AssertionFailedError("Firebase can't retrieve book with alternative ISBN")
-        assertEquals("Liavek", book.title)
-        assertEquals("9782376863069", book.isbn)
-        assertEquals("ACTUSF", book.publisher)
-        assertNotNull(book.authors)
-        assertEquals("paperback", book.format)
-        assertNotNull(book.publishDate)
-        val publishDate = Date(2020 -1900,6,3)
-        assertEquals(publishDate, book.publishDate!!)
-    }
-
     @Test
     fun wrongISBNyieldsEmptyList() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("1234567890666")).getAll()
+        val future = fbBookDB.getBooks(setOf("1234567890666"))
         val books = future.get()
 
         assertEquals(0, books.size)
@@ -181,26 +132,26 @@ class FBBookDatabaseTest {
 
     @Test
     fun getAllBooksDoesntCrash() {
-        fbBookDB.queryBooks().getAll().get()
+        fbBookDB.listAllBooks().get()
     }
 
     @Test
     fun getMultipleBooksWorks() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593")).getAll()
+        val future = fbBookDB.getBooks(setOf("9782376863069", "9781985086593"))
         val books = future.get()
         assertEquals(2, books.size)
     }
 
     @Test
     fun getMultipleBooksWorks2() {
-        val future = fbBookDB.queryBooks().searchByISBN(setOf("9782376863069", "9781985086593", "1234567890666")).getAll()
+        val future = fbBookDB.getBooks(setOf("9782376863069", "9781985086593", "1234567890666"))
         val books = future.get()
         assertEquals(2, books.size)
     }
 
     @Test
     fun searchByInterestDoesntCrash() {
-        val future = fbBookDB.queryBooks().onlyIncludeInterests(setOf(Field("Test"))).getAll()
+        val future = fbBookDB.searchByInterests(setOf(Field("Test")))
         val book = future.get()
     }
 
