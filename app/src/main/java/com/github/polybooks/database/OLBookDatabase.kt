@@ -16,6 +16,8 @@ import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.lang.UnsupportedOperationException
+
 
 // TODO add to/create listOf as we discover new fields
 private val TITLE_FIELD_NAMES = listOf("title", "full_title")
@@ -42,6 +44,7 @@ object OLBookDatabase: BookProvider {
     override fun getBook(isbn: String): CompletableFuture<Book?> {
         val regularised = regulariseISBN(isbn) ?: throw IllegalArgumentException("ISBN cannot be regularised")
         val url = isbn2URL(regularised)
+
         return url2json(url)
             .thenApply { parseBook(it) }
             .thenCompose { updateBookWithAuthorName(it) }
@@ -61,7 +64,7 @@ object OLBookDatabase: BookProvider {
     }
 
     override fun addBook(book: Book): CompletableFuture<Unit> {
-        //Can't add books to OpenLibrary
+        // Can't add books to OpenLibrary
         return CompletableFuture.completedFuture(Unit)
     }
 
