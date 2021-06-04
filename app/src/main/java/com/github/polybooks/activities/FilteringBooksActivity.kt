@@ -8,7 +8,7 @@ import android.widget.EditText
 import com.github.polybooks.R
 import com.github.polybooks.adapter.AdapterFactory
 import com.github.polybooks.core.Course
-import com.github.polybooks.core.Field
+import com.github.polybooks.core.Topic
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import com.github.polybooks.database.AllBooksQuery
@@ -37,7 +37,7 @@ class FilteringBooksActivity: FilteringActivity() {
 
     private lateinit var mSortParameter: Parameter<BookOrdering>
 
-    private lateinit var mFieldParameter: Parameter<Field>
+    private lateinit var mTopicParameter: Parameter<Topic>
     private lateinit var mCourseParameter: Parameter<Course>
     private lateinit var mSemesterParameter: Parameter<Semester>
 
@@ -65,7 +65,7 @@ class FilteringBooksActivity: FilteringActivity() {
 
         mCourseParameter.resetItemsViews()
         mSemesterParameter.resetItemsViews()
-        mFieldParameter.resetItemsViews()
+        mTopicParameter.resetItemsViews()
     }
 
     fun getResults(view: View) {
@@ -85,7 +85,7 @@ class FilteringBooksActivity: FilteringActivity() {
             AdapterFactory.bookSortingAdapter()
         )
 
-        mFieldParameter = Parameter(
+        mTopicParameter = Parameter(
             R.id.field_parameter,
             AdapterFactory.fieldInterestAdapter()
         )
@@ -108,7 +108,7 @@ class FilteringBooksActivity: FilteringActivity() {
         var query: BookQuery = AllBooksQuery()
 
         val interests: MutableSet<Interest> = mutableSetOf()
-        interests.addAll(mFieldParameter.getSelectedValues())
+        interests.addAll(mTopicParameter.getSelectedValues())
         interests.addAll(mSemesterParameter.getSelectedValues())
         interests.addAll(mCourseParameter.getSelectedValues())
 

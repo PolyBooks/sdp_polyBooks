@@ -76,7 +76,7 @@ class FilteringSalesTest {
         utils.performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter)
 
         utils.swup()
-        utils.performOnInterestParameter<Field>(FIELD, R.id.field_parameter)
+        utils.performOnInterestParameter<Topic>(FIELD, R.id.field_parameter)
         utils.performOnInterestParameter<Semester>(SEMESTER, R.id.semester_parameter)
         utils.performOnInterestParameter<Course>(COURSE, R.id.course_parameter)
     }
@@ -163,7 +163,7 @@ class FilteringSalesTest {
         utils.performOnEnumParameter(BookCondition.NEW, R.id.sale_condition_parameter, click())
 
         utils.swup()
-        utils.performOnInterestParameter<Field>(FIELD, R.id.field_parameter, click())
+        utils.performOnInterestParameter<Topic>(FIELD, R.id.field_parameter, click())
         utils.performOnInterestParameter<Semester>(SEMESTER, R.id.semester_parameter, click())
         utils.performOnInterestParameter<Course>(COURSE, R.id.course_parameter, click())
     }

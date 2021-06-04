@@ -4,38 +4,46 @@ import com.github.polybooks.core.*
 import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
 import com.google.firebase.firestore.SetOptions
 import java.util.concurrent.CompletableFuture
+import com.github.polybooks.utils.firebaseUserToUser
 
 private const val TAG: String = "FBInterestDatabase"
 
 // Names of the collections in Firestore
-private const val fieldCollection: String = "fieldInterest"
+private const val topicCollection: String = "topicInterest"
 private const val semesterCollection: String = "semesterInterest"
 private const val courseCollection: String = "courseInterest"
+private const val userCollection: String = "user"
+private const val interestsTopicName: String = "interests"
 
 /**
  * !! DO NOT INSTANTIATE THIS CLASS. Instead use Database.interestDatabase to access it !!
- * The chosen structure for firebase is one collection for field, one for semester and one for courses.
+ * The chosen structure for firebase is one collection for Topic, one for semester and one for courses.
  * Each of them will hold documents whose attribute is the name of the interest.
  * It might seem unnecessary to have 3 root level collections for interests,
  * but it is by far the best option if we potentially want each interest to hold the list of books and user associated with it
  * As each document will be able to have a book collection and a user collection.
+ *
  * Using snapshotListener here does not feel necessary as interests are rarely changing.
+ *
+ * There's one more user collection used by this class only to store the user interest when logged in.
+ * The current implementation is to store it as an array. The subset of selected interests per user should not
+ * be changing too often, nor be too large in most cases.
  */
 class FBInterestDatabase: InterestDatabase {
 
 
     /**
-     * Add a new field document to the fields collection
+     * Add a new Topic document to the Topics collection
      */
-    override fun addField(field: Field) : CompletableFuture<Field> {
-        val future = CompletableFuture<Field>()
+    override fun addTopic(topic: Topic) : CompletableFuture<Topic> {
+        val future = CompletableFuture<Topic>()
 
         FirebaseProvider.getFirestore()
-            .collection(fieldCollection)
-            .document(field.name)
-            .set(field, SetOptions.merge())
-            .addOnSuccessListener { future.complete(field) }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${field.name} into Database because of: $it")) }
+            .collection(topicCollection)
+            .document(topic.name)
+            .set(topic, SetOptions.merge())
+            .addOnSuccessListener { future.complete(topic) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${topic.name} into Database because of: $it")) }
 
 
         return future
@@ -65,69 +73,96 @@ class FBInterestDatabase: InterestDatabase {
 
         FirebaseProvider.getFirestore()
             .collection(courseCollection)
-            .document(course.name)
+            .document(course.courseName)
             .set(course, SetOptions.merge())
             .addOnSuccessListener { future.complete(course) }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${course.name} into Database because of: $it")) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert ${course.courseName} into Database because of: $it")) }
 
         return future
     }
 
     /**
-     * Remove a field
+     * Remove a Topic
      * Warning! If it has sub-collections they are currently not deleted
      * Deleting sub-collections is not implemented yet because we are not using sub-collections here.
      * A valid argument could also be that interests are very rarely removed
      * So it could be fine to removed them from the console (automatically deleting all the sub-collections)
      * Instead of using a function for it.
      */
-    fun removeField(field: Field) : CompletableFuture<Boolean>  {
+    fun removeTopic(topic: Topic) : CompletableFuture<Boolean>  {
         val future = CompletableFuture<Boolean>()
 
         FirebaseProvider.getFirestore()
-            .collection(fieldCollection)
-            .document(field.name)
+            .collection(topicCollection)
+            .document(topic.name)
             .delete()
             .addOnSuccessListener { future.complete(true) }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${field.name} because of: $it")) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${topic.name} because of: $it")) }
 
         return future
     }
 
     /**
-     * Remove a semester and all its potential sub-collections (users and books)
+     * Remove a semester
+     * Warning! If it has sub-collections they are currently not deleted
+     * Deleting sub-collections is not implemented yet because we are not using sub-collections here.
+     * A valid argument could also be that interests are very rarely removed
+     * So it could be fine to removed them from the console (automatically deleting all the sub-collections)
+     * Instead of using a function for it.
      */
     fun removeSemester(semester: Semester) : CompletableFuture<Boolean>  {
-        return TODO("maybe in the future, if needed")
+        val future = CompletableFuture<Boolean>()
+
+        FirebaseProvider.getFirestore()
+            .collection(semesterCollection)
+            .document(mergeSectionAndSemester(semester))
+            .delete()
+            .addOnSuccessListener { future.complete(true) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${mergeSectionAndSemester(semester)} because of: $it")) }
+
+        return future
     }
 
     /**
-     * Remove a course and all its potential sub-collections (users and books)
+     * Remove a course
+     * Warning! If it has sub-collections they are currently not deleted
+     * Deleting sub-collections is not implemented yet because we are not using sub-collections here.
+     * A valid argument could also be that interests are very rarely removed
+     * So it could be fine to removed them from the console (automatically deleting all the sub-collections)
+     * Instead of using a function for it.
      */
     fun removeCourse(course: Course) : CompletableFuture<Boolean>  {
-        return TODO("maybe in the future, if needed")
+        val future = CompletableFuture<Boolean>()
+
+        FirebaseProvider.getFirestore()
+            .collection(courseCollection)
+            .document(course.courseName)
+            .delete()
+            .addOnSuccessListener { future.complete(true) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not delete ${course.courseName} because of: $it")) }
+
+        return future
     }
 
 
     // TODO maybe add listAllBooksOfCourse(course), etc. and listAllUsersInterestedIn(interest) if relevant
-    // TODO Also addUserInterest() and removeUserInterest() instead of setUserInterest()
 
     /**
-     * List all the Fields in the database.
+     * List all the Topics in the database.
      * */
-    override fun listAllFields(): CompletableFuture<List<Field>> {
-        val future = CompletableFuture<List<Field>>()
+    override fun listAllTopics(): CompletableFuture<List<Topic>> {
+        val future = CompletableFuture<List<Topic>>()
 
         FirebaseProvider.getFirestore()
-            .collection(fieldCollection)
+            .collection(topicCollection)
             .get()
             .addOnSuccessListener { documentSnapshots ->
-                val fieldsList = documentSnapshots.map { snapshot ->
-                    Field(name = snapshot.get("name") as String)
+                val topicsList = documentSnapshots.map { snapshot ->
+                    Topic(name = snapshot.get("name") as String)
                 }
-                future.complete(fieldsList)
+                future.complete(topicsList)
             }
-            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not retrieve the list of all fields because of: $it")) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not retrieve the list of all Topics because of: $it")) }
 
         return future
     }
@@ -167,7 +202,7 @@ class FBInterestDatabase: InterestDatabase {
             .get()
             .addOnSuccessListener { documentSnapshots ->
                 val coursesList = documentSnapshots.map { snapshot ->
-                    Course(name = snapshot.get("name") as String)
+                    Course(courseName = snapshot.get("courseName") as String)
                 }
                 future.complete(coursesList)
             }
@@ -177,20 +212,122 @@ class FBInterestDatabase: InterestDatabase {
     }
 
     /**
-     * Get the interests of the specified user
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
+     * Get the interests of the current user
      * */
-    override fun getUserInterests(user: User): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
-        TODO("Not yet implemented")
+    override fun getCurrentUserInterests(): CompletableFuture<List<Interest>> {
+        val user = firebaseUserToUser(FirebaseProvider.getAuth().currentUser)
+        return if(user is LoggedUser) {
+            getLoggedUserInterests(user)
+        } else {
+            getLocalUserInterests()
+        }
     }
 
     /**
-     * Sets the interests of the specified user.
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
+     * Sets the interests of the current user.
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    override fun setUserInterests(user: User, interests: List<Interest>): CompletableFuture<Unit> {
-        TODO("Not yet implemented")
+    override fun setCurrentUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
+        val user = firebaseUserToUser(FirebaseProvider.getAuth().currentUser)
+        return if(user is LoggedUser) {
+            setLoggedUserInterests(user, interests)
+        } else {
+            setLocalUserInterests(interests)
+        }
     }
+
+    /**
+     * Do not call, rather use getCurrentUserInterests(), this is not private only for testing purposes
+     * Get the interests of the specified logged user
+     * */
+    fun getLoggedUserInterests(user: LoggedUser): CompletableFuture<List<Interest>> {
+        val future = CompletableFuture<List<Interest>>()
+
+        FirebaseProvider.getFirestore()
+            .collection(userCollection)
+            .document(user.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                   val mapList: List<Map<String, String>> = document.get(interestsTopicName) as List<Map<String, String>>
+                    val interestsList = mapList.map { interest ->
+                        when {
+                            interest.containsKey("name") -> {
+                                Topic(interest["name"] as String)
+                            }
+                            interest.containsKey("courseName") -> {
+                                Course(interest["courseName"] as String)
+                            }
+                            else -> {
+                                Semester(
+                                    section = interest["section"] as String,
+                                    semester = interest["semester"] as String
+                                )
+                            }
+                        }
+
+                    }
+                    future.complete(interestsList as List<Interest>)
+                } else {
+                    future.complete(emptyList())
+                }
+
+            }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Could not retrieve the list of all interests of user ${user.uid} because of: $it")) }
+
+        return future
+    }
+
+    /**
+     * Do not call, rather use setCurrentUserInterests(), this is not private only for testing purposes
+     * Sets the interests of the specified logged user.
+     * @return A Future to receive confirmation of success/failure asynchronously
+     * */
+    fun setLoggedUserInterests(user: LoggedUser, interests: List<Interest>): CompletableFuture<List<Interest>> {
+        val future = CompletableFuture<List<Interest>>()
+
+        val docData = hashMapOf(
+            interestsTopicName to interests
+        )
+        FirebaseProvider.getFirestore()
+            .collection(userCollection)
+            .document(user.uid)
+            .set(docData, SetOptions.merge())
+            .addOnSuccessListener { future.complete(interests) }
+            .addOnFailureListener { future.completeExceptionally(DatabaseException("Failed to insert $docData of user ${user.uid} into Database because of: $it")) }
+
+        return future
+    }
+
+
+    /**
+     * Get the interests of the current unlogged local user
+     * As the user is not auth, it will use exclusively the local storage.
+     * */
+    private fun getLocalUserInterests(): CompletableFuture<List<Interest>> {
+        val future = CompletableFuture<List<Interest>>()
+        /* With the current set-up of the cache wrapping the DB, we can afford to return an empty list here
+        and by doing so, local users can still benefit from the cache, without crashing the system when their cache is empty
+         */
+        future.complete(emptyList())
+        //future.completeExceptionally(LocalUserException("user needs to be logged in to get their interests"))
+        return future
+    }
+
+    /**
+     * Sets the interests of the current unlogged local user.
+     * As the user is not auth, it will use exclusively the local storage.
+     * @return A Future to receive confirmation of success/failure asynchronously
+     * */
+    private fun setLocalUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
+        val future = CompletableFuture<List<Interest>>()
+        /* With the current set-up of the cache wrapping the DB, we can afford to return an empty list here
+        and by doing so, local users can still benefit from the cache, without crashing the system when their cache is empty
+         */
+        future.complete(emptyList())
+        //future.completeExceptionally(LocalUserException("user needs to be logged in to set their interests to $interests"))
+        return future
+    }
+
 
 }

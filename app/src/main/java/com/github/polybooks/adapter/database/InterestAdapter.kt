@@ -1,5 +1,6 @@
 package com.github.polybooks.adapter.database
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,16 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.core.Interest
 import com.github.polybooks.database.Database
+import com.github.polybooks.database.UserInterestDBWithCache.getCachedUserInterests
+import com.github.polybooks.database.UserInterestDBWithCache.storeUserInterests
 import com.github.polybooks.utils.StringsManip.getName
-import com.github.polybooks.utils.firebaseUserToUser
-import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.CompletableFuture
 
-class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
+class InterestAdapter(private val context: Context): RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
 
-    private val user = firebaseUserToUser(FirebaseAuth.getInstance().currentUser)
-    private var userInterests = Database.interestDatabase.getUserInterests(user)
-        .thenApply { triple -> (triple.first + triple.second + triple.third).toSet() }
+    private lateinit var userInterests: CompletableFuture<Set<Interest>>
+
     private val interests: CompletableFuture<List<Interest>> =
         Database.interestDatabase.listAllInterests()
             .thenApply { triple -> triple.first + triple.second + triple.third }
@@ -27,6 +27,7 @@ class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InterestHolder {
+        userInterests = getCachedUserInterests(context).thenApply { list -> list.toSet() }
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.sortby_item, parent, false)
         return InterestHolder(v)
@@ -37,10 +38,10 @@ class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
         holder.button.text = getName(interest)
         holder.button.isChecked = selected(interest)
         holder.button.setOnClickListener {
-            if (selected(interest)) {
-                userInterests = userInterests.thenApply { i -> i.minusElement(interest) }
+            userInterests = if (selected(interest)) {
+                userInterests.thenApply { i -> i.minusElement(interest) }
             } else {
-                userInterests = userInterests.thenApply { i -> i.plusElement(interest) }
+                userInterests.thenApply { i -> i.plusElement(interest) }
             }
         }
     }
@@ -54,9 +55,6 @@ class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
     }
 
     fun updateUserInterests(): Unit {
-        Database.interestDatabase.setUserInterests(
-            user,
-            userInterests.get().toList()
-        )
+        storeUserInterests(context, userInterests.get().toList())
     }
 }

@@ -1,7 +1,7 @@
 package com.github.polybooks.utils
 
 import com.github.polybooks.core.Course
-import com.github.polybooks.core.Field
+import com.github.polybooks.core.Topic
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import java.util.*
@@ -42,9 +42,9 @@ object StringsManip {
         return if(interest is Semester){
             mergeSectionAndSemester(interest)
         } else if(interest is Course){
-            interest.name
+            interest.courseName
         } else {
-            (interest as Field).name
+            (interest as Topic).name
         }
     }
 

@@ -73,7 +73,7 @@ object AdapterFactory {
      * @see SaleQuery.onlyIncludeInterests
      * @see BookQuery.onlyIncludeInterests
      */
-    fun fieldInterestAdapter(): ParameterAdapter<Field> {
+    fun fieldInterestAdapter(): ParameterAdapter<Topic> {
         return InterestsParameterAdapter(VALUE_BUTTON, InterestsParameterAdapter.Interest.FIELD)
     }
 }

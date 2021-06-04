@@ -2,21 +2,22 @@ package com.github.polybooks.core
 
 /**
  * An Interest is something that can make a Book interesting for a user.
- * Interests can be Courses, Fields or Semesters.
+ * Interests can be Courses, Topics or Semesters.
  * */
 sealed class Interest
 
 /**
  * A course that a student can follow (e.g. COM-101)
- * @property name The identifier name of that course
+ * @property courseName The identifier name of that course
  * */
-data class Course(val name : String) : Interest()
+data class Course(val courseName : String) : Interest()
 
 /**
- * A field of study.
- * @property name The identifier name of that field
+ * A topic of interest, can be a field of study, or something more generic.
+ * @property name The identifier name of that topic
  * */
-data class Field(val name : String) : Interest()
+data class Topic(val name : String) : Interest()
+
 
 /**
  * Represents the pair section-semester a student can be in (e.g. IC BA6)

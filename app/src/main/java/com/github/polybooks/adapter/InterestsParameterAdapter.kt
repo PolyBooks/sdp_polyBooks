@@ -23,7 +23,7 @@ class InterestsParameterAdapter<T: Interest>(
         val setV = { values: Any -> setValues(values as List<T>) }
         when (interestType) {
             Interest.COURSE -> Database.interestDatabase.listAllCourses().thenAccept(setV)
-            Interest.FIELD -> Database.interestDatabase.listAllFields().thenAccept(setV)
+            Interest.FIELD -> Database.interestDatabase.listAllTopics().thenAccept(setV)
             Interest.SEMESTER -> Database.interestDatabase.listAllSemesters().thenAccept(setV)
         }
     }

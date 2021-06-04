@@ -9,10 +9,10 @@ import java.util.concurrent.CompletableFuture
 object DummyInterestDatabase: InterestDatabase {
 
 
-    val mockFields: List<Field> = listOf(
-        Field("Biology"),
-        Field("Computer Science"),
-        Field("Architecture")
+    val MOCK_TOPICS: List<Topic> = listOf(
+        Topic("Biology"),
+        Topic("Computer Science"),
+        Topic("Architecture")
     )
 
     val mockCourses: List<Course> = listOf(
@@ -43,7 +43,7 @@ object DummyInterestDatabase: InterestDatabase {
     /**
      * Add a new field document to the fields collection
      */
-    override fun addField(field: Field): CompletableFuture<Field> {
+    override fun addTopic(topic: Topic): CompletableFuture<Topic> {
         TODO("Not yet implemented")
     }
 
@@ -61,9 +61,9 @@ object DummyInterestDatabase: InterestDatabase {
         TODO("Not yet implemented")
     }
 
-    override fun listAllFields(): CompletableFuture<List<Field>> {
+    override fun listAllTopics(): CompletableFuture<List<Topic>> {
         return CompletableFuture.supplyAsync {
-            mockFields
+            MOCK_TOPICS
         }
     }
 
@@ -79,13 +79,13 @@ object DummyInterestDatabase: InterestDatabase {
         }
     }
 
-    override fun getUserInterests(user: User): CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>> {
+    override fun getCurrentUserInterests(): CompletableFuture<List<Interest>> {
         return CompletableFuture.supplyAsync{
-            Triple(mockFields.subList(0,1), mockSemesters.subList(1,3), mockCourses.subList(0,4))
+            listOf(MOCK_TOPICS.subList(0,1), mockSemesters.subList(1,3), mockCourses.subList(0,4)).flatten()
         }
     }
 
-    override fun setUserInterests(user: User, interests: List<Interest>): CompletableFuture<Unit> {
-        return CompletableFuture.supplyAsync{Unit}
+    override fun setCurrentUserInterests(interests: List<Interest>): CompletableFuture<List<Interest>> {
+        return CompletableFuture.supplyAsync{ emptyList<Interest>()}
     }
 }

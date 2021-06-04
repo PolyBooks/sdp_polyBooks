@@ -9,9 +9,9 @@ import java.util.concurrent.CompletableFuture
 interface InterestDatabase {
 
     /**
-     * Add a new field document to the fields collection
+     * Add a new Topic document to the Topics collection
      */
-    fun addField(field: Field) : CompletableFuture<Field>
+    fun addTopic(topic: Topic) : CompletableFuture<Topic>
 
     /**
      * Add a new semester document to the semesters collection
@@ -24,9 +24,9 @@ interface InterestDatabase {
     fun addCourse(course: Course) : CompletableFuture<Course>
 
     /**
-     * List all the Fields in the database.
+     * List all the Topics in the database.
      * */
-    fun listAllFields() : CompletableFuture<List<Field>>
+    fun listAllTopics() : CompletableFuture<List<Topic>>
 
     /**
      * List all the Semesters in the database.
@@ -41,23 +41,21 @@ interface InterestDatabase {
     /**
      * List all the interests in the database.
      * */
-    fun listAllInterests() : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
-        = listAllFields().thenCombine(listAllSemesters()) { fields, semester -> Pair(fields, semester) }
+    fun listAllInterests() : CompletableFuture<Triple<List<Topic>, List<Semester>, List<Course>>>
+        = listAllTopics().thenCombine(listAllSemesters()) { topics, semester -> Pair(topics, semester) }
         .thenCombine(listAllCourses()){pair, courses -> Triple(pair.first, pair.second, courses)}
     /**
-     * Get the interests of the specified user
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
+     * Get the interests of the current user.
+     * If the user is not auth, it will use exclusively the local storage. (TODO)
      * */
-    fun getUserInterests(user : User) : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
-        //TODO : Change this
-        = CompletableFuture.completedFuture(Triple(emptyList(), emptyList(), emptyList()))
+    fun getCurrentUserInterests() : CompletableFuture<List<Interest>>
 
     /**
-     * Sets the interests of the specified user.
-     * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
+     * Sets the interests of the current user.
+     * If the user is not auth, it will use exclusively the local storage. (TODO)
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
-    fun setUserInterests(user : User, interests : List<Interest>) : CompletableFuture<Unit>
+    fun setCurrentUserInterests(interests : List<Interest>) : CompletableFuture<List<Interest>>
 
 
 }

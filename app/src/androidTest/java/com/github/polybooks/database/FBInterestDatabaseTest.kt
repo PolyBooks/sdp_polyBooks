@@ -1,14 +1,12 @@
 package com.github.polybooks.database
 
-import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
-import com.github.polybooks.core.Course
-import com.github.polybooks.core.Field
-import com.github.polybooks.core.LoggedUser
-import com.github.polybooks.core.Semester
-import org.junit.*
+import com.github.polybooks.core.*
 import org.junit.Assert.*
+import org.junit.Rule
+import org.junit.Test
+
 
 class FBInterestDatabaseTest {
 
@@ -20,28 +18,29 @@ class FBInterestDatabaseTest {
     private val testUser = LoggedUser("301966", "Le givre")
 
 
+
     @Test
-    fun addFieldsAndRetrieveThem() {
-        val testField1 = Field("Biology")
-        val testField2 = Field("Computer Science")
-        val testField3 = Field("Architecture")
+    fun addTopicsAndRetrieveThem() {
+        val testTopic1 = Topic("Biology")
+        val testTopic2 = Topic("Computer Science")
+        val testTopic3 = Topic("Architecture")
 
-        val addedField1 = interestDB.addField(testField1)
-        val addedField2 = interestDB.addField(testField2)
-        val addedField3 = interestDB.addField(testField3)
+        val addedTopic1 = interestDB.addTopic(testTopic1)
+        val addedTopic2 = interestDB.addTopic(testTopic2)
+        val addedTopic3 = interestDB.addTopic(testTopic3)
 
-        assertNotNull(addedField1.get())
-        assertNotNull(addedField2.get())
-        assertNotNull(addedField3.get())
-        assertEquals(testField1, addedField1.get())
-        assertEquals(testField2, addedField2.get())
-        assertEquals(testField3, addedField3.get())
+        assertNotNull(addedTopic1.get())
+        assertNotNull(addedTopic2.get())
+        assertNotNull(addedTopic3.get())
+        assertEquals(testTopic1, addedTopic1.get())
+        assertEquals(testTopic2, addedTopic2.get())
+        assertEquals(testTopic3, addedTopic3.get())
 
-        val retrievedFields = interestDB.listAllFields().get()
-        val expectedFields: List<Field> = listOf(testField1, testField2, testField3)
-        assertNotNull(retrievedFields)
-        assertTrue(retrievedFields.containsAll(expectedFields))
-        assertTrue(expectedFields.containsAll(retrievedFields))
+        val retrievedTopics = interestDB.listAllTopics().get()
+        val expectedTopics: List<Topic> = listOf(testTopic1, testTopic2, testTopic3)
+        assertNotNull(retrievedTopics)
+        assertTrue(retrievedTopics.containsAll(expectedTopics))
+        assertTrue(expectedTopics.containsAll(retrievedTopics))
 
     }
 
@@ -93,6 +92,108 @@ class FBInterestDatabaseTest {
         assertTrue(expectedCourses.containsAll(retrievedCourses))
     }
 
+    @Test
+    fun addAndRemoveTopic() {
+        val testTopic = Topic("Computer Science")
+        val addedTopic = interestDB.addTopic(testTopic)
+        assertNotNull(addedTopic.get())
+        assertEquals(testTopic, addedTopic.get())
+
+        val successfullyRemoved = interestDB.removeTopic(testTopic)
+        assertNotNull(successfullyRemoved.get())
+        assertEquals(successfullyRemoved.get(), true)
+
+        val retrievedTopics = interestDB.listAllTopics().get()
+        assertNotNull(retrievedTopics)
+        assertTrue(!retrievedTopics.contains(testTopic))
+    }
+
+    @Test
+    fun addAndRemoveSemester() {
+        val testSemester = Semester("SC", "BA6")
+        val addedSemester = interestDB.addSemester(testSemester)
+        assertNotNull(addedSemester.get())
+        assertEquals(testSemester, addedSemester.get())
+
+        val successfullyRemoved = interestDB.removeSemester(testSemester)
+        assertNotNull(successfullyRemoved.get())
+        assertEquals(successfullyRemoved.get(), true)
+
+        val retrievedSemesters = interestDB.listAllSemesters().get()
+        assertNotNull(retrievedSemesters)
+        assertTrue(!retrievedSemesters.contains(testSemester))
+    }
+
+
+    @Test
+    fun addAndRemoveCourse() {
+        val testCourse = Course("Computer Science")
+        val addedCourse = interestDB.addCourse(testCourse)
+        assertNotNull(addedCourse.get())
+        assertEquals(testCourse, addedCourse.get())
+
+        val successfullyRemoved = interestDB.removeCourse(testCourse)
+        assertNotNull(successfullyRemoved.get())
+        assertEquals(successfullyRemoved.get(), true)
+
+        val retrievedCourses = interestDB.listAllCourses().get()
+        assertNotNull(retrievedCourses)
+        assertTrue(!retrievedCourses.contains(testCourse))
+    }
+
+
+
+    private val userInterestsList: List<Interest> = listOf(
+        Semester("IN", "BA1"),
+        Course("COM-101"),
+        Course("CS-306"),
+        Course("CS-323"),
+        Semester("SC", "BA6"),
+        Topic("Computer Science")
+    )
+
+
+
+    @Test
+    fun addAndRetrieveUserInterestsForLoggedInUser() {
+        val newUserInterest = interestDB.setLoggedUserInterests(testUser, userInterestsList)
+
+        assertNotNull(newUserInterest.get())
+        assertTrue(newUserInterest.get().containsAll(userInterestsList))
+        assertTrue(userInterestsList.containsAll(newUserInterest.get()))
+
+        val retrievedUserInterests = interestDB.getLoggedUserInterests(testUser)
+        assertNotNull(retrievedUserInterests.get())
+        assertTrue(newUserInterest.get().containsAll(retrievedUserInterests.get()))
+        assertTrue(retrievedUserInterests.get().containsAll(newUserInterest.get()))
+    }
+
+    @Test
+    fun multipleSetGetForUserInterestsForLoggedInUser() {
+        val newUserInterest = interestDB.setLoggedUserInterests(testUser, userInterestsList)
+
+        assertNotNull(newUserInterest.get())
+        assertTrue(newUserInterest.get().containsAll(userInterestsList))
+        assertTrue(userInterestsList.containsAll(newUserInterest.get()))
+
+        val retrievedUserInterests = interestDB.getLoggedUserInterests(testUser)
+        assertNotNull(retrievedUserInterests.get())
+        assertTrue(newUserInterest.get().containsAll(retrievedUserInterests.get()))
+        assertTrue(retrievedUserInterests.get().containsAll(newUserInterest.get()))
+
+        // After that, it should contain only the new interest, not combined with the previous list.
+        val newSingleInterest = listOf(Semester("ENV", "BA5"))
+        val newUserInterest2 = interestDB.setLoggedUserInterests(testUser, newSingleInterest)
+
+        assertNotNull(newUserInterest2.get())
+        assertTrue(newUserInterest2.get().containsAll(newSingleInterest))
+        assertTrue(newSingleInterest.containsAll(newUserInterest2.get()))
+
+        val retrievedUserInterests2 = interestDB.getLoggedUserInterests(testUser)
+        assertNotNull(retrievedUserInterests2.get())
+        assertTrue(newSingleInterest.containsAll(retrievedUserInterests2.get()))
+        assertTrue(retrievedUserInterests2.get().containsAll(newSingleInterest))
+    }
 
 
 }
