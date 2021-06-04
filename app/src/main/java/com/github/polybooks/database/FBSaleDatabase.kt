@@ -10,7 +10,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
 
 private const val COLLECTION_NAME = "sale2"
 
@@ -47,7 +46,12 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
         }
         saleQuery.states?.let {
             queries = queries.flatMap { query ->
-                saleQuery.states.map { state -> query.whereEqualTo(SaleFields.STATE.fieldName, state) }
+                saleQuery.states.map { state ->
+                    query.whereEqualTo(
+                        SaleFields.STATE.fieldName,
+                        state
+                    )
+                }
             }
         }
         saleQuery.conditions?.let {
@@ -86,7 +90,8 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
 
     private fun getBookQuery(saleQuery: SaleQuery): BookQuery {
         var bookQuery: BookQuery = AllBooksQuery()
-        if (saleQuery.interests != null) bookQuery = bookQuery.searchByInterests(saleQuery.interests)
+        if (saleQuery.interests != null) bookQuery =
+            bookQuery.searchByInterests(saleQuery.interests)
         if (saleQuery.title != null) bookQuery = bookQuery.searchByTitle(saleQuery.title)
         if (saleQuery.isbn != null) bookQuery = bookQuery.getBooks(setOf(saleQuery.isbn))
         return bookQuery
@@ -95,6 +100,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
     override fun execute(saleQuery: SaleQuery): CompletableFuture<List<Sale>> {
         return if (saleQuery.interests == null && saleQuery.title == null && saleQuery.isbn == null) { //In this case we should not look in the book database
             doQueries(filterQuery(saleRef, saleQuery)).thenCompose { snapshotsToSales(it) }
+                .thenApply { order(it, saleQuery.ordering) }
         } else {
             val booksFuture = bookDatabase.execute(getBookQuery(saleQuery))
             booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
