@@ -341,12 +341,12 @@ class FBSaleDatabaseTest {
             saleDB.addSale(dummySale.copy(book = book, price = 3f + index.toFloat())).get()
         }
 
-        val titleDec = saleDB.querySales().withOrdering(SaleOrdering.TITLE_DEC).getAll().get()
-        val titleInc = saleDB.querySales().withOrdering(SaleOrdering.TITLE_INC).getAll().get()
-        val priceDec = saleDB.querySales().withOrdering(SaleOrdering.PRICE_DEC).getAll().get()
-        val priceInc = saleDB.querySales().withOrdering(SaleOrdering.PRICE_INC).getAll().get()
-        val publishDec = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_DEC).getAll().get()
-        val publishInc = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_INC).getAll().get()
+        val titleDec = saleDB.execute(SaleQuery(ordering = SaleOrdering.TITLE_DEC)).get()
+        val titleInc = saleDB.execute(SaleQuery(ordering = SaleOrdering.TITLE_INC)).get()
+        val priceDec = saleDB.execute(SaleQuery(ordering = SaleOrdering.PRICE_DEC)).get()
+        val priceInc = saleDB.execute(SaleQuery(ordering = SaleOrdering.PRICE_INC)).get()
+        val publishDec = saleDB.execute(SaleQuery(ordering = SaleOrdering.PUBLISH_DATE_DEC)).get()
+        val publishInc = saleDB.execute(SaleQuery(ordering = SaleOrdering.PUBLISH_DATE_INC)).get()
 
         assertEquals(titleDec, titleInc.reversed())
         assertEquals(priceDec, priceInc.reversed())
