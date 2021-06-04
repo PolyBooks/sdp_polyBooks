@@ -1,7 +1,7 @@
 package com.github.polybooks.database
 
 import com.github.polybooks.core.*
-import com.github.polybooks.database.SaleOrdering.DEFAULT
+import com.github.polybooks.database.SaleOrdering.*
 import com.github.polybooks.utils.listOfFuture2FutureOfList
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
@@ -10,7 +10,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
 
 private const val COLLECTION_NAME = "sale2"
 
@@ -156,6 +155,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
         override fun getAll(): CompletableFuture<List<Sale>> {
             return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
                 doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
+                    .thenApply { order(it, ordering) }
             } else {
                 val booksFuture = bookDatabase.execute(getBookQuery())
                 booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
@@ -169,7 +169,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
                             it,
                             isbnToBook
                         )
-                    }
+                    }.thenApply { order(it, ordering) }
                 }
             }
         }
@@ -203,6 +203,18 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
 
     override fun querySales(): SaleQuery {
         return SalesQuery()
+    }
+
+    private fun order(sales: List<Sale>, ordering: SaleOrdering): List<Sale> {
+        return when (ordering) {
+            DEFAULT -> sales
+            TITLE_INC -> sales.sortedBy { it.book.title }
+            TITLE_DEC -> sales.sortedByDescending { it.book.title }
+            PRICE_INC -> sales.sortedBy { it.price }
+            PRICE_DEC -> sales.sortedByDescending { it.price }
+            PUBLISH_DATE_INC -> sales.sortedBy { it.date }
+            PUBLISH_DATE_DEC -> sales.sortedByDescending { it.date }
+        }
     }
 
     private fun snapshotToUser(map: HashMap<String, Any>): User {

@@ -5,10 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
-import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.github.polybooks.utils.regulariseISBN
-import com.github.polybooks.utils.unwrapException
-import com.github.polybooks.utils.url2json
+import com.github.polybooks.utils.*
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -60,7 +57,10 @@ object OLBookDatabase: BookProvider {
     override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
         val regularised = isbns.map { regulariseISBN(it) ?: throw IllegalArgumentException("ISBN cannot be regularised") }
         val futures = regularised.toSet().map { getBook(it) }
-        return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
+        return listOfFuture2FutureOfList(futures).thenApply {
+            val books = it.filterNotNull()
+            return@thenApply order(books, ordering)
+        }
     }
 
     override fun addBook(book: Book): CompletableFuture<Unit> {
