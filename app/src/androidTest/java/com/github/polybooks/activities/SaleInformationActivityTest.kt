@@ -47,8 +47,6 @@ class SaleInformationActivityTest {
             "Editions De l'Aire",
             null,
             "pocket format",
-            9.0,
-            2
         ),
         LocalUser,
         37.57f,

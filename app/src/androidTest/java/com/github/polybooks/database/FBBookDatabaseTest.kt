@@ -160,7 +160,7 @@ class FBBookDatabaseTest {
         val bookTartuffe: Book? = fbBookDB.getBook("9780156881807").get()
         assertNotNull(bookTartuffe)
 
-        val modifiedBook: Book = Book(
+        val modifiedBook = Book(
             bookTartuffe!!.isbn, bookTartuffe.authors, bookTartuffe.title, bookTartuffe.edition,
             bookTartuffe.language, bookTartuffe.publisher, bookTartuffe.publishDate, bookTartuffe.format
         )
