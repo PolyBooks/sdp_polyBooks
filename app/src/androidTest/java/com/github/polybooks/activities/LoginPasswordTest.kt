@@ -40,7 +40,6 @@ class LoginPasswordTest {
         onView(withId(R.id.email_field)).perform(typeText("login@bypassword.test"), closeSoftKeyboard())
         onView(withId(R.id.password_field)).perform(typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.log_button)).perform(scrollTo(), click())
-        Thread.sleep(1500)
         Intents.intended(hasComponent(UserProfileActivity::class.java.name))
         Intents.intended(toPackage("com.github.polybooks"))
         Intents.intended(hasExtra(EXTRA_USERNAME, "TestLogin"))
