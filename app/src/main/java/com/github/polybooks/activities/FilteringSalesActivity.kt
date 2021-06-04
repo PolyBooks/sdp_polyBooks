@@ -12,7 +12,7 @@ import com.github.polybooks.database.*
 import com.github.polybooks.database.Database
 import com.github.polybooks.database.SaleOrdering
 import com.github.polybooks.database.SaleQuery
-import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY_SETTINGS
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_QUERY
 import com.github.polybooks.utils.setupNavbar
 
 
@@ -78,32 +78,8 @@ class FilteringSalesActivity: FilteringActivity() {
     }
 
     fun getResults(view: View) {
-//        var query: SaleQuery = DummySalesQuery()
-        var query: SaleQuery = saleDB.querySales()
-
-        //These 2 in front for dummy sales query
-        if (mName.text.isNotEmpty())
-            query.searchByTitle(mName.text.toString())
-
-        if (mISBN.text.isNotEmpty())
-            query = query.searchByISBN(mISBN.text.toString())
-
-        // price
-        val minPrice =
-            if (mPriceMin.text.isNotEmpty()) mPriceMin.text.toString().toFloat()
-            else 0.0f
-
-        val maxPrice =
-            if (mPriceMax.text.isNotEmpty()) mPriceMax.text.toString().toFloat()
-            else Float.MAX_VALUE
-
-        query = query.searchByPrice(minPrice, maxPrice)
-
-        resultByParameter(query)
-
-        val querySettings = query.getSettings()
         val intent = Intent(this, ListSalesActivity::class.java)
-        intent.putExtra(EXTRA_SALE_QUERY_SETTINGS, querySettings)
+        intent.putExtra(EXTRA_SALE_QUERY, getQuery())
         startActivity(intent)
     }
 
@@ -144,30 +120,49 @@ class FilteringSalesActivity: FilteringActivity() {
         mPriceMax = findViewById(R.id.price_max)
     }
 
-    private fun resultByParameter(query: SaleQuery) {
-        resultByParameter(query, mSortParameter) { q, orderings ->
+    private fun getQuery() : SaleQuery {
+        var query = SaleQuery()
+
+        //handle ordering
+        query = resultByParameter(query, mSortParameter) { q, orderings ->
             q.withOrdering(orderings[0])
         }
-        resultByParameter(query, mStateParameter) { q, states ->
-            q.searchByState(states.toSet())
+
+        //handle state and condition
+        query = resultByParameter(query, mStateParameter) { q, states ->
+            q.searchByState(states)
         }
-        resultByParameter(query, mBookConditionParameter) { q, conditions ->
-            q.searchByCondition(conditions.toSet())
+        query = resultByParameter(query, mBookConditionParameter) { q, conditions ->
+            q.searchByCondition(conditions)
         }
 
-        val interests: MutableSet<Interest> = mutableSetOf()
-        interests.addAll(mFieldParameter.getSelectedValues())
-        interests.addAll(mSemesterParameter.getSelectedValues())
-        interests.addAll(mCourseParameter.getSelectedValues())
+        //handle price
+        if (mPriceMin.text.isNotEmpty())
+            query = query.searchByMinPrice(mPriceMin.text.toString().toFloat())
+        if (mPriceMax.text.isNotEmpty())
+            query = query.searchByMaxPrice(mPriceMax.text.toString().toFloat())
+
+        //handle book filters
+        val interests = mFieldParameter.getSelectedValues() + mSemesterParameter.getSelectedValues() + mCourseParameter.getSelectedValues()
+        if (interests.isNotEmpty())
+            query = query.searchByInterests(interests)
+        if (mName.text.toString().isNotBlank())
+            query = query.searchByTitle(mName.text.toString())
+        if (mISBN.text.toString().isNotBlank())
+            query = query.searchByISBN(mISBN.text.toString())
+
+        return query
     }
 
     private fun <T> resultByParameter(
         query: SaleQuery,
         parameter: Parameter<T>,
-        f: (SaleQuery, List<T>) -> Unit
-    ) {
+        f: (SaleQuery, List<T>) -> SaleQuery
+    ) : SaleQuery {
         val values: List<T> = parameter.getSelectedValues()
-        if (values.isNotEmpty())
+        return if (values.isNotEmpty())
             f(query, values)
+        else
+            query
     }
 }

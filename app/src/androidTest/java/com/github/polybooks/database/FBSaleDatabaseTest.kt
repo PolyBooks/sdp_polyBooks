@@ -4,8 +4,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.activities.MainActivity
-import com.github.polybooks.core.*
 import com.github.polybooks.core.BookCondition.*
+import com.github.polybooks.core.LocalUser
+import com.github.polybooks.core.LoggedUser
+import com.github.polybooks.core.Sale
 import com.github.polybooks.core.SaleState.*
 import com.github.polybooks.utils.unwrapException
 import junit.framework.AssertionFailedError
@@ -67,7 +69,7 @@ class FBSaleDatabaseTest {
 
     @Test
     fun t_listAllSales() {
-        val allSales: List<Sale> = saleDB.querySales().getAll().get()
+        val allSales: List<Sale> = saleDB.execute(SaleQuery()).get()
         val listAllSales: List<Sale> = saleDB.listAllSales().get()
 
         assertSame(allSales, listAllSales)
@@ -77,8 +79,9 @@ class FBSaleDatabaseTest {
     fun t_searchByTitle() {
         val sale1 = saleDB.addSale(dummySale).get()
         val sale2 =
-            saleDB.addSale(dummySale.copy(book = TestBookProvider.getBook("9782376863069").get()!!)).get()
-        val sales = saleDB.querySales().searchByTitle(dummySale.book.title).getAll().get()
+            saleDB.addSale(dummySale.copy(book = TestBookProvider.getBook("9782376863069").get()!!))
+                .get()
+        val sales = saleDB.execute(SaleQuery(title = dummySale.book.title)).get()
         assertTrue(sales.contains(sale1))
         assertFalse(sales.contains(sale2))
 
@@ -86,13 +89,13 @@ class FBSaleDatabaseTest {
         saleDB.deleteSale(sale2).get()
 
         assertTrue(
-            saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getAll().get().isEmpty()
+            saleDB.execute(SaleQuery(title = "SSBhbSBhcG9sbG9uIHgK")).get().isEmpty()
         )
     }
 
     @Test
     fun doesntCrashWhenNoBooksAreFound() {
-        saleDB.querySales().searchByTitle("SSBhbSBhcG9sbG9uIHgK").getAll().get()
+        saleDB.execute(SaleQuery(title = "SSBhbSBhcG9sbG9uIHgK")).get()
     }
 
     @Test
@@ -104,10 +107,10 @@ class FBSaleDatabaseTest {
 
         assertSame(
             saleDB.listAllSales().get(),
-            saleDB.querySales().searchByMinPrice(0f).getAll().get()
+            saleDB.execute(SaleQuery(minPrice = 0f)).get()
         )
 
-        val salesgt10 = saleDB.querySales().searchByMinPrice(10.0f).getAll().get()
+        val salesgt10 = saleDB.execute(SaleQuery(minPrice = 10.0f)).get()
         assertFalse(salesgt10.contains(sale1))
         assertTrue(salesgt10.contains(sale2))
         assertTrue(salesgt10.contains(sale3))
@@ -120,18 +123,18 @@ class FBSaleDatabaseTest {
 
     @Test
     fun t_searchMaxPrice() {
-        assertTrue(saleDB.querySales().searchByMaxPrice(-1f).getAll().get().isEmpty())
+        assertTrue(saleDB.execute(SaleQuery(maxPrice = -1f)).get().isEmpty())
 
         val sale1 = saleDB.addSale(dummySale.copy(price = 0f)).get()
         val sale2 = saleDB.addSale(dummySale.copy(price = 1f)).get()
         val sale3 = saleDB.addSale(dummySale.copy(price = 10f)).get()
         val sale4 = saleDB.addSale(dummySale.copy(price = 100f)).get()
 
-        val saleslt0 = saleDB.querySales().searchByMaxPrice(0f).getAll().get()
+        val saleslt0 = saleDB.execute(SaleQuery(maxPrice = 0f)).get()
         assertTrue(saleslt0.all { it.price <= 0f })
         assertTrue(saleslt0.contains(sale1))
 
-        val saleslt10 = saleDB.querySales().searchByMaxPrice(10f).getAll().get()
+        val saleslt10 = saleDB.execute(SaleQuery(maxPrice = 10f)).get()
         assertTrue(saleslt0.all { it.price <= 10f })
         assertTrue(saleslt10.contains(sale1))
         assertTrue(saleslt10.contains(sale2))
@@ -147,7 +150,7 @@ class FBSaleDatabaseTest {
 
     @Test
     fun t_searchByPrice() {
-        assertTrue(saleDB.querySales().searchByPrice(5f, 2f).getAll().get().isEmpty())
+        assertTrue(saleDB.execute(SaleQuery(minPrice = 5f, maxPrice = 2f)).get().isEmpty())
 
         val sale1 = saleDB.addSale(dummySale.copy(price = 0f)).get()
         val sale2 = saleDB.addSale(dummySale.copy(price = 5f)).get()
@@ -155,7 +158,7 @@ class FBSaleDatabaseTest {
         val sale4 = saleDB.addSale(dummySale.copy(price = 10f)).get()
         val sale5 = saleDB.addSale(dummySale.copy(price = 100f)).get()
 
-        val salesgt5lt10 = saleDB.querySales().searchByPrice(5f, 10f).getAll().get()
+        val salesgt5lt10 = saleDB.execute(SaleQuery(minPrice = 5f, maxPrice = 10f)).get()
         assertTrue(salesgt5lt10.all { it.price in 5f..10f })
         assertFalse(salesgt5lt10.contains(sale1))
         assertTrue(salesgt5lt10.contains(sale2))
@@ -177,23 +180,18 @@ class FBSaleDatabaseTest {
         val sale2 = saleDB.addSale(dummySale.copy(condition = WORN)).get()
         val sale3 = saleDB.addSale(dummySale.copy(condition = NEW)).get()
 
-        assertSame(
-            saleDB.querySales().getAll().get(),
-            saleDB.querySales().searchByCondition(emptySet()).getAll().get()
-        )
-
-        val salesWorn = saleDB.querySales().searchByCondition(setOf(WORN)).getAll().get()
+        val salesWorn = saleDB.execute(SaleQuery(conditions = listOf(WORN))).get()
         assertTrue(salesWorn.all { it.condition == WORN })
         assertTrue(salesWorn.contains(sale2))
 
-        val salesGoodWorn = saleDB.querySales().searchByCondition(setOf(WORN, GOOD)).getAll().get()
+        val salesGoodWorn = saleDB.execute(SaleQuery(conditions = listOf(WORN, GOOD))).get()
         assertTrue(salesGoodWorn.all { it.condition == WORN || it.condition == GOOD })
         assertTrue(salesGoodWorn.contains(sale2))
         assertTrue(salesGoodWorn.contains(sale1))
 
         assertSame(
-            saleDB.querySales().getAll().get(),
-            saleDB.querySales().searchByCondition(setOf(NEW, GOOD, WORN)).getAll().get()
+            saleDB.execute(SaleQuery()).get(),
+            saleDB.execute(SaleQuery(conditions = listOf(NEW, GOOD, WORN))).get()
         )
 
         saleDB.deleteSale(sale1).get()
@@ -208,24 +206,19 @@ class FBSaleDatabaseTest {
         val sale2 = saleDB.addSale(dummySale.copy(state = RETRACTED)).get()
         val sale3 = saleDB.addSale(dummySale.copy(state = CONCLUDED)).get()
 
-        assertSame(
-            saleDB.querySales().getAll().get(),
-            saleDB.querySales().searchByState(emptySet()).getAll().get()
-        )
-
-        val salesActive = saleDB.querySales().searchByState(setOf(ACTIVE)).getAll().get()
+        val salesActive = saleDB.execute(SaleQuery(states = listOf(ACTIVE))).get()
         assertTrue(salesActive.all { it.state == ACTIVE })
         assertTrue(salesActive.contains(sale1))
 
         val salesActiveRetracted =
-            saleDB.querySales().searchByState(setOf(ACTIVE, RETRACTED)).getAll().get()
+            saleDB.execute(SaleQuery(states = listOf(ACTIVE, RETRACTED))).get()
         assertTrue(salesActiveRetracted.all { it.state == ACTIVE || it.state == RETRACTED })
         assertTrue(salesActiveRetracted.contains(sale2))
         assertTrue(salesActiveRetracted.contains(sale1))
 
         assertSame(
-            saleDB.querySales().getAll().get(),
-            saleDB.querySales().searchByState(setOf(ACTIVE, RETRACTED, CONCLUDED)).getAll().get()
+            saleDB.execute(SaleQuery()).get(),
+            saleDB.execute(SaleQuery(states = listOf(ACTIVE, RETRACTED, CONCLUDED))).get()
         )
 
         saleDB.deleteSale(sale1).get()
@@ -249,7 +242,7 @@ class FBSaleDatabaseTest {
     @Test
     fun addDelete() {
         fun saleExists(sale: Sale): Boolean {
-            return saleDB.querySales().searchByISBN(sale.book.isbn).getAll().get().any {
+            return saleDB.execute(SaleQuery(isbn = sale.book.isbn)).get().any {
                 it.date == sale.date && it.seller == sale.seller
             }
         }
@@ -265,29 +258,6 @@ class FBSaleDatabaseTest {
         assertTrue(saleExists(sale))
         saleDB.deleteSale(sale).get()
         assertFalse(saleExists(sale))
-    }
-
-    @Test
-    fun getSettingsAndFromSettingsMatch() {
-        val settings = SaleSettings(
-            SaleOrdering.DEFAULT,
-            "111222333444",
-            "A Book",
-            setOf(
-                Course("COM-301"),
-                Field("Biology"),
-                Semester("IC", "BA3")
-            ),
-            setOf(RETRACTED),
-            setOf(WORN, NEW),
-            3.0f,
-            10.0f
-        )
-
-        assertEquals(
-            settings,
-            saleDB.querySales().fromSettings(settings).getSettings()
-        )
     }
 
     @Test
@@ -314,61 +284,6 @@ class FBSaleDatabaseTest {
     }
 
     @Test
-    fun settingsModifiesStateOfQuery() {
-        val settings = SaleSettings(
-            SaleOrdering.DEFAULT, null, null, null,
-            setOf(RETRACTED), null, null, null
-        )
-
-        val sale1 = saleDB.addSale(dummySale.copy(state = ACTIVE)).get()
-        val sale2 = saleDB.addSale(dummySale.copy(state = RETRACTED)).get()
-        val sale3 = saleDB.addSale(dummySale.copy(state = CONCLUDED)).get()
-
-        val salesRetracted =
-            saleDB.querySales().searchByState(setOf(ACTIVE)).fromSettings(settings).getAll().get()
-        assertTrue(salesRetracted.all { it.state == RETRACTED })
-        val salesActive = saleDB.querySales().searchByState(setOf(ACTIVE)).getAll().get()
-        assertTrue(salesActive.all { it.state == ACTIVE })
-
-        saleDB.deleteSale(sale1).get()
-        saleDB.deleteSale(sale2).get()
-        saleDB.deleteSale(sale3).get()
-    }
-
-    @Test
-    fun fromSettingsIsEquivalent() {
-        val title = dummySale.book.title
-        val settings = SaleSettings(
-            SaleOrdering.DEFAULT, null, title, null,
-            null, null, null, null
-        )
-        assertSame(
-            saleDB.querySales().searchByTitle(title).getAll().get(),
-            saleDB.querySales().fromSettings(settings).getAll().get()
-        )
-
-    }
-
-    @Test
-    fun fromSettingsIsEquivalent2() {
-        val title = dummySale.book.title
-        val minPrice = 0.0f
-        val maxPrice = 10.0f
-
-        val settings = SaleSettings(
-            SaleOrdering.DEFAULT, null, title, null, null,
-            null, minPrice, maxPrice
-        )
-
-        assertSame(
-            saleDB.querySales().searchByTitle(title).searchByPrice(minPrice, maxPrice).getAll()
-                .get(),
-            saleDB.querySales().fromSettings(settings).getAll().get()
-        )
-
-    }
-
-    @Test
     fun canSearchBothByStateAndCondition() {
         val saleRetractedWorn =
             saleDB.addSale(dummySale.copy(state = RETRACTED, condition = WORN)).get()
@@ -378,39 +293,36 @@ class FBSaleDatabaseTest {
         val saleActiveWorn = saleDB.addSale(dummySale.copy(state = ACTIVE, condition = WORN)).get()
 
         val res1 =
-            saleDB.querySales().searchByCondition(setOf(WORN)).searchByState(setOf(RETRACTED))
-                .getAll().get()
+            saleDB.execute(SaleQuery(conditions = listOf(WORN), states = listOf(RETRACTED))).get()
         assertTrue(res1.contains(saleRetractedWorn))
         assertFalse(res1.contains(saleRetractedGood))
         assertFalse(res1.contains(saleActiveGood))
         assertFalse(res1.contains(saleActiveWorn))
 
         val res2 =
-            saleDB.querySales().searchByCondition(setOf(GOOD)).searchByState(setOf(RETRACTED))
-                .getAll().get()
+            saleDB.execute(SaleQuery(conditions = listOf(GOOD), states = listOf(RETRACTED))).get()
         assertTrue(res2.contains(saleRetractedGood))
         assertFalse(res2.contains(saleRetractedWorn))
         assertFalse(res2.contains(saleActiveWorn))
         assertFalse(res2.contains(saleActiveGood))
 
         val res3 =
-            saleDB.querySales().searchByCondition(setOf(GOOD)).searchByState(setOf(ACTIVE)).getAll()
-                .get()
+            saleDB.execute(SaleQuery(conditions = listOf(GOOD), states = listOf(ACTIVE))).get()
         assertTrue(res3.contains(saleActiveGood))
         assertFalse(res3.contains(saleActiveWorn))
         assertFalse(res3.contains(saleRetractedGood))
         assertFalse(res3.contains(saleRetractedWorn))
 
         val res4 =
-            saleDB.querySales().searchByISBN(dummySale.book.isbn).searchByCondition(setOf(WORN))
-                .getAll().get()
+            saleDB.execute(SaleQuery(isbn = dummySale.book.isbn, conditions = listOf(WORN))).get()
         assertTrue(res4.contains(saleActiveWorn))
         assertTrue(res4.contains(saleRetractedWorn))
         assertFalse(res4.contains(saleActiveGood))
         assertFalse(res4.contains(saleRetractedGood))
 
-        val res5 = saleDB.querySales().searchByCondition(setOf(WORN))
-            .searchByState(setOf(ACTIVE, RETRACTED)).getAll().get()
+        val res5 =
+            saleDB.execute(SaleQuery(conditions = listOf(WORN), states = listOf(ACTIVE, RETRACTED)))
+                .get()
         assertTrue(res5.contains(saleActiveWorn))
         assertTrue(res5.contains(saleRetractedWorn))
         assertFalse(res5.contains(saleActiveGood))
@@ -429,12 +341,12 @@ class FBSaleDatabaseTest {
             saleDB.addSale(dummySale.copy(book = book, price = 3f + index.toFloat())).get()
         }
 
-        val titleDec = saleDB.querySales().withOrdering(SaleOrdering.TITLE_DEC).getAll().get()
-        val titleInc = saleDB.querySales().withOrdering(SaleOrdering.TITLE_INC).getAll().get()
-        val priceDec = saleDB.querySales().withOrdering(SaleOrdering.PRICE_DEC).getAll().get()
-        val priceInc = saleDB.querySales().withOrdering(SaleOrdering.PRICE_INC).getAll().get()
-        val publishDec = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_DEC).getAll().get()
-        val publishInc = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_INC).getAll().get()
+        val titleDec = saleDB.execute(SaleQuery(ordering = SaleOrdering.TITLE_DEC)).get()
+        val titleInc = saleDB.execute(SaleQuery(ordering = SaleOrdering.TITLE_INC)).get()
+        val priceDec = saleDB.execute(SaleQuery(ordering = SaleOrdering.PRICE_DEC)).get()
+        val priceInc = saleDB.execute(SaleQuery(ordering = SaleOrdering.PRICE_INC)).get()
+        val publishDec = saleDB.execute(SaleQuery(ordering = SaleOrdering.PUBLISH_DATE_DEC)).get()
+        val publishInc = saleDB.execute(SaleQuery(ordering = SaleOrdering.PUBLISH_DATE_INC)).get()
 
         assertEquals(titleDec, titleInc.reversed())
         assertEquals(priceDec, priceInc.reversed())

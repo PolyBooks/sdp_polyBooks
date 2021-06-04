@@ -22,188 +22,104 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
     private val saleRef: CollectionReference =
         FirebaseProvider.getFirestore().collection(COLLECTION_NAME)
 
-    private inner class SalesQuery: SaleQuery {
+    //This functions computes the set of queries to execute in order to get the desired Sales.
+    //We need to return a set of queries because Firebase doesn't allow for more than one IN clause.
+    //Ergo, we need to do multiple queries.
+    private fun filterQuery(q: Query, saleQuery: SaleQuery): List<Query> {
+        var queries = listOf(q)
 
-        private var isbn: ISBN? = null
-        private var title: String? = null
-
-        private var interests: Set<Interest>? = null
-        private var states: Set<SaleState>? = null
-        private var conditions: Set<BookCondition>? = null
-
-        private var minPrice: Float? = null
-        private var maxPrice: Float? = null
-
-        private var ordering: SaleOrdering = DEFAULT
-
-        override fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery {
-            if (interests.isNotEmpty()) this.interests = interests
-            else this.interests = null
-            return this
+        saleQuery.minPrice?.let {
+            queries = queries.map {
+                it.whereGreaterThanOrEqualTo(
+                    SaleFields.PRICE.fieldName,
+                    saleQuery.minPrice
+                )
+            }
         }
-
-        override fun searchByTitle(title: String): SaleQuery {
-            this.title = title
-            return this
+        saleQuery.maxPrice?.let {
+            queries = queries.map {
+                it.whereLessThanOrEqualTo(
+                    SaleFields.PRICE.fieldName,
+                    saleQuery.maxPrice
+                )
+            }
         }
-
-        override fun searchByState(state: Set<SaleState>): SaleQuery {
-            if (state.isNotEmpty()) this.states = state
-            else this.states = null
-            return this
-        }
-
-        override fun searchByCondition(condition: Set<BookCondition>): SaleQuery {
-            if (condition.isNotEmpty()) this.conditions = condition
-            else this.conditions = null
-            return this
-        }
-
-        override fun searchByMinPrice(min: Float): SaleQuery {
-            this.minPrice = min
-            return this
-        }
-
-        override fun searchByMaxPrice(max: Float): SaleQuery {
-            this.maxPrice = max
-            return this
-        }
-
-        override fun searchByPrice(min: Float, max: Float): SaleQuery {
-            return this.searchByMinPrice(min).searchByMaxPrice(max)
-        }
-
-        override fun withOrdering(ordering: SaleOrdering): SaleQuery {
-            this.ordering = ordering
-            return this
-        }
-
-        override fun searchByISBN(isbn: ISBN): SaleQuery {
-            this.isbn = isbn
-            return this
-        }
-
-        //This functions computes the set of queries to execute in order to get the desired Sales.
-        //We need to return a set of queries because Firebase doesn't allow for more than one IN clause.
-        //Ergo, we need to do multiple queries.
-        private fun filterQuery(q: Query): List<Query> {
-            var queries = listOf(q)
-
-            minPrice?.let {
-                queries = queries.map {
-                    it.whereGreaterThanOrEqualTo(
-                        SaleFields.PRICE.fieldName,
-                        minPrice!!
+        saleQuery.states?.let {
+            queries = queries.flatMap { query ->
+                saleQuery.states.map { state ->
+                    query.whereEqualTo(
+                        SaleFields.STATE.fieldName,
+                        state
                     )
                 }
             }
-            maxPrice?.let {
-                queries = queries.map {
-                    it.whereLessThanOrEqualTo(
-                        SaleFields.PRICE.fieldName,
-                        maxPrice!!
+        }
+        saleQuery.conditions?.let {
+            queries = queries.flatMap { query ->
+                saleQuery.conditions.map { condition ->
+                    query.whereEqualTo(
+                        SaleFields.CONDITION.fieldName,
+                        condition
                     )
                 }
             }
-            states?.let {
-                queries = queries.flatMap { query ->
-                    states!!.map { state -> query.whereEqualTo(SaleFields.STATE.fieldName, state) }
-                }
-            }
-            conditions?.let {
-                queries = queries.flatMap { query ->
-                    conditions!!.map { condition ->
-                        query.whereEqualTo(
-                            SaleFields.CONDITION.fieldName,
-                            condition
-                        )
-                    }
-                }
-            }
-
-            return queries
         }
 
-        private fun doQuery(query: Query): CompletableFuture<Iterable<DocumentSnapshot>> {
-            val future = CompletableFuture<Iterable<DocumentSnapshot>>()
-            query.get()
-                .addOnSuccessListener { documents ->
-                    future.complete(documents)
-                }
-                .addOnFailureListener {
-                    future.completeExceptionally(
-                        DatabaseException("Query could not be completed: $it")
+        return queries
+    }
+
+    private fun doQuery(query: Query): CompletableFuture<Iterable<DocumentSnapshot>> {
+        val future = CompletableFuture<Iterable<DocumentSnapshot>>()
+        query.get()
+            .addOnSuccessListener { documents ->
+                future.complete(documents)
+            }
+            .addOnFailureListener {
+                future.completeExceptionally(
+                    DatabaseException("Query could not be completed: $it")
+                )
+            }
+        return future
+    }
+
+    private fun doQueries(queries: List<Query>): CompletableFuture<Iterable<DocumentSnapshot>> {
+        return listOfFuture2FutureOfList(queries.map { doQuery(it) }
+            .toList()).thenApply { it.flatten() }
+    }
+
+
+    private fun getBookQuery(saleQuery: SaleQuery): BookQuery {
+        var bookQuery: BookQuery = AllBooksQuery()
+        if (saleQuery.interests != null) bookQuery =
+            bookQuery.searchByInterests(saleQuery.interests)
+        if (saleQuery.title != null) bookQuery = bookQuery.searchByTitle(saleQuery.title)
+        if (saleQuery.isbn != null) bookQuery = bookQuery.getBooks(setOf(saleQuery.isbn))
+        return bookQuery
+    }
+
+    override fun execute(saleQuery: SaleQuery): CompletableFuture<List<Sale>> {
+        return if (saleQuery.interests == null && saleQuery.title == null && saleQuery.isbn == null) { //In this case we should not look in the book database
+            doQueries(filterQuery(saleRef, saleQuery)).thenCompose { snapshotsToSales(it) }
+                .thenApply { order(it, saleQuery.ordering) }
+        } else {
+            val booksFuture = bookDatabase.execute(getBookQuery(saleQuery))
+            booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
+                val isbns = books.map { it.isbn }
+                if (isbns.isEmpty()) return@thenCompose CompletableFuture.completedFuture(listOf())
+                val isbnToBook =
+                    books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
+                val fbQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
+                doQueries(filterQuery(fbQuery, saleQuery)).thenCompose {
+                    snapshotsToSales(
+                        it,
+                        isbnToBook
                     )
-                }
-            return future
-        }
+                }.thenApply { order(it, saleQuery.ordering) }
 
-        private fun doQueries(queries: List<Query>): CompletableFuture<Iterable<DocumentSnapshot>> {
-            return listOfFuture2FutureOfList(queries.map { doQuery(it) }
-                .toList()).thenApply { it.flatten() }
-        }
-
-
-        private fun getBookQuery(): BookQuery {
-            var bookQuery: BookQuery = AllBooksQuery()
-            if (interests != null) bookQuery = bookQuery.searchByInterests(interests!!)
-            if (title != null) bookQuery = bookQuery.searchByTitle(title!!)
-            if (isbn != null) bookQuery = bookQuery.getBooks(setOf(isbn!!))
-            return bookQuery
-        }
-
-        override fun getAll(): CompletableFuture<List<Sale>> {
-            return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
-                doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
-                    .thenApply { order(it, ordering) }
-            } else {
-                val booksFuture = bookDatabase.execute(getBookQuery())
-                booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
-                    val isbns = books.map { it.isbn }
-                    if (isbns.isEmpty()) return@thenCompose CompletableFuture.completedFuture(listOf())
-                    val isbnToBook =
-                        books.associateBy { it.isbn } //is used a cache to transform snapshots to Sales
-                    val saleQuery = saleRef.whereIn(SaleFields.BOOK_ISBN.fieldName, isbns)
-                    doQueries(filterQuery(saleQuery)).thenCompose {
-                        snapshotsToSales(
-                            it,
-                            isbnToBook
-                        )
-                    }.thenApply { order(it, ordering) }
-                }
             }
-        }
-
-        override fun getSettings(): SaleSettings {
-            return SaleSettings(
-                ordering,
-                isbn,
-                title,
-                interests,
-                states,
-                conditions,
-                minPrice,
-                maxPrice
-            )
-        }
-
-        override fun fromSettings(settings: SaleSettings): SaleQuery {
-            isbn = settings.isbn
-            title = settings.title
-            interests = settings.interests
-            states = settings.states
-            conditions = settings.conditions
-            minPrice = settings.minPrice
-            maxPrice = settings.maxPrice
-            ordering = settings.ordering
-
-            return this
         }
     }
 
-    override fun querySales(): SaleQuery {
-        return SalesQuery()
-    }
 
     private fun order(sales: List<Sale>, ordering: SaleOrdering): List<Sale> {
         return when (ordering) {

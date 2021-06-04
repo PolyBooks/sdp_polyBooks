@@ -3,6 +3,7 @@ package com.github.polybooks.database
 import android.content.Context
 import com.github.polybooks.R
 import com.github.polybooks.core.*
+import com.github.polybooks.database.SaleOrdering.*
 import com.github.polybooks.utils.FieldWithName
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
@@ -13,14 +14,14 @@ import java.util.concurrent.CompletableFuture
 interface SaleDatabase {
 
     /**
-     * Create a new query for Sales. It originally matches all sales.
+     * Execute a given query
      * */
-    fun querySales(): SaleQuery
+    fun execute(query: SaleQuery): CompletableFuture<List<Sale>>
 
     /**
      * Get all the sales in the database
      * */
-    fun listAllSales(): CompletableFuture<List<Sale>> = querySales().getAll()
+    fun listAllSales(): CompletableFuture<List<Sale>> = execute(SaleQuery())
 
     /**
      * Add the sale defined by the given parameters to the database
@@ -56,93 +57,96 @@ interface SaleDatabase {
 }
 
 /**
- * A SaleQuery is a builder for a query to the database that will yield Sales.
- * Most methods return themselves for function chaining.
+ * A SaleQuery represents the different filters to apply to sales in a query to a SaleDatabase.
+ * isbn, title, and interests are mutually exclusive; It is implementation defined what will be
+ * returned if several of these filters are defined.
+ * ordering defines how the sales will be ordered
  * */
-interface SaleQuery: Query<Sale> {
+data class SaleQuery(
+    val isbn: String? = null,
+    val title: String? = null,
+    val interests: List<Interest>? = null,
+    val states: List<SaleState>? = null,
+    val conditions: List<BookCondition>? = null,
+    val minPrice: Float? = null,
+    val maxPrice: Float? = null,
+    val ordering: SaleOrdering = DEFAULT
+): Serializable {
 
     /**
      * Set this query to only include sales that satisfy the given interests.
      * */
-    fun onlyIncludeInterests(interests: Set<Interest>): SaleQuery
+    fun searchByInterests(interests: List<Interest>): SaleQuery {
+        return if (interests.isNotEmpty()) this.copy(interests = interests, title = null, isbn = null)
+        else this.copy(interests = null)
+    }
 
     /**
      * Set this query to only search for sales with book's title that are like the given one.
      *  If called successively only the last call is taken into account
      * */
-    fun searchByTitle(title: String): SaleQuery
+    fun searchByTitle(title: String): SaleQuery {
+        return this.copy(title = title, interests = null, isbn = null)
+    }
 
     /**
      *  Set this query to only search for sales in the given states.
      *  If called successively only the last call is taken into account
      *  (see {@link SaleState})
      * */
-    fun searchByState(state: Set<SaleState>): SaleQuery
+    fun searchByState(states: List<SaleState>): SaleQuery {
+        return if (states.isNotEmpty()) this.copy(states = states)
+        else this.copy(states = null)
+    }
 
     /**
      * Set this query to only search for sales of books in the given condition.
      * If called successively only the last call is taken into account
      * (see {@link BookCondition})
      * */
-    fun searchByCondition(condition: Set<BookCondition>): SaleQuery
+    fun searchByCondition(conditions: List<BookCondition>): SaleQuery {
+        return if (conditions.isNotEmpty()) this.copy(conditions = conditions)
+        else this.copy(conditions = null)
+    }
 
     /**
      * Set this query to only search for sales above a certain price.
      * */
-    fun searchByMinPrice(min: Float): SaleQuery
+    fun searchByMinPrice(min: Float): SaleQuery {
+        return this.copy(minPrice = min)
+    }
 
     /**
      * Set this query to only search for sales below a certain price.
      * */
-    fun searchByMaxPrice(max: Float): SaleQuery
+    fun searchByMaxPrice(max: Float): SaleQuery {
+        return this.copy(maxPrice = max)
+    }
 
     /**
      * Set this query to only search for sales within the given price range.
      * */
-    fun searchByPrice(min: Float, max: Float): SaleQuery
+    fun searchByPrice(min: Float, max: Float): SaleQuery {
+        return this.searchByMinPrice(min).searchByMaxPrice(max)
+    }
 
     /**
      * Set this query to order books with the given ordering.
      * (see {@link BookOrdering})
      * */
-    fun withOrdering(ordering: SaleOrdering): SaleQuery
+    fun withOrdering(ordering: SaleOrdering): SaleQuery {
+        return this.copy(ordering = ordering)
+    }
 
     /**
-     * Set this query to get sales of books associated with the given isbn13.
+     * Set this query to get sales of books associated with the given isbn.
      * (ignoring other filters)
      * */
-    fun searchByISBN(isbn: String): SaleQuery
-
-    /**
-     * Get Settings from the book
-     * */
-    fun getSettings(): SaleSettings
-
-    /**
-     * Reset this query using the given settings
-     */
-    fun fromSettings(settings: SaleSettings): SaleQuery
+    fun searchByISBN(isbn: String): SaleQuery {
+        return this.copy(isbn = isbn, title = null, interests = null)
+    }
 
 }
-
-/**
- * The Settings contains the values for all the possible query parameters (ig. ordering, price).
- * In contrary to a Query object, it is independent to the state of the database and thus it
- * implement Serializable and can be passed as parameter between activities.
- *
- * To define a Query, a SaleSettings can be used along with fromSettings in substitution to
- * calling the other methods (ig. searchByPrice)
- */
-data class SaleSettings(
-    val ordering: SaleOrdering,
-    val isbn: String?,
-    val title: String?,
-    val interests: Set<Interest>?,
-    val states: Set<SaleState>?,
-    val conditions: Set<BookCondition>?,
-    val minPrice: Float?,
-    val maxPrice: Float?
-): Serializable
 
 /**
  * Defines an ordering for books. DEFAULT is implementation defined.

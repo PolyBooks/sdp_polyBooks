@@ -1,5 +1,10 @@
 package com.github.polybooks.database
 
+import com.github.polybooks.core.Book
+import com.github.polybooks.core.BookFields
+import com.github.polybooks.core.ISBN
+import com.github.polybooks.core.Interest
+import com.github.polybooks.utils.order
 import com.github.polybooks.core.*
 import com.github.polybooks.utils.order
 import com.google.firebase.firestore.DocumentSnapshot

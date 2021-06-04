@@ -2,16 +2,13 @@ package com.github.polybooks.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.transition.Visibility
 import android.view.View.GONE
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
 import com.github.polybooks.adapter.database.InterestAdapter
 import com.github.polybooks.core.Interest
-import com.github.polybooks.database.Query
 import com.github.polybooks.utils.setupNavbar
 import java.util.concurrent.CompletableFuture
 
