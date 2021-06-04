@@ -18,11 +18,12 @@ import java.util.concurrent.CompletableFuture
 class EditUserInterestsActivity: ListActivity<Interest>() {
     lateinit var adapter: InterestAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
+        adapter = InterestAdapter(this)
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_edit_user_interests)
-        adapter = InterestAdapter(applicationContext)
         findViewById<Button>(R.id.filter_button).visibility = GONE
-        findViewById<RecyclerView>(R.id.recyclerView).setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.white, null))
+        findViewById<RecyclerView>(R.id.recyclerView).setBackgroundColor(ResourcesCompat.getColor(
+            resources, R.color.white, null))
     }
 
     override fun onFilterButtonClick() {

@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture
 
 class InterestAdapter(private val context: Context): RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
 
-    private var userInterests = getCachedUserInterests(context).thenApply { list -> list.toSet() }
+    private lateinit var userInterests: CompletableFuture<Set<Interest>>
 
     private val interests: CompletableFuture<List<Interest>> =
         Database.interestDatabase.listAllInterests()
@@ -27,6 +27,7 @@ class InterestAdapter(private val context: Context): RecyclerView.Adapter<Intere
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InterestHolder {
+        userInterests = getCachedUserInterests(context).thenApply { list -> list.toSet() }
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.sortby_item, parent, false)
         return InterestHolder(v)

@@ -22,7 +22,7 @@ abstract class ListActivity<T>: AppCompatActivity() {
     }
 
     private lateinit var mRecycler: RecyclerView
-    private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
+    private lateinit var mLayout: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +30,8 @@ abstract class ListActivity<T>: AppCompatActivity() {
 
         findViewById<TextView>(R.id.sale_or_book).text = getTitleText()
         findViewById<Button>(R.id.filter_button).setOnClickListener { onFilterButtonClick() }
+
+        mLayout = LinearLayoutManager(this)
 
         mRecycler = findViewById(R.id.recyclerView)
         mRecycler.setHasFixedSize(true)

@@ -22,7 +22,7 @@ object UserInterestDBWithCache {
     private const val coursesListKey: String = "userCoursesList"
     private const val semestersListKey: String = "userSemestersList"
     private const val refreshTimeMillis: Long = 259200000 // this amounts to 3 days
-    private const val emptyRefreshTimeMillis: Long= 600000 // this amounts to 10 min
+    private const val emptyRefreshTimeMillis: Long = 600000 // this amounts to 10 min
 
 
     /**
