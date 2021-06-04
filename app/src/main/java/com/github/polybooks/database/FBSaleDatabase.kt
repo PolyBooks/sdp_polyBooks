@@ -10,7 +10,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
 
 private const val COLLECTION_NAME = "sale2"
 
@@ -156,6 +155,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
         override fun getAll(): CompletableFuture<List<Sale>> {
             return if (interests == null && title == null && isbn == null) { //In this case we should not look in the book database
                 doQueries(filterQuery(saleRef)).thenCompose { snapshotsToSales(it) }
+                    .thenApply { order(it, ordering) }
             } else {
                 val booksFuture = bookDatabase.execute(getBookQuery())
                 booksFuture.thenCompose { books ->  //those are the books for which we want to find the sales
