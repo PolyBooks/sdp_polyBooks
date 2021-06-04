@@ -19,6 +19,6 @@ fun order(books: List<Book>, ordering: BookOrdering): List<Book> {
     return when (ordering) {
         BookOrdering.DEFAULT -> books
         BookOrdering.TITLE_INC -> books.sortedBy { it.title }
-        BookOrdering.TITLE_DEC -> books.sortedBy { it.title }.reversed()
+        BookOrdering.TITLE_DEC -> books.sortedByDescending { it.title }
     }
 }
