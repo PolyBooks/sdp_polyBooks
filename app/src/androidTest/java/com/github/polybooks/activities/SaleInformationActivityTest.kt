@@ -27,7 +27,7 @@ class SaleInformationActivityTest {
             null,
             "pocket format"
         ),
-        LocalUser,
+        LoggedUser("123456", "Alice"),
         33.5f,
         BookCondition.GOOD,
         Date(),
@@ -46,7 +46,7 @@ class SaleInformationActivityTest {
             null,
             "pocket format"
         ),
-        LocalUser,
+        LoggedUser("123456", "Alice"),
         37.57f,
         BookCondition.NEW,
         Date(),
@@ -85,11 +85,11 @@ class SaleInformationActivityTest {
         assertDisplayed(R.id.sale_information_value_currency, R.string.currency)
 
         // Dynamic
-        assertDisplayed(R.id.sale_information_title, expected.book.title)
+        assertDisplayed(R.id.sale_information_title, expectedDisplayed(expected.book.title))
         assertDisplayed(R.id.sale_information_edition, expectedDisplayed(expected.book.edition))
         assertDisplayed(R.id.sale_information_authors, StringsManip.listAuthorsToString(expected.book.authors))
         assertDisplayed(R.id.sale_information_book_publish_date)
-        assertDisplayed(R.id.sale_information_book_publisher, expectedDisplayed(expected.book.publisher))
+        assertDisplayed(R.id.sale_information_book_publisher, expectedDisplayed((expected.seller as LoggedUser).pseudo))
         assertDisplayed(R.id.sale_information_book_format, expectedDisplayed(expected.book.format))
         assertDisplayed(R.id.sale_information_condition, expected.condition.name)
         assertDisplayed(R.id.sale_information_price, expected.price.toString())
