@@ -202,5 +202,6 @@
     <string name="image_description_cart">Image of the cart icon (bag)</string>
     <string name="locate">locate</string>
     <string name="allow_user_to_locate_me">Allow user to locate me</string>
+    <string name="seller">Seller:</string>
     <string name="seller_name">Seller_name</string>
 </resources>
