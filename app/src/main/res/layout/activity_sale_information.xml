@@ -17,202 +17,244 @@
         app:layout_goneMarginBottom="9dp"
         />
 
+    <TextView
+        android:id="@+id/sale_information_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/placeholder_title"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sale_information_edition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="@string/placeholder_edition"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sale_information_title" />
+
+    <TextView
+        android:id="@+id/sale_information_value_by_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/by"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sale_information_edition" />
+
+    <TextView
+        android:id="@+id/sale_information_authors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/roboto_mono_bold"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_by_1"
+        app:layout_constraintStart_toEndOf="@+id/sale_information_value_by_1"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_value_by_1"
+        tools:text="@tools:sample/full_names" />
+
+    <ImageView
+        android:id="@+id/sale_information_country_flag"
+        android:layout_width="34dp"
+        android:layout_height="31dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_by_1"
+        app:layout_constraintEnd_toEndOf="@+id/sale_information_title"
+        tools:srcCompat="@android:drawable/ic_menu_mapmode"
+        android:contentDescription="@string/book_language" />
+
+    <TextView
+        android:id="@+id/sale_information_value_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/value_in"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sale_information_value_by_1" />
+
+    <TextView
+        android:id="@+id/sale_information_book_format"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/should_appear_automatically"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_in"
+        app:layout_constraintStart_toEndOf="@+id/sale_information_value_in"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_value_in" />
+
+    <TextView
+        android:id="@+id/sale_information_value_condition"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/sale_book_condition"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_condition"
+        app:layout_constraintEnd_toStartOf="@+id/guideline50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_condition" />
+
+    <TextView
+        android:id="@+id/sale_information_condition"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="end"
+        app:layout_constraintTop_toBottomOf="@+id/sale_information_value_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline50" />
+
+    <ImageView
+        android:id="@+id/sale_information_book_picture"
+        android:layout_width="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="32dp"
+        android:contentDescription="@string/your_picture_of_your_book_condition"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_value_rating"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sale_information_value_condition"
+        app:srcCompat="@android:drawable/ic_menu_mapmode"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
+        android:layout_height="0dp" />
+
+    <TextView
+        android:id="@+id/sale_information_value_rating"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/rating"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_rating"
+        app:layout_constraintEnd_toStartOf="@+id/guideline50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_rating" />
+
+    <RatingBar
+        android:id="@+id/sale_information_rating"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:stepSize="0.5"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_internet_price"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
-            <TextView
-                android:id="@+id/sale_information_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/placeholder_title"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/sale_information_edition"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="@string/placeholder_edition"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sale_information_title" />
 
-            <TextView
-                android:id="@+id/sale_information_value_by_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/by"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sale_information_edition" />
 
-            <TextView
-                android:id="@+id/sale_information_authors"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/roboto_mono_bold"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_by_1"
-                app:layout_constraintStart_toEndOf="@+id/sale_information_value_by_1"
-                app:layout_constraintTop_toTopOf="@+id/sale_information_value_by_1"
-                tools:text="@tools:sample/full_names" />
 
-            <ImageView
-                android:id="@+id/sale_information_country_flag"
-                android:layout_width="34dp"
-                android:layout_height="31dp"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_by_1"
-                app:layout_constraintEnd_toEndOf="@+id/sale_information_title"
-                tools:srcCompat="@android:drawable/ic_menu_mapmode"
-                android:contentDescription="@string/book_language" />
 
-            <TextView
-                android:id="@+id/sale_information_value_publish_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/published_on_the"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sale_information_value_by_1" />
+    <TextView
+        android:id="@+id/sale_information_value_internet_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/internet_price"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_internet_price"
+        app:layout_constraintEnd_toStartOf="@+id/guideline50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_internet_price" />
 
-            <TextView
-                android:id="@+id/sale_information_book_publish_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_publish_date"
-                app:layout_constraintStart_toEndOf="@+id/sale_information_value_publish_date"
-                app:layout_constraintTop_toTopOf="@+id/sale_information_value_publish_date"
-                tools:text="@tools:sample/date/ddmmyy" />
+    <TextView
+        android:id="@+id/sale_information_internet_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="end"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_price"
+        app:layout_constraintEnd_toStartOf="@+id/sale_information_value_internet_currency"
+        app:layout_constraintStart_toStartOf="@+id/guideline50" />
 
-            <TextView
-                android:id="@+id/sale_information_value_by_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/by"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sale_information_value_publish_date" />
+    <TextView
+        android:id="@+id/sale_information_value_internet_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/currency"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_internet_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_internet_price" />
 
-            <TextView
-                android:id="@+id/sale_information_book_publisher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/should_appear_automatically"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_by_2"
-                app:layout_constraintStart_toEndOf="@+id/sale_information_value_by_2"
-                app:layout_constraintTop_toTopOf="@+id/sale_information_value_by_2" />
 
-            <TextView
-                android:id="@+id/sale_information_value_in"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/value_in"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sale_information_value_by_2" />
 
-            <TextView
-                android:id="@+id/sale_information_book_format"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/should_appear_automatically"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_in"
-                app:layout_constraintStart_toEndOf="@+id/sale_information_value_in"
-                app:layout_constraintTop_toTopOf="@+id/sale_information_value_in" />
 
-            <ImageView
-                android:id="@+id/sale_information_book_picture"
-                android:layout_width="0dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="32dp"
-                android:contentDescription="@string/your_picture_of_your_book_condition"
-                app:layout_constraintBottom_toTopOf="@+id/sale_information_value_condition"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sale_information_value_in"
-                app:srcCompat="@android:drawable/ic_menu_mapmode"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"
-                android:layout_height="0dp" />
 
-            <TextView
-                android:id="@+id/sale_information_value_condition"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/sale_book_condition"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_condition"
-                app:layout_constraintEnd_toStartOf="@+id/guideline50"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/sale_information_condition" />
 
-            <TextView
-                android:id="@+id/sale_information_condition"
-                android:layout_width="0dp"
-                android:layout_height="22dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="end"
-                app:layout_constraintBottom_toTopOf="@+id/sale_information_price"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline50" />
 
-            <TextView
-                android:id="@+id/sale_information_value_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/sale_price"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_price"
-                app:layout_constraintEnd_toStartOf="@+id/guideline50"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/sale_information_price" />
 
-            <TextView
-                android:id="@+id/sale_information_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="end"
-                app:layout_constraintBottom_toTopOf="@+id/sale_information_button_buy"
-                app:layout_constraintEnd_toStartOf="@+id/sale_information_value_currency"
-                app:layout_constraintStart_toStartOf="@+id/guideline50" />
 
-            <TextView
-                android:id="@+id/sale_information_value_currency"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:text="@string/currency"
-                app:layout_constraintBottom_toBottomOf="@+id/sale_information_price"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/sale_information_price" />
 
-            <Button
-                android:id="@+id/sale_information_button_buy"
-                style="@style/SmallButton"
-                android:layout_marginBottom="32dp"
-                android:text="@string/value_buy"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+
+
+
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/sale_information_value_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/sale_price"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_price"
+        app:layout_constraintEnd_toStartOf="@+id/guideline50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_price" />
+
+    <TextView
+        android:id="@+id/sale_information_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="end"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_button_buy"
+        app:layout_constraintEnd_toStartOf="@+id/sale_information_value_currency"
+        app:layout_constraintStart_toStartOf="@+id/guideline50" />
+
+    <TextView
+        android:id="@+id/sale_information_value_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/currency"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_price" />
+
+    <Button
+        android:id="@+id/sale_information_button_buy"
+        style="@style/SmallButton"
+        android:layout_marginBottom="32dp"
+        android:text="@string/value_buy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

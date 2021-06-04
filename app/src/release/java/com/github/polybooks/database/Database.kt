@@ -2,6 +2,7 @@ package com.github.polybooks.database
 
 import android.content.Context
 import com.github.polybooks.core.Book
+import com.github.polybooks.core.BookRating
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Interest
 import java.util.concurrent.CompletableFuture
@@ -48,6 +49,14 @@ private class CompleteBookDatabase(context: Context): BookDatabase {
 
     override fun listAllBooks(ordering: BookOrdering): CompletableFuture<List<Book>> =
         FBBookDatabase.listAllBooks()
+
+    override fun getRating(isbn: ISBN): CompletableFuture<BookRating> {
+        return FBBookDatabase.getRating(isbn)
+    }
+
+    override fun setRating(isbn: ISBN, bookRating: BookRating): CompletableFuture<Unit> {
+        return FBBookDatabase.setRating(isbn, bookRating)
+    }
 
     override fun getBooks(
         isbns: Collection<ISBN>,
