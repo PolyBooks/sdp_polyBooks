@@ -22,7 +22,7 @@ class FBSaleDatabaseTest {
 
     private val saleDB = Database.saleDatabase
 
-    private val testUser = LoggedUser(301966, "Le givre")
+    private val testUser = LoggedUser("301966", "Le givre")
     private val testBook =
         Book("9780156881807", null, "Tartuffe, by Moliere", null, null, null, null, null)
 
@@ -249,7 +249,7 @@ class FBSaleDatabaseTest {
 
         val sale = saleDB.addSale(
             testBook.isbn,
-            LoggedUser(300437, "testUser"),
+            LoggedUser("300437", "testUser"),
             666f,
             WORN,
             RETRACTED,
