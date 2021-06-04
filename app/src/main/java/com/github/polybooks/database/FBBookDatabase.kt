@@ -111,18 +111,6 @@ object FBBookDatabase: BookDatabase {
         )
     }
 
-    private fun getBooksByISBNFromFirebase(isbns : List<ISBN>) : CompletableFuture<List<Book>> {
-        val future = CompletableFuture<List<Book>>()
-        bookRef.whereIn(FieldPath.documentId(), isbns)
-            .get().addOnSuccessListener { bookEntries ->
-                val books = bookEntries.map { bookEntry ->
-                    snapshotEntryToBook(bookEntry)
-                }
-                future.complete(books)
-            }
-        return future
-    }
-
     private fun assembleBookEntry(bookDocument: Any): Any {
         return hashMapOf(
             "book" to bookDocument,
