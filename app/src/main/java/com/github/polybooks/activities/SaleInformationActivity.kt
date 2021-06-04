@@ -34,7 +34,7 @@ class SaleInformationActivity: AppCompatActivity() {
         var rating = (ratingMap as HashMap<String, Any>)["rating"] as Map<String, List<String>>
         var totalVotes = (ratingMap as HashMap<String, Any>)["totalVotes"] as Long
 
-        fun userAlreadyVoted(): String? {
+        fun getUserVote(): String? {
             val uid = firebaseAuth.currentUser?.uid ?: return null
 
             for ((key, value) in rating.entries) {
@@ -64,10 +64,6 @@ class SaleInformationActivity: AppCompatActivity() {
         }
     }
 
-    private fun ratingDocumentToMap(ratingMap: Any): MutableMap<String, MutableList<String>> {
-        return ratingMap as MutableMap<String, MutableList<String>>
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sale_information)
@@ -92,7 +88,7 @@ class SaleInformationActivity: AppCompatActivity() {
                 if (document != null && document.data != null) {
                     val bookRating = BookRating(document.data!!)
 
-                    val hasAlreadyVoted = bookRating.userAlreadyVoted()
+                    val hasAlreadyVoted = bookRating.getUserVote()
                     if (hasAlreadyVoted != null) {
                         ratingBar.rating = hasAlreadyVoted.toFloat()
                         ratingBar.setIsIndicator(true)
@@ -109,7 +105,7 @@ class SaleInformationActivity: AppCompatActivity() {
                         // rating for the book exists
                         val bookRating = BookRating(document.data!!)
 
-                        if (bookRating.userAlreadyVoted() != null) {
+                        if (bookRating.getUserVote() != null) {
                             // User has already voted
                             Toast.makeText(this, "You have already voted", Toast.LENGTH_SHORT).show()
                         } else {

@@ -162,8 +162,7 @@ class FBBookDatabaseTest {
 
         val modifiedBook: Book = Book(
             bookTartuffe!!.isbn, bookTartuffe.authors, bookTartuffe.title, bookTartuffe.edition,
-            bookTartuffe.language, bookTartuffe.publisher, bookTartuffe.publishDate, bookTartuffe.format,
-            (bookTartuffe.totalStars ?: 0.0) + 4.0, (bookTartuffe.numberVotes ?: 0) + 1
+            bookTartuffe.language, bookTartuffe.publisher, bookTartuffe.publishDate, bookTartuffe.format
         )
         fbBookDB.addBook(modifiedBook).get()
 
@@ -172,7 +171,5 @@ class FBBookDatabaseTest {
 
         assertEquals(modifiedBook.title, book!!.title)
         assertEquals(modifiedBook.isbn, book.isbn)
-        assertEquals(modifiedBook.totalStars, book.totalStars)
-        assertEquals(modifiedBook.numberVotes, book.numberVotes)
     }
 }
