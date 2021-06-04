@@ -1,22 +1,25 @@
 package com.github.polybooks.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.util.Log
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
-import com.github.polybooks.core.BookRating
-import com.github.polybooks.core.ISBN
+import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.Sale
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SELLER_UID
+import com.github.polybooks.utils.StringsManip
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.github.polybooks.core.BookRating
 import com.github.polybooks.database.*
 import com.github.polybooks.utils.INTERNET_PRICE_UNAVAILABLE
-import com.github.polybooks.utils.StringsManip
 import com.github.polybooks.utils.getInternetPrice
-import com.github.polybooks.utils.url2json
 import com.google.firebase.auth.FirebaseAuth
-import java.util.concurrent.CompletableFuture
 
 /**
  * This activity displays the detailed product information of a particular
@@ -36,16 +39,35 @@ class SaleInformationActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sale_information)
 
-        bookDB = Database.bookDatabase(this)
+        val sale = (intent.getSerializableExtra(EXTRA_SALE_INFORMATION) as Sale)
+
+        fillSale(sale)
+
+        findViewById<Button>(R.id.locate_user).setOnClickListener {
+            val intent = Intent(this, GPSActivity::class.java).apply {
+                putExtra(EXTRA_SELLER_UID, (sale.seller as LoggedUser).uid)
+                putExtra(EXTRA_MESSAGE2, Firebase.auth.currentUser?.uid) }
+            startActivity(intent)
+        }
+
+        rating(sale)
+    }
+
+    private fun fillSale(sale: Sale){
 
         val sale = (intent.getSerializableExtra(EXTRA_SALE_INFORMATION) as Sale)
 
         findViewById<TextView>(R.id.sale_information_title).text = sale.book.title
         findViewById<TextView>(R.id.sale_information_edition).text = sale.book.edition
         findViewById<TextView>(R.id.sale_information_authors).text = StringsManip.listAuthorsToString(sale.book.authors)
-        // val countryFlag: TextView = findViewById(R.id.countryFlag)
         findViewById<TextView>(R.id.sale_information_book_format).text = sale.book.format
-        // val bookImage = findViewById(R.id.proof_picture)
+        findViewById<TextView>(R.id.sale_information_condition).text = sale.condition.name
+        findViewById<TextView>(R.id.sale_information_price).text = sale.price.toString()
+        findViewById<TextView>(R.id.sale_information_book_seller).text = (sale.seller as LoggedUser).pseudo
+    }
+
+    private fun rating(sale: Sale){
+        bookDB = Database.bookDatabase(this)
 
         val ratingBar: RatingBar = findViewById(R.id.sale_information_rating)
         ratingBar.rating = 0f
@@ -112,10 +134,6 @@ class SaleInformationActivity: AppCompatActivity() {
                     )
                 }
         }
-
-
-        findViewById<TextView>(R.id.sale_information_condition).text = sale.condition.name
-
         getInternetPrice(sale.book.isbn).thenApply { price ->
             if (price == INTERNET_PRICE_UNAVAILABLE) {
                 findViewById<TextView>(R.id.sale_information_internet_price).text = "???"
@@ -123,7 +141,5 @@ class SaleInformationActivity: AppCompatActivity() {
                 findViewById<TextView>(R.id.sale_information_internet_price).text = price
             }
         }
-
-        findViewById<TextView>(R.id.sale_information_price).text = sale.price.toString()
     }
 }
