@@ -131,22 +131,25 @@
         app:layout_constraintVertical_bias="1.0" />
 
 
-    <ImageView
-        android:id="@+id/sale_information_book_picture"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/your_picture_of_your_book_condition"
-        app:layout_constraintBottom_toTopOf="@+id/sale_information_value_rating"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sale_value_seller"
-        app:srcCompat="@android:drawable/ic_menu_mapmode"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            <ImageView
+                android:id="@+id/sale_information_book_picture"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:scaleType="center"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="32dp"
+                android:contentDescription="@string/your_picture_of_your_book_condition"
+                app:layout_constraintBottom_toTopOf="@+id/sale_information_value_rating"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sale_value_seller"
+                app:srcCompat="@android:drawable/ic_menu_mapmode"
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                />
 
     <TextView
         android:id="@+id/sale_information_value_rating"
@@ -172,11 +175,6 @@
         android:stepSize="0.5"
         app:layout_constraintBottom_toTopOf="@+id/sale_information_internet_price"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
-
-
-
 
 
     <TextView
@@ -212,24 +210,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/sale_information_internet_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/sale_information_internet_price" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <TextView
         android:id="@+id/sale_information_value_price"

@@ -1,18 +1,25 @@
 package com.github.polybooks.activities
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Button
 import android.util.Log
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.github.polybooks.R
 import com.github.polybooks.core.LoggedUser
 import com.github.polybooks.core.Sale
 import com.github.polybooks.utils.GlobalVariables.EXTRA_SELLER_UID
 import com.github.polybooks.utils.StringsManip
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.github.polybooks.core.BookRating
@@ -41,7 +48,9 @@ class SaleInformationActivity: AppCompatActivity() {
 
         val sale = (intent.getSerializableExtra(EXTRA_SALE_INFORMATION) as Sale)
 
+
         fillSale(sale)
+
 
         findViewById<Button>(R.id.locate_user).setOnClickListener {
             val intent = Intent(this, GPSActivity::class.java).apply {
@@ -50,23 +59,31 @@ class SaleInformationActivity: AppCompatActivity() {
             startActivity(intent)
         }
 
+        val firebaseStorage = FirebaseStorage.getInstance()
+        val storageRef: StorageReference = firebaseStorage
+            .getReference("images/sales")
+            .child("CMbTHHrs1v8u1sep7fw0.jpg") // TODO getReferenceID (waiting for PR #211)
+
+        val bookImage = findViewById<ImageView>(R.id.sale_information_book_picture)
+        storageRef.getBytes(1 shl 24)
+            .addOnSuccessListener { bytes ->
+                val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                bookImage.setImageBitmap(
+                    Bitmap.createScaledBitmap(
+                        bmp,
+                        bookImage.width,
+                        bookImage.height,
+                        false
+                    )
+                )}
+            .addOnFailureListener {
+                bookImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.bibliotheque_avec_books, theme))
+            }
+
         rating(sale)
     }
 
-    private fun fillSale(sale: Sale){
-
-        val sale = (intent.getSerializableExtra(EXTRA_SALE_INFORMATION) as Sale)
-
-        findViewById<TextView>(R.id.sale_information_title).text = sale.book.title
-        findViewById<TextView>(R.id.sale_information_edition).text = sale.book.edition
-        findViewById<TextView>(R.id.sale_information_authors).text = StringsManip.listAuthorsToString(sale.book.authors)
-        findViewById<TextView>(R.id.sale_information_book_format).text = sale.book.format
-        findViewById<TextView>(R.id.sale_information_condition).text = sale.condition.name
-        findViewById<TextView>(R.id.sale_information_price).text = sale.price.toString()
-        findViewById<TextView>(R.id.sale_information_book_seller).text = (sale.seller as LoggedUser).pseudo
-    }
-
-    private fun rating(sale: Sale){
+    private fun rating(sale: Sale) {
         bookDB = Database.bookDatabase(this)
 
         val ratingBar: RatingBar = findViewById(R.id.sale_information_rating)
@@ -90,23 +107,33 @@ class SaleInformationActivity: AppCompatActivity() {
 
                         if (bookRating.getUserVote() != null) {
                             // User has already voted
-                            Toast.makeText(this, "You have already voted", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "You have already voted", Toast.LENGTH_SHORT)
+                                .show()
                         } else {
                             // User never voted on this book
-                            val ratingKey: String = if (rating.toString().endsWith(".0")) rating.toString().take(1) else rating.toString()
+                            val ratingKey: String =
+                                if (rating.toString().endsWith(".0")) rating.toString()
+                                    .take(1) else rating.toString()
 
-                            val newEntry: List<String> = bookRating.rating[ratingKey]!! + firebaseAuth.currentUser?.uid!!
+                            val newEntry: List<String> =
+                                bookRating.rating[ratingKey]!! + firebaseAuth.currentUser?.uid!!
 
                             bookRating.rating = bookRating.rating.plus(Pair(ratingKey, newEntry))
                             bookRating.totalVotes = 1 + bookRating.totalVotes
 
                             bookRating.uploadToFirebase(sale.book.isbn).thenApply {
-                                Toast.makeText(this, "You chose : $rating stars", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    "You chose : $rating stars",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     } else {
                         // no rating yet
-                        val ratingKey: String = if (rating.toString().endsWith(".0")) rating.toString().take(1) else rating.toString()
+                        val ratingKey: String =
+                            if (rating.toString().endsWith(".0")) rating.toString()
+                                .take(1) else rating.toString()
 
                         val emptyRating: HashMap<String, List<String>> = hashMapOf(
                             "0" to emptyList(), "0.5" to emptyList(),
@@ -117,9 +144,19 @@ class SaleInformationActivity: AppCompatActivity() {
                             "5" to emptyList()
                         )
 
-                        val bookRating = BookRating(hashMapOf("rating" to emptyRating.plus(Pair(ratingKey, listOf(firebaseAuth.currentUser?.uid))), "totalVotes" to 1L))
+                        val bookRating = BookRating(
+                            hashMapOf(
+                                "rating" to emptyRating.plus(
+                                    Pair(
+                                        ratingKey,
+                                        listOf(firebaseAuth.currentUser?.uid)
+                                    )
+                                ), "totalVotes" to 1L
+                            )
+                        )
                         bookRating.uploadToFirebase(sale.book.isbn).thenApply {
-                            Toast.makeText(this, "You chose : $rating stars", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "You chose : $rating stars", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
 
@@ -141,5 +178,15 @@ class SaleInformationActivity: AppCompatActivity() {
                 findViewById<TextView>(R.id.sale_information_internet_price).text = price
             }
         }
+    }
+
+    private fun fillSale(sale: Sale){
+        findViewById<TextView>(R.id.sale_information_title).text = sale.book.title
+        findViewById<TextView>(R.id.sale_information_edition).text = sale.book.edition
+        findViewById<TextView>(R.id.sale_information_authors).text = StringsManip.listAuthorsToString(sale.book.authors)
+        findViewById<TextView>(R.id.sale_information_book_format).text = sale.book.format
+        findViewById<TextView>(R.id.sale_information_condition).text = sale.condition.name
+        findViewById<TextView>(R.id.sale_information_price).text = sale.price.toString()
+        findViewById<TextView>(R.id.sale_information_book_seller).text = (sale.seller as LoggedUser).pseudo
     }
 }
