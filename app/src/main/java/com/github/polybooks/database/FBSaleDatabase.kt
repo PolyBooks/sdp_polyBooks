@@ -115,6 +115,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
                         isbnToBook
                     )
                 }.thenApply { order(it, saleQuery.ordering) }
+
             }
         }
     }
