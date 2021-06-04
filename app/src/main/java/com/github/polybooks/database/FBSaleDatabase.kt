@@ -206,7 +206,7 @@ class FBSaleDatabase(private val bookDatabase: BookDatabase): SaleDatabase {
     }
 
     private fun order(sales: List<Sale>, ordering: SaleOrdering): List<Sale> {
-        when (ordering) {
+        return when (ordering) {
             DEFAULT -> sales
             TITLE_INC -> sales.sortedBy { it.book.title }
             TITLE_DEC -> sales.sortedByDescending { it.book.title }
