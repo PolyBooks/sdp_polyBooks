@@ -142,12 +142,14 @@ class FilteringSalesActivity: FilteringActivity() {
         if (mPriceMax.text.isNotEmpty())
             query = query.searchByMaxPrice(mPriceMax.text.toString().toFloat())
 
-
         //handle book filters
         val interests = mFieldParameter.getSelectedValues() + mSemesterParameter.getSelectedValues() + mCourseParameter.getSelectedValues()
-        query = query.searchByInterests(interests)
-        query.searchByTitle(mName.text.toString())
-        query = query.searchByISBN(mISBN.text.toString())
+        if (interests.isNotEmpty())
+            query = query.searchByInterests(interests)
+        if (mName.text.toString().isNotBlank())
+            query = query.searchByTitle(mName.text.toString())
+        if (mISBN.text.toString().isNotBlank())
+            query = query.searchByISBN(mISBN.text.toString())
 
         return query
     }
