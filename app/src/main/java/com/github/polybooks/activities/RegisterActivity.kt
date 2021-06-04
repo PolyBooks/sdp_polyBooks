@@ -94,6 +94,7 @@ class RegisterActivity : AppCompatActivity() {
                                 }
                             }
                     } else {
+                        Log.d(TAG, "Cancelled ${task.isCanceled} Complete ${task.isComplete} Message: ${task.exception?.message}===================")
                         failedUser(auth.currentUser, this)
                     }
                 }
