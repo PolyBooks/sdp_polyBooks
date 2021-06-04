@@ -38,10 +38,10 @@ class SaleInformationActivity: AppCompatActivity() {
 
         val ratingBar: RatingBar = findViewById(R.id.sale_information_rating)
         ratingBar.rating = 0f
-
+/*
         if (sale.book.totalStars != null && sale.book.numberVotes != null && sale.book.numberVotes != 0) {
             ratingBar.rating = (sale.book.totalStars / sale.book.numberVotes).toFloat()
-        }
+        } */
         ratingBar.setOnRatingBarChangeListener { bar, rating, _ ->
             val bookDB = Database.bookDatabase
 
@@ -60,12 +60,14 @@ class SaleInformationActivity: AppCompatActivity() {
                     )
                 } else {
                     val book: Book = books[0]
+                    /*
                     val updatedTotalStars: Double = rating + (book.totalStars ?: 0.0)
                     val updatedNumberVotes: Int = 1 + (book.numberVotes ?: 0)
 
                     bar.setIsIndicator(true)
 
-                    bookDB.addBook(book.copy(totalStars = updatedTotalStars, numberVotes = updatedNumberVotes))
+                    bookDB.addBook(book.copy(totalStars = updatedTotalStars, numberVotes = updatedNumberVotes)) */
+                    bookDB.addBook(book)
                 }
             }
 

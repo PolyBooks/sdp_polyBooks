@@ -28,10 +28,6 @@ class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
         val publishDate : String? = book.publishDate?.let {
             dateFormatter.format(it)
         }
-        val rating: HashMap<String, Number?> = hashMapOf(
-            "totalStars" to (book.totalStars ?: 0.0),
-            "numberVotes" to (book.numberVotes ?: 0)
-        )
         return hashMapOf(
             BookFields.AUTHORS.fieldName to book.authors,
             BookFields.EDITION.fieldName to book.edition,
@@ -40,8 +36,7 @@ class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
             BookFields.LANGUAGE.fieldName to book.language,
             BookFields.PUBLISHDATE.fieldName to publishDate,
             BookFields.PUBLISHER.fieldName to book.publisher,
-            BookFields.TITLE.fieldName to book.title,
-            BookFields.RATING.fieldName to rating
+            BookFields.TITLE.fieldName to book.title
         )
     }
 
@@ -145,9 +140,7 @@ class FBBookDatabase(private val bookProvider : BookDatabase) : BookDatabase {
                 map[BookFields.LANGUAGE.fieldName] as String?,
                 map[BookFields.PUBLISHER.fieldName] as String?,
                 publishDate,
-                map[BookFields.FORMAT.fieldName] as String?,
-                totalStars,
-                numberVotes
+                map[BookFields.FORMAT.fieldName] as String?
             )
         }
 

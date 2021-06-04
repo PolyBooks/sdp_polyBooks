@@ -29,9 +29,7 @@ data class Book(
     val language : String?,
     val publisher : String?,
     val publishDate : Date?,
-    val format : String?,
-    val totalStars: Double? = null,
-    val numberVotes: Int? = null
+    val format : String?
 ) : Serializable
 
 /**
