@@ -26,20 +26,28 @@ class SaleInformationActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sale_information)
 
+        val sale = (intent.getSerializableExtra(EXTRA_SALE_INFORMATION) as Sale)
+
+        fillSale(sale)
+
+        findViewById<Button>(R.id.locate_user).setOnClickListener {
+            val intent = Intent(this, GPSActivity::class.java).apply {
+                putExtra(EXTRA_SELLER_UID, (sale.seller as LoggedUser).uid)
+                putExtra(EXTRA_MESSAGE2, Firebase.auth.currentUser?.uid) }
+            startActivity(intent)
+        }
+    }
+
+    private fun fillSale(sale: Sale){
         val viewTitle: TextView = findViewById(R.id.sale_information_title)
         val viewEdition: TextView = findViewById(R.id.sale_information_edition)
         val viewAuthors: TextView = findViewById(R.id.sale_information_authors)
-        // val countryFlag: TextView = findViewById(R.id.countryFlag)
         val viewPublishDate: TextView = findViewById(R.id.sale_information_book_publish_date)
         val viewPublisher: TextView = findViewById(R.id.sale_information_book_publisher)
         val viewFormat: TextView = findViewById(R.id.sale_information_book_format)
-        // val bookImage = findViewById(R.id.proof_picture)
 
         val viewCondition: TextView = findViewById(R.id.sale_information_condition)
         val viewPrice: TextView = findViewById(R.id.sale_information_price)
-
-
-        val sale = (intent.getSerializableExtra(EXTRA_SALE_INFORMATION) as Sale)
 
         viewTitle.text = sale.book.title
         viewEdition.text = sale.book.edition
@@ -52,14 +60,5 @@ class SaleInformationActivity: AppCompatActivity() {
 
         viewCondition.text = sale.condition.name
         viewPrice.text = sale.price.toString()
-
-        val buttonLocate: Button = findViewById(R.id.locate_user)
-        buttonLocate.setOnClickListener {
-            val intent = Intent(this, GPSActivity::class.java).apply {
-                putExtra(EXTRA_SELLER_UID, (sale.seller as LoggedUser).uid)
-                putExtra(EXTRA_MESSAGE2, Firebase.auth.currentUser?.uid)
-            }
-            startActivity(intent)
-        }
     }
 }

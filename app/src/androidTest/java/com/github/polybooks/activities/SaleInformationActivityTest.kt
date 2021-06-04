@@ -2,7 +2,11 @@ package com.github.polybooks.activities
 
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
 import com.github.polybooks.core.*
@@ -98,5 +102,11 @@ class SaleInformationActivityTest {
     @Test
     fun t_assertAllInformationDisplayed() {
         assertEverythingDisplayed(dummySaleTartuffe)
+    }
+
+    @Test
+    fun locateUser() {
+        Espresso.onView(ViewMatchers.withId(R.id.locate_user)).perform(ViewActions.click())
+        Intents.intended(IntentMatchers.hasComponent(GPSActivity::class.java.name))
     }
 }

@@ -25,41 +25,22 @@ class UserProfileActivity : AppCompatActivity() {
 
         val uid = intent.getStringExtra(EXTRA_MESSAGE2)
 
-        val buttonAllowLoca : Button = findViewById(R.id.switch_loca)
-        buttonAllowLoca.setOnClickListener {
+        findViewById<Button>(R.id.switch_loca).setOnClickListener {
             val intent = Intent(this, GPSActivity::class.java).apply {
-                putExtra(EXTRA_MESSAGE2, uid)
-            }
-            startActivity(intent)
-        }
+                putExtra(EXTRA_MESSAGE2, uid) }
+            startActivity(intent) }
 
-        val textMessageView = findViewById<TextView>(R.id.welcome_text)
-        textMessageView.apply {text = welcomeText}
+        findViewById<TextView>(R.id.welcome_text).apply {text = welcomeText}
 
-        val buttonSellBook: Button = findViewById(R.id.sell_book_button)
-        buttonSellBook.setOnClickListener {
-            val intent = Intent(this, AddSaleActivity::class.java)
-            startActivity(intent)
-        }
+        findViewById<Button>(R.id.sell_book_button).setOnClickListener {
+            startActivity(Intent(this, AddSaleActivity::class.java)) }
 
-        val buttonDisconnect: Button = findViewById(R.id.button_disco)
-        buttonDisconnect.setOnClickListener {
-            LoginActivity().signOut()
+        findViewById<Button>(R.id.button_disco).setOnClickListener { LoginActivity().signOut()
             val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
-
-        val buttonLocate: Button = findViewById(R.id.locate_button)
-        buttonLocate.setOnClickListener {
-            val intent = Intent(this, GPSActivity::class.java).apply {
-                putExtra(EXTRA_MESSAGE2, uid)
-            }
-            startActivity(intent)
-        }
+            startActivity(intent) }
 
         findViewById<Button>(R.id.edit_user_interests).setOnClickListener {
-            startActivity(Intent(this, EditUserInterestsActivity::class.java))
-        }
+            startActivity(Intent(this, EditUserInterestsActivity::class.java)) }
 
         setNavBar()
     }

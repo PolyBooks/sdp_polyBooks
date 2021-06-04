@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.polybooks.R
+import com.github.polybooks.utils.GlobalVariables
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -45,6 +46,15 @@ class UserProfileTest {
 
         onView(withId(R.id.my_sales_button)).check(ViewAssertions.matches(isDisplayed()))
         onView(withId(R.id.my_sales_button)).check(ViewAssertions.matches(isClickable()))
+
+        onView(withId(R.id.switch_loca)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.switch_loca)).check(ViewAssertions.matches(isClickable()))
+    }
+
+    @Test
+    fun allowLocaButton(){
+        onView(withId(R.id.switch_loca)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(GPSActivity::class.java.name))
     }
 
     @Test

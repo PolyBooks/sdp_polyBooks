@@ -54,19 +54,15 @@ class GPSActivity: AppCompatActivity() {
         setContentView(R.layout.activity_gps)
         uid = intent.getStringExtra(EXTRA_MESSAGE2).toString()
 
-        mapFrag = supportFragmentManager.findFragmentById(
-            R.id.map_fragment
-        ) as? SupportMapFragment
+        mapFrag = supportFragmentManager.findFragmentById(R.id.map_fragment) as? SupportMapFragment
 
         requestPermissionsAndSetUpMap()
 
-        val searchButton= findViewById<Button>(R.id.button_search)
-        searchButton.setOnClickListener{
+        findViewById<Button>(R.id.button_search).setOnClickListener{
             val uidField = findViewById<TextInputEditText>(R.id.uid_field)
             otherUid = uidField.text.toString()
             addPostEventListener(Firebase.database.getReference("localisation_$uid"))
-            searchUser(uid, mapFrag)
-        }
+            searchUser(uid, mapFrag) }
 
         if(intent.getStringExtra(EXTRA_SELLER_UID) != null){
             otherUid = intent.getStringExtra(EXTRA_SELLER_UID).toString()
@@ -74,17 +70,11 @@ class GPSActivity: AppCompatActivity() {
                 .addOnSuccessListener {
                     if(it.value != null){
                         addPostEventListener(Firebase.database.getReference("localisation_$otherUid"))
-                        searchUser(otherUid, mapFrag)
-                    }else{
-
-                    }
-                }
-                .addOnFailureListener{
+                        searchUser(otherUid, mapFrag) }else{}
+                }.addOnFailureListener{
                     Log.e("firebase", "Error getting data", it) }
         }
-
         setupNavbar(findViewById(R.id.bottom_navigation), this)
-
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_FINE_LOCATION])
