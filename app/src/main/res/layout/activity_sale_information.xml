@@ -153,8 +153,66 @@
         android:isIndicator="false"
         android:numStars="5"
         android:stepSize="0.5"
-        app:layout_constraintBottom_toTopOf="@+id/sale_information_price"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_internet_price"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/sale_information_value_internet_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/internet_price"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_internet_price"
+        app:layout_constraintEnd_toStartOf="@+id/guideline50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_internet_price" />
+
+    <TextView
+        android:id="@+id/sale_information_internet_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="end"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_price"
+        app:layout_constraintEnd_toStartOf="@+id/sale_information_value_internet_currency"
+        app:layout_constraintStart_toStartOf="@+id/guideline50" />
+
+    <TextView
+        android:id="@+id/sale_information_value_internet_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/currency"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_internet_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_internet_price" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <TextView
         android:id="@+id/sale_information_value_price"

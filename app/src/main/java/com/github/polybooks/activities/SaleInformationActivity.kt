@@ -11,7 +11,10 @@ import com.github.polybooks.core.BookRating
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Sale
 import com.github.polybooks.database.*
+import com.github.polybooks.utils.INTERNET_PRICE_UNAVAILABLE
 import com.github.polybooks.utils.StringsManip
+import com.github.polybooks.utils.getInternetPrice
+import com.github.polybooks.utils.url2json
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.CompletableFuture
 
@@ -110,7 +113,17 @@ class SaleInformationActivity: AppCompatActivity() {
                 }
         }
 
+
         findViewById<TextView>(R.id.sale_information_condition).text = sale.condition.name
+
+        getInternetPrice(sale.book.isbn).thenApply { price ->
+            if (price == INTERNET_PRICE_UNAVAILABLE) {
+                findViewById<TextView>(R.id.sale_information_internet_price).text = "???"
+            } else {
+                findViewById<TextView>(R.id.sale_information_internet_price).text = price
+            }
+        }
+
         findViewById<TextView>(R.id.sale_information_price).text = sale.price.toString()
     }
 }
