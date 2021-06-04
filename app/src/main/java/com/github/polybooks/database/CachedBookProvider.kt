@@ -3,6 +3,7 @@ package com.github.polybooks.database
 import com.github.polybooks.core.Book
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.utils.listOfFuture2FutureOfList
+import com.github.polybooks.utils.order
 import java.util.concurrent.CompletableFuture
 
 
@@ -30,7 +31,7 @@ class CachedBookProvider(private val backing: BookProvider, private val cache: B
                 val futures = booksFromBacking.map { book -> cache.addBook(book) }
                 return@thenCompose listOfFuture2FutureOfList(futures)
             }
-            cachingBooksFuture.thenCompose { allBooksFuture }
+            cachingBooksFuture.thenCompose { allBooksFuture }.thenApply { order(it, ordering) }
         }
     }
 

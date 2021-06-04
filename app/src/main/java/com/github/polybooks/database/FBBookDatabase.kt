@@ -1,6 +1,7 @@
 package com.github.polybooks.database
 
 import com.github.polybooks.core.*
+import com.github.polybooks.utils.order
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import java.text.SimpleDateFormat
@@ -43,7 +44,8 @@ object FBBookDatabase: BookDatabase {
                 val books = bookEntries.map { bookEntry ->
                     snapshotEntryToBook(bookEntry)
                 }
-                future.complete(books)
+                val ordered = order(books, ordering)
+                future.complete(ordered)
             }
         return future
     }
@@ -60,7 +62,8 @@ object FBBookDatabase: BookDatabase {
                 val books = bookEntries.map { bookEntry ->
                     snapshotEntryToBook(bookEntry)
                 }
-                future.complete(books)
+                val ordered = order(books, ordering)
+                future.complete(ordered)
             }
         return future
     }
@@ -71,7 +74,8 @@ object FBBookDatabase: BookDatabase {
             val books = bookEntries.map { bookEntry ->
                 snapshotEntryToBook(bookEntry)
             }
-            future.complete(books)
+            val ordered = order(books, ordering)
+            future.complete(ordered)
         }
         return future
     }
