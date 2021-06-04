@@ -8,35 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:735038661915:android:5ad9e7404d514a8cb11fbe",
-        "android_client_info": {
-          "package_name": "ch.epfl.sweng.todoapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCefEY7UiFQF828bM3urW2LmokRkwE0lb8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:735038661915:android:b6f0fd631919e2d8b11fbe",
         "android_client_info": {
           "package_name": "com.github.polybooks"
@@ -44,6 +15,54 @@
       },
       "oauth_client": [
         {
+          "client_id": "735038661915-03d7ga3okhlg4tfuft33qmv5d4k15vbc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.polybooks",
+            "certificate_hash": "f35bfa001dadc45cfc536f311b69a22d91f02bf2"
+          }
+        },
+        {
+          "client_id": "735038661915-63n1sqb6pbjn76nat7c6tc10brm8hv7u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.polybooks",
+            "certificate_hash": "66962e112a174e7ea26348d4cde0d05324f05846"
+          }
+        },
+        {
+          "client_id": "735038661915-k2d2nearuog3i24kb4ag8c74jee2idpj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.polybooks",
+            "certificate_hash": "25a57d316488e5108d3093f7f03737b467c4bcaf"
+          }
+        },
+        {
+          "client_id": "735038661915-npoe730njkph42hl4unva0vn6pli3l63.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.polybooks",
+            "certificate_hash": "8398f209d48952c6875032e677db386a92c2c9e6"
+          }
+        },
+        {
+          "client_id": "735038661915-nqeijgui0g1ebgld3ra2tvsa0dtb986s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.polybooks",
+            "certificate_hash": "1237b04e812ff1f8c7700931c88f136e0828b19e"
+          }
+        },
+        {
+          "client_id": "735038661915-obeptd0piv4gh9skpfudv19uu7ctdp45.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.polybooks",
+            "certificate_hash": "8ef45343bbde579a16591dffbbe8063d5c01224b"
+          }
+        },
+        {
           "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -57,7 +76,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "735038661915-qfdis8eitfm9oguhgepqv05nup9h1d94.apps.googleusercontent.com",
+              "client_id": "735038661915-k7g5mse6ppfqsisfkkona6sti9184eed.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
