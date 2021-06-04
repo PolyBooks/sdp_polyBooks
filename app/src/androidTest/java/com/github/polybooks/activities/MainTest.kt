@@ -88,7 +88,7 @@ class MainTest {
         onView(withId(R.id.signup_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.log_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.sell_button)).perform(click())
-        FirebaseProvider.getAuth().currentUser.delete()
+        FirebaseProvider.getAuth().currentUser?.delete()
 
     }
 
@@ -149,3 +149,5 @@ class MainTest {
     }
 
 }
+
+// bug test

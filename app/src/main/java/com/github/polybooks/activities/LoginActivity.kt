@@ -23,6 +23,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthProvider
 
+const val EXTRA_MESSAGE2 = "com.github.polybooks.UID"
+
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */

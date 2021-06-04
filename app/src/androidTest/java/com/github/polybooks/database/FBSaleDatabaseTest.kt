@@ -30,6 +30,7 @@ class FBSaleDatabaseTest {
     private val saleDB = Database.saleDatabase(ApplicationProvider.getApplicationContext())
 
     private val testUser = LoggedUser("301966", "Le givre")
+    
     private val testBook = TestBookProvider.getBook("9781985086593").get()!!
 
     private val dummySale: Sale = Sale(
@@ -419,6 +420,27 @@ class FBSaleDatabaseTest {
         saleDB.deleteSale(saleRetractedGood)
         saleDB.deleteSale(saleActiveWorn)
         saleDB.deleteSale(saleActiveGood)
+    }
+
+    @Test
+    fun orderingsWork() {
+        val sales = TestBookProvider.books.values.mapIndexed {index, book ->
+            Thread.sleep(10)
+            saleDB.addSale(dummySale.copy(book = book, price = 3f + index.toFloat())).get()
+        }
+
+        val titleDec = saleDB.querySales().withOrdering(SaleOrdering.TITLE_DEC).getAll().get()
+        val titleInc = saleDB.querySales().withOrdering(SaleOrdering.TITLE_INC).getAll().get()
+        val priceDec = saleDB.querySales().withOrdering(SaleOrdering.PRICE_DEC).getAll().get()
+        val priceInc = saleDB.querySales().withOrdering(SaleOrdering.PRICE_INC).getAll().get()
+        val publishDec = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_DEC).getAll().get()
+        val publishInc = saleDB.querySales().withOrdering(SaleOrdering.PUBLISH_DATE_INC).getAll().get()
+
+        assertEquals(titleDec, titleInc.reversed())
+        assertEquals(priceDec, priceInc.reversed())
+        assertEquals(publishDec, publishInc.reversed())
+
+        sales.forEach { saleDB.deleteSale(it).get() }
     }
 
 }

@@ -8,7 +8,7 @@ import java.io.Serializable
  * or a logged in user.
  * */
 sealed class User : Serializable
-data class LoggedUser(val uid : String, val pseudo : String) : User()
+data class LoggedUser(val uid : String, val pseudo : String?) : User()
 object LocalUser : User()
 
 /**
