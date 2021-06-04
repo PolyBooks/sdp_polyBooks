@@ -9,6 +9,21 @@ import java.util.concurrent.CompletableFuture
 interface InterestDatabase {
 
     /**
+     * Add a new field document to the fields collection
+     */
+    fun addField(field: Field) : CompletableFuture<Field>
+
+    /**
+     * Add a new semester document to the semesters collection
+     */
+    fun addSemester(semester: Semester) : CompletableFuture<Semester>
+
+    /**
+     * Add a new course document to the courses collection
+     */
+    fun addCourse(course: Course) : CompletableFuture<Course>
+
+    /**
      * List all the Fields in the database.
      * */
     fun listAllFields() : CompletableFuture<List<Field>>
@@ -27,13 +42,15 @@ interface InterestDatabase {
      * List all the interests in the database.
      * */
     fun listAllInterests() : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
-        = TODO("It can be implemented from the previous functions")
-
+        = listAllFields().thenCombine(listAllSemesters()) { fields, semester -> Pair(fields, semester) }
+        .thenCombine(listAllCourses()){pair, courses -> Triple(pair.first, pair.second, courses)}
     /**
      * Get the interests of the specified user
      * TODO: Might need to add an authentication token to restrict authenticated users to only modify their interests.
      * */
     fun getUserInterests(user : User) : CompletableFuture<Triple<List<Field>, List<Semester>, List<Course>>>
+        //TODO : Change this
+        = CompletableFuture.completedFuture(Triple(emptyList(), emptyList(), emptyList()))
 
     /**
      * Sets the interests of the specified user.
@@ -41,5 +58,6 @@ interface InterestDatabase {
      * @return A Future to receive confirmation of success/failure asynchronously
      * */
     fun setUserInterests(user : User, interests : List<Interest>) : CompletableFuture<Unit>
+
 
 }

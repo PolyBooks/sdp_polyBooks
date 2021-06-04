@@ -85,6 +85,7 @@
     <string name="confirm_password">Confirm Password</string>
 
     <!-- User Interaction (could be further organized) -->
+    <string name="user_edit_interests">Your interests</string>
     <string name="sort_by">Sort by</string>
     <string name="take_picture">Take Picture</string>
     <string name="scan_book">Scan Book Barcode</string>
@@ -194,4 +195,6 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="internet_price">Internet price</string>
+    <string name="image_description_favorite">Image of the favorite icon (star)</string>
+    <string name="image_description_cart">Image of the cart icon (bag)</string>
 </resources>

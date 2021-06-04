@@ -4,19 +4,18 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.polybooks.core.Book
-import com.github.polybooks.database.BookOrdering.*
+import com.github.polybooks.core.ISBN
 import com.github.polybooks.utils.listOfFuture2FutureOfList
-import com.google.firebase.Timestamp
+import com.github.polybooks.utils.regulariseISBN
+import com.github.polybooks.utils.unwrapException
+import com.github.polybooks.utils.url2json
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.io.FileNotFoundException
-import java.lang.Integer.min
-
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import com.github.polybooks.utils.unwrapException
 import java.lang.UnsupportedOperationException
 
 
@@ -40,46 +39,33 @@ private const val OL_BASE_ADDR = """https://openlibrary.org"""
 /**
  * An implementation of a book database based on the Open Library online database
  * */
-class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonElement>) :
-    BookDatabase {
+object OLBookDatabase: BookProvider {
 
-    override fun queryBooks(): BookQuery = OLBookQuery()
+    override fun getBook(isbn: String): CompletableFuture<Book?> {
+        val regularised = regulariseISBN(isbn) ?: throw IllegalArgumentException("ISBN cannot be regularised")
+        val url = isbn2URL(regularised)
 
-    override fun addBook(book: Book): CompletableFuture<Unit> {
-        throw UnsupportedOperationException("The 'add' operation is not supported by open library database")
+        return url2json(url)
+            .thenApply { parseBook(it) }
+            .thenCompose { updateBookWithAuthorName(it) }
+            .thenCompose { updateBookWithLanguageName(it) }
+            .exceptionally { exception ->
+                val unwrapped = unwrapException(exception)
+                if (unwrapped is FileNotFoundException) {
+                    return@exceptionally null
+                } else throw unwrapped
+            }
     }
 
-    private inner class OLBookQuery() : AbstractBookQuery() {
+    override fun getBooks(isbns: Collection<ISBN>, ordering: BookOrdering): CompletableFuture<List<Book>> {
+        val regularised = isbns.map { regulariseISBN(it) ?: throw IllegalArgumentException("ISBN cannot be regularised") }
+        val futures = regularised.toSet().map { getBook(it) }
+        return listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
+    }
 
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getAll(): CompletableFuture<List<Book>> {
-            return if (isbns == null) CompletableFuture.completedFuture(Collections.emptyList())
-            else {
-                val futures = isbns!!.map{getBookByISBN(it)}
-                listOfFuture2FutureOfList(futures).thenApply { it.filterNotNull() }
-            }
-        }
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getN(n: Int, page: Int): CompletableFuture<List<Book>> {
-            if (n <= 0 || page < 0) {
-                throw IllegalArgumentException(
-                    if (n <= 0) "Cannot return a negative/null ($n) number of results"
-                    else "Cannot return a negative ($page) page number"
-                )
-            }
-            return getAll().thenApply { list ->
-                val lowRange = min(n*page, list.size)
-                val highRange = min(n*page + n, list.size)
-                list.subList(lowRange, highRange)
-            }
-        }
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun getCount(): CompletableFuture<Int> {
-            return getAll().thenApply { it.size }
-        }
-
+    override fun addBook(book: Book): CompletableFuture<Unit> {
+        // Can't add books to OpenLibrary
+        return CompletableFuture.completedFuture(Unit)
     }
 
     //makes an URL to the OpenLibrary page out of an isbn
@@ -88,22 +74,6 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     }
 
     private val errorMessage = "Cannot parse OpenLibrary book because : "
-
-    private fun getBookByISBN(isbn : String) : CompletableFuture<Book?> {
-        val url = isbn2URL(isbn)
-        return url2json(url)
-            .thenApply { parseBook(it) }
-            .thenCompose { updateBookWithAuthorName(it) }
-            .thenCompose { updateBookWithLanguageName(it) }
-            .exceptionally { exception ->
-                val unwraped = unwrapException(exception)
-                if (unwraped is FileNotFoundException) {
-                    return@exceptionally null
-                }
-                else throw unwraped
-            }
-    }
-
 
     //takes a book that has the authors in the form /authors/<authorID>
     //and fetches the actual name of the author
@@ -163,8 +133,10 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             .map { parseEdition(it) }
             .orElse(null)
 
-        return Book(isbn13, authors, title, edition, language,
-            publisher, publishDate, format)
+        return Book(
+            isbn13, authors, title, edition, language,
+            publisher, publishDate, format
+        )
 
     }
 
@@ -172,15 +144,18 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     @RequiresApi(Build.VERSION_CODES.N)
     private fun parseAuthor(jsonAuthor: JsonElement): String {
         val nameField = getJsonField(asJsonObject(jsonAuthor), AUTHOR_NAME_FIELD_NAME)
-        return nameField.map { asString(it) }.orElseThrow(cantParseException(AUTHOR_NAME_FIELD_NAME))
+        return nameField.map { asString(it) }
+            .orElseThrow(cantParseException(AUTHOR_NAME_FIELD_NAME))
     }
 
     //parses the json of a language
-    private fun parseLanguage(jsonLanguage: JsonElement) : String {
+    private fun parseLanguage(jsonLanguage: JsonElement): String {
         val nameField = getJsonField(asJsonObject(jsonLanguage), LANGUAGE_NAME_FIELD_NAME)
-        return nameField.map { asString(it) }.orElseThrow(cantParseException(
-            LANGUAGE_NAME_FIELD_NAME
-        ))
+        return nameField.map { asString(it) }.orElseThrow(
+            cantParseException(
+                LANGUAGE_NAME_FIELD_NAME
+            )
+        )
     }
 
     private fun parseTitle(jsonTitle: JsonElement): String = asString(jsonTitle)
@@ -191,8 +166,7 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
         val first: JsonElement? = asJsonArray(jsonISBN13).firstOrNull()
         if (first == null) {
             throw cantParseException(ISBN_FIELD_NAMES[0])()
-        }
-        else return asString(first)
+        } else return asString(first)
     }
 
     //parses the list of authors from the book json
@@ -202,19 +176,21 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
             .iterator().asSequence()
             .map {
                 val authorOption = getJsonField(asJsonObject(it), "key")
-                val authorJson = authorOption.orElseThrow(cantParseException("$AUTHORS_FIELD_NAME[n].key"))
+                val authorJson =
+                    authorOption.orElseThrow(cantParseException("$AUTHORS_FIELD_NAME[n].key"))
                 asString(authorJson)
             }
             .toList()
     }
 
     //parses the list of languages from the book json
-    private fun parseLanguages(jsonLanguages: JsonElement) : String? {
+    private fun parseLanguages(jsonLanguages: JsonElement): String? {
         return asJsonArray(jsonLanguages)
             .firstOrNull()
             ?.let {
                 val languageOption = getJsonField(asJsonObject(it), "key")
-                val languageJson = languageOption.orElseThrow(cantParseException("$LANGUAGE_FIELD_NAME[0].key"))
+                val languageJson =
+                    languageOption.orElseThrow(cantParseException("$LANGUAGE_FIELD_NAME[0].key"))
                 asString(languageJson)
             }
     }
@@ -227,16 +203,16 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun parsePublishDate(jsonPublishDate: JsonElement): Timestamp {
+    private fun parsePublishDate(jsonPublishDate: JsonElement): Date {
         val dateString = asString(jsonPublishDate)
         val dateFormat1 = SimpleDateFormat(DATE_FORMAT)
         val dateFormat2 = SimpleDateFormat(DATE_FORMAT2)
         dateFormat1.isLenient = false
         dateFormat2.isLenient = false
         return try {
-            Timestamp(dateFormat1.parse(dateString)!!)
-        } catch (e : java.text.ParseException) {
-            Timestamp(dateFormat2.parse(dateString)!!)
+            dateFormat1.parse(dateString)!!
+        } catch (e: java.text.ParseException) {
+            dateFormat2.parse(dateString)!!
         }
     }
 
@@ -273,7 +249,10 @@ class OLBookDatabase(private val url2json : (String) -> CompletableFuture<JsonEl
 
     //try to access a field of a json object and return an optional instead of a nullable
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun getJsonFields(jsonObject: JsonObject, fieldNames: List<String>): Optional<JsonElement> {
+    private fun getJsonFields(
+        jsonObject: JsonObject,
+        fieldNames: List<String>
+    ): Optional<JsonElement> {
         for (field in fieldNames) {
             if (jsonObject.get(field) != null) {
                 return Optional.ofNullable(jsonObject.get(field))

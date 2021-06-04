@@ -3,8 +3,7 @@
  * */
 package com.github.polybooks.core
 
-
-import com.google.firebase.Timestamp
+import java.util.Date
 import java.io.Serializable
 
 typealias ISBN = String
@@ -28,10 +27,8 @@ data class Book(
     val edition : String?,
     val language : String?,
     val publisher : String?,
-    val publishDate : Timestamp?,
-    val format : String?,
-    val totalStars: Double? = null,
-    val numberVotes: Int? = null
+    val publishDate : Date?,
+    val format : String?
 ) : Serializable
 
 /**
@@ -46,6 +43,5 @@ enum class BookFields(val fieldName: String) {
     PUBLISHER("publisher"),
     PUBLISHDATE("publishDate"),
     FORMAT("format"),
-    PICTUREFILENAME("pictureFileName"),
-    RATING("rating")
+    PICTUREFILENAME("pictureFileName")
 }

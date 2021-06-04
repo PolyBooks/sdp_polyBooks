@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.utils.GlobalVariables.EXTRA_USERNAME
 import com.github.polybooks.utils.setupNavbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -15,7 +16,7 @@ class UserProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
 
-        val username = intent.getStringExtra(EXTRA_MESSAGE)
+        val username = intent.getStringExtra(EXTRA_USERNAME)
         val welcomeText = "Hello $username !"
 
         val textMessageView = findViewById<TextView>(R.id.welcome_text)
@@ -34,6 +35,14 @@ class UserProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        findViewById<Button>(R.id.edit_user_interests).setOnClickListener {
+            startActivity(Intent(this, EditUserInterestsActivity::class.java))
+        }
+
+        setNavBar()
+    }
+
+    private fun setNavBar(){
         val navBarListener : BottomNavigationView.OnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener{ item ->
                 when(item.itemId){

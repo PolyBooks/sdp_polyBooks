@@ -1,8 +1,10 @@
-package com.github.polybooks
+package com.github.polybooks.utils
 
+import com.github.polybooks.core.Semester
 import org.junit.Test
 import org.junit.Assert.*
 import com.github.polybooks.utils.StringsManip.listAuthorsToString
+import com.github.polybooks.utils.StringsManip.mergeSectionAndSemester
 
 class FillSaleActivityUnitTests {
     @Test
@@ -45,6 +47,13 @@ class FillSaleActivityUnitTests {
         val expected = "Fowler, Beck, Evans, and Denis Brogniart"
         val input = listOf("Fowler", "Beck", "Evans", "Denis Brogniart")
         assertEquals(expected, listAuthorsToString(input))
+    }
+
+    @Test
+    fun mergeSectionAndSemesterTest() {
+        val expected = "IN-BA6"
+        val input = Semester("IN", "BA6")
+        assertEquals(expected, mergeSectionAndSemester(input))
     }
 
 }

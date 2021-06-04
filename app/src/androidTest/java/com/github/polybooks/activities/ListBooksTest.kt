@@ -1,6 +1,6 @@
 package com.github.polybooks.activities
 
-import android.content.Intent
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -11,22 +11,40 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.polybooks.R
+import com.github.polybooks.core.*
+import com.github.polybooks.database.Database
+import com.github.polybooks.database.FirebaseProvider
+import com.github.polybooks.database.TestBookProvider
+import com.google.firebase.Timestamp
+import com.schibsted.spain.barista.assertion.BaristaListAssertions
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
+import java.util.concurrent.CompletableFuture
 
 
 class ListBooksTest {
 
-    companion object
-    {
-        val intent: Intent = Intent(ApplicationProvider.getApplicationContext(), ListBooksActivity::class.java)
+    class BookActivityRule: TestWatcher() {
+        private val bookDB = Database.bookDatabase(ApplicationProvider.getApplicationContext())
+        private lateinit var a : ActivityScenario<ListBooksActivity>
+        override fun starting(description: Description?) {
+            TestBookProvider.books.values.forEach { book -> bookDB.addBook(book).get() }
+            a = ActivityScenario.launch(ListBooksActivity::class.java)
+        }
+
+        override fun finished(description: Description?) {
+            a.close()
+        }
     }
 
-    @get:Rule
-    val activityRule = ActivityScenarioRule<ListBooksActivity>(intent)
+
+    @Rule @JvmField
+    var bookrule = BookActivityRule()
 
     @Before
     fun before() {
@@ -39,6 +57,15 @@ class ListBooksTest {
     }
 
     @Test
+    fun BooksAreCorrect(){
+        Thread.sleep(2000)
+        BaristaListAssertions.assertListItemCount(R.id.recyclerView, 4)
+        BaristaListAssertions.assertDisplayedAtPosition(R.id.recyclerView, 1, R.id.text_view_title, "Tartuffe, by Moliere")
+        BaristaListAssertions.assertDisplayedAtPosition(R.id.recyclerView,1,R.id.text_view_author,"Molière")
+        BaristaListAssertions.assertCustomAssertionAtPosition(R.id.recyclerView,1,R.id.text_view_edition,ViewAssertions.matches(Matchers.not(isDisplayed())))
+    }
+
+    @Test
     fun filterButton() {
         onView(withId(R.id.filter_button)).perform(click())
         intended(hasComponent(FilteringBooksActivity::class.java.name))
@@ -47,7 +74,7 @@ class ListBooksTest {
     @Test
     fun navBarSales() {
         onView(withId(R.id.sales)).perform(click())
-        Intents.intended(hasComponent(ListSalesActivity::class.java.name))
+        intended(hasComponent(ListSalesActivity::class.java.name))
     }
 
     @Test

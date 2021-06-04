@@ -1,3 +1,5 @@
+@file:Suppress("RedundantUnitReturnType")
+
 package com.github.polybooks.activities
 
 import android.os.Bundle
@@ -7,9 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.polybooks.R
-import com.github.polybooks.database.*
-import com.github.polybooks.utils.url2json
-import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.CompletableFuture
 
 /**
  * Activity to list something using a recyclerview
@@ -18,18 +18,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 abstract class ListActivity<T>: AppCompatActivity() {
 
     companion object {
-        const val EXTRA_SALE_QUERY_SETTINGS: String = "saleQuerySettings"
-        const val EXTRA_BOOKS_QUERY_SETTINGS: String = "bookQuerySettings"
         private const val TAG = "ListActivity"
     }
 
     private lateinit var mRecycler: RecyclerView
     private val mLayout: RecyclerView.LayoutManager = LinearLayoutManager(this)
-
-    private val firestore = FirebaseFirestore.getInstance()
-    private val olBookDB = OLBookDatabase { string -> url2json(string) }
-    open val bookDB = FBBookDatabase(firestore, olBookDB)
-    open val salesDB = FBSaleDatabase(firestore, bookDB)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +30,6 @@ abstract class ListActivity<T>: AppCompatActivity() {
 
         findViewById<TextView>(R.id.sale_or_book).text = getTitleText()
         findViewById<Button>(R.id.filter_button).setOnClickListener { onFilterButtonClick() }
-        val query: Query<T> = getQuery()
 
         mRecycler = findViewById(R.id.recyclerView)
         mRecycler.setHasFixedSize(true)
@@ -46,7 +38,7 @@ abstract class ListActivity<T>: AppCompatActivity() {
         mRecycler.layoutManager = mLayout
         mRecycler.adapter = adapter(emptyList())
 
-        query.getAll().thenAccept { list -> this.updateAdapter(list) }
+        getElements().thenAccept { list -> this.updateAdapter(list) }
 
         setNavBar()
     }
@@ -58,8 +50,8 @@ abstract class ListActivity<T>: AppCompatActivity() {
     }
 
     abstract fun onFilterButtonClick()
-    abstract fun adapter(list : List<T>): RecyclerView.Adapter<*>
-    abstract fun setNavBar(): Unit
-    abstract fun getQuery(): Query<T>
+    abstract fun adapter(list: List<T>): RecyclerView.Adapter<*>
+    abstract fun setNavBar()
+    abstract fun getElements(): CompletableFuture<List<T>>
     abstract fun getTitleText(): String
 }

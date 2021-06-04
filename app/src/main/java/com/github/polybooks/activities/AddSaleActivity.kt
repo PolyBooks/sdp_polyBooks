@@ -4,19 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.utils.GlobalVariables.EXTRA_ISBN
+import com.github.polybooks.utils.GlobalVariables.EXTRA_PICTURE_FILE
+import com.github.polybooks.utils.GlobalVariables.EXTRA_SALE_PRICE
 import com.github.polybooks.utils.StringsManip.isbnHasCorrectFormat
 import com.github.polybooks.utils.UIManip.disableButton
 import com.github.polybooks.utils.UIManip.enableButton
 import com.github.polybooks.utils.setupNavbar
-
-
-const val EXTRA_ISBN = "com.github.polybooks.activities.ISBN"
-const val EXTRA_PICTURE_FILE = "com.github.polybooks.activities.picture_file"
-const val EXTRA_SALE_PRICE = "com.github.polybooks.activities.sale_price"
 
 
 /**
@@ -59,14 +58,8 @@ class AddSaleActivity : AppCompatActivity() {
 
     fun passISBN(view: View) {
         val editISBN = findViewById<EditText>(R.id.fill_in_ISBN)
-        val stringISBN = editISBN.text.toString()
-        val intent = Intent(this, FillSaleActivity::class.java).apply {
-            val extras = Bundle()
-            extras.putString(EXTRA_ISBN, stringISBN)
-            extras.putString(EXTRA_PICTURE_FILE, null)
-            extras.putString(EXTRA_SALE_PRICE, null)
-            putExtras(extras)
-        }
+        val intent = Intent(this, FillSaleActivity::class.java)
+            .putExtra(EXTRA_ISBN, editISBN.text.toString())
         startActivity(intent)
     }
 }

@@ -1,12 +1,13 @@
 package com.github.polybooks.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
-import com.github.polybooks.core.Book
+import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Sale
 import com.github.polybooks.database.*
 import com.github.polybooks.utils.INTERNET_PRICE_UNAVAILABLE
@@ -14,20 +15,63 @@ import com.github.polybooks.utils.StringsManip
 import com.github.polybooks.utils.getInternetPrice
 import com.github.polybooks.utils.url2json
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.CompletableFuture
 
 /**
  * This activity displays the detailed product information of a particular
  * registered sale given in .putExtra to the activity
  */
 class SaleInformationActivity: AppCompatActivity() {
+
+    lateinit var bookDB: BookDatabase
+
+    val bookRatingRef = FirebaseProvider.getFirestore().collection("bookRating")
+    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
     companion object {
         const val EXTRA_SALE_INFORMATION: String = "EXTRA_SALE_INFORMATION"
+    }
+
+
+    inner class BookRating(ratingMap: Any) {
+        var rating = (ratingMap as HashMap<String, Any>)["rating"] as Map<String, List<String>>
+        var totalVotes = (ratingMap as HashMap<String, Any>)["totalVotes"] as Long
+
+        fun getUserVote(): String? {
+            val uid = firebaseAuth.currentUser?.uid ?: return null
+
+            for ((key, value) in rating.entries) {
+                if (value.contains(uid)) return key
+            }
+
+            return null
+        }
+
+        fun toDocument(): HashMap<String, Any> {
+            return hashMapOf(
+                "rating" to rating,
+                "totalVotes" to totalVotes,
+            )
+        }
+
+        fun uploadToFirebase(isbn: ISBN): CompletableFuture<Unit> {
+            val future = CompletableFuture<Unit>()
+            bookRatingRef.document(isbn).set(this.toDocument())
+                .addOnSuccessListener {
+                    future.complete(Unit)
+                }.addOnFailureListener {
+                    future.completeExceptionally(it)
+                }
+
+            return future
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sale_information)
+
+        bookDB = Database.bookDatabase(this)
 
         val sale = (intent.getSerializableExtra(EXTRA_SALE_INFORMATION) as Sale)
 
@@ -41,46 +85,74 @@ class SaleInformationActivity: AppCompatActivity() {
         val ratingBar: RatingBar = findViewById(R.id.sale_information_rating)
         ratingBar.rating = 0f
 
-        if (sale.book.totalStars != null && sale.book.numberVotes != null && sale.book.numberVotes != 0) {
-            ratingBar.rating = (sale.book.totalStars / sale.book.numberVotes).toFloat()
-        }
-        ratingBar.setOnRatingBarChangeListener { bar, rating, _ ->
-            val firestore = FirebaseFirestore.getInstance()
-            val olBookDB = OLBookDatabase { string -> url2json(string) }
-            val bookDB = FBBookDatabase(firestore, olBookDB)
+        bookRatingRef.document(sale.book.isbn)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data != null) {
+                    val bookRating = BookRating(document.data!!)
 
-            var query: BookQuery = bookDB.queryBooks()
-            query = query.searchByISBN(setOf(sale.book.isbn))
-            query.getAll().thenCompose { books ->
-                if (books == null || books.isEmpty()) {
-                    throw DatabaseException(
-                        "SaleInformationActivity tried to request information from a Book() " +
-                        "which '${sale.book.isbn}' isbn doesn't exist in database anymore"
-                    )
-                } else if (books.size > 1) {
-                    throw DatabaseException(
-                        "SaleInformationActivity tried to request information from a Book() " +
-                        "which isbn '${sale.book.isbn}' is used ${books.size} times in the database"
-                    )
-                } else {
-                    val book: Book = books[0]
-                    val updatedTotalStars: Double = rating + (book.totalStars ?: 0.0)
-                    val updatedNumberVotes: Int = 1 + (book.numberVotes ?: 0)
-
-                    // bar.rating = (updatedTotalStars / updatedNumberVotes).toFloat()
-                    bar.setIsIndicator(true)
-
-                    bookDB.addBook(
-                        Book(
-                            book.isbn, book.authors, book.title, book.edition,
-                            book.language, book.publisher, book.publishDate,
-                            book.format, updatedTotalStars, updatedNumberVotes
-                        )
-                    )
+                    val hasAlreadyVoted = bookRating.getUserVote()
+                    if (hasAlreadyVoted != null) {
+                        ratingBar.rating = hasAlreadyVoted.toFloat()
+                        ratingBar.setIsIndicator(true)
+                    }
                 }
             }
 
-            Toast.makeText(this, "You chose : $rating stars", Toast.LENGTH_SHORT).show()
+        ratingBar.setOnRatingBarChangeListener { bar, rating, _ ->
+
+            bookRatingRef.document(sale.book.isbn)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.data != null) {
+                        // rating for the book exists
+                        val bookRating = BookRating(document.data!!)
+
+                        if (bookRating.getUserVote() != null) {
+                            // User has already voted
+                            Toast.makeText(this, "You have already voted", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // User never voted on this book
+                            val ratingKey: String = if (rating.toString().endsWith(".0")) rating.toString().take(1) else rating.toString()
+
+                            val newEntry: List<String> = bookRating.rating[ratingKey]!! + firebaseAuth.currentUser?.uid!!
+
+                            bookRating.rating = bookRating.rating.plus(Pair(ratingKey, newEntry))
+                            bookRating.totalVotes = 1 + bookRating.totalVotes
+
+                            bookRating.uploadToFirebase(sale.book.isbn).thenApply {
+                                Toast.makeText(this, "You chose : $rating stars", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        // no rating yet
+                        val ratingKey: String = if (rating.toString().endsWith(".0")) rating.toString().take(1) else rating.toString()
+
+                        val emptyRating: HashMap<String, List<String>> = hashMapOf(
+                            "0" to emptyList(), "0.5" to emptyList(),
+                            "1" to emptyList(), "1.5" to emptyList(),
+                            "2" to emptyList(), "2.5" to emptyList(),
+                            "3" to emptyList(), "3.5" to emptyList(),
+                            "4" to emptyList(), "4.5" to emptyList(),
+                            "5" to emptyList()
+                        )
+
+                        val bookRating = BookRating(hashMapOf("rating" to emptyRating.plus(Pair(ratingKey, listOf(firebaseAuth.currentUser?.uid))), "totalVotes" to 1L))
+                        bookRating.uploadToFirebase(sale.book.isbn).thenApply {
+                            Toast.makeText(this, "You chose : $rating stars", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    bar.setIsIndicator(true)
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(
+                        "SaleInforamtionActivity",
+                        "SaleInformationActivity tried to request information from a Book() " +
+                                "which '${sale.book.isbn}' isbn doesn't exist in database anymore",
+                        exception
+                    )
+                }
         }
 
 
