@@ -55,7 +55,7 @@ class MainTest {
         onView(withId(R.id.log_button)).perform(click())
         intended(hasComponent(LoginActivity::class.java.name))
     }
-
+    
     @Test
     fun sellButton() {
 
@@ -87,8 +87,7 @@ class MainTest {
         onView(withId(R.id.signup_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.log_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.sell_button)).perform(click())
-        Firebase.auth.currentUser.delete()
-
+        Firebase.auth.currentUser?.delete()
     }
 
     @Test
@@ -148,3 +147,5 @@ class MainTest {
     }
 
 }
+
+// bug test

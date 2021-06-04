@@ -50,7 +50,7 @@ class RegisterTest {
         Intents.intended(toPackage("com.github.polybooks"))
         Intents.intended(hasExtra(EXTRA_USERNAME, "TestTestTest"))
         Thread.sleep(1500)
-        Firebase.auth.currentUser.delete()
+        Firebase.auth.currentUser?.delete()
     }
 
     @Test

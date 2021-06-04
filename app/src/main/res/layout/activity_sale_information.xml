@@ -61,14 +61,6 @@
         app:layout_constraintTop_toTopOf="@+id/sale_information_value_by_1"
         tools:text="@tools:sample/full_names" />
 
-    <ImageView
-        android:id="@+id/sale_information_country_flag"
-        android:layout_width="34dp"
-        android:layout_height="31dp"
-        app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_by_1"
-        app:layout_constraintEnd_toEndOf="@+id/sale_information_title"
-        tools:srcCompat="@android:drawable/ic_menu_mapmode"
-        android:contentDescription="@string/book_language" />
 
     <TextView
         android:id="@+id/sale_information_value_in"
@@ -85,7 +77,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@string/should_appear_automatically"
         app:layout_constraintBottom_toBottomOf="@+id/sale_information_value_in"
         app:layout_constraintStart_toEndOf="@+id/sale_information_value_in"
         app:layout_constraintTop_toTopOf="@+id/sale_information_value_in" />
@@ -115,21 +106,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline50" />
 
+    <TextView
+        android:id="@+id/sale_value_seller"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/seller"
+        app:layout_constraintTop_toBottomOf="@id/sale_information_value_condition"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sale_information_book_picture"/>
+
+    <TextView
+        android:id="@+id/sale_information_book_seller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seller_name"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/sale_value_seller"
+        app:layout_constraintStart_toEndOf="@id/sale_value_seller"
+        app:layout_constraintTop_toTopOf="@id/sale_value_seller"
+        app:layout_constraintVertical_bias="1.0" />
+
+
     <ImageView
         android:id="@+id/sale_information_book_picture"
         android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
         android:contentDescription="@string/your_picture_of_your_book_condition"
         app:layout_constraintBottom_toTopOf="@+id/sale_information_value_rating"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sale_information_value_condition"
+        app:layout_constraintTop_toBottomOf="@+id/sale_value_seller"
         app:srcCompat="@android:drawable/ic_menu_mapmode"
-        tools:srcCompat="@tools:sample/backgrounds/scenic"
-        android:layout_height="0dp" />
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <TextView
         android:id="@+id/sale_information_value_rating"
@@ -153,8 +170,66 @@
         android:isIndicator="false"
         android:numStars="5"
         android:stepSize="0.5"
-        app:layout_constraintBottom_toTopOf="@+id/sale_information_price"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_internet_price"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/sale_information_value_internet_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/internet_price"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_internet_price"
+        app:layout_constraintEnd_toStartOf="@+id/guideline50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_internet_price" />
+
+    <TextView
+        android:id="@+id/sale_information_internet_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="end"
+        app:layout_constraintBottom_toTopOf="@+id/sale_information_price"
+        app:layout_constraintEnd_toStartOf="@+id/sale_information_value_internet_currency"
+        app:layout_constraintStart_toStartOf="@+id/guideline50" />
+
+    <TextView
+        android:id="@+id/sale_information_value_internet_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/currency"
+        app:layout_constraintBottom_toBottomOf="@+id/sale_information_internet_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sale_information_internet_price" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <TextView
         android:id="@+id/sale_information_value_price"
@@ -198,5 +273,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/locate_user"
+        style="@style/Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/locate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sale_value_seller"
+        app:layout_constraintBottom_toBottomOf="@id/sale_value_seller"
+        app:layout_constraintVertical_bias="1.0" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
