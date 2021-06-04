@@ -7,6 +7,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.core.BookRating
 import com.github.polybooks.core.ISBN
 import com.github.polybooks.core.Sale
 import com.github.polybooks.database.*
@@ -22,46 +23,10 @@ class SaleInformationActivity: AppCompatActivity() {
 
     lateinit var bookDB: BookDatabase
 
-    val bookRatingRef = FirebaseProvider.getFirestore().collection("bookRating")
     val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     companion object {
         const val EXTRA_SALE_INFORMATION: String = "EXTRA_SALE_INFORMATION"
-    }
-
-
-    inner class BookRating(ratingMap: Any) {
-        var rating = (ratingMap as HashMap<String, Any>)["rating"] as Map<String, List<String>>
-        var totalVotes = (ratingMap as HashMap<String, Any>)["totalVotes"] as Long
-
-        fun getUserVote(): String? {
-            val uid = firebaseAuth.currentUser?.uid ?: return null
-
-            for ((key, value) in rating.entries) {
-                if (value.contains(uid)) return key
-            }
-
-            return null
-        }
-
-        fun toDocument(): HashMap<String, Any> {
-            return hashMapOf(
-                "rating" to rating,
-                "totalVotes" to totalVotes,
-            )
-        }
-
-        fun uploadToFirebase(isbn: ISBN): CompletableFuture<Unit> {
-            val future = CompletableFuture<Unit>()
-            bookRatingRef.document(isbn).set(this.toDocument())
-                .addOnSuccessListener {
-                    future.complete(Unit)
-                }.addOnFailureListener {
-                    future.completeExceptionally(it)
-                }
-
-            return future
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,23 +47,16 @@ class SaleInformationActivity: AppCompatActivity() {
         val ratingBar: RatingBar = findViewById(R.id.sale_information_rating)
         ratingBar.rating = 0f
 
-        bookRatingRef.document(sale.book.isbn)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.data != null) {
-                    val bookRating = BookRating(document.data!!)
-
-                    val hasAlreadyVoted = bookRating.getUserVote()
-                    if (hasAlreadyVoted != null) {
-                        ratingBar.rating = hasAlreadyVoted.toFloat()
-                        ratingBar.setIsIndicator(true)
-                    }
-                }
+        bookDB.getRating(sale.book.isbn).thenAccept { bookRating ->
+            val hasAlreadyVoted = bookRating.getUserVote()
+            if (hasAlreadyVoted != null) {
+                ratingBar.rating = hasAlreadyVoted.toFloat()
+                ratingBar.setIsIndicator(true)
             }
+        }
 
         ratingBar.setOnRatingBarChangeListener { bar, rating, _ ->
-
-            bookRatingRef.document(sale.book.isbn)
+            BookRating.bookRatingRef.document(sale.book.isbn)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null && document.data != null) {

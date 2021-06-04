@@ -1,9 +1,6 @@
 package com.github.polybooks.database
 
-import com.github.polybooks.core.Book
-import com.github.polybooks.core.BookFields
-import com.github.polybooks.core.ISBN
-import com.github.polybooks.core.Interest
+import com.github.polybooks.core.*
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import java.text.SimpleDateFormat
@@ -77,6 +74,26 @@ object FBBookDatabase: BookDatabase {
             future.complete(books)
         }
         return future
+    }
+
+    override fun getRating(isbn: ISBN): CompletableFuture<BookRating> {
+        val future = CompletableFuture<BookRating>()
+        BookRating.bookRatingRef.document(isbn)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data != null) {
+                    future.complete(BookRating(document.data!!))
+                }
+            }
+            .addOnFailureListener {
+                future.completeExceptionally(it)
+            }
+
+        return future
+    }
+
+    override fun setRating(isbn: ISBN, bookRating: BookRating): CompletableFuture<Unit> {
+        return bookRating.uploadToFirebase(isbn)
     }
 
     override fun getBooks(
