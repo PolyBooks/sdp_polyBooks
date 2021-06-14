@@ -14,7 +14,7 @@ import com.github.polybooks.R
 import com.github.polybooks.adapter.InterestsParameterAdapter
 import com.github.polybooks.adapter.ParameterViewHolder
 import com.github.polybooks.core.Course
-import com.github.polybooks.core.Field
+import com.github.polybooks.core.Topic
 import com.github.polybooks.core.Interest
 import com.github.polybooks.core.Semester
 import com.github.polybooks.database.Database
@@ -32,9 +32,9 @@ class FilteringTestUtils(private val context: Context?) {
 
     fun initInterestDB() {
         val interestDB = Database.interestDatabase
-        interestDB.addField(Field("Biology"))
-        interestDB.addField(Field("Computer Science"))
-        interestDB.addField(Field("Architecture"))
+        interestDB.addTopic(Topic("Biology"))
+        interestDB.addTopic(Topic("Computer Science"))
+        interestDB.addTopic(Topic("Architecture"))
         interestDB.addSemester(Semester("IN", "BA1"))
         interestDB.addSemester(Semester("ENV", "BA5"))
         interestDB.addSemester(Semester("SC", "BA6"))
@@ -66,7 +66,7 @@ class FilteringTestUtils(private val context: Context?) {
         assertion: ViewAssertion? = null
     ) {
         val values = when (interestType) {
-            FilteringSalesTest.FIELD -> DummyInterestDatabase.mockFields
+            FilteringSalesTest.FIELD -> DummyInterestDatabase.MOCK_TOPICS
             FilteringSalesTest.COURSE -> DummyInterestDatabase.mockCourses
             FilteringSalesTest.SEMESTER -> {
                 if (assertion == null)
@@ -122,8 +122,8 @@ class FilteringTestUtils(private val context: Context?) {
     private fun <T> getName(value: T): String {
         return when (value) {
             is FieldWithName -> (value as FieldWithName).fieldName(context)
-            is Field -> (value as Field).name
-            is Course -> (value as Course).name
+            is Topic -> (value as Topic).name
+            is Course -> (value as Course).courseName
             is Semester -> {
                 val v = value as Semester
                 v.section + "-" + v.semester

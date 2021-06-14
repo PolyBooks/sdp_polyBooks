@@ -9,15 +9,12 @@ import com.github.polybooks.R
 import com.github.polybooks.core.Interest
 import com.github.polybooks.database.Database
 import com.github.polybooks.utils.StringsManip.getName
-import com.github.polybooks.utils.firebaseUserToUser
-import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.CompletableFuture
 
 class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
 
-    private val user = firebaseUserToUser(FirebaseAuth.getInstance().currentUser)
-    private var userInterests = Database.interestDatabase.getUserInterests(user)
-        .thenApply { triple -> (triple.first + triple.second + triple.third).toSet() }
+    private var userInterests = Database.interestDatabase.getCurrentUserInterests()
+        .thenApply { list -> list.toSet() }
     private val interests: CompletableFuture<List<Interest>> =
         Database.interestDatabase.listAllInterests()
             .thenApply { triple -> triple.first + triple.second + triple.third }
@@ -54,9 +51,6 @@ class InterestAdapter: RecyclerView.Adapter<InterestAdapter.InterestHolder>() {
     }
 
     fun updateUserInterests(): Unit {
-        Database.interestDatabase.setUserInterests(
-            user,
-            userInterests.get().toList()
-        )
+        Database.interestDatabase.setCurrentUserInterests(userInterests.get().toList())
     }
 }

@@ -8,25 +8,21 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.polybooks.R
+import com.github.polybooks.database.FirebaseProvider
 import com.github.polybooks.utils.failedUser
 import com.github.polybooks.utils.setupNavbar
 import com.github.polybooks.utils.updateUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
-import com.google.firebase.ktx.Firebase
 
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
+    private var auth = FirebaseProvider.getAuth()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
-
-        auth = Firebase.auth
 
         val registerButton = findViewById<Button>(R.id.button_reg)
         registerButton.setOnClickListener{
@@ -98,6 +94,7 @@ class RegisterActivity : AppCompatActivity() {
                                 }
                             }
                     } else {
+                        Log.d(TAG, "Cancelled ${task.isCanceled} Complete ${task.isComplete} Message: ${task.exception?.message}===================")
                         failedUser(auth.currentUser, this)
                     }
                 }
